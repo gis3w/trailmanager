@@ -1,0 +1,214 @@
+<?php defined('SYSPATH') or die('No direct script access.');
+
+// -- Environment setup --------------------------------------------------------
+
+// Load the core Kohana class
+require SYSPATH.'classes/Kohana/Core'.EXT;
+
+if (is_file(APPPATH.'classes/Kohana'.EXT))
+{
+	// Application extends the core
+	require APPPATH.'classes/Kohana'.EXT;
+}
+else
+{
+	// Load empty core extension
+	require SYSPATH.'classes/Kohana'.EXT;
+}
+
+/**
+ * Set the default time zone.
+ *
+ * @link http://kohanaframework.org/guide/using.configuration
+ * @link http://www.php.net/manual/timezones
+ */
+date_default_timezone_set('Europe/Rome');
+
+/**
+ * Set the default locale.
+ *
+ * @link http://kohanaframework.org/guide/using.configuration
+ * @link http://www.php.net/manual/function.setlocale
+ */
+setlocale(LC_ALL, 'it_IT.utf-8');
+
+/**
+ * Enable the Kohana auto-loader.
+ *
+ * @link http://kohanaframework.org/guide/using.autoloading
+ * @link http://www.php.net/manual/function.spl-autoload-register
+ */
+spl_autoload_register(array('Kohana', 'auto_load'));
+
+/**
+ * Optionally, you can enable a compatibility auto-loader for use with
+ * older modules that have not been updated for PSR-0.
+ *
+ * It is recommended to not enable this unless absolutely necessary.
+ */
+//spl_autoload_register(array('Kohana', 'auto_load_lowercase'));
+
+/**
+ * Enable the Kohana auto-loader for unserialization.
+ *
+ * @link http://www.php.net/manual/function.spl-autoload-call
+ * @link http://www.php.net/manual/var.configuration#unserialize-callback-func
+ */
+ini_set('unserialize_callback_func', 'spl_autoload_call');
+
+// -- Configuration and initialization -----------------------------------------
+
+/**
+ * Set the default language
+ */
+ I18n::lang('it');
+ 
+
+
+
+
+Cookie::$salt = 'cosoweb7890';
+
+/**
+ * Set Kohana::$environment if a 'KOHANA_ENV' environment variable has been supplied.
+ *
+ * Note: If you supply an invalid environment name, a PHP warning will be thrown
+ * saying "Couldn't find constant Kohana::<INVALID_ENV_NAME>"
+ */
+if (isset($_SERVER['KOHANA_ENV']))
+{
+	Kohana::$environment = constant('Kohana::'.strtoupper($_SERVER['KOHANA_ENV']));
+}
+
+/**
+ * Initialize Kohana, setting the default options.
+ *
+ * The following options are available:
+ *
+ * - string   base_url    path, and optionally domain, of your application   NULL
+ * - string   index_file  name of your index file, usually "index.php"       index.php
+ * - string   charset     internal character set used for input and output   utf-8
+ * - string   cache_dir   set the internal cache directory                   APPPATH/cache
+ * - integer  cache_life  lifetime, in seconds, of items cached              60
+ * - boolean  errors      enable or disable error handling                   TRUE
+ * - boolean  profile     enable or disable internal profiling               TRUE
+ * - boolean  caching     enable or disable internal caching                 FALSE
+ * - boolean  expose      set the X-Powered-By header                        FALSE
+ */
+Kohana::init(array(
+	'base_url'   => '/',
+                  'index_file' => FALSE,
+                  'caching' => TRUE,
+));
+
+/**
+ * Attach the file write to logging. Multiple writers are supported.
+ */
+Kohana::$log->attach(new Log_File(APPPATH.'logs'));
+
+/**
+ * Attach a file reader to config. Multiple readers are supported.
+ */
+Kohana::$config->attach(new Config_File);
+
+// uploader:
+require_once Kohana::find_file('vendors', 'jQuery-File-Upload-8.2.1/UploadHandler');
+require_once APPPATH.'../vendor/autoload.php';
+
+/**
+ * Enable modules. Modules are referenced by a relative or absolute path.
+ */
+Kohana::modules(array(
+	 'auth'       => MODPATH.'auth',       // Basic authentication
+	'cache'      => MODPATH.'cache',      // Caching with multiple backends
+	// 'codebench'  => MODPATH.'codebench',  // Benchmarking tool
+	 'database'   => MODPATH.'database',   // Database access
+	// 'image'      => MODPATH.'image',      // Image manipulation
+	'minion'     => MODPATH.'minion',     // CLI Tasks
+	 'orm'        => MODPATH.'orm',        // Object Relationship Mapping
+	// 'unittest'   => MODPATH.'unittest',   // Unit testing
+	'userguide'  => MODPATH.'userguide',  // User guide and API documentation
+            'formo'  => MODPATH.'formo',  
+            'gis3w' => MODPATH.'gis3w',
+            'restapi'  => MODPATH.'restapi',  // REST api systems
+            'tree'  => MODPATH.'tree',  // tree data sctructure
+	));
+
+/**
+ * Set the routes. Each route must have a minimum of a name, a URI and a set of
+ * defaults for the URI.
+ */
+
+//Route::set('print', 'print/(<controller>(/<action>(/<id>)))')
+//	->defaults(array(
+//                    'directory' => 'print',
+//                    'controller' => 'home',
+//                    'action'     => 'index',
+//	));
+
+Route::set('print', 'print/<directory>/<controller>(/<type>(/<id>))')
+                        ->filter(function($route, $params, $request)
+                        {
+                            $params['directory'] = 'Print/'.$params['directory'];
+                            $params['controller'] .= "_".ucfirst($params['type']);
+                            return $params; 
+                        })
+	->defaults(array(
+                        'controller' => 'home',
+                        'action'     => 'index',
+	));
+
+Route::set('jx/upload', 'jx/upload(/<controller>(/<id>))')
+	->defaults(array(
+                    'directory' => 'Ajax/Upload',
+                    'controller' => 'home',
+                    'action'     => 'index',
+	));
+
+Route::set('download', 'download(/<controller>(/<obj_id>(/<file>)))',array('file' => '.*'))
+	->defaults(array(
+                        'directory' => 'Download',
+                        'controller' => 'home',
+                        'action'     => 'index',
+	));
+
+Route::set('jx/document', 'jx/document(/<controller>(/<id>(/<filtro>)))')
+	->defaults(array(
+                    'directory' => 'Ajax/Document',
+                    'controller' => 'home',
+                    'action'     => 'index',
+	));
+
+Route::set('jx/use', 'jx/use(/<controller>(/<id>(/<filtro>)))')
+	->defaults(array(
+                    'directory' => 'Ajax/Use',
+                    'controller' => 'home',
+                    'action'     => 'index',
+	));
+
+Route::set('jx/global', 'jx/global(/<controller>(/<id>(/<filtro>)))')
+	->defaults(array(
+                    'directory' => 'Ajax/Global',
+                    'controller' => 'home',
+                    'action'     => 'index',
+	));
+
+Route::set('jx/administration', 'jx/administration(/<controller>(/<id>(/<filtro>)))')
+	->defaults(array(
+                    'directory' => 'Ajax/Administration',
+                    'controller' => 'home',
+                    'action'     => 'index',
+	));
+
+Route::set('jx', 'jx/(<controller>(/<id>(/<filtro>)))')
+	->defaults(array(
+                    'directory' => 'ajax',
+                    'controller' => 'home',
+                    'action'     => 'index',
+	));
+
+Route::set('default', '(<controller>(/<action>(/<id>)))')
+	->defaults(array(
+		'controller' => 'home',
+		'action'     => 'index',
+	));
