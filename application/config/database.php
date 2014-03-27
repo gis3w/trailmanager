@@ -14,8 +14,8 @@ return array
 			 * boolean  persistent  use persistent connections?
 			 */
 			'dsn'        => 'pgsql:host=localhost;dbname=dev_turisticgis;port=5432;',
-			'username'   => 'cosoweb',
-			'password'   => 'cosoweb74',
+			'username'   => 'turisticgis',
+			'password'   => 'turisticgis74',
 			'persistent' => FALSE,
 		),
 		/**

@@ -35,8 +35,8 @@ html {
 
 
 body {
-	background: url(../img/bg.jpg) repeat-y top right,  url(../img/dbg.jpg) repeat top left;
-	color: #646464;
+/*	background: url(../img/bg.jpg) repeat-y top right,  url(../img/dbg.jpg) repeat top left;
+	color: #646464;*/
 	border: none;
 }
 
@@ -2356,4 +2356,9 @@ footer p {
     text-align: center;
     margin: -70px auto;
     width:400px;
+}
+
+/* Per le checklist*/
+textarea.checklist-question-note {
+    height: 80px;
 }

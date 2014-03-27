@@ -7,7 +7,7 @@
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>
 		</button>
-        <a class="navbar-brand" href="#" style="padding: 0px"><?php echo Html::image($img_path."nav_bar_logo_24w.png",array('alt'=>'Safe3', 'class'=>'img-responsive')); ?></a>
+        <a class="navbar-brand" href="#" style="padding: 0px"><?php echo Html::image($img_path.$logo_navbar,array('alt'=>'TuristicGIS', 'class'=>'img-responsive')); ?></a>
     </div>
 	<div class="collapse navbar-collapse navbar-ex1-collapse">
 		<ul class="nav navbar-nav">
@@ -17,9 +17,9 @@
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <?php 
-				foreach ($langs as $I18n => $lang):
+                                                                foreach ($langs as $I18n => $lang):
 			?>
-                    <li><a href="/?lang=<?php echo $I18n ?>"><?php echo $lang ?></a></li>
+                    <li><a href="/?lang=<?php echo $I18n ?>"><i class="icon icon-flag"></i> <?php echo $lang ?></a></li>
             <?php
 				endforeach;
 			?>
@@ -27,9 +27,9 @@
         </ul>
     </div>
 </nav>
-<nav class="navbar navbar-inverse navbar-fixed-bottom">
+<!--<nav class="navbar navbar-inverse navbar-fixed-bottom">
 	<div class="navbar-header" style="text-align: center;">
         <a class="navbar-brand"   href="#" style="">Studio Mazzi</a>
         <a class="navbar-brand"  href="#" style="">gis3w</a>
     </div>
-</nav>
+</nav>-->

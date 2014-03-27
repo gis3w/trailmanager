@@ -1,18 +1,19 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 return array(
-    'title_default' => 'cosoWEB',
+    'title_default' => 'TuristicGis',
     'main_tpl' => 'main',
     'mobile_main_tpl' => 'mobile/main',
     'img_path' => 'public/img/',
-    'logo_main' => 'logo_safe3_beta_44h.png',
-    'logo_print' => 'logo_safe3_beta_44h.png',
-    'logo_email' => 'logo_safe3_beta_30h.png',
+    'logo_main' => 'logo_turisticgis_50h.png',
+    'logo_navbar' => 'logo_turisticgis_40h.png',
+    'logo_print' => 'logo_turisticgis_50h.png',
+    'logo_email' => 'logo_turisticgis_30h.png',
     'css_compile' => FALSE,
     'css_path' => 'public/css/',
     'css_base' => array(
 		'../modules/jquery-ui-1.10.3/themes/base/minified/jquery-ui.min.css' => 'screen',
-        '../modules/bootstrap3/css/bootstrap.min.css' => 'screen',
+                                 '../modules/bootstrap3/css/bootstrap.min.css' => 'screen',
 		//'../modules/bootstrap3/css/bootstrap-theme.min.css' => 'screen',
 		'../modules/fullcalendar-1.6.1/fullcalendar/fullcalendar.css' => 'screen',
 		'../modules/chosen_v1.0.0/chosen.css' => 'screen',

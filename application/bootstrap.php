@@ -126,6 +126,8 @@ Kohana::modules(array(
 	// 'image'      => MODPATH.'image',      // Image manipulation
 	'minion'     => MODPATH.'minion',     // CLI Tasks
 	 'orm'        => MODPATH.'orm',        // Object Relationship Mapping
+                'ormgis'        => MODPATH.'ormgis',        // Object Relationship Mapping for Postgis table
+                'geo'        => MODPATH.'geo',        // Geo funaction helper
 	// 'unittest'   => MODPATH.'unittest',   // Unit testing
 	'userguide'  => MODPATH.'userguide',  // User guide and API documentation
             'formo'  => MODPATH.'formo',  
@@ -179,25 +181,26 @@ Route::set('jx/document', 'jx/document(/<controller>(/<id>(/<filtro>)))')
                     'action'     => 'index',
 	));
 
-Route::set('jx/use', 'jx/use(/<controller>(/<id>(/<filtro>)))')
+
+Route::set('jx/admin', 'jx/admin(/<controller>(/<id>(/<filtro>)))')
 	->defaults(array(
-                    'directory' => 'Ajax/Use',
+                    'directory' => 'Ajax/Admin',
                     'controller' => 'home',
                     'action'     => 'index',
 	));
 
-Route::set('jx/global', 'jx/global(/<controller>(/<id>(/<filtro>)))')
+Route::set('jx/admin', 'jx/admin(/<controller>(/<id>(/<filtro>)))')
 	->defaults(array(
-                    'directory' => 'Ajax/Global',
+                    'directory' => 'Ajax/Admin',
                     'controller' => 'home',
                     'action'     => 'index',
 	));
 
-Route::set('jx/administration', 'jx/administration(/<controller>(/<id>(/<filtro>)))')
+Route::set('admin', 'admin(/<controller>(/<action>(/<id>)))')
 	->defaults(array(
-                    'directory' => 'Ajax/Administration',
-                    'controller' => 'home',
-                    'action'     => 'index',
+                                'directory' => 'Admin',
+		'controller' => 'home',
+		'action'     => 'index',
 	));
 
 Route::set('jx', 'jx/(<controller>(/<id>(/<filtro>)))')
