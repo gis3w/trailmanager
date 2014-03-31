@@ -6,7 +6,7 @@
   <Sch Cm="standard public schema" nm="public">
     <Tbl UsSo="1" nm="capabilities">
       <Cm>Tabella che tiene conto delle capacità dei vaeri ruoli</Cm>
-      <TblOpts>WITH OIDS</TblOpts>
+      <TblOpts>WITHOUT OIDS</TblOpts>
       <Pk ClNs="id" nm="pkcapabilities"/>
       <Cl au="1" df="nextval('capabilities_id_seq'::regclass)" nm="id" nu="0">
         <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
@@ -20,7 +20,7 @@
       <SchTrHis/>
     </Tbl>
     <Tbl UsSo="1" nm="capabilities_roles">
-      <TblOpts>WITH OIDS</TblOpts>
+      <TblOpts>WITHOUT OIDS</TblOpts>
       <Pk ClNs="id" nm="pkcapabilities_roles"/>
       <Cl au="1" df="nextval('capabilities_roles_id_seq'::regclass)" nm="id" nu="0">
         <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
@@ -70,7 +70,7 @@
       <SchTrHis/>
     </Tbl>
     <Tbl UsSo="1" nm="roles">
-      <TblOpts>WITH OIDS</TblOpts>
+      <TblOpts>WITHOUT OIDS</TblOpts>
       <Pk ClNs="id" nm="pkroles"/>
       <Cl au="1" df="nextval('roles_id_seq'::regclass)" nm="id" nu="0">
         <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
@@ -87,7 +87,7 @@
       <SchTrHis/>
     </Tbl>
     <Tbl UsSo="1" nm="roles_users">
-      <TblOpts>WITH OIDS</TblOpts>
+      <TblOpts>WITHOUT OIDS</TblOpts>
       <Pk ClNs="id" nm="pkroles_users"/>
       <Cl au="1" df="nextval('roles_users_id_seq'::regclass)" nm="id" nu="0">
         <DT ds="BigInt" en="" id="-5" ln="null" sc="null" sg="1" un="0"/>
@@ -131,7 +131,7 @@
       <SchTrHis/>
     </Tbl>
     <Tbl UsSo="1" nm="user_datas">
-      <TblOpts>WITH OIDS</TblOpts>
+      <TblOpts>WITHOUT OIDS</TblOpts>
       <Pk ClNs="id" nm="pkuser_datas"/>
       <Cl au="1" df="nextval('user_datas_id_seq'::regclass)" nm="id" nu="0">
         <DT ds="BigInt" en="" id="-5" ln="null" sc="null" sg="1" un="0"/>
@@ -165,7 +165,7 @@
       <SchTrHis/>
     </Tbl>
     <Tbl UsSo="1" nm="users">
-      <TblOpts>WITH OIDS</TblOpts>
+      <TblOpts>WITHOUT OIDS</TblOpts>
       <Pk ClNs="id" nm="pkusers"/>
       <Cl au="1" df="nextval('users_id_seq'::regclass)" nm="id" nu="0">
         <DT ds="BigInt" en="" id="-5" ln="null" sc="null" sg="1" un="0"/>
@@ -7565,7 +7565,7 @@ WHERE t.typname = 'geography'::name
     </BasicOptionMgr>
   </DbDocOptionMgr>
   <OpenEditors>
-    <OpenEditor ClsNm="Diagram" fqn="null.diagramA" selected="1"/>
+    <OpenEditor ClsNm="Diagram" fqn="null.diagramA" selected="0"/>
   </OpenEditors>
   <TreePaths>
     <TreePath/>
