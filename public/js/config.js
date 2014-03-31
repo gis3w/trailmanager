@@ -418,7 +418,7 @@ $.extend(APP.config,{
 		$.ajax({
 			type: 'GET',
 			async: false,
-			url: '/jx/config',
+			url: BOOTSTRAP_URL,//'/jx/config',
 			success: APP.config.setConfig,
 			error: APP.utils.showErrMsg
 		});
