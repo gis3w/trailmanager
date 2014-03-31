@@ -2,7 +2,8 @@
 
 class Controller_Admin_Home extends Controller_Auth_Strict {
     
-    public $tcontent ="home";
+    public $tcontent ="admin/home";
+    public $jspre = "BOOTSTRAP_URL='/jx/admin/config'";
 
     public function action_index(){}
     

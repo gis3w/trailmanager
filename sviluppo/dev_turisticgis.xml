@@ -70,10 +70,10 @@
       <SchTrHis/>
     </Tbl>
     <Tbl UsSo="1" nm="itineraries">
-      <TblOpts/>
+      <TblOpts>WITHOUT OIDS</TblOpts>
       <Pk ClNs="id" nm="pkitineraries"/>
-      <Cl au="1" df="" nm="id" nu="0">
-        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="1"/>
+      <Cl au="1" df="nextval('itineraries_id_seq'::regclass)" nm="id" nu="0">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
       <Cl au="0" df="" nm="name" nu="0">
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
@@ -85,10 +85,10 @@
     </Tbl>
     <Tbl UsSo="1" nm="pois">
       <Cm>Point of interest</Cm>
-      <TblOpts/>
+      <TblOpts>WITHOUT OIDS</TblOpts>
       <Pk ClNs="gid" nm="pkpois"/>
-      <Cl au="1" df="" nm="gid" nu="0">
-        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="1"/>
+      <Cl au="1" df="nextval('pois_gid_seq'::regclass)" nm="gid" nu="0">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
       <Cl au="0" df="" nm="title" nu="0">
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
@@ -104,6 +104,9 @@
       </Cl>
       <Cl au="0" df="" nm="information_url" nu="1">
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="the_geom" nu="1">
+        <DT ds="geometry" en="" id="5001" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
       <SchTrHis/>
     </Tbl>
@@ -146,35 +149,6 @@
         <CdTb mn="1" nm="roles_users" oe="1" sch="public" zr="1"/>
         <ClPr cdCl="user_id" prCl="id"/>
       </Fk>
-      <SchTrHis/>
-    </Tbl>
-    <Tbl UsSo="1" nm="routes">
-      <TblOpts>Percorsi</TblOpts>
-      <Pk ClNs="gid" nm="pkroutes"/>
-      <Cl au="1" df="" nm="gid" nu="0">
-        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="1"/>
-      </Cl>
-      <Cl au="0" df="" nm="title" nu="0">
-        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
-      </Cl>
-      <Cl au="0" df="" nm="description" nu="1">
-        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
-      </Cl>
-      <Cl au="0" df="" nm="reason" nu="1">
-        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
-      </Cl>
-      <Cl au="0" df="" nm="length" nu="0">
-        <DT ds="Float" en="" id="6" ln="null" sc="null" sg="1" un="0"/>
-      </Cl>
-      <Cl au="0" df="" nm="altitude_gap" nu="0">
-        <DT ds="Float" en="" id="6" ln="null" sc="null" sg="1" un="0"/>
-      </Cl>
-      <Cl au="0" df="" nm="accessibility" nu="1">
-        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
-      </Cl>
-      <Cl au="0" df="" nm="information_url" nu="1">
-        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
-      </Cl>
       <SchTrHis/>
     </Tbl>
     <Tbl UsSo="1" nm="spatial_ref_sys">
@@ -7574,11 +7548,16 @@ WHERE t.typname = 'geography'::name
     </View>
     <Seq incr="1" nm="capabilities_id_seq"/>
     <Seq incr="1" nm="capabilities_roles_id_seq"/>
+    <Seq incr="1" nm="itineraries_id_seq"/>
+    <Seq incr="1" nm="pois_gid_seq"/>
     <Seq incr="1" nm="roles_id_seq"/>
     <Seq incr="1" nm="roles_users_id_seq"/>
+    <Seq incr="1" nm="routes_gid_seq"/>
     <Seq incr="1" nm="user_datas_id_seq"/>
     <Seq incr="1" nm="users_id_seq"/>
-    <CustomTypes/>
+    <CustomTypes>
+      <CustomType id="5001" nm="geometry"/>
+    </CustomTypes>
   </Sch>
   <Dgm nm="diagramA">
     <RnCf FtSz="9" lkStgy="OffsetDirect" zm="1.0">
@@ -7609,7 +7588,6 @@ WHERE t.typname = 'geography'::name
     <TbGl bkCl="ffccccff" sch="public" tbl="users" x="92" y="230"/>
     <TbGl bkCl="ffccccff" sch="public" tbl="itineraries" x="594" y="150"/>
     <TbGl bkCl="ffccccff" sch="public" tbl="pois" x="833" y="170"/>
-    <TbGl bkCl="ffccccff" sch="public" tbl="routes" x="842" y="289"/>
     <FkGl bkCl="ff000000" nm="public.capabilities_roles.fk_capabilities_roles_capabilities"/>
     <FkGl bkCl="ff000000" nm="public.capabilities_roles.fk_capabilities_roles_roles"/>
     <FkGl bkCl="ff000000" nm="public.roles_users.fk_roles_users_roles"/>
@@ -7644,5 +7622,8 @@ WHERE t.typname = 'geography'::name
   </OpenEditors>
   <TreePaths>
     <TreePath/>
+    <TreePath>/Schemas (1)</TreePath>
+    <TreePath>/Schemas (1)/public</TreePath>
+    <TreePath>/Schemas (1)/public/Tables (10)</TreePath>
   </TreePaths>
 </Db>

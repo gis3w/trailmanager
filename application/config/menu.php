@@ -13,6 +13,14 @@ return array(
             'capability' => NULL,
             'icon' => 'home',
         ),
+         'itinerary' => array(
+            'id' =>'itinerary',
+            'name' => __('Itineraries'),
+            'url' => '/jx/admin/itinerary',
+            'url_mobile' => 'user',
+             'capability' => 'access-user',
+            'icon' => 'user',
+        ),
         'user' => array(
             'id' =>'user',
             'name' => __('Users'),
