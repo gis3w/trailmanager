@@ -9,24 +9,8 @@ class Model_User extends Model_Auth_User {
     protected $_has_many = array(
             'user_tokens' => array('model' => 'User_Token'),
             'roles'       => array('model' => 'Role', 'through' => 'roles_users'),
-        'mansioni'=> array(
-            'model' => 'Mansione',
-            'through' => 'user_mansioni',
-            'far_key' => 'mansione_id'
-        ),
-        'unita_produttive'=> array(
-            'model' => 'Unita_Produttiva',
-            'through' => 'users_unita_produttiva',
-            'far_key' => 'unita_produttiva_id'
-        ),
-        'aziende'=> array(
-            'model' => 'Azienda',
-            'through' => 'users_azienda',
-            'far_key' => 'azienda_id'
-        ),
-        'scadenze' => array(
-            'model'   => 'Scadenze_Abilitazione',
-        ),
+        
+       
     );
     
     public function labels() {
@@ -133,50 +117,8 @@ class Model_User extends Model_Auth_User {
                 }
             break;
             
-            case "mansioni_attuali":
-            case "array_mansioni_attuali_id":
-                $value = parent::get('mansioni')->where($this->_has_many['mansioni']['through'].'.time_dissociazione','is',DB::expr('NULL'))->find_all();
-                if($column === "array_mansioni_attuali_id")
-                {
-                    $toValue = array();
-                    foreach($value as $mezzo)
-                        $toValue[] = $mezzo->id;
-                    
-                    $value = $toValue;
-                }
-            break;
-            
-            case "unita_produttive_attuali":
-            case "array_unita_produttive_attuali_id":
-                $value = parent::get('unita_produttive')->where($this->_has_many['unita_produttive']['through'].'.time_dissociazione','is',DB::expr('NULL'))->find_all();
-                if($column === "array_unita_produttive_attuali_id")
-                {
-                    $toValue = array();
-                    foreach($value as $mezzo)
-                        $toValue[] = $mezzo->id;
-                    
-                    $value = $toValue;
-                }
-            break;
-            
-            case "aziende_attuali":
-            case "array_aziende_attuali_id":
-            case "aziende_attuali_implode":
-                $value = parent::get('aziende')->where($this->_has_many['aziende']['through'].'.time_dissociazione','is',DB::expr('NULL'))->find_all();
-                if($column === "array_aziende_attuali_id" OR $column === "aziende_attuali_implode")
-                {
-                    $toValue = array();
-                    foreach($value as $mezzo)
-                        $toValue[] = $mezzo->id;
-                    
-                    if($column === "aziende_attuali_implode")
-                        $toValue = implode (",", $toValue);
-                    $value = $toValue;
-                }
-            break;
-
-        
-           
+         
+          
         
             default:
                 $value = parent::get($column);
@@ -219,29 +161,59 @@ class Model_User extends Model_Auth_User {
     }
     
     
-    public function setUnitaProduttive($unita)
+   public function getRoles($only_id = FALSE)
     {
-       $actions = Filter::hasToManyActions($unita, $this->array_unita_produttive_attuali_id); 
-       //// VERAMENTE IMPORTANTE E' L'ORDINE DI ASSOCIAZIONE DISSOCIAZIONE
-       //// PRIMA DI DISSOCIA E POI SI ASSOCIA
-       foreach($actions['toRemove'] as $id)
-           $this->remove('unita_produttive',$id);
-       
-       foreach($actions['toAdd'] as $id)
-           $this->add('unita_produttive',$id);
+        if(isset($this->_cache['roles'][$only_id]))
+            return $this->_cache['roles'][$only_id];
+        $roles = $this->roles->where('name', '!=','login')->find_all();
+        if($only_id)
+        {
+            $toRet = array();
+            foreach($roles as $role)
+                $toRet[] = $role->id;
+            $this->_cache['roles'][$only_id] = $toRet;
+            return $toRet;
+        }
+        $this->_cache['roles'][$only_id] = $roles;
+        return $roles;
     }
     
-    public function setAziende($azienda)
+    public function get_allow_capabilities($as_id = FALSE,$filters = array())
     {
-       $actions = Filter::hasToManyActions($azienda, $this->array_aziende_attuali_id); 
-       //// VERAMENTE IMPORTANTE E' L'ORDINE DI ASSOCIAZIONE DISSOCIAZIONE
-       //// PRIMA DI DISSOCIA E POI SI ASSOCIA
-       foreach($actions['toRemove'] as $id)
-           $this->remove('aziende',$id);
-       
-       foreach($actions['toAdd'] as $id)
-           $this->add('aziende',$id);
+        if(isset($this->_cache['allow_capabilities'][serialize($filters)]))
+            return $this->_cache['allow_capabilities'][serialize($filters)];
+        $allowCapabilities = array();
+        $roles = $this->getRoles();
+         foreach($roles as $role)
+         {
+             $role_capabilities = $role->capabilities;
+                if(!empty($filters))
+                    foreach($filters as $filter)
+                    $role_capabilities->where($filter[0],$filter[1],$filter[2]);
+                                       
+
+             $role_capabilities = $role_capabilities->find_all() ;
+             foreach ($role_capabilities as $capability)
+             if(!in_array($capability->name, $allowCapabilities))
+                     $allowCapabilities[] = $as_id ? $capability->id : $capability->name;  
+         }
+             
+         
+        $this->_cache['allow_capabilities'][serialize($filters)] = $allowCapabilities;
+        Kohana::$log->add(Log::DEBUG, print_r($allowCapabilities,true));
+        return $allowCapabilities;
     }
+    
+    public function allow_capa($capabilities)
+   {
+       // se utente admin non ne tiene di conto
+       if($this->main_role == 'ADMIN1')
+               return TRUE;
+       
+       $capabilities = is_array($capabilities) ? $capabilities : array($capabilities);
+       $check = array_intersect($capabilities, $this->get_allow_capabilities());
+       return !empty($check);
+   }
     
    
 

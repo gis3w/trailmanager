@@ -19,7 +19,23 @@ return array(
             'url' => '/jx/admin/itinerary',
             'url_mobile' => 'user',
              'capability' => 'access-user',
-            'icon' => 'user',
+            'icon' => 'code-fork',
+        ),
+         'poi' => array(
+            'id' =>'poi',
+            'name' => __('Points of interest'),
+            'url' => '/jx/admin/poi',
+            'url_mobile' => 'user',
+             'capability' => 'access-user',
+            'icon' => 'map-marker',
+        ),
+        'path' => array(
+            'id' =>'path',
+            'name' => __('Paths'),
+            'url' => '/jx/admin/path',
+            'url_mobile' => 'user',
+             'capability' => 'access-user',
+            'icon' => 'location-arrow',
         ),
         'user' => array(
             'id' =>'user',
@@ -29,7 +45,33 @@ return array(
             'capability' => 'access-user',
             'icon' => 'user',
         ),
-        
+         'global' => array(
+            'id' =>'global',
+            'name' => __('Global'),
+            'capability' => 'access-global',
+            'icon' => 'cog',
+             'menu' => array(
+                 'type' => 'tabs',
+                 'items' => array(
+                      'tipologies' => array(
+                         'name' => __('Tipologies'),
+                         'icon' =>'suitcase',
+                         'menu' => array(
+                             'type' => 'affix',
+                             'items' => array(
+                                'global_typology' => array(
+                                      'id' =>'typology',
+                                      'name' => __('Typologies'),
+                                      'url' => '/jx/admin/global/typology',
+                                      'capability' => 'access-global-typology',
+                                      'icon' => 'list-alt',
+                               ),
+                            )
+                         )
+                      )
+                 )
+            )
+        ),
         'administration' => array(
             'id' =>'administration',
             'name' => __('Administration'),

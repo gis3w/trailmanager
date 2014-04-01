@@ -96,6 +96,9 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
             'config'=> '/jx/config', // i18n
             'dStruct'=> '/jx/datastruct', // /jx/datastruct?tb=user          
             'filter'=> '/jx/filterdata?f=',
+            'itinerary' => '/jx/admin/itinerary',
+            'poi' => '/jx/admin/poi',
+            'path' => '/jx/admin/path',
             
         );
           

@@ -8,20 +8,12 @@ class Controller_Test extends Controller{
     
     public function action_index(){
 
-        
-       $dispatcher = new EventDispatcher();
-       $that = $this;
-$dispatcher->addListener('event_name', array($this,'test'));
-
-$dispatcher->dispatch('event_name');
+        $poi = ORM::factory('Typology');
+   var_dump($poi);
        exit;
     
     }
     
-    public function test($event)
-    {
-      var_dump($event);  
-      var_dump($this);
-    }
+    
             
 }

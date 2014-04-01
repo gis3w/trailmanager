@@ -11,7 +11,8 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
     protected $_datastruct;
     protected $_datastructName;
     protected $_orm;
-   protected $_table;
+    protected $_typeOrm = 'ORM';
+    protected $_table;
    protected $_table_rid;
    protected $_res = array();
    protected $_vorm;
@@ -35,6 +36,8 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
            $this->_datastructName = strtolower($this->_datastruct);
            $this->_datastruct = Datastruct::factory($this->_datastruct);
            $this->_table  = $this->_datastruct->get_nameORM();
+           $this->_typeOrm = $this->_datastruct->getTypeORM();
+           
            
        }
        elseif(!isset($this->_table))
@@ -66,11 +69,13 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
    protected function _ACL()
     {
         $this->_controller_ACL();
+        
+        $typeORM = $this->_typeOrm;
 
         if(is_numeric($this->id))
         {
             $this->_status = $this->request->action() === 'update' ? self::UPDATE : self::DELETE;
-             $this->_orm = ORM::factory($this->_table)
+             $this->_orm = $typeORM::factory($this->_table)
                      ->where($this->_table_rid.'.id','=',$this->id);
              $this->_apply_default_filter($this->_orm);
              $this->_orm = $this->_orm->find();
@@ -84,7 +89,7 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
         else
         {
             
-             $this->_orm = ORM::factory($this->_table);
+             $this->_orm = $typeORM::factory($this->_table);
              $this->_apply_default_filter($this->_orm);
             // caso di inserimento
             if($this->request->action() === 'create'){

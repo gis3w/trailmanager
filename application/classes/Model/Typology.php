@@ -1,16 +1,16 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-class Model_Itinerary extends ORM {
+class Model_Typology extends ORM {
     
     
      protected $_has_many = array(
         'pois' => array(
             'model'   => 'Poi',
-            'through' => 'itineraries_pois',
+            'through' => 'typologies_pois',
         ),
         'paths' => array(
             'model'   => 'Path',
-            'through' => 'itineraries_paths',
+            'through' => 'typologies_paths',
         ),
     );
     
@@ -20,7 +20,6 @@ class Model_Itinerary extends ORM {
             "description" => __("Description"),
         );
     }
-    
     
     public function rules()
     {

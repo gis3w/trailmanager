@@ -1,16 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 
-class Controller_Ajax_Admin_Itinerary extends Controller_Ajax_Base_Crud{
+class Controller_Ajax_Admin_Poi extends Controller_Ajax_Base_Crud{
     
     protected $_pagination = FALSE;
     
-    protected $_datastruct = "Itinerary";
+    protected $_datastruct = "Poi";
     
-    protected $_pois = array();
-    protected $_paths = array();
-
-
+    
     protected function _edit()
     {
          try
@@ -20,7 +17,7 @@ class Controller_Ajax_Admin_Itinerary extends Controller_Ajax_Base_Crud{
             $this->_orm->values($_POST)->save();
             
             //si eseguono le associazioni con i mezzi
-            foreach(array('pois','paths') as $alias)
+            foreach(array('typologies') as $alias)
             {
                 $var = "_".$alias;
                 if(isset($_POST[$alias]))
@@ -56,7 +53,7 @@ class Controller_Ajax_Admin_Itinerary extends Controller_Ajax_Base_Crud{
         $toRes = parent::_single_request_row($orm);
         
         // si aggiungo i codici ateco
-        foreach(array('pois','paths') as $alias)
+        foreach(array('typologies') as $alias)
         {
             $datas = $orm->$alias->find_all();
             foreach($datas as $data)
@@ -70,5 +67,4 @@ class Controller_Ajax_Admin_Itinerary extends Controller_Ajax_Base_Crud{
         
         return $toRes;
     }
-    
 }

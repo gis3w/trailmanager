@@ -1,12 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="navbar-header">
-		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-			<span class="sr-only">Toggle navigation</span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-		</button>
         <a class="navbar-brand" href="#" style="padding: 0px"><?php echo Html::image($img_path.$logo_navbar,array('alt'=>'TuristicGIS', 'class'=>'img-responsive')); ?></a>
     </div>
 	<div class="collapse navbar-collapse navbar-ex1-collapse">
@@ -19,7 +13,7 @@
             <?php 
                                                                 foreach ($langs as $I18n => $lang):
 			?>
-                    <li><a href="/?lang=<?php echo $I18n ?>"><i class="icon icon-flag"></i> <?php echo $lang ?></a></li>
+                    <li><a href="?lang=<?php echo $I18n ?>"><i class="icon icon-flag"></i> <?php echo $lang ?></a></li>
             <?php
 				endforeach;
 			?>
@@ -27,9 +21,4 @@
         </ul>
     </div>
 </nav>
-<!--<nav class="navbar navbar-inverse navbar-fixed-bottom">
-	<div class="navbar-header" style="text-align: center;">
-        <a class="navbar-brand"   href="#" style="">Studio Mazzi</a>
-        <a class="navbar-brand"  href="#" style="">gis3w</a>
-    </div>
-</nav>-->
+

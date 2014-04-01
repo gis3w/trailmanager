@@ -9,11 +9,13 @@ class Datastruct extends Kohana_Formstruct{
     public $user;
     
     protected $_nameORM;
+        
+    protected $_typeORM = 'ORM';
 
     protected $_baseORM;
     
     protected $_labelsORM;
-    
+
     protected $_descriptionsORM;
     
     public $filter = FALSE;
@@ -161,6 +163,11 @@ class Datastruct extends Kohana_Formstruct{
         
         if($this->user->main_role_id !== '12' AND !is_null($this->_columns))
             $this->_filter_by_role($this->_columns);
+    }
+    
+    public function getTypeORM()
+    {
+        return $this->_typeORM;
     }
     
     public function render()
