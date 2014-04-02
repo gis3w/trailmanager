@@ -3,6 +3,7 @@
 class Datastruct_Path extends Datastruct {
     
     protected $_nameORM = "Path";
+    protected $_typeORM = "ORMGIS";
     
     public $icon = 'location-arrow';
     public $filter = TRUE;
@@ -41,6 +42,16 @@ class Datastruct_Path extends Datastruct {
                 ),
                 "general_features" => array(
                     'form_input_type' => self::TEXTAREA,
+                ),
+                 "the_geom" => array(
+                    'form_input_type' => self::MAPBOX,
+                    'map_box_editing' => TRUE,
+                    'map_box_editing_geotype' => array(
+                        self::GEOTYPE_POLYLINE
+                    ),
+                    'map_box_fileloading' => TRUE,
+                    'label' =>__('Geodata'),
+                    'table_show' => FALSE,
                 ),
             );
       }

@@ -234,6 +234,7 @@ abstract class Kohana_Controller_Api_Main extends Kohana_Controller_REST{
             
                 default:
                     $body = $this->jres;
+
                     $route_name = Route::name($this->request->route());
                     if($this->request->is_ajax() OR  substr($route_name, 0,7) === 'restapi' OR  substr($route_name, 0,4) === 'rest'  OR substr($route_name, 0,2) === 'jx') 
                     { 
@@ -241,7 +242,6 @@ abstract class Kohana_Controller_Api_Main extends Kohana_Controller_REST{
                         $this->response->headers('Content-type','application/json');
                     }
                    
-                    
                     $this->response->body($body);
             }           
             

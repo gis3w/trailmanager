@@ -20,6 +20,10 @@ class Kohana_Formstruct{
     const BUTTON = 'button';
     const MAPBOX = 'mapbox';
     
+    const GEOTYPE_POLYLINE = 'polyline';
+    const GEOTYPE_POLYGON = 'polygon';
+    const GEOTYPE_MARKER = 'marker';
+    
     
 
     /**

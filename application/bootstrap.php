@@ -31,6 +31,7 @@ date_default_timezone_set('Europe/Rome');
  * @link http://www.php.net/manual/function.setlocale
  */
 setlocale(LC_ALL, 'it_IT.utf-8');
+setlocale(LC_NUMERIC, 'en_US.utf8');
 
 /**
  * Enable the Kohana auto-loader.

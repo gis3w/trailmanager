@@ -8,9 +8,9 @@ class Controller_Test extends Controller{
     
     public function action_index(){
 
-        $poi = ORM::factory('Typology');
-   var_dump($poi);
-       exit;
+        echo floatval('10.3456');
+        echo (float)'10.3456';
+        exit;
     
     }
     

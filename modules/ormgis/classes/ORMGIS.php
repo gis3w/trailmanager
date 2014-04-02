@@ -165,6 +165,10 @@ class ORMGIS extends ORM {
             return $geo;
         break;
         
+        case "asgeojson_php":
+            return json_decode($this->asgeojson);
+        break;
+        
         case 'length_spheroid_km':
             // applicabile solo se il tipo è linestring
             if(!$this->pk())

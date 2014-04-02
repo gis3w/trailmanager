@@ -11,7 +11,7 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
     protected $_datastruct;
     protected $_datastructName;
     protected $_orm;
-    protected $_typeOrm = 'ORM';
+    protected $_typeORM = 'ORM';
     protected $_table;
    protected $_table_rid;
    protected $_res = array();
@@ -36,7 +36,7 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
            $this->_datastructName = strtolower($this->_datastruct);
            $this->_datastruct = Datastruct::factory($this->_datastruct);
            $this->_table  = $this->_datastruct->get_nameORM();
-           $this->_typeOrm = $this->_datastruct->getTypeORM();
+           $this->_typeORM = $this->_datastruct->getTypeORM();
            
            
        }
@@ -70,8 +70,8 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
     {
         $this->_controller_ACL();
         
-        $typeORM = $this->_typeOrm;
-
+        $typeORM = $this->_typeORM;
+        
         if(is_numeric($this->id))
         {
             $this->_status = $this->request->action() === 'update' ? self::UPDATE : self::DELETE;
