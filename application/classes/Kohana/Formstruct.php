@@ -18,6 +18,7 @@ class Kohana_Formstruct{
     const HIDDEN = 'hidden';
     const FILE = 'file';
     const BUTTON = 'button';
+    const MAPBOX = 'mapbox';
     
     
 

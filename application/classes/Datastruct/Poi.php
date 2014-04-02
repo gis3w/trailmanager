@@ -16,7 +16,7 @@ class Datastruct_Poi extends Datastruct {
        array(
             'name' => 'poi-foreign-data',
             'position' => 'right',
-            'fields' => array('typologies'),
+            'fields' => array('typologies','the_geom'),
         ),
     );
     
@@ -38,6 +38,19 @@ class Datastruct_Poi extends Datastruct {
                 ),
                  "accessibility" => array(
                     'form_input_type' => self::TEXTAREA,
+                ),
+                "the_geom" => array(
+                    'form_input_type' => self::MAPBOX,
+                    'map_box_editing' => TRUE,
+                    'map_box_editing_geotype' => array(
+                        'polyline',
+                        'polygon',
+                        'marker',
+                    ),
+                    'map_box_fileloading' => TRUE,
+                    'label' =>__('Geodata'),
+                    'description' => __('I geodati che possono essere inviati al veicolo'),
+                    'table_show' => FALSE,
                 ),
                 
             );
