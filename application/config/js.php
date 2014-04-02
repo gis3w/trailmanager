@@ -10,6 +10,8 @@ return array(
 		'../modules/jquery-1.10.1.min.js',
 		'../modules/jquery-ui-1.10.3/ui/minified/jquery-ui.min.js',
 		'../modules/bootstrap3/js/bootstrap.min.js',
+		'../modules/leaflet-0.7.2/leaflet.js',
+		'../modules/Leaflet.draw/dist/leaflet.draw.js',
 		'../modules/jQuery-File-Upload-master/js/jquery.iframe-transport.js',
 		'../modules/jQuery-File-Upload-master/js/jquery.fileupload.js',
 		'../modules/jquery.fileDownload.js',
