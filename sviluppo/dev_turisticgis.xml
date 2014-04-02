@@ -4,6 +4,29 @@
   <DefTblOpts/>
   <DocFolder>/home/www/turisticgis/sviluppo</DocFolder>
   <Sch Cm="standard public schema" nm="public">
+    <Tbl UsSo="1" nm="background_layers">
+      <TblOpts/>
+      <Pk ClNs="id" nm="pkbackground_layers"/>
+      <Cl au="1" df="" nm="id" nu="0">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="1"/>
+      </Cl>
+      <Cl au="0" df="" nm="name" nu="0">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="description" nu="1">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="url" nu="0">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="false" nm="def" nu="0">
+        <DT ds="Boolean" en="" id="16" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="source" nu="0">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <SchTrHis/>
+    </Tbl>
     <Tbl UsSo="1" nm="capabilities">
       <Cm>Tabella che tiene conto delle capacità dei vaeri ruoli</Cm>
       <TblOpts>WITHOUT OIDS</TblOpts>
@@ -7767,6 +7790,7 @@ WHERE t.typname = 'geography'::name
     <TbGl bkCl="ffcccccc" sch="public" tbl="typologies_paths" x="1289" y="297"/>
     <TbGl bkCl="ffcccccc" sch="public" tbl="typologies_pois" x="1298" y="132"/>
     <TbGl bkCl="ff3399ff" sch="public" tbl="i18n" x="699" y="333"/>
+    <TbGl bkCl="ffccccff" sch="public" tbl="background_layers" x="544" y="241"/>
     <FkGl bkCl="ff000000" nm="public.capabilities_roles.fk_capabilities_roles_capabilities"/>
     <FkGl bkCl="ff000000" nm="public.capabilities_roles.fk_capabilities_roles_roles"/>
     <FkGl bkCl="ff000000" nm="public.itineraries_paths.fk_itineraries_paths_itineraries"/>
@@ -7783,7 +7807,7 @@ WHERE t.typname = 'geography'::name
     <Notes/>
     <Zones/>
   </Dgm>
-  <RnmMgr NxRnmId="10">
+  <RnmMgr NxRnmId="11">
     <RnmCh ObjCls="Table" ParCls="Schema" ParNme="public" SupCls="" SupNme="">
       <Rnm id="2" nNm="itineraries" oNm="itinerari"/>
       <Rnm id="1" nNm="itinerari" oNm="itineraries"/>
@@ -7806,6 +7830,9 @@ WHERE t.typname = 'geography'::name
     <RnmCh ObjCls="Column" ParCls="Table" ParNme="i18n" SupCls="Schema" SupNme="public">
       <Rnm id="9" nNm="tb" oNm="tabl"/>
       <Rnm id="8" nNm="tabl" oNm="table"/>
+    </RnmCh>
+    <RnmCh ObjCls="Table" ParCls="Schema" ParNme="public" SupCls="" SupNme="">
+      <Rnm id="10" nNm="background_layers" oNm="background_layes"/>
     </RnmCh>
   </RnmMgr>
   <DbDocOptionMgr>
@@ -7830,6 +7857,6 @@ WHERE t.typname = 'geography'::name
     <TreePath/>
     <TreePath>/Schemas (1)</TreePath>
     <TreePath>/Schemas (1)/public</TreePath>
-    <TreePath>/Schemas (1)/public/Tables (17)</TreePath>
+    <TreePath>/Schemas (1)/public/Tables (18)</TreePath>
   </TreePaths>
 </Db>

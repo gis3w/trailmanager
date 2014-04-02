@@ -22,6 +22,7 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
 //        $this->_set_authuser();
         $this->_set_i18n();
 //        $this->_set_timezone();
+        $this->_set_background_layer();
         $this->_set_menu();
         $this->_set_url();
         
@@ -81,6 +82,11 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
         
         
     }
+    
+    protected function _set_background_layer()
+    {
+        $this->_get_table('Background_Layer');
+    }
 
     
     protected function _set_timezone()
@@ -94,7 +100,8 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
             'logout'=> '/login/out',
             'i18n'=>  '/jx/i18n/', //language
             'config'=> '/jx/config', // i18n
-            'dStruct'=> '/jx/datastruct', // /jx/datastruct?tb=user          
+            'dStruct'=> '/jx/datastruct', 
+            'token' => '/jx/token',
             'filter'=> '/jx/filterdata?f=',
             'itinerary' => '/jx/admin/itinerary',
             'poi' => '/jx/admin/poi',
