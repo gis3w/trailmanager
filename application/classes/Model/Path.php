@@ -35,6 +35,15 @@ class Model_Path extends ORMGIS {
             'title' => array(
                     array('not_empty'),
             ),
+            'length' => array(
+                    array('not_empty'),
+                    array('numeric')
+            ),
+            'altitude_gap' => array(
+                    array('not_empty'),
+                    array('numeric')
+            ),
+            
         );
     }
 

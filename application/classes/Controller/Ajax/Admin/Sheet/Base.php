@@ -2,10 +2,20 @@
 
 
 class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
+    
+    protected $_typologies = array();
 
     protected function _set_the_geom_edit()
     {
-        $_POST['the_geom'] = GEO::load($_POST['the_geom'],'json'); 
+        if(isset($_POST['the_geom']) AND $_POST['the_geom'] != '')
+        {
+            $_POST['the_geom'] = GEO::load($_POST['the_geom'],'json'); 
+        }
+        else
+        {
+            unset($_POST['the_geom']);
+        }
+        
     }
     
     protected function _set_typologies_edit()
