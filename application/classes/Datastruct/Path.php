@@ -53,6 +53,15 @@ class Datastruct_Path extends Datastruct {
                     'label' =>__('Geodata'),
                     'table_show' => FALSE,
                 ),
+                "information_url" => array(
+                    'prefix' => 'http://'
+                ),
+                 "altitude_gap" => array(
+                    'suffix' => 'm',
+                ),
+                "length" => array(
+                    'suffix' => 'km',
+                ),
             );
       }
 

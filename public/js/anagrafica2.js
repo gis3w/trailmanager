@@ -1228,7 +1228,7 @@ $.extend(APP.anagrafica,
 				if (inp === null)
 					return true;
 				
-				var spanValues = (APP.utils.isset(position) && position === "blockColForm")? [2, 9, 1] : [4, 7, 1];
+				var spanValues = (APP.utils.isset(position) && position === "blockColForm")? [2, 9, 1] : [2, 9, 1];
 				
 				var myFieldLabel = (APP.utils.isset(v.label))? v.label+":" : "";
 
