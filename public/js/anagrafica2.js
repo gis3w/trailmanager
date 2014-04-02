@@ -3,6 +3,7 @@ $.extend(APP.anagrafica,
 	finish: function()
 	{
 		$("body").off("table_shown");
+		APP.map.finish();
 	},
 	
 	start: function(el, titolo, section, div)
@@ -16,7 +17,7 @@ $.extend(APP.anagrafica,
 		this.tmpSelectedItem = el;
 		this.mainDiv = APP.utils.isset(div)? div : $("#"+section+"Container");
 		
-		$("body").on("table_shown", function(){
+		$("body").one("table_shown", function(){
 			
 		});
 		
@@ -187,6 +188,7 @@ $.extend(APP.anagrafica,
 			this.mainDiv.find("#window_"+this.windows.length).remove();
 			APP.utils.updateBreadcrumb("remove");
 		}
+		this.finish();
 	},
 	
 	toggleWindow: function(newDiv, oldDiv)
