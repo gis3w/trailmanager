@@ -1139,8 +1139,11 @@ $.extend(APP.utils,{
 				inp = "<input type='color' id='APP-"+v.name+"' name='"+v.name+"' class='form-control' value='"+valore+"' "+required+">";
 				break;
 			case "mapbox":
-				inp = "<div id='mapboxDiv' class='mapbox' style='width: 100%; height: 300px;'></div>\
-					<input type='hidden' id='APP-"+v.name+"' name='"+v.name+"' class='mapbox' value='"+JSON.stringify(valore)+"'>";
+				inp = "<div id='mapboxDiv' class='mapbox' style='width: 100%; height: 400px;'></div>";
+				if (valore == "")
+					inp += "<input type='hidden' id='APP-"+v.name+"' name='"+v.name+"' class='mapbox' value=''>";
+				else
+					inp += "<input type='hidden' id='APP-"+v.name+"' name='"+v.name+"' class='mapbox' value='"+JSON.stringify(valore)+"'>";
 				break;
 			default:
 				console.log("Aggiungi questo form_input_type: "+v.form_input_type);

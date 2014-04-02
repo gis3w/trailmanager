@@ -949,6 +949,137 @@ $.extend(APP.anagrafica,
 		contentDiv.html(this.createFormTemplate(id, dataObject, this.sections[section], section, buttons));
 		contentDiv.show();
 		var form = contentDiv.find("#fm_"+section);
+		
+		if (form.find("div.mapbox").length > 0)
+		{
+			var ddd = form.find("div.mapbox");
+			APP.map.setMap(ddd);
+			
+			var index = APP.utils.getIndexFromField(this.sections[this.currentSection].columns, "form_input_type", "mapbox");
+			if (index > -1)
+			{
+				if (APP.utils.isset(APP.map.globalData[APP.map.currentMapId].drawnItems))
+					APP.map.globalData[APP.map.currentMapId].map.removeLayer(APP.map.globalData[APP.map.currentMapId].drawnItems);
+				
+				/*
+				APP.map.globalData[APP.map.currentMapId].drawnItems = new L.FeatureGroup();
+				APP.map.globalData[APP.map.currentMapId].map.addLayer(APP.map.globalData[APP.map.currentMapId].drawnItems);
+				*/
+				
+				var obj = this.sections[this.currentSection].columns[index];
+				if (obj.map_box_editing)
+				{
+					/*
+					var opt = {
+						draw: {
+							polyline: false,
+							polygon: false,
+							circle: false,
+							marker: false,
+							rectangle: false
+						},
+						edit: {
+							featureGroup: APP.map.globalData[APP.map.currentMapId].drawnItems,
+							edit: false
+						}
+					};
+					$.each(obj.map_box_editing_geotype, function(i,v)
+					{
+						opt.draw[v] = {title: APP.i18n.translate(v)};
+					});*/
+					APP.map.toggleDrawEditor(APP.map.currentMapId, true/*, opt*/);
+					APP.map.globalData[APP.map.currentMapId].map.on('draw:created', function (e)
+					{
+						
+						var type = e.layerType;
+						var	layer = e.layer;
+						
+						/*
+						var counter = 0;
+						APP.map.globalData[APP.map.currentMapId].drawnItems.eachLayer(function(l)
+						{
+							counter++;
+						});
+						
+						if (counter == 0)*/
+						{
+							APP.map.globalData[APP.map.currentMapId].drawnItems.addLayer(layer);
+                                                                                                                              
+						}
+					});
+					APP.map.globalData[APP.map.currentMapId].map.on('draw:edited', function (e)
+					{
+						console.log("imposta l'evento draw:edited");
+					});
+					APP.map.globalData[APP.map.currentMapId].map.on('draw:deleted', function (o)
+					{
+						$.each(o.layers.getLayers(), function(ij,vj){
+							APP.map.globalData[APP.map.currentMapId].drawnItems.removeLayer(vj);
+						});
+						//APP.map.globalData[APP.map.currentMapId].drawnItems.clearLayers(layers);
+					});
+				}
+				if (obj.map_box_fileloading)
+				{
+					var options_eraseall = {
+						layer :  APP.map.globalData[APP.map.currentMapId].drawnItems
+					};
+					APP.map.globalData[APP.map.currentMapId].eraseAllControl = new L.Control.EraseALL(options_eraseall); 
+					APP.map.globalData[APP.map.currentMapId].map.addControl(APP.map.globalData[APP.map.currentMapId].eraseAllControl);	
+					
+					//var style = {color:'red', opacity: 1.0, fillOpacity: 1.0, weight: 2, clickable: false};
+					L.Control.FileLayerLoad.LABEL = '<i class="icon-folder-open"></i>';
+					var control = L.Control.fileLayerLoad({
+						fitBounds: true,
+						layerOptions: {
+							pointToLayer: function (data, latlng) {
+								return L.circleMarker(latlng);
+							},
+						},
+					}).addTo(APP.map.globalData[APP.map.currentMapId].map);
+					
+					
+					control.loader.on('data:loaded', function (e) {
+						var ttt = arguments;
+						APP.map.globalData[APP.map.currentMapId].drawnItems.addLayer(e.layer);
+						//APP.map.globalData[APP.map.currentMapId].map.removeLayer(e.layer);
+					});					
+					
+				}
+				var inp = form.find("input.mapbox");
+				if (inp.length > 0 && inp.val() != "")
+				{
+					if (!APP.map.globalData[APP.map.currentMapId].map.hasLayer(APP.map.globalData[APP.map.currentMapId].drawnItems))
+					{
+						APP.map.globalData[APP.map.currentMapId].drawnItems = new L.FeatureGroup();
+						APP.map.globalData[APP.map.currentMapId].map.addLayer(APP.map.globalData[APP.map.currentMapId].drawnItems);
+					}
+					var value = inp.val();
+					var gj = new L.geoJson($.parseJSON(value), {
+						
+						onEachFeature: function(feature, layer)
+						{
+							if ($.isArray(feature.geometries))
+							{
+								$.each(feature.geometries, function(ij,vj){
+									APP.map.globalData[APP.map.currentMapId].drawnItems.addLayer(L.GeoJSON.geometryToLayer(vj));
+								});
+							}
+							else
+								APP.map.globalData[APP.map.currentMapId].drawnItems.addLayer(L.GeoJSON.geometryToLayer(feature));
+						},
+						
+						pointToLayer: function (data, latlng) {
+							return L.circleMarker(latlng);
+						},
+					});
+					
+					//APP.map.globalData[APP.map.currentMapId].drawnItems.addLayer(gj);
+					APP.map.globalData[APP.map.currentMapId].map.fitBounds(APP.map.globalData[APP.map.currentMapId].drawnItems.getBounds());
+				}
+			}
+		}
+		
 		APP.utils.setLookForm(form, id);
 	},
 	
@@ -1312,7 +1443,7 @@ $.extend(APP.anagrafica,
 		});
 		*/
 		form.find(':input:disabled ').each( function() {
-			if ($(this).hasClass("fileupload") || $(this).hasClass("subform") || !APP.utils.isset($(this).attr('name')))
+			if ($(this).hasClass("fileupload") || $(this).hasClass("subform") || !APP.utils.isset($(this).attr('name')) || $(this).hasClass("mapbox"))
 				return true;
 			var o = {};
 			o.name = $(this).attr('name');
@@ -1324,6 +1455,17 @@ $.extend(APP.anagrafica,
 			d.push(APP.fileuploader.preserialize(form));
 		if (form.find(".subformTable").length>0)
 			d.push(APP.subforms.preserialize());
+		if (form.find(":input.mapbox").length>0)
+		{
+			$.each(form.find(":input.mapbox"), function(i,v)
+			{
+				var name = $(v).attr("name");
+				var index = APP.utils.getIndexFromField(d, "name", name);
+				if (index === -1)
+					return true;
+				d[index] = APP.map.preserialize(name);
+			});
+		}
 		
 		var sendNow = function()
 		{

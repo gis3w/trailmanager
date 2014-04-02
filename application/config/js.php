@@ -12,6 +12,8 @@ return array(
 		'../modules/bootstrap3/js/bootstrap.min.js',
 		'../modules/leaflet-0.7.2/leaflet.js',
 		'../modules/Leaflet.draw/dist/leaflet.draw.js',
+		'../modules/Leaflet.FileLayer/leaflet.filelayer.js',
+		'../modules/Leaflet.FileLayer/togeojson/togeojson.js',
 		'../modules/jQuery-File-Upload-master/js/jquery.iframe-transport.js',
 		'../modules/jQuery-File-Upload-master/js/jquery.fileupload.js',
 		'../modules/jquery.fileDownload.js',
@@ -46,6 +48,7 @@ return array(
 		'fileuploader2.js',
 		'subforms.js',
 		'anagrafica2.js',
+		'map.js',
 		//'home.js',
 		'main.js'
     ),
