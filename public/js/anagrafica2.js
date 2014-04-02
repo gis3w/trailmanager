@@ -318,6 +318,7 @@ $.extend(APP.anagrafica,
 					{
 						htmlString: '<a id="button_save" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("save")+'" class="btn btn-lg btn-success tooltipElement" href="#"><i class="icon-ok icon-white"></i></a>',
 						onClick: function(){ that.formSubmit(t.id, subSection, function(){ 
+							that.finish();
 							that.selectedItem.click();
 						});  }
 					});
@@ -356,6 +357,7 @@ $.extend(APP.anagrafica,
 						htmlString: '<a id="button_save" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("save")+'" class="btn btn-lg btn-success tooltipElement" href="#"><i class="icon-ok icon-white"></i></a>',
 						onClick: function(){ that.formSubmit(t.id, subSection, function(){
 								//$("body").find(".navbar").first().find(".navbar-inner").first().find("ul").first().find("li.active").find("a").first().click();
+								that.finish();
 								that.selectedItem.click();
 							});  
 						}
@@ -393,7 +395,8 @@ $.extend(APP.anagrafica,
 		
 		arr.push({
 			htmlString: '<a id="button_save" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("save")+'" class="btn btn-lg btn-success tooltipElement" href="#"><i class="icon-ok icon-white"></i></a>',
-			onClick: function(){ 
+			onClick: function(){
+				that.finish();
 				var activeButtons = that.windows[that.windows.length-1].find("button.active");
 				var o = {};
 				$.each(activeButtons, function(i,v)
@@ -750,8 +753,9 @@ $.extend(APP.anagrafica,
 			{
 				arr.push({
 					htmlString: '<a id="button_save" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("save")+'" class="btn btn-lg btn-success tooltipElement" href="#"><i class="icon-ok icon-white"></i></a>',
-					onClick: function(){ 
+					onClick: function(){
 						that.formSubmit(null, section, function(){
+							that.finish();
 							that.selectedItem.click();
 						});  
 					}
@@ -775,6 +779,7 @@ $.extend(APP.anagrafica,
 					htmlString: '<a id="button_save" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("save")+'" class="btn btn-lg btn-success tooltipElement" href="#"><i class="icon-ok icon-white"></i></a>',
 					onClick: function(){ 
 						that.formSubmit(null, section, function(){
+							that.finish();
 							that.selectedItem.click();
 						});  
 					}
@@ -961,17 +966,14 @@ $.extend(APP.anagrafica,
 			if (index > -1)
 			{
 				if (APP.utils.isset(APP.map.globalData[APP.map.currentMapId].drawnItems))
-					APP.map.globalData[APP.map.currentMapId].map.removeLayer(APP.map.globalData[APP.map.currentMapId].drawnItems);
+					APP.map.globalData[APP.map.currentMapId].map.removeLayer(APP.map.globalData[APP.map.currentMapId].drawnItems);				
 				
-				/*
 				APP.map.globalData[APP.map.currentMapId].drawnItems = new L.FeatureGroup();
-				APP.map.globalData[APP.map.currentMapId].map.addLayer(APP.map.globalData[APP.map.currentMapId].drawnItems);
-				*/
+				APP.map.globalData[APP.map.currentMapId].map.addLayer(APP.map.globalData[APP.map.currentMapId].drawnItems);				
 				
 				var obj = this.sections[this.currentSection].columns[index];
 				if (obj.map_box_editing)
 				{
-					/*
 					var opt = {
 						draw: {
 							polyline: false,
@@ -982,14 +984,14 @@ $.extend(APP.anagrafica,
 						},
 						edit: {
 							featureGroup: APP.map.globalData[APP.map.currentMapId].drawnItems,
-							edit: false
+							edit: obj.editable
 						}
 					};
 					$.each(obj.map_box_editing_geotype, function(i,v)
 					{
 						opt.draw[v] = {title: APP.i18n.translate(v)};
-					});*/
-					APP.map.toggleDrawEditor(APP.map.currentMapId, true/*, opt*/);
+					});
+					APP.map.toggleDrawEditor(APP.map.currentMapId, true, opt);
 					APP.map.globalData[APP.map.currentMapId].map.on('draw:created', function (e)
 					{
 						
