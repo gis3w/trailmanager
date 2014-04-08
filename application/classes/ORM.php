@@ -12,11 +12,79 @@ class ORM extends Kohana_ORM {
     
     public function save(Validation $validation = NULL) {
         $this->_db->setConfig('column_primary_key',$this->_primary_key);
-        return parent::save($validation);
+        
+        // si aggiunge il sistema di controllo per la lingua
+        $lang = Session::instance()->get('lang');
+        $lang_config = Kohana::$config->load('lang');
+        $lang_default = $lang_config['default'];
+        
+        if($lang != $lang_default AND in_array($this->_table_name,$lang_config['tables_to_translate']))
+        {
+            // prima si deve eseguire il check
+            $this->check($validation);
+            // ora devo andare a salvare i valori presenti dentro la relativa tabella di traduzione
+            foreach($this->changed() as $column =>$value)
+            {
+                $i18nData = $this->getTranslate($lang, $column,TRUE);
+                $colLang = $lang."_val";
+                if(!isset($i18nData->id))
+                {
+                    $i18nData->tb = $this->_table_name;
+                    $i18nData->col = $column;
+                }
+                $i18nData->$colLang = $_POST[$column];
+                $i18nData->save();
+            }
+            return TRUE;
+        }
+        else
+        {
+            return parent::save($validation);
+        }
+        
+        
+        
     }
+    
+    
+     public function get($column) {
 
+       
+         if(substr($column, 0,4) == 'orig_')
+                 return parent::get($column);
+         // per la internazionalizzazione recuperiamo il dato tradotto se c'è
+         $lang = Session::instance()->get('lang');
+         $lang_config = Kohana::$config->load('lang');
+         $lang_default = $lang_config['default'];
+         if($lang != $lang_default AND in_array($this->_table_name,$lang_config['tables_to_translate']))
+         {
+             // si controlla che la la colonna e la tabella ci siano nella tabella di traduzione per la lingua scelta
+             // nel caso i assenza si invia il dato non tradotto
+             $value = $this->getTranslate($lang,$column);
+             return $value ? $value : parent::get($column);
+         }
+         else
+         {
+             return parent::get($column);
+         }
+        
+    }
+    
+    public function getTranslate($lang,$column,$returnORM = FALSE)
+    {
+        $i18nData = ORM::factory('I18n')
+                ->where('tb','=',$this->_table_name)
+                ->where('col','=',$column)
+                ->find();
+        if($returnORM)
+            return $i18nData;
+        
+        $colLang = $lang."_val";
+        return $i18nData->$colLang;
+    }
+    
 
-    /**
+        /**
 	 * Tests if a unique key value exists in the database.
     * Valido per ogni ORM
     *

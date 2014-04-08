@@ -5,10 +5,10 @@
   <DocFolder>/home/www/turisticgis/sviluppo</DocFolder>
   <Sch Cm="standard public schema" nm="public">
     <Tbl UsSo="1" nm="background_layers">
-      <TblOpts/>
+      <TblOpts>WITHOUT OIDS</TblOpts>
       <Pk ClNs="id" nm="pkbackground_layers"/>
-      <Cl au="1" df="" nm="id" nu="0">
-        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="1"/>
+      <Cl au="1" df="nextval('background_layers_id_seq'::regclass)" nm="id" nu="0">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
       <Cl au="0" df="" nm="name" nu="0">
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
@@ -94,18 +94,24 @@
     </Tbl>
     <Tbl UsSo="1" nm="i18n">
       <Cm>Tabella delle traduzioni rispeto a quella base</Cm>
-      <TblOpts/>
+      <TblOpts>WITHOUT OIDS</TblOpts>
       <Pk ClNs="id" nm="pki18n"/>
-      <Cl au="1" df="" nm="id" nu="0">
-        <DT ds="BigInt" en="" id="-5" ln="null" sc="null" sg="1" un="1"/>
+      <Cl au="1" df="nextval('i18n_id_seq'::regclass)" nm="id" nu="0">
+        <DT ds="BigInt" en="" id="-5" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
       <Cl au="0" df="" nm="tb" nu="0">
-        <DT ds="BigInt" en="" id="-5" ln="null" sc="null" sg="1" un="0"/>
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
       <Cl au="0" df="" nm="col" nu="0">
-        <DT ds="BigInt" en="" id="-5" ln="null" sc="null" sg="1" un="0"/>
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
-      <Cl au="0" df="" nm="val" nu="0">
+      <Cl au="0" df="" nm="en_val" nu="1">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="fr_val" nu="1">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="de_val" nu="1">
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
       <SchTrHis/>
@@ -7735,8 +7741,10 @@ WHERE t.typname = 'geography'::name
         AND c.relnamespace = n.oid
         AND NOT pg_is_other_temp_schema(c.relnamespace)</Sql>
     </View>
+    <Seq incr="1" nm="background_layers_id_seq"/>
     <Seq incr="1" nm="capabilities_id_seq"/>
     <Seq incr="1" nm="capabilities_roles_id_seq"/>
+    <Seq incr="1" nm="i18n_id_seq"/>
     <Seq incr="1" nm="itineraries_id_seq"/>
     <Seq incr="1" nm="itineraries_paths_id_seq"/>
     <Seq incr="1" nm="itineraries_pois_id_seq"/>

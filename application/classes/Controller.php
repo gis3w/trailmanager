@@ -6,6 +6,8 @@ use Symfony\Component\EventDispatcher\Event;
 class Controller extends Kohana_Controller {
     
     public $dispatcher;
+    public $lang;
+    public $lang_default;
     
     public function before() {
         
@@ -18,22 +20,22 @@ class Controller extends Kohana_Controller {
 
     protected function _set_lang()
     {
-        $lang = Session::instance()->get('lang');
+        $this->lang = Session::instance()->get('lang');
         $lang_config = Kohana::$config->load('lang');
         
         // selezione del linguaggio
         if(isset($_REQUEST['lang']))
         {
-            $lang = $_REQUEST['lang'];
+            $this->lang = $_REQUEST['lang'];
         }
         else
         {
-            if(!isset($lang))
-                $lang = $lang_config['default'];
+            if(!isset($this->lang))
+                $this->lang = $lang_config['default'];
         }
-         I18n::lang($lang);
-         Session::instance()->set('lang', $lang);
-         $other_langs = array_diff_key($lang_config['langs'], array_flip(array($lang)));
+         I18n::lang($this->lang);
+         Session::instance()->set('lang', $this->lang);
+         $other_langs = array_diff_key($lang_config['langs'], array_flip(array($this->lang)));
          View::bind_global('langs', $other_langs);
     }
     

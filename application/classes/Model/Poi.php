@@ -23,7 +23,7 @@ class Model_Poi extends ORMGIS {
         return array(
             "title" => __("Title"),
             "description" => __("Description"),
-            "reason" => __("Resasons"),
+            "reason" => __("Reasons"),
             "accessibility" => __("Accessibility"),
             "information_url" => __("Information url"),
         );

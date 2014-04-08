@@ -88,6 +88,8 @@ return array(
     'Typologies' => 'Tipologia',
     'Geodata' => 'Dato spaziale',
     'Accessibility' => 'Accessibilità',
+    'Reasons' => 'Motivi di interesse',
+    
     
     'Points of interest' => 'Punti di interesse',
     'Paths' => 'Percorsi',

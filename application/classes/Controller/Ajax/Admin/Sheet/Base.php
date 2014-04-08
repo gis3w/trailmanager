@@ -59,9 +59,7 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
     {
         $this->_set_the_geom_edit();
          $this->_orm->values($_POST);
-//          print_r($this->_orm);
-//         exit;
-                 $this->_orm->save();
+         $this->_orm->save();
          
          $this->_set_typologies_edit();
     }
