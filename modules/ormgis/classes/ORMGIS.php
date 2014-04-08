@@ -242,6 +242,10 @@ public function  __set($column,  $value) {
             {
                 $value = "ST_GeomFromText('".$value."',".$this->epsg_out.")";
             }
+            elseif(is_null($value))
+            {
+                $value = 'null';
+            }
             
             
              $value = DB::expr($value);

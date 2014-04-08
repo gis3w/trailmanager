@@ -38,21 +38,43 @@ class Kohana_GEO extends geoPHP{
     
    
     
-    
-    public static function featurecollection2wkt ($featurecollection){
+    public static function featurecollection2format ($featurecollection,$format = 'wkt'){
         
         $wkts = array();
+        
         
         foreach($featurecollection->features as $feature)
         {
             if(isset($feature->geometry) AND $feature->geometry->type !== 'FeatureCollection')
             {
+                switch($format)
+                {
+                    case "wkt":
+                        $method = 'asText';
+                    break;
+                
+                    case "php":
+                        $method = 'getGeoInterface';
+                    break;
+                }
                 $geo  = GEO::load(json_encode($feature->geometry),'json');
-                $wkts[] = $geo->asText();
+
+                if(in_array(strtoupper($geo->getGeomType()),array('MULTILINESTRING','MULTIPOLYGON','MULTIPOINT')))
+                {
+                    $components = $geo->getComponents();
+                    foreach($components as $geometry)
+                        $wkts[] = $geometry->$method();
+                }
+                else
+                {
+                  $wkts[] = $geo->$method();  
+                }
+                
+               
             }
             else
             {
-                $sub = self::featurecollection2wkt($feature->geometry);
+                $sub = self::featurecollection2format($feature->geometry,$format);
                 foreach($sub as $g)
                     $wkts[] = $g;
             }
@@ -61,6 +83,14 @@ class Kohana_GEO extends geoPHP{
         
         return $wkts;
         
+    }
+    
+    public static function featurecollection2wkt ($featurecollection){
+        return self::featurecollection2format($featurecollection, 'wkt');
+    }
+    
+    public static function featurecollection2php($featurecollection){
+        return self::featurecollection2format($featurecollection, 'php');
     }
     
 }

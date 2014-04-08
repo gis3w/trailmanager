@@ -7,14 +7,39 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
 
     protected function _set_the_geom_edit()
     {
-        if(isset($_POST['the_geom']) AND $_POST['the_geom'] != '')
+        
+        $geodata  = json_decode($_POST['the_geom']);
+   
+        if(!empty($geodata->features))  
         {
-            $_POST['the_geom'] = GEO::load($_POST['the_geom'],'json'); 
+            $fs = GEO::featurecollection2wkt($geodata);
+
+            foreach($fs as $k => $f)
+            {
+                $reg = "(";
+                $fs[$k] = strstr($f,$reg);
+            }
+            
+            
+            $parFrom = $parTo  = "";
+            switch($this->_orm->geotype)
+            {
+                case "MULTILINESTRING":
+                    $parFrom = "(";
+                    $parTo = ")";
+                break;
+            }
+            
+            
+            $_POST['the_geom'] = $this->_orm->geotype.$parFrom.  implode(",", $fs).$parTo;
         }
         else
         {
-            unset($_POST['the_geom']);
+            //unset($_POST['the_geom']);
+            $_POST['the_geom'] = NULL;
         }
+            
+        
         
     }
     
@@ -33,7 +58,10 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
     protected function _data_edit()
     {
         $this->_set_the_geom_edit();
-         $this->_orm->values($_POST)->save();
+         $this->_orm->values($_POST);
+//          print_r($this->_orm);
+//         exit;
+                 $this->_orm->save();
          
          $this->_set_typologies_edit();
     }
