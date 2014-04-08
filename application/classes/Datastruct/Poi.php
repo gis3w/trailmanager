@@ -13,7 +13,7 @@ class Datastruct_Poi extends Datastruct {
         array(
             'name' => 'poi-data',
             'position' => 'left',
-            'fields' => array('id','title','description','accessibility','information_url'),
+            'fields' => array('id','title','description','reason','accessibility','information_url'),
         ),
        array(
             'name' => 'poi-foreign-data',
@@ -54,6 +54,39 @@ class Datastruct_Poi extends Datastruct {
                 
             );
       }
+      
+       protected function _extra_columns_type()
+    {
+        $fct = array();
+
+         $fct['images'] = array_replace($this->_columnStruct, array(
+                "form_input_type" => self::INPUT,
+                "multiple" => FALSE,
+                "data_type" => 'jquery_fileupload',
+                "form_show" => TRUE,
+                "table_show" => FALSE,
+               "subform_table_show" => TRUE, 
+                'label' =>__('Images to upload'),
+                'urls' => array(
+                    'data' => 'jx/upload/vehicle',
+                    'delete' => 'jx/upload/vehicle?file=$1',
+                    'delete_options' => array(
+                        '$1' => 'nome',
+                    ),
+                    'download' => 'download/vehicle/$1/$2',
+                    'download_options' => array(
+                        '$1' => 'veicolo_id',
+                        '$2' => 'nome',
+                        ),
+                ),
+             )
+        );
+                 
+
+        
+        return $fct;
+        
+    }
 
 
       protected function _foreign_column_type() {
