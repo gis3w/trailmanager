@@ -1,0 +1,28 @@
+{
+	"name":        "paptamas/kohana-oauth2",
+	"type":        "kohana-module",
+	"description": "OAuth2 client for Kohana",
+	"homepage":    "https://github.com/paptamas/kohana-oauth2",
+	"license":     "MIT",
+	"keywords":    ["kohana", "oauth", "oauth2"],
+	"authors": [
+		{
+			"name":     "Pap Tamas",
+			"email":    "paptamas@gmail.com",
+			"homepage": "https://github.com/paptamas",
+			"role":     "developer"
+		}
+	],
+	"support": {
+		"issues":   "https://github.com/paptamas/oauth2/issues"
+	},
+	"require": {
+		"composer/installers": 	"~1.0",
+		"php":                 	">=5.3.3"
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-3.3/develop": "3.3.x-dev"
+		}
+	}
+}

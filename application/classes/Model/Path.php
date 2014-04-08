@@ -22,6 +22,9 @@ class Model_Path extends ORMGIS {
         return array(
             "title" => __("Title"),
             "description" => __("Description"),
+            "altitude_gap" => __("Altitude gap"),
+            "general_features" => __("General features"),
+            "accessibility" => __("Accessibility"),
             "reason" => __("Resasons"),
             "accessibility" => __("Accessibility"),
             "information_url" => __("Information url"),

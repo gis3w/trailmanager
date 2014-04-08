@@ -12,7 +12,7 @@ class Datastruct_Path extends Datastruct {
         array(
             'name' => 'path-data',
             'position' => 'left',
-            'fields' => array('id','title','description','length','altitude_gap','general_features','accessibilty','information_url'),
+            'fields' => array('id','title','description','length','altitude_gap','general_features','accessibility','information_url'),
         ),
        array(
             'name' => 'path-foreign-data',

@@ -106,6 +106,8 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
             'itinerary' => '/jx/admin/itinerary',
             'poi' => '/jx/admin/poi',
             'path' => '/jx/admin/path',
+            'user' => 'jx/admin/user',
+            
             
         );
           

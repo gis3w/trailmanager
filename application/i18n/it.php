@@ -80,7 +80,17 @@ return array(
   
     'Roles' => 'Ruoli',
     
-    //sezioni dell schede
+    'Title' => 'Titolo',
+    'Length' => 'Lunghezza',
+    'Altitude gap' => 'Dislivello',
+    'General features' => 'Caratteristiche generali',
+    'Information url' => 'URL info',
+    'Typologies' => 'Tipologia',
+    'Geodata' => 'Dato spaziale',
+    'Accessibility' => 'Accessibilità',
+    
+    'Points of interest' => 'Punti di interesse',
+    'Paths' => 'Percorsi',
    
     
     
@@ -88,6 +98,15 @@ return array(
     'user-data-login' => 'Acesso',
     'user-data-contact' => 'Contatti',
     'user-foreign-data' => 'Collegamenti',
+    
+    'itinerary-data' => 'Dati generali dell\'itinerario',
+    'itinerary-foreign-data' => 'Percorsi e punti di interesse associati',
+    
+    'path-data' => 'Dati generali del percorso',
+    'path-foreign-data' =>'Dati accessori',
+    
+    'poi-data' => 'Dati generali del punto',
+    'poi-foreign-data' =>'Dati accessori',
     
     
     'for'=> 'per',

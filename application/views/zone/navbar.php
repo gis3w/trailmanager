@@ -11,7 +11,7 @@
         <a class="navbar-brand" href="#" style="padding: 0px"><?php echo Html::image($img_path.$logo_navbar,array('alt'=>'TuristicGIS', 'class'=>'img-responsive')); ?></a>
     </div>
     <div class="collapse navbar-collapse" id="main_navbar_admin">
-        <ul class="nav navbar-nav" role="navigation">
+        <ul class="nav navbar-nav">
                 <?php foreach($main_menu as $name => $params): ?>
                         <li><a id="<?php echo $params['id'] ?>Button" href="<?php echo  $params['url']?>"><i class="icon icon-<?php echo  $params['icon']?>"></i> <?php if(isset($params['name'])) echo __($params['name'])?></a></li>
                 <?php endforeach; ?>
@@ -29,4 +29,3 @@
     </div>
     </div>
 </nav>
-
