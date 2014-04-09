@@ -315,13 +315,11 @@ $.extend(APP.config,{
 		
 		switch(this.currentConfigSection)
 		{
-			case "home": case "company": case "productionunit": case "user": case "global": case "administration":
+			default:
 				if (APP.config.serverSide)
 					APP.anagrafica_ss.finish();
 				else
 					APP.anagrafica.finish();
-				break;
-			default:
 				break;
 		}
 		this.currentConfigSection = section;		
@@ -570,7 +568,7 @@ $.extend(APP.config,{
 		this.setFilterDialogsDiv();
 		this.setMenu();
 		
-		$("#companyButton").click();
+		$("#poiButton").click();
 		return;
 	}
 });

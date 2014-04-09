@@ -374,6 +374,16 @@ $.extend(APP.anagrafica,
 					});
 				}
 				
+				if ($.inArray("delete", that.sections[subSection].capabilities) > -1)
+				{
+					arr.push({
+						htmlString: '<a id="button_remove" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("remove")+'" class="btn btn-lg btn-danger tooltipElement" href="#"><i class="icon-remove icon-trash"></i></a>',
+						onClick: function(){ that.removeItem(t.id, {'section': subSection, 'contentDiv': contentDiv, 'callback': function(){
+							that.selectedItem.click();
+						}});  }
+					});
+				}
+				
 				that.editItem(t.id, t, that.windows[that.windows.length-1], subSection, arr);
 			}
 		}
