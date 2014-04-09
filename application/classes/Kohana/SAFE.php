@@ -169,6 +169,6 @@ class Kohana_SAFE extends Kohana_Core
     }
     public static function getDownloadClassByObj($instance)
     {
-        return "Controller_Download_".self::getObjfromClass($instance);
+        return "Controller_Admin_Download_".self::getObjfromClass($instance);
     }
 }

@@ -190,6 +190,13 @@ Route::set('jx/admin/global', 'jx/admin/global(/<controller>(/<id>(/<filtro>)))'
 	));
 
 
+Route::set('jx/admin/upload', 'jx/admin/upload(/<controller>(/<id>(/<filtro>)))')
+	->defaults(array(
+                    'directory' => 'Ajax/Admin/Upload',
+                    'controller' => 'home',
+                    'action'     => 'index',
+	));
+
 Route::set('jx/admin', 'jx/admin(/<controller>(/<id>(/<filtro>)))')
 	->defaults(array(
                     'directory' => 'Ajax/Admin',
@@ -197,6 +204,12 @@ Route::set('jx/admin', 'jx/admin(/<controller>(/<id>(/<filtro>)))')
                     'action'     => 'index',
 	));
 
+Route::set('admin/download', 'admin/download(/<controller>(/<action>(/<id>)))')
+	->defaults(array(
+                                'directory' => 'Admin/Download',
+		'controller' => 'home',
+		'action'     => 'index',
+	));
 
 Route::set('admin', 'admin(/<controller>(/<action>(/<id>)))')
 	->defaults(array(

@@ -19,6 +19,9 @@ class Datastruct extends Kohana_Formstruct{
     protected $_descriptionsORM;
     
     public $filter = FALSE;
+    
+    public $lang;
+    public $lang_default;
 
     /**
      * Le colonne del form
@@ -89,10 +92,14 @@ class Datastruct extends Kohana_Formstruct{
         // tipo fi form
         if(!isset($this->enctype))
             $this->enctype = self::ECNTYPE_DEFAULT;
+        
             
         
         if(!isset($this->_nameORM))
             $this->_nameORM = substr(get_class($this), 11);
+        
+        // si setta la lingua
+        $this->_set_lang();
         
         $this->_baseORM = ORM::factory($this->_nameORM);
         $this->_labelsORM = $this->_baseORM->labels();
@@ -108,6 +115,13 @@ class Datastruct extends Kohana_Formstruct{
          
         //si impostano anche i campi da salvare
         $this->_get_fields_to_save();
+    }
+    
+    protected function _set_lang()
+    {
+        $this->lang = Session::instance()->get('lang');
+        $lang_config = Kohana::$config->load('lang');
+        $this->lang_default = $lang_config['default'];
     }
 
 
@@ -269,6 +283,10 @@ class Datastruct extends Kohana_Formstruct{
             self::CAPA_DELETE,
         );
         
+        // si può inserire o salvare solo nella lingua di default
+         if($this->lang != $this->lang_default)
+            unset($this->capabilities[1],$this->capabilities[3]);
+        
         // si fa la query sul db per le capabilities
         if($this->user->main_role_id == 12)
             return;
@@ -279,10 +297,13 @@ class Datastruct extends Kohana_Formstruct{
         foreach($capabilities as $capability)
         {
             $capa = substr($capability->name,$from + 1);
-            Kohana::$log->add(Log::DEBUG, print_r($capa,true));
             if(in_array($capa, $this->capabilities))
-                    $tmp[] = $capa;
+                $tmp[] = $capa;
+            
+                    
         }
+        
+        
         
         $this->capabilities = $tmp;
     }

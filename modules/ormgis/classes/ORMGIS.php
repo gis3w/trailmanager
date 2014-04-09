@@ -177,7 +177,7 @@ class ORMGIS extends ORM {
                 array(DB::expr(TRKDB::float82numeric(TRKDB::lengh_spheroid_km('the_geom'))),'traveled_km')
                 )
             ->from($this->_table_name)
-            ->where('gid','=',(int)$this->pk())
+            ->where($this->primary_key(),'=',(int)$this->pk())
             ->execute()
             ->as_array();
             

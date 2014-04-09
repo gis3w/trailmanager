@@ -17,6 +17,12 @@ class Model_Poi extends ORMGIS {
             'model'   => 'Typology',
             'through' => 'typologies_pois',
         ),
+        'images' => array(
+            'model'   => 'Image_Poi',
+        ),
+         'videos' => array(
+            'model'   => 'Video_Poi',
+        ),
     );
     
     public function labels() {

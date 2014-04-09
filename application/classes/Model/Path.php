@@ -16,6 +16,12 @@ class Model_Path extends ORMGIS {
             'model'   => 'Typology',
             'through' => 'typologies_paths',
         ),
+         'images' => array(
+            'model'   => 'Image_Path',
+        ),
+          'videos' => array(
+            'model'   => 'Video_Path',
+        ),
     );
     
     public function labels() {

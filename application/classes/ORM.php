@@ -29,6 +29,7 @@ class ORM extends Kohana_ORM {
                 $colLang = $lang."_val";
                 if(!isset($i18nData->id))
                 {
+                    $i18nData->tb_id = $this->id;
                     $i18nData->tb = $this->_table_name;
                     $i18nData->col = $column;
                 }
@@ -48,10 +49,9 @@ class ORM extends Kohana_ORM {
     
     
      public function get($column) {
-
        
-         if(substr($column, 0,4) == 'orig_')
-                 return parent::get($column);
+         if(substr($column, 0,5) == 'orig_')
+                 return parent::get(substr($column, 5));
          // per la internazionalizzazione recuperiamo il dato tradotto se c'è
          $lang = Session::instance()->get('lang');
          $lang_config = Kohana::$config->load('lang');
@@ -72,7 +72,9 @@ class ORM extends Kohana_ORM {
     
     public function getTranslate($lang,$column,$returnORM = FALSE)
     {
+ 
         $i18nData = ORM::factory('I18n')
+                ->where('tb_id','=',(string)$this->orig_id)
                 ->where('tb','=',$this->_table_name)
                 ->where('col','=',$column)
                 ->find();
