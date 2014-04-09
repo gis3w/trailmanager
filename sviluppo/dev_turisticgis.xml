@@ -7914,11 +7914,11 @@ WHERE t.typname = 'geography'::name
     <TbGl bkCl="ffccccff" sch="public" tbl="users" x="92" y="230"/>
     <TbGl bkCl="ffff6666" sch="public" tbl="itineraries" x="670" y="119"/>
     <TbGl bkCl="ffff6666" sch="public" tbl="pois" x="1044" y="114"/>
-    <TbGl bkCl="ffff6666" sch="public" tbl="paths" x="1044" y="478"/>
+    <TbGl bkCl="ffff6666" sch="public" tbl="paths" x="1015" y="356"/>
     <TbGl bkCl="ffff6666" sch="public" tbl="itineraries_pois" x="867" y="121"/>
-    <TbGl bkCl="ffff6666" sch="public" tbl="itineraries_paths" x="855" y="472"/>
+    <TbGl bkCl="ffff6666" sch="public" tbl="itineraries_paths" x="832" y="311"/>
     <TbGl bkCl="ffcccccc" sch="public" tbl="typologies" x="1549" y="212"/>
-    <TbGl bkCl="ffcccccc" sch="public" tbl="typologies_paths" x="1283" y="475"/>
+    <TbGl bkCl="ffcccccc" sch="public" tbl="typologies_paths" x="1294" y="390"/>
     <TbGl bkCl="ffcccccc" sch="public" tbl="typologies_pois" x="1279" y="294"/>
     <TbGl bkCl="ff3399ff" sch="public" tbl="i18n" x="699" y="333"/>
     <TbGl bkCl="ffccccff" sch="public" tbl="background_layers" x="544" y="241"/>
