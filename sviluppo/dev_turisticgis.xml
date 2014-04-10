@@ -274,6 +274,9 @@
       <Cl au="0" df="" nm="the_geom" nu="1">
         <DT ds="geometry" en="" id="5001" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
+      <Cl au="0" df="true" nm="publish" nu="0">
+        <DT ds="Boolean" en="" id="16" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
       <SchTrHis/>
     </Tbl>
     <Tbl UsSo="1" nm="pois">
@@ -300,6 +303,9 @@
       </Cl>
       <Cl au="0" df="" nm="the_geom" nu="1">
         <DT ds="geometry" en="" id="5001" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="true" nm="publish" nu="0">
+        <DT ds="Boolean" en="" id="16" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
       <SchTrHis/>
     </Tbl>
@@ -391,7 +397,7 @@
       <Cl au="0" df="" nm="path_id" nu="0">
         <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
-      <Fk deAc="3" nm="fk_typologies_paths_paths" prLkCl="id" upAc="3">
+      <Fk deAc="0" nm="fk_typologies_paths_paths" prLkCl="id" upAc="3">
         <PrTb mn="0" nm="paths" oe="1" sch="public" zr="0"/>
         <CdTb mn="1" nm="typologies_paths" oe="1" sch="public" zr="1"/>
         <ClPr cdCl="path_id" prCl="id"/>
@@ -415,7 +421,7 @@
       <Cl au="0" df="" nm="poi_id" nu="0">
         <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
-      <Fk deAc="3" nm="fk_typologies_pois_pois" prLkCl="id" upAc="3">
+      <Fk deAc="0" nm="fk_typologies_pois_pois" prLkCl="id" upAc="3">
         <PrTb mn="0" nm="pois" oe="1" sch="public" zr="0"/>
         <CdTb mn="1" nm="typologies_pois" oe="1" sch="public" zr="1"/>
         <ClPr cdCl="poi_id" prCl="id"/>

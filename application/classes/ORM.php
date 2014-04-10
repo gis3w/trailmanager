@@ -3,8 +3,10 @@
 class ORM extends Kohana_ORM {
 
     protected $_cache_get;
-    
-     protected function _initialize() {
+    protected $_cache;
+
+
+    protected function _initialize() {
         parent::_initialize();
         // si setta anche la primari key nel confgi del db
         $this->_db->setConfig('column_primary_key',$this->_primary_key);

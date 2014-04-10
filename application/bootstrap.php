@@ -182,6 +182,13 @@ Route::set('jx/document', 'jx/document(/<controller>(/<id>(/<filtro>)))')
                     'action'     => 'index',
 	));
 
+Route::set('jx/admin/administration', 'jx/admin/administration(/<controller>(/<id>(/<filtro>)))')
+	->defaults(array(
+                    'directory' => 'Ajax/Admin/Administration',
+                    'controller' => 'home',
+                    'action'     => 'index',
+	));
+
 Route::set('jx/admin/global', 'jx/admin/global(/<controller>(/<id>(/<filtro>)))')
 	->defaults(array(
                     'directory' => 'Ajax/Admin/Global',

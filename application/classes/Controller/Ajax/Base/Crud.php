@@ -26,6 +26,8 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
    protected $_history = array();
    
    protected $_environments;
+   
+   public $translated;
 
 
    public function before() {
@@ -138,10 +140,27 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
     
     protected function _single_request_row($orm)
     {
+        
          $row = $orm->as_array();
-         
-           if(method_exists($this, '_set_environments'))
-                    $this->_set_environments($row,$orm);
+        //se la lingua è differente da quella di default
+        
+        // si aggiunge il sistema di controllo per la lingua
+        $lang = Session::instance()->get('lang');
+        $lang_config = Kohana::$config->load('lang');
+        $lang_default = $lang_config['default'];
+        $colLang = $lang."_val";
+        if($lang != $lang_default AND in_array($orm->table_name(),$lang_config['tables_to_translate']))
+        {
+             $row['traslated_columns'] = array();
+             $colsTraslated = ORM::factory('I18n')
+                ->where('tb','=',$orm->table_name())
+                ->where('tb_id','=',(string)$orm->id)
+                ->where($colLang,'IS NOT',DB::expr('NULL'))
+                ->find_all();
+             
+             foreach($colsTraslated as $colTraslated)
+                 $row['traslated_columns'][] = $colTraslated->col;
+        }
            
            return $row;
     }

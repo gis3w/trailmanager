@@ -32,6 +32,7 @@ class Model_Poi extends ORMGIS {
             "reason" => __("Reasons"),
             "accessibility" => __("Accessibility"),
             "information_url" => __("Information url"),
+            "publish" => __("Published"),
         );
     }
     
@@ -40,6 +41,9 @@ class Model_Poi extends ORMGIS {
     {
         return array(
             'title' => array(
+                    array('not_empty'),
+            ),
+            'publish' =>array(
                     array('not_empty'),
             ),
         );

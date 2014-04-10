@@ -265,7 +265,7 @@ class Datastruct extends Kohana_Formstruct{
                 continue;
 
             // nel caso ci sia la capability si controlla se l'utente la possiede
-             if(!$this->user->role->allow_capa($values['capability']))
+             if(!$this->user->allow_capa($values['capability']))
                  unset($data[$n]);
         }
 
@@ -291,18 +291,17 @@ class Datastruct extends Kohana_Formstruct{
         if($this->user->main_role_id == 12)
             return;
         
-        $capabilities = $this->user->role->capabilities->where('name','LIKE',$this->_capablity_name.'%')->find_all();
+        $capabilities = $this->user->get_allow_capabilities(FALSE,array(array('name','LIKE','%'.$this->_capablity_name.'%')));
+
         $from = strlen($this->_capablity_name);
         $tmp = array();
-        foreach($capabilities as $capability)
+       foreach($capabilities as $capability)
         {
-            $capa = substr($capability->name,$from + 1);
+            $capa = substr($capability,strpos($capability,$this->_capablity_name) + strlen($this->_capablity_name) + 1);
             if(in_array($capa, $this->capabilities))
-                $tmp[] = $capa;
-            
-                    
+                    $tmp[] = $capa;
         }
-        
+        $this->capabilities = $tmp;
         
         
         $this->capabilities = $tmp;

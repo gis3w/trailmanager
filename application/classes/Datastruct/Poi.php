@@ -13,7 +13,7 @@ class Datastruct_Poi extends Datastruct {
         array(
             'name' => 'poi-data',
             'position' => 'left',
-            'fields' => array('id','title','description','reason','accessibility','information_url'),
+            'fields' => array('id','publish','title','description','reason','accessibility','information_url'),
         ),
        array(
             'name' => 'poi-foreign-data',

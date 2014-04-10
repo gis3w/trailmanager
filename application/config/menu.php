@@ -18,7 +18,7 @@ return array(
             'name' => __('Itineraries'),
             'url' => '/jx/admin/itinerary',
             'url_mobile' => 'user',
-             'capability' => 'access-user',
+             'capability' => 'access-admin-itinerary',
             'icon' => 'code-fork',
         ),
          'poi' => array(
@@ -26,7 +26,7 @@ return array(
             'name' => __('Points of interest'),
             'url' => '/jx/admin/poi',
             'url_mobile' => 'user',
-             'capability' => 'access-user',
+             'capability' => 'access-admin-poi',
             'icon' => 'map-marker',
         ),
         'path' => array(
@@ -34,7 +34,7 @@ return array(
             'name' => __('Paths'),
             'url' => '/jx/admin/path',
             'url_mobile' => 'user',
-             'capability' => 'access-user',
+             'capability' => 'access-admin-poi',
             'icon' => 'location-arrow',
         ),
         'user' => array(
@@ -42,13 +42,13 @@ return array(
             'name' => __('Users'),
             'url' => '/jx/user',
             'url_mobile' => 'user',
-            'capability' => 'access-user',
+            'capability' => 'access-admin-user',
             'icon' => 'user',
         ),
          'global' => array(
             'id' =>'global',
             'name' => __('Global'),
-            'capability' => 'access-global',
+            'capability' => 'access-admin-global',
             'icon' => 'cog',
              'menu' => array(
                  'type' => 'tabs',
@@ -83,14 +83,14 @@ return array(
                     'administration_capabilities' => array(
                         'id' =>'capabilities',
                         'name' => __('ACL'),
-                        'url' => '/jx/administration/capabilities',
+                        'url' => '/jx/admin/administration/capabilities',
                         'capability' => 'access-administration-capabilities',
                         'icon' => 'user',
                     ),
                     'administration_roles' => array(
                         'id' =>'roles',
                         'name' => __('Roles'),
-                        'url' => '/jx/administration/roles',
+                        'url' => '/jx/admin/administration/roles',
                         'capability' => 'access-administration-roles',
                         'icon' => 'user',
                     ),

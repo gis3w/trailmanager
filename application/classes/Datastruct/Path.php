@@ -17,7 +17,7 @@ class Datastruct_Path extends Datastruct {
        array(
             'name' => 'path-foreign-data',
             'position' => 'right',
-            'fields' => array('typologies','the_geom'),
+            'fields' => array('typologies','the_geom','color'),
         ),
     );
     
@@ -42,6 +42,10 @@ class Datastruct_Path extends Datastruct {
                 ),
                 "general_features" => array(
                     'form_input_type' => self::TEXTAREA,
+                ),
+                "color" => array(
+                    "form_input_type" => self::COLORPICKER,
+                    "class" => "color-path",
                 ),
                  "the_geom" => array(
                     'form_input_type' => self::MAPBOX,

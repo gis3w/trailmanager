@@ -37,6 +37,7 @@ return array(
     'Surname' => 'Cognome',
     'Description' => 'Descrizione',
     'Itineraries' => 'Itinerari',
+    'Published' => 'Pubblicato',
    
  
     'Close' => 'Chiudi',    

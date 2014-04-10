@@ -31,9 +31,14 @@ class Datastruct_User extends Datastruct {
             'position' => 'left',
             'fields' => array('id','nome','cognome','luogo_nascita','data_nascita' ),
         ),
+          array(
+            'name' => 'user-foreign-data',
+            'position' => 'right',
+            'fields' => array('roles'),
+        ),
         array(
             'name' => 'user-data-login',
-            'position' => 'left',
+            'position' => 'right',
             'fields' => array('username','password','email' ),
         ),
         

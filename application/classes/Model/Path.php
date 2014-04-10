@@ -35,6 +35,7 @@ class Model_Path extends ORMGIS {
             "length" =>__("Length"),
             "accessibility" => __("Accessibility"),
             "information_url" => __("Information url"),
+            "publish" => __("Published"),
         );
     }
     
@@ -52,6 +53,9 @@ class Model_Path extends ORMGIS {
             'altitude_gap' => array(
                     array('not_empty'),
                     array('numeric')
+            ),
+            'publish' =>array(
+                    array('not_empty'),
             ),
             
         );

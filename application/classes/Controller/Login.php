@@ -33,7 +33,7 @@ class Controller_Login extends Controller_Base_Main {
         // se si prova ad accedere alogin una volta autenticati si fa il redirect sulla home
         if(Auth::instance()->logged_in()){
             if($this->session->get("requested_url")) HTTP::redirect($this->session->get("requested_url"));
-            HTTP::redirect('/');
+            HTTP::redirect('admin');
         }
 
        // azzeramento dei parametri per il form.... dentro la view
@@ -47,7 +47,7 @@ class Controller_Login extends Controller_Base_Main {
                 $u = Auth::instance()->get_user();
 
                     if($this->session->get("requested_url")) HTTP::redirect($this->session->get("requested_url"));
-                    HTTP::redirect('home');
+                    HTTP::redirect('admin');
 
             } else {
                 
