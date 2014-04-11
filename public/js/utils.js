@@ -179,6 +179,15 @@ $.extend(APP.utils,{
 	setLookForm: function(form, id)
 	{
 		var that = this;
+	
+		if (form.find(".textEditor"))
+		{
+			tinymce.init({
+				selector: "textarea.textEditor",
+				menubar : false,
+			});
+		}
+		
 		form.find(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
 		var timepickerInputs = form.find(".time");
 		$.each(timepickerInputs, function(i,v)
@@ -216,9 +225,9 @@ $.extend(APP.utils,{
 			form.find(".jquery_fileupload").fileupload({
 				url: form.find(".jquery_fileupload").attr("data-url"),
 				dataType: 'json',
-				autoUpload: false,
-				acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
-				maxFileSize: 5000000, // 5 MB
+				autoUpload: true,
+				//acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+				//maxFileSize: 5000000, // 5 MB
 				// Enable image resizing, except for Android and Opera,
 				// which actually support image resizing, but fail to
 				// send Blob objects via XHR requests:
@@ -232,11 +241,11 @@ $.extend(APP.utils,{
 				$.each(data.files, function (index, file) {
 					var node = $('<p/>')
 							.append($('<span/>').text(file.name));
-					if (!index) {
+					/*if (!index) {
 						node
 							.append('<br>')
 							.append(uploadButton.clone(true).data(data));
-					}
+					}*/
 					node.appendTo(data.context);
 				});
 			}).on('fileuploadprocessalways', function (e, data) {
@@ -265,8 +274,11 @@ $.extend(APP.utils,{
 					progress + '%'
 				);
 			}).on('fileuploaddone', function (e, data) {
-				if (APP.utils.checkError(data.error, null))
+				if (APP.utils.checkError(data.result.error, null))
+				{
+					APP.utils.showErrMsg(data.result);
 					return;
+				}
 				$.each(data.result.files, function (index, file) {
 					if (file.url) {
 						var link = $('<a>')
@@ -1120,7 +1132,9 @@ $.extend(APP.utils,{
 				inp = $(inp).val(valore);
 				break;
 			case "textarea":
-				inp = "<textarea id='APP-"+v.name+"' name='"+v.name+"' rows='9' class='form-control' "+required+">"+valore+"</textarea>";
+				inp = $("<textarea id='APP-"+v.name+"' name='"+v.name+"' rows='9' class='form-control' "+required+">"+valore+"</textarea>");
+				if (APP.utils.isset(v.editor) && v.editor === true)
+					inp.addClass("textEditor");
 				break;
 			case "combobox":
 				inp = $("<select id='APP-"+v.name+"' class='form-control chosen' data-placeholder='"+APP.i18n.translate("click_to_select")+"' "+required+"></select>");
