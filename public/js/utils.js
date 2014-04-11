@@ -194,7 +194,7 @@ $.extend(APP.utils,{
 			APP.fileuploader.init(form);
 		if (form.find(".jquery_fileupload").length > 0)
 		{
-			var uploadButton = $('<button/>')
+			var uploadButton = $('<button type="button"/>')
 				.addClass('btn btn-primary')
 				.prop('disabled', true)
 				.text('Processing...')
@@ -228,7 +228,7 @@ $.extend(APP.utils,{
 				previewMaxHeight: 100,
 				previewCrop: true
 			}).on('fileuploadadd', function (e, data) {
-				data.context = $('<div/>').appendTo('#files');
+				data.context = $('<div/>').appendTo('#jquery_fileupload_list');
 				$.each(data.files, function (index, file) {
 					var node = $('<p/>')
 							.append($('<span/>').text(file.name));
@@ -265,6 +265,8 @@ $.extend(APP.utils,{
 					progress + '%'
 				);
 			}).on('fileuploaddone', function (e, data) {
+				if (APP.utils.checkError(data.error, null))
+					return;
 				$.each(data.result.files, function (index, file) {
 					if (file.url) {
 						var link = $('<a>')
@@ -978,14 +980,14 @@ $.extend(APP.utils,{
 										<div class="progress-bar progress-bar-success"></div>\
 									</div>\
 									<!-- The container for the uploaded files -->\
-									<div id="files" class="files"></div>\
+									<div id="jquery_fileupload_list"></div>\
 								</div>');					
 						
 						
 						if (v.multiple)
 							inp.find('.jquery_fileupload').attr("multiple",true);
 						
-						inp.find(".jquery_fileupload").attr("data-url",v.urls['upload']);
+						inp.find(".jquery_fileupload").attr("data-url",v.urls['data']);
 						
 						break;
 					default:
