@@ -34,6 +34,7 @@ class Datastruct_Poi extends Datastruct {
             return array(
                 "description" => array(
                     'form_input_type' => self::TEXTAREA,
+                    'editor' => TRUE,
                 ),
                  "reason" => array(
                     'form_input_type' => self::TEXTAREA,
