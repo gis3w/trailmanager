@@ -17,7 +17,7 @@ class Datastruct_Path extends Datastruct {
        array(
             'name' => 'path-foreign-data',
             'position' => 'right',
-            'fields' => array('typologies','the_geom','color'),
+            'fields' => array('typologies','the_geom','color','images','video_path'),
         ),
     );
     
@@ -68,6 +68,49 @@ class Datastruct_Path extends Datastruct {
                 ),
             );
       }
+      
+        protected function _extra_columns_type()
+    {
+        $fct = array();
+
+         $fct['images'] = array_replace($this->_columnStruct, array(
+                "form_input_type" => self::INPUT,
+                "multiple" => FALSE,
+                "data_type" => 'jquery_fileupload',
+                "form_show" => TRUE,
+                "table_show" => FALSE,
+               "subform_table_show" => TRUE, 
+                'label' =>__('Images to upload'),
+                'urls' => array(
+                    'data' => 'jx/admin/upload/image',
+                    'delete' => 'jx//admin/upload/image?file=$1',
+                    'delete_options' => array(
+                        '$1' => 'nome',
+                    ),
+                    'download' => 'admin/download/image/$1/$2',
+                    'download_options' => array(
+                        '$1' => 'path_id',
+                        '$2' => 'nome',
+                        ),
+                ),
+             )
+        );
+         
+        $fct['video_path'] = array_replace($this->_columnStruct, array(
+                "data_type" => self::SUBFORM,
+                 'form_name' => 'video_path',
+                "table_show" => FALSE,
+                'foreign_mode' => self::MULTISELECT,
+                'foreign_key' => 'path_id',
+                'validation_url' => 'jx/admin/videopath',
+                'label' => __('Videos to embed'),
+             )
+        );
+        
+        return $fct;
+        
+    }
+
 
       protected function _foreign_column_type() {
             

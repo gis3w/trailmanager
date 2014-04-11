@@ -62,8 +62,56 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
          $this->_orm->save();
          
          $this->_set_typologies_edit();
+         
+         $this->_save_subforms_1XN();
+         
+         
     }
+    
+     protected function _save_subforms_1XN()
+    {
+            foreach(array('video_poi' => 'Video_Poi' ,'video_path' => 'Video_Path') as $name_subform => $name_orm)
+           {
+                if(isset($_POST[$name_subform]))
+                {
+                   $subformDatas = $this->_get_subform_data($name_subform);
+                   if(!empty($subformDatas))
+                   {
+                       foreach($subformDatas as $sfd)
+                       {  
+                           if(!isset($sfd['stato']))
+                               continue;
 
+                           // si forza unita_produttiva_id anche per lìinserimento
+                           $sfd[$this->_table_rid.'_id'] = $this->_orm->id;
+                           $id = isset($sfd['id']) ? $sfd['id'] : NULL;
+                           $subformOrm = ORM::factory($name_orm,$id);
+                           switch($sfd['stato'])
+                           {
+                               case "I":
+                               case "U":
+                                   if($sfd['stato'] == 'I')
+                                   {
+                                       $sfd['data_mod'] =$sfd['data_ins'] = time();
+                                   }
+                                   else
+                                   {
+                                       $sfd['data_mod'] = time();
+                                   }
+                                   $subformOrm->values($sfd)->save();
+                               break;
+
+                               case "D":
+                                   $subformOrm->delete();
+                               break;
+                           }
+
+                   }
+               } 
+           }
+       }
+    }
+    
     protected function _edit()
     {
          try

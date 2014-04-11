@@ -508,10 +508,10 @@
       </Cl>
       <SchTrHis/>
     </Tbl>
-    <Tbl UsSo="1" nm="video_path">
+    <Tbl UsSo="1" nm="video_paths">
       <Cm>Tabella che contine video embed da varie fonti per paths</Cm>
       <TblOpts>WITHOUT OIDS</TblOpts>
-      <Pk ClNs="id" nm="pkvideo_path"/>
+      <Pk ClNs="id" nm="pkvideo_paths"/>
       <Cl au="1" df="nextval('video_path_id_seq'::regclass)" nm="id" nu="0">
         <DT ds="BigInt" en="" id="-5" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
@@ -530,9 +530,12 @@
       <Cl au="0" df="" nm="path_id" nu="0">
         <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
+      <Cl au="0" df="" nm="title" nu="0">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
       <Fk deAc="0" nm="fk_video_path_paths" prLkCl="id" upAc="3">
         <PrTb mn="0" nm="paths" oe="1" sch="public" zr="0"/>
-        <CdTb mn="1" nm="video_path" oe="1" sch="public" zr="1"/>
+        <CdTb mn="1" nm="video_paths" oe="1" sch="public" zr="1"/>
         <ClPr cdCl="path_id" prCl="id"/>
       </Fk>
       <SchTrHis/>
@@ -558,6 +561,9 @@
       </Cl>
       <Cl au="0" df="" nm="poi_id" nu="0">
         <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="title" nu="0">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
       <Fk deAc="0" nm="fk_video_pois_pois" prLkCl="id" upAc="3">
         <PrTb mn="0" nm="pois" oe="1" sch="public" zr="0"/>
@@ -7932,9 +7938,9 @@ WHERE t.typname = 'geography'::name
     <TbGl bkCl="ff3399ff" sch="public" tbl="i18n" x="699" y="333"/>
     <TbGl bkCl="ffccccff" sch="public" tbl="background_layers" x="544" y="241"/>
     <TbGl bkCl="ffff6666" sch="public" tbl="image_pois" x="1283" y="26"/>
-    <TbGl bkCl="ffff6666" sch="public" tbl="image_paths" x="1286" y="676"/>
+    <TbGl bkCl="ffff6666" sch="public" tbl="image_paths" x="1286" y="627"/>
     <TbGl bkCl="ffff6666" sch="public" tbl="video_pois" x="1291" y="133"/>
-    <TbGl bkCl="ffff6666" sch="public" tbl="video_path" x="1285" y="549"/>
+    <TbGl bkCl="ffff6666" sch="public" tbl="video_paths" x="1290" y="494"/>
     <FkGl bkCl="ff000000" nm="public.capabilities_roles.fk_capabilities_roles_capabilities"/>
     <FkGl bkCl="ff000000" nm="public.capabilities_roles.fk_capabilities_roles_roles"/>
     <FkGl bkCl="ff000000" nm="public.image_paths.fk_image_paths_paths"/>
@@ -7950,12 +7956,12 @@ WHERE t.typname = 'geography'::name
     <FkGl bkCl="ff000000" nm="public.typologies_pois.fk_typologies_pois_pois"/>
     <FkGl bkCl="ff000000" nm="public.typologies_pois.fk_typologies_pois_typologies"/>
     <FkGl bkCl="ff000000" nm="public.user_datas.fk_user_datas_users"/>
-    <FkGl bkCl="ff000000" nm="public.video_path.fk_video_path_paths"/>
+    <FkGl bkCl="ff000000" nm="public.video_paths.fk_video_path_paths"/>
     <FkGl bkCl="ff000000" nm="public.video_pois.fk_video_pois_pois"/>
     <Notes/>
     <Zones/>
   </Dgm>
-  <RnmMgr NxRnmId="13">
+  <RnmMgr NxRnmId="14">
     <RnmCh ObjCls="Table" ParCls="Schema" ParNme="public" SupCls="" SupNme="">
       <Rnm id="2" nNm="itineraries" oNm="itinerari"/>
       <Rnm id="1" nNm="itinerari" oNm="itineraries"/>
@@ -7987,6 +7993,9 @@ WHERE t.typname = 'geography'::name
     </RnmCh>
     <RnmCh ObjCls="Table" ParCls="Schema" ParNme="public" SupCls="" SupNme="">
       <Rnm id="12" nNm="video_pois" oNm="video_poi"/>
+    </RnmCh>
+    <RnmCh ObjCls="Table" ParCls="Schema" ParNme="public" SupCls="" SupNme="">
+      <Rnm id="13" nNm="video_paths" oNm="video_path"/>
     </RnmCh>
   </RnmMgr>
   <DbDocOptionMgr>

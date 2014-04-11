@@ -18,7 +18,7 @@ class Datastruct_Poi extends Datastruct {
        array(
             'name' => 'poi-foreign-data',
             'position' => 'right',
-            'fields' => array('typologies','the_geom','images'),
+            'fields' => array('typologies','the_geom','images','video_poi'),
         ),
     );
     
@@ -82,8 +82,17 @@ class Datastruct_Poi extends Datastruct {
                 ),
              )
         );
-                 
-
+         
+        $fct['video_poi'] = array_replace($this->_columnStruct, array(
+                "data_type" => self::SUBFORM,
+                 'form_name' => 'video_poi',
+                "table_show" => FALSE,
+                'foreign_mode' => self::MULTISELECT,
+                'foreign_key' => 'poi_id',
+                'validation_url' => 'jx/admin/videopoi',
+                'label' => __('Videos to embed'),
+             )
+        );
         
         return $fct;
         

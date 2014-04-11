@@ -51,6 +51,8 @@ class Datastruct extends Kohana_Formstruct{
     
     public $menu;
     
+    const SUBFORM = 'subform';
+    
     // modalità di recuper default value per le combobox
     // per il campo default_value
     const DEFAULT_VALUE_URL = 'url';    // recuperare dall'url
