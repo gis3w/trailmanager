@@ -1555,6 +1555,9 @@ $.extend(APP.anagrafica_ss,
 		var mtype = APP.utils.isset(id)? 'POST' : 'PUT';
 		var queue = APP.utils.isset(id)? "/"+id : "";
 		
+		if (form.find(".textEditor").length > 0)
+			tinyMCE.triggerSave();
+		
 		var d = form.serializeArray();
 		
 		/*
