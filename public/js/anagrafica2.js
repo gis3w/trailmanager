@@ -267,26 +267,31 @@ $.extend(APP.anagrafica,
 	{
 		var that = this;
 		
-		$.ajax({
-			type: 'GET',
-			url: u,
-			success: function(result)
-			{
-				if (result.status)
-				{	
-					if (APP.utils.isset(result.data) && APP.utils.isset(target))
-						target.values = result.data.items;
-					if (APP.utils.isset(callback) && $.isFunction(callback))
-						callback(result);
-				}						
-				else
+		if ($.inArray("list", target.capabilities) > -1)
+		{
+			$.ajax({
+				type: 'GET',
+				url: u,
+				success: function(result)
+				{
+					if (result.status)
+					{	
+						if (APP.utils.isset(result.data) && APP.utils.isset(target))
+							target.values = result.data.items;
+						if (APP.utils.isset(callback) && $.isFunction(callback))
+							callback(result);
+					}						
+					else
+						APP.utils.showErrMsg(result);
+				},
+				error: function(result)
+				{
 					APP.utils.showErrMsg(result);
-			},
-			error: function(result)
-			{
-				APP.utils.showErrMsg(result);
-			}
-		});
+				}
+			});
+		}
+		else
+			APP.utils.showNoty({title: APP.i18n.translate("error"), type: "error", content: APP.i18n.translate("list_capability_denied")});		
 	},
 	
 	onSelectTableRow: function(t, subSection, contentDiv)
@@ -1257,7 +1262,7 @@ $.extend(APP.anagrafica,
 				
 				parNode.append(ctrlGrp);							
 				
-				if (($.type(v.editable) === "boolean" && !v.editable) || ($.isPlainObject(v.editable) && ((!v.editable.insert && !APP.utils.isset(identifier)) || (!v.editable.update && APP.utils.isset(identifier)))) || ($.inArray("update", sectionTarget.capabilities) === -1))//if (!v.editable || $.inArray("update", sectionTarget.capabilities) === -1)
+				if (($.type(v.editable) === "boolean" && !v.editable) || ($.isPlainObject(v.editable) && ((!v.editable.insert && !APP.utils.isset(identifier)) || (!v.editable.update && APP.utils.isset(identifier)))) || (APP.utils.isset(identifier) && $.inArray("update", sectionTarget.capabilities) === -1) || (!APP.utils.isset(identifier) && $.inArray("insert", sectionTarget.capabilities) === -1))//if (!v.editable || $.inArray("update", sectionTarget.capabilities) === -1)
 				{
 					if (parNode.find("#APP-"+v.name).is(":input"))
 						parNode.find("#APP-"+v.name).attr("disabled", true);

@@ -8,6 +8,7 @@ return array(
     'DENIED ACCESS' => 'ACCESSO NEGATO',
     'Denied access by Auth_STRICT: not authentication' => 'Accesso negato da Auth_STRICT: no autenticato',
     'Attention \'tb\' parm is not present in the request' => 'Attenzione il parametro \'tb\' non è presente nella richiesta',
+	'list_capability_denied' => 'Non si hanno sufficienti permessi di visualizzazione. Tutti i dati, o parte di essi, potrebbero non essere mostrati',
     'Logins' => 'Accessi',
     'Last login' => 'Ultimo accesso',
     'Street' => 'Via',
@@ -98,7 +99,7 @@ return array(
     
     
     'user-data-data' => 'Dati',
-    'user-data-login' => 'Acesso',
+    'user-data-login' => 'Accesso',
     'user-data-contact' => 'Contatti',
     'user-foreign-data' => 'Collegamenti',
     

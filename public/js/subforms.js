@@ -17,12 +17,13 @@ $.extend(APP.subforms,
 	
 	generateActionButtonsString: function(i)
 	{
+		var that = this;
 		var str = '<div class="actionButtonsString">';
-		if ($.inArray("update", this.sectionTarget.capabilities) > -1)
+		if ($.inArray("update", that.sectionTarget.subforms[that.subformName].capabilities) > -1)
 			str +=	"<button type='button' id='edit_"+i+"' name='edit' class='btn btn-default' ><i class='icon-pencil'></i></button>";
 		else
 			str += 	"<button type='button' id='show_"+i+"' name='show' class='btn btn-default' ><i class='icon-eye-open'></i></button>";
-		if ($.inArray("delete", this.sectionTarget.capabilities) > -1)
+		if ($.inArray("delete", that.sectionTarget.subforms[that.subformName].capabilities) > -1)
 			str +=	"<button type='button' id='remove_"+i+"' name='remove' class='btn btn-danger' ><i class='icon-trash'></i></button>"
 		return str+"</div>";
 	},
@@ -363,7 +364,7 @@ $.extend(APP.subforms,
 				ctrlGrp.find(".descrInput").append($('<span id="description_'+v.name+'" data-toggle="tooltip" title="'+v.description+'" data-placement="auto" data-container="#subformContent" class="tooltipElement text-muted" style="padding-left: 5px"><i class="icon icon-info-sign"></i></span>'));
 			form.append(ctrlGrp);
 			
-			if (($.type(v.editable) === "boolean" && !v.editable) || ($.isPlainObject(v.editable) && ((!v.editable.insert && !APP.utils.isset(identifier)) || (!v.editable.update && APP.utils.isset(identifier)))) || ($.inArray("update", that.sectionTarget.capabilities) === -1))//if (!v.editable || $.inArray("update", sectionTarget.capabilities) === -1)
+			if (($.type(v.editable) === "boolean" && !v.editable) || ($.isPlainObject(v.editable) && ((!v.editable.insert && !APP.utils.isset(identifier)) || (!v.editable.update && APP.utils.isset(identifier)))) || (APP.utils.isset(identifier) && $.inArray("update", that.sectionTarget.subforms[that.subformName].capabilities) === -1) || (!APP.utils.isset(identifier) && $.inArray("insert", that.sectionTarget.subforms[that.subformName].capabilities) === -1))//if (!v.editable || $.inArray("update", sectionTarget.capabilities) === -1)
 				params.div.find("#APP-"+v.name).attr("disabled", true);
 		});
 	},
@@ -504,9 +505,13 @@ $.extend(APP.subforms,
 		var that = this;
 		that.subformRows = [];
 		that.sectionTarget = params.sectionTarget;
-		if (!APP.utils.isset(that.sectionTarget.capabilities))
-			that.sectionTarget.capabilities = ["list", "insert", "update", "delete"];
 		that.subformName = params.subformName;
+		
+		if (!APP.utils.isset(that.sectionTarget.subforms))
+		{
+			alert("non e' settato l'array subforms in "+that.sectionTarget.resource);
+			return;
+		}
 				
 		var s = $(	'<div id="div_'+that.subformName+'">\
 						<div class="table-responsive">\
@@ -530,7 +535,7 @@ $.extend(APP.subforms,
 					</div>');
 		
 		var div = $("#APP-"+that.subformName);
-		if ($.inArray("insert", that.sectionTarget.capabilities) > -1)
+		if ($.inArray("insert", that.sectionTarget.subforms[that.subformName].capabilities) > -1)
 		{
 			s.prepend('<span id="add_'+that.subformName+'" name="add" class="btn btn-primary" style="margin-bottom: 20px; margin-right: 40px; float: left"><i class="icon-plus icon-white"></i> '+APP.i18n.translate("add")+'</span>');
 		}
@@ -541,11 +546,7 @@ $.extend(APP.subforms,
 		var thead = div.find("thead").find("tr");
 		var tbody =  div.find("tbody");
 		var cols = [];
-		if (!APP.utils.isset(that.sectionTarget.subforms))
-		{
-			alert("non e' settato l'array subforms in "+that.sectionTarget.resource);
-			return;
-		}
+		
 		var obj = that.sectionTarget.subforms[that.subformName];
 		var valori = {};
 		
