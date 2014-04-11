@@ -75,7 +75,7 @@ abstract class Controller_Ajax_Admin_Base_Upload extends Controller_Ajax_Auth_St
        
         // devo aggiungere il controllo di eventuali errori di upload
        // si controlla che nella risposta ci siano degli errori:
-       foreach($res['files'] as $idx => $file)
+       foreach($res[$this->uplload_options['param_name']] as $idx => $file)
           if(isset($file->error) AND $file->error !== '')
               $this->_errors[(string)$idx] = __($file->error);
           

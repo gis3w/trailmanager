@@ -4,6 +4,14 @@
 // tipi di subgroup: tabs, affix, dropdowntab,collapse
 
 return array(
+     'dropdown' =>array(
+         'dropdown_administration' => array(
+            'id' => 'dropdown_administration',
+            'capability' => 'access-administration',
+            'name' => __('Global/Admin'),
+            'icon' => 'cog'
+        )
+    ),
     'main' => array(
         'home' => array(
             'id' =>'home',
@@ -50,6 +58,7 @@ return array(
             'name' => __('Global'),
             'capability' => 'access-admin-global',
             'icon' => 'cog',
+             'dropdown' => 'dropdown_administration',
              'menu' => array(
                  'type' => 'tabs',
                  'items' => array(
@@ -77,6 +86,7 @@ return array(
             'name' => __('Administration'),
             'capability' => 'access-administration',
             'icon' => 'cog',
+            'dropdown' => 'dropdown_administration',
             'menu' => array(
                 'type' => 'tabs',
                 'items' => array(

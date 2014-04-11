@@ -68,14 +68,14 @@ class Datastruct_Poi extends Datastruct {
                "subform_table_show" => TRUE, 
                 'label' =>__('Images to upload'),
                 'urls' => array(
-                    'data' => 'jx/upload/vehicle',
-                    'delete' => 'jx/upload/vehicle?file=$1',
+                    'data' => 'jx/admin/upload/image',
+                    'delete' => 'jx//admin/upload/image?file=$1',
                     'delete_options' => array(
                         '$1' => 'nome',
                     ),
-                    'download' => 'download/vehicle/$1/$2',
+                    'download' => 'admin/download/image/$1/$2',
                     'download_options' => array(
-                        '$1' => 'veicolo_id',
+                        '$1' => 'poi_id',
                         '$2' => 'nome',
                         ),
                 ),

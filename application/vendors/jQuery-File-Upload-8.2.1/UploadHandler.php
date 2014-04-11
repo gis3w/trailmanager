@@ -767,6 +767,7 @@ class UploadHandler
         }
         $upload = isset($_FILES[$this->options['param_name']]) ?
             $_FILES[$this->options['param_name']] : null;
+        
         // Parse the Content-Disposition header, if available:
         $file_name = $this->get_server_var('HTTP_CONTENT_DISPOSITION') ?
             rawurldecode(preg_replace(

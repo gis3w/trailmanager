@@ -1,5 +1,6 @@
 body { 
-    //background: transparent url(../img/bg.jpg);
+    /*background: transparent url(../img/bg.jpg);*/
+    /*background:#d5e5ff;*/
 }
 
 textarea {
@@ -115,6 +116,10 @@ textarea {
 .login {
     background: #fff;
     
+}
+
+.login #logo_login {
+    background: #2d3032;
 }
 
 .form-horizontal .form-group {

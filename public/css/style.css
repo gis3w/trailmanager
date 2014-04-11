@@ -2358,7 +2358,6 @@ footer p {
     width:400px;
 }
 
-/* Per le checklist*/
-textarea.checklist-question-note {
-    height: 80px;
+table.dataTable th {
+    background:  #ffeeaa;
 }

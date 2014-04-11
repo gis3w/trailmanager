@@ -13,8 +13,20 @@
     <div class="collapse navbar-collapse" id="main_navbar_admin">
         <ul class="nav navbar-nav">
                 <?php foreach($main_menu as $name => $params): ?>
+                    <?php if($params['type'] === 'dropdown'): ?>
+                    <li class="dropdown">
+
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon icon-<?php echo  $params['icon']?>"></i> <?php if(isset($params['name'])) echo __($params['name'])?><b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <?php foreach($params['items'] as $dditem): ?>
+                            <li><a id="<?php echo $dditem['id'] ?>Button" href="<?php echo  $dditem['url']?>"><i class="icon icon-<?php echo  $dditem['icon']?>"></i> <?php if(isset($dditem['name'])) echo __($dditem['name'])?></a></li>
+                        <?php endforeach; ?>
+                    </ul>
+                    </li>
+                    <?php else: ?>
                         <li><a id="<?php echo $params['id'] ?>Button" href="<?php echo  $params['url']?>"><i class="icon icon-<?php echo  $params['icon']?>"></i> <?php if(isset($params['name'])) echo __($params['name'])?></a></li>
-                <?php endforeach; ?>
+                    <?php endif; ?>
+            <?php endforeach; ?>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <?php 

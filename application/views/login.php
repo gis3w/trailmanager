@@ -23,9 +23,6 @@
 
 <div id="powered_by" class="powered_by">
       
-      <p><i>powered by</i></p>
-      <?php echo Html::anchor('http://www.agrofauna.it',Html::image($img_path."logo_mazzi_200w.png",array('alt'=>'Studio Mazzi')),array('title' => 'Studio Mazzi','class' => 'logo_mazzi_login'));?>
+    <p><i>powered by</i></p>
       <?php echo Html::anchor('http://www.gis3w.it',Html::image($img_path."logo_gis3w_h60.png",array('alt'=>'GIS3W')),array('title' => 'GIS3W','class' => 'logo_gis3w_login'));?>
-      <p>&nbsp;<p>
-      <p>Safe3 gestisce i dati delle persone e delle aziende nel rispetto del Decreto Legislativo 30 giugno 2003, n. 196 "Codice in materia di protezione dei dati personali".</p>
-  </div>
+</div>

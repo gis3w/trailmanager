@@ -172,7 +172,7 @@ abstract class Controller_Base_Main extends Controller_Template {
     
       protected function _get_main_menu()
      {
-         $items_conf = Kohana::$config->load('menu.main'); 
+         $items_conf = Kohana::$config->load('menu'); 
          return $this->_build_menu($items_conf);
          
      }
@@ -180,27 +180,73 @@ abstract class Controller_Base_Main extends Controller_Template {
      protected function _build_menu($menu)
      { 
          $items = array();
-         foreach($menu as $nid => $par)
+         $dropdowns = array();
+         foreach($menu['main'] as $nid => $par)
          {
              
-             if(!is_null($par['capability']) AND !$this->user->role->allow_capa($par['capability']))
+//             if(!is_null($par['capability']) AND !$this->user->role->allow_capa($par['capability']))
+//                 continue;
+             
+             if(!is_null($par['capability']) AND !$this->user->allow_capa($par['capability']))
                  continue;
              
              $arr = array();
-             $arr['id'] = $par['id'];
-             $arr['name'] = $par['name'];
-             $arr['url'] = '#';
-             $arr['icon'] = $par['icon'];
+             //il secondo controllo che facciamo è se fa aprte di un dropdown e se ci sono i permessi
+             if(isset($par['dropdown']) AND $this->user->allow_capa($menu['dropdown'][$par['dropdown']]['capability']))
+             {
+                
+                 if(!isset($dropdowns[$par['dropdown']]))
+                 {
+                    $arr['id'] = $menu['dropdown'][$par['dropdown']]['id'];
+                    $arr['name'] = $menu['dropdown'][$par['dropdown']]['name'];
+                    $arr['url'] = '#';
+                    $arr['type'] = 'dropdown';
+                    $arr['icon'] = $menu['dropdown'][$par['dropdown']]['icon']; 
+
+                    $dropdowns[$par['dropdown']] = array(
+                        array(
+                            'id' => $par['id'],
+                            'name' => $par['name'],
+                            'url' => '#',
+                            'icon' => $par['icon']  
+                        )
+                    );
+                    $arr['items'] =& $dropdowns[$par['dropdown']];
+
+                 }
+                 else
+                 {
+                     
+                     $dropdowns[$par['dropdown']][] = array(
+                        'id' => $par['id'],
+                        'name' => $par['name'],
+                        'url' => '#',
+                        'icon' => $par['icon']  
+                    );
+                 }
+                
+             }
+             else
+             {
+                $arr['id'] = $par['id'];
+                $arr['name'] = $par['name'];
+                $arr['url'] = '#';
+                $arr['icon'] = $par['icon'];  
+                $arr['type'] = 'item';
+             }
              
-             if(isset($par['tabs']))
-                 $arr['tabs'] = $this->_build_menu ($par['tabs']);
              
-             $items[] = $arr;
+             
+//             if(isset($par['tabs']))
+//                 $arr['tabs'] = $this->_build_menu ($par['tabs']);
+             if(!empty($arr))
+                $items[] = $arr;
              
          }
-         
+
          return $items;
      }
+    
     
 
 
