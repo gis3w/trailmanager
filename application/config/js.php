@@ -9,7 +9,7 @@ return array(
     'js_base' => array(
 		'../modules/jquery-1.11.0.min.js',
 		'../modules/jquery-ui-1.10.3/ui/minified/jquery-ui.min.js',
-		'../modules/jQuery-File-Upload-9.5.7/js/vendor/jquery.ui.widget.js',
+		//'../modules/jQuery-File-Upload-9.5.7/js/vendor/jquery.ui.widget.js',
 		'../modules/JavaScript-Load-Image-1.11.1/js/load-image.min.js',
 		'../modules/JavaScript-Canvas-to-Blob-master/js/canvas-to-blob.min.js',
 		'../modules/bootstrap3/js/bootstrap.min.js',
@@ -24,7 +24,7 @@ return array(
 		'../modules/jQuery-File-Upload-9.5.7/js/jquery.fileupload-audio.js',
 		'../modules/jQuery-File-Upload-9.5.7/js/jquery.fileupload-video.js',
 		'../modules/jQuery-File-Upload-9.5.7/js/jquery.fileupload-validate.js',
-		'../modules/jQuery-File-Upload-9.5.7/js/jquery.fileupload-ui.js',
+		//'../modules/jQuery-File-Upload-9.5.7/js/jquery.fileupload-ui.js',
 		'../modules/jquery.fileDownload.js',
 		'../modules/fullcalendar-1.6.1/fullcalendar/fullcalendar.min.js',
 		'../modules/chosen_v1.0.0/chosen.jquery.min.js',
