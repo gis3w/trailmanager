@@ -277,6 +277,9 @@
       <Cl au="0" df="true" nm="publish" nu="0">
         <DT ds="Boolean" en="" id="16" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
+      <Cl au="0" df="" nm="color" nu="1">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
       <SchTrHis/>
     </Tbl>
     <Tbl UsSo="1" nm="pois">
