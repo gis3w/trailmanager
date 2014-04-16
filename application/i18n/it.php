@@ -95,6 +95,9 @@ return array(
     
     'Points of interest' => 'Punti di interesse',
     'Paths' => 'Percorsi',
+    
+    'Images to upload' => 'Immagini da caricare',
+    'Videos to embed' => 'Video da incorporare',
    
     
     

@@ -48,7 +48,7 @@ class Datastruct_Path extends Datastruct {
                     'editor' => TRUE,
                 ),
                 "color" => array(
-                    "form_input_type" => self::COLORPICKER,
+                    "form_input_type" => self::MAPBOX_COLOR,
                     "class" => "color-path",
                 ),
                  "the_geom" => array(

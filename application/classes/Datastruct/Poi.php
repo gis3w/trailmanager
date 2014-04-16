@@ -18,7 +18,7 @@ class Datastruct_Poi extends Datastruct {
        array(
             'name' => 'poi-foreign-data',
             'position' => 'right',
-            'fields' => array('typologies','the_geom','image_poi','images','video_poi'),
+            'fields' => array('typologies','the_geom','image_poi','video_poi'),
         ),
     );
     

@@ -19,6 +19,7 @@ class Kohana_Formstruct{
     const FILE = 'file';
     const BUTTON = 'button';
     const MAPBOX = 'mapbox';
+    const MAPBOX_COLOR = 'mapbox_color';
     const COLORPICKER = 'colorpicker';
     
     const GEOTYPE_POLYLINE = 'polyline';
