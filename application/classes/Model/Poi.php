@@ -33,6 +33,7 @@ class Model_Poi extends ORMGIS {
             "accessibility" => __("Accessibility"),
             "information_url" => __("Information url"),
             "publish" => __("Published"),
+            "typology_id" => __("Main typology"),
         );
     }
     
@@ -44,6 +45,9 @@ class Model_Poi extends ORMGIS {
                     array('not_empty'),
             ),
             'publish' =>array(
+                    array('not_empty'),
+            ),
+            'typology_id' =>array(
                     array('not_empty'),
             ),
         );
