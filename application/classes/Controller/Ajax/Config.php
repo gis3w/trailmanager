@@ -24,12 +24,18 @@ class Controller_Ajax_Config extends Controller_Ajax_Auth_Strict{
 //        $this->_set_timezone();
 //        $this->_set_menu();
         $this->_set_url();
+        $this->_set_background_layer();
         
         
         /**
          * Popolamento oggetto config per risposta
          */
         $this->jres->data->config = $this->config;
+    }
+    
+    protected function _set_background_layer()
+    {
+        $this->_get_table('Background_Layer');
     }
     
     protected function _set_i18n()

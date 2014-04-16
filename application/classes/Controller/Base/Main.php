@@ -30,6 +30,7 @@ abstract class Controller_Base_Main extends Controller_Template {
 
     /* per i menu dell'applicazione */
     public $main_menu = array();
+    public $main_menu_name = 'menu';
 
     /* per le zone del maion template */
     public $tcontent;
@@ -94,7 +95,6 @@ abstract class Controller_Base_Main extends Controller_Template {
         }
         // si settano nelle viste i menu
         View::bind_global('main_menu', $this->main_menu);
-        View::bind_global('aside_menu', $this->aside_menu);
 
         // si settano i parametri globali per le views
         $this->img_path = Kohana::$config->load('layout.img_path');
@@ -172,7 +172,7 @@ abstract class Controller_Base_Main extends Controller_Template {
     
       protected function _get_main_menu()
      {
-         $items_conf = Kohana::$config->load('menu'); 
+         $items_conf = Kohana::$config->load($this->main_menu_name); 
          return $this->_build_menu($items_conf);
          
      }

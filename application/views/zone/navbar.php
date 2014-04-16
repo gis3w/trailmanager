@@ -28,13 +28,13 @@
                     <?php endif; ?>
             <?php endforeach; ?>
         </ul>
-        <?php if(isset($earch)): ?>
-                <form class="navbar-form navbar-left" role="search">
+        <?php if(isset($search) AND $search): ?>
+                <div class="navbar-form navbar-right" role="search">
                 <div class="form-group">
                   <input type="text" class="form-control" placeholder="Search">
                 </div>
                 <button type="submit" class="btn btn-default">Submit</button>
-              </form>
+              </div>
             <?php endif; ?>
         <ul class="nav navbar-nav navbar-right">
             <?php 
