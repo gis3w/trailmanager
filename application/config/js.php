@@ -10,6 +10,7 @@ return array(
 		'../modules/jquery-1.11.0.min.js',
 		'../modules/jquery-ui-1.10.3/ui/minified/jquery-ui.min.js',
 		'../modules/tinymce/tinymce.min.js',
+		//'../modules/AnimatedContentMenu/js/AnimatedContentMenu.js',
 		//'../modules/jQuery-File-Upload-9.5.7/js/vendor/jquery.ui.widget.js',
 		'../modules/JavaScript-Load-Image-1.11.1/js/load-image.min.js',
 		'../modules/JavaScript-Canvas-to-Blob-master/js/canvas-to-blob.min.js',
@@ -18,6 +19,7 @@ return array(
 		'../modules/Leaflet.draw/dist/leaflet.draw.js',
 		'../modules/Leaflet.FileLayer/leaflet.filelayer.js',
 		'../modules/Leaflet.FileLayer/togeojson/togeojson.js',
+		'../modules/leaflet.bouncemarker/bouncemarker.js',
 		'../modules/jQuery-File-Upload-9.5.7/js/jquery.iframe-transport.js',
 		'../modules/jQuery-File-Upload-9.5.7/js/jquery.fileupload.js',
 		'../modules/jQuery-File-Upload-9.5.7/js/jquery.fileupload-process.js',
@@ -59,6 +61,7 @@ return array(
 		'subforms.js',
 		'anagrafica2.js',
 		'map.js',
+		'interactiveMap.js',
 		//'home.js',
 		'main.js'
     ),

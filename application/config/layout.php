@@ -14,6 +14,7 @@ return array(
     'css_base' => array(
 		'../modules/jquery-ui-1.10.3/themes/base/minified/jquery-ui.min.css' => 'screen',
         '../modules/bootstrap3/css/bootstrap.min.css' => 'screen',
+		//'../modules/AnimatedContentMenu/css/style.css' => 'screen',
 		//'../modules/bootstrap3/css/bootstrap-theme.min.css' => 'screen',
 		'../modules/fullcalendar-1.6.1/fullcalendar/fullcalendar.css' => 'screen',
 		'../modules/chosen_v1.0.0/chosen.css' => 'screen',
