@@ -7,10 +7,12 @@ class Model_Itinerary extends ORM {
         'pois' => array(
             'model'   => 'Poi',
             'through' => 'itineraries_pois',
+            'orm_type' => 'GIS',
         ),
         'paths' => array(
             'model'   => 'Path',
             'through' => 'itineraries_paths',
+            'orm_type' => 'GIS',
         ),
     );
     
