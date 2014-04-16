@@ -20,23 +20,27 @@ class ORM extends Kohana_ORM {
         $lang_config = Kohana::$config->load('lang');
         $lang_default = $lang_config['default'];
         
-        if($lang != $lang_default AND in_array($this->_table_name,$lang_config['tables_to_translate']))
+        if($lang != $lang_default  AND in_array($this->_table_name,  array_keys($lang_config['tables_to_translate']))) 
         {
             // prima si deve eseguire il check
             $this->check($validation);
             // ora devo andare a salvare i valori presenti dentro la relativa tabella di traduzione
             foreach($this->changed() as $column =>$value)
             {
-                $i18nData = $this->getTranslate($lang, $column,TRUE);
-                $colLang = $lang."_val";
-                if(!isset($i18nData->id))
+                if(!isset($lang_config['tables_to_translate'][$this->_table_name]['columns_to_exlude']) OR 
+                        (isset($lang_config['tables_to_translate'][$this->_table_name]['columns_to_exlude']) AND !in_array($column,$lang_config['tables_to_translate'][$this->_table_name]['columns_to_exlude'])))
                 {
-                    $i18nData->tb_id = $this->id;
-                    $i18nData->tb = $this->_table_name;
-                    $i18nData->col = $column;
+                    $i18nData = $this->getTranslate($lang, $column,TRUE);
+                    $colLang = $lang."_val";
+                    if(!isset($i18nData->id))
+                    {
+                        $i18nData->tb_id = $this->id;
+                        $i18nData->tb = $this->_table_name;
+                        $i18nData->col = $column;
+                    }
+                    $i18nData->$colLang = $_POST[$column];
+                    $i18nData->save();
                 }
-                $i18nData->$colLang = $_POST[$column];
-                $i18nData->save();
             }
             return TRUE;
         }
@@ -58,7 +62,9 @@ class ORM extends Kohana_ORM {
          $lang = Session::instance()->get('lang');
          $lang_config = Kohana::$config->load('lang');
          $lang_default = $lang_config['default'];
-         if($lang != $lang_default AND in_array($this->_table_name,$lang_config['tables_to_translate']))
+         if($lang != $lang_default AND 
+                 in_array($this->_table_name,array_keys($lang_config['tables_to_translate'])) 
+                 AND (!isset($lang_config['tables_to_translate'][$this->_table_name]['columns_to_exlude']) OR (isset($lang_config['tables_to_translate'][$this->_table_name]['columns_to_exlude']) AND !in_array($column,$lang_config['tables_to_translate'][$this->_table_name]['columns_to_exlude']) )))
          {
              // si controlla che la la colonna e la tabella ci siano nella tabella di traduzione per la lingua scelta
              // nel caso i assenza si invia il dato non tradotto

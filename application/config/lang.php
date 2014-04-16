@@ -7,11 +7,18 @@ return array(
         'en' => 'English'),
     'default' => 'it',
     'tables_to_translate' => array(
-        'pois',
-        'paths',
-        'itineraries',
-        'typologies',
-        
+        'pois' => array(
+            'columns_to_exlude' => array(
+                'typology_id',
+            )
+        ),
+        'paths' => array(
+            'columns_to_exlude' => array(
+                'typology_id',
+            )
+        ),
+        'itineraries' => array(),
+        'typologies' => array(),
     ),
     
 );

@@ -83,7 +83,7 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
              $this->_orm = $this->_orm->find();
 
             //controllo della nullità della chiamata
-            if($this->_orm->id === NULL AND !in_array($this->_table,array('Dpi_Mansione')))
+            if($this->_orm->id === NULL)
             {
                 throw new HTTP_Exception_500(SAFE::message('ehttp','500_'.$this->_table_rid.'_id'));
             }
