@@ -48,11 +48,11 @@ $.extend(APP.map,
 	
 	resizeMap: function()
 	{
-		if (!this.isset(this.currentMapId) || ( this.currentMapId != "realtimeMap" && this.currentMapId != "historyMap"))
+		if (!this.isset(this.currentMapId) || ( this.currentMapId == "mapboxDiv"))
 			return;
 		var div = $(this.globalData[this.currentMapId].map.getContainer());
 		if (div.length > 0)
-			$(div[0]).width("100%").height($(".ui-layout-center").height()+"px");
+			$(div[0]).height(div.parent().height()-120);
 		
 		this.globalData[this.currentMapId].map.invalidateSize(true);
 	},

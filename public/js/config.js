@@ -456,7 +456,12 @@ $.extend(APP.config,{
 	setMenu: function()
 	{
 		var that = this;
-		$.each(this.localConfig.menu, function(i, v){
+		if (!that.localConfig.menu)
+		{
+			APP.interactiveMap.start();
+			return;
+		}
+		$.each(that.localConfig.menu, function(i, v){
 			var button = $("#"+v.id+"Button");
 			var callBack = (i === "logout")? function(){ location.href = v.url; } : function(){ that.insertContent($(this), v.id); }
 			button.click(callBack);
@@ -549,6 +554,13 @@ $.extend(APP.config,{
 			}
 		} );
 	},
+	
+	setResize: function()
+	{
+		$(window).on("resize",function(){
+			APP.map.resizeMap();
+		});
+	},
 		
 	init: function()
 	{	
@@ -559,6 +571,7 @@ $.extend(APP.config,{
 		$(document).on('load_end', function(){ APP.utils.toggleLoadingImage(false); });*/
 		
 		this.xhrObj.init();	
+		this.setResize();
 		this.setLoadingImage();
 		this.setMsgDialog();
 		this.setDateEu(); // gg/mm/aaaa
@@ -568,7 +581,7 @@ $.extend(APP.config,{
 		this.setFilterDialogsDiv();
 		this.setMenu();
 		
-		$("#poiButton").click();
+		$(".navbar-nav:first").find("a:first").click();
 		return;
 	}
 });

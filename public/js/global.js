@@ -3,6 +3,7 @@ var APP = {
 	utils: {},
 	config: {},
 	map: {},
+	interactiveMap: {},
 	filter: {},
 	fileuploader: {},
 	subforms: {},
