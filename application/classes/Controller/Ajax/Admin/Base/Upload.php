@@ -59,7 +59,7 @@ abstract class Controller_Ajax_Admin_Base_Upload extends Controller_Ajax_Auth_St
         
         // si avvia l'uploader senza per initialize
         $this->uplload_options = array_merge ($this->uplload_options,array(
-            'script_url' => "jx/".$this->_upload_path,
+            'script_url' => "jx/admin/".$this->_upload_path,
             'upload_dir' => $this->_upload_path,
             'upload_url' => $this->_download_url,
             'max_file_size' => 10000000,

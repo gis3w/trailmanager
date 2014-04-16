@@ -33,15 +33,19 @@ class Datastruct_Path extends Datastruct {
             return array(
                 "description" => array(
                     'form_input_type' => self::TEXTAREA,
+                    'editor' => TRUE,
                 ),
                  "reason" => array(
                     'form_input_type' => self::TEXTAREA,
+                     'editor' => TRUE,
                 ),
                  "accessibility" => array(
                     'form_input_type' => self::TEXTAREA,
+                     'editor' => TRUE,
                 ),
                 "general_features" => array(
                     'form_input_type' => self::TEXTAREA,
+                    'editor' => TRUE,
                 ),
                 "color" => array(
                     "form_input_type" => self::COLORPICKER,

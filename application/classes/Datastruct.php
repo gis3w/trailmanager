@@ -287,7 +287,11 @@ class Datastruct extends Kohana_Formstruct{
         
         // si può inserire o salvare solo nella lingua di default
          if($this->lang != $this->lang_default)
-            unset($this->capabilities[1],$this->capabilities[3]);
+         {
+             unset($this->capabilities[1],$this->capabilities[3]);
+             $this->capabilities = array_values($this->capabilities);
+         }
+            
         
         // si fa la query sul db per le capabilities
         if($this->user->main_role_id == 12)
@@ -304,8 +308,6 @@ class Datastruct extends Kohana_Formstruct{
                     $tmp[] = $capa;
         }
         $this->capabilities = $tmp;
-        
-        
-        $this->capabilities = $tmp;
+
     }
 }

@@ -18,7 +18,7 @@ class Datastruct_Poi extends Datastruct {
        array(
             'name' => 'poi-foreign-data',
             'position' => 'right',
-            'fields' => array('typologies','the_geom','images','video_poi'),
+            'fields' => array('typologies','the_geom','image_poi','images','video_poi'),
         ),
     );
     
@@ -38,9 +38,11 @@ class Datastruct_Poi extends Datastruct {
                 ),
                  "reason" => array(
                     'form_input_type' => self::TEXTAREA,
+                    'editor' => TRUE,
                 ),
                  "accessibility" => array(
                     'form_input_type' => self::TEXTAREA,
+                    'editor' => TRUE,
                 ),
                 "the_geom" => array(
                     'form_input_type' => self::MAPBOX,
@@ -83,9 +85,19 @@ class Datastruct_Poi extends Datastruct {
              )
         );
          
+         $fct['image_poi'] = array_replace($this->_columnStruct, array(
+                "data_type" => self::SUBFORM,
+                "table_show" => FALSE,
+                'foreign_mode' => self::MULTISELECT,
+                'foreign_key' => 'poi_id',
+                'validation_url' => 'jx/admin/imagepoi',
+                'label' => __('Images to upload'),
+             )
+        );
+         
+         
         $fct['video_poi'] = array_replace($this->_columnStruct, array(
                 "data_type" => self::SUBFORM,
-                 'form_name' => 'video_poi',
                 "table_show" => FALSE,
                 'foreign_mode' => self::MULTISELECT,
                 'foreign_key' => 'poi_id',
