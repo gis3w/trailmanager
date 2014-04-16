@@ -188,6 +188,11 @@ $.extend(APP.utils,{
 			});
 		}
 		
+		if (form.find(".mapBoxColor").length > 0 && form.find("#mapboxDiv").length>0)
+		{
+			APP.map.changeColors(form.find(".mapBoxColor").val());
+		}
+		
 		form.find(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
 		var timepickerInputs = form.find(".time");
 		$.each(timepickerInputs, function(i,v)
@@ -1311,6 +1316,11 @@ $.extend(APP.utils,{
 				else
 					inp += "<input type='hidden' id='APP-"+v.name+"' name='"+v.name+"' class='mapbox' value='"+JSON.stringify(valore)+"'>";
 				break;
+			case "mapbox_color":
+				inp = "<input type='color' id='APP-"+v.name+"' name='"+v.name+"' class='form-control mapBoxColor' value='"+valore+"' "+required+">";
+				inp = $(inp);
+				inp.change(function(){APP.map.changeColors($(this).val())});
+				break;
 			default:
 				console.log("Aggiungi questo form_input_type: "+v.form_input_type);
 		}
@@ -1570,7 +1580,7 @@ $.extend(APP.utils,{
 			case "datetimebox":
 				data = this.convertiDateTime(data);
 				break;
-			case "colorpicker":
+			case "colorpicker": case "mapbox_color":
 				data = "<div style='width: 100%; height: 30px; background-color: "+data+"'></div>";
 				break;
 			default:

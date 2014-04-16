@@ -232,6 +232,28 @@ $.extend(APP.map,
 		}
 	},
 	
+	changeColors: function(newColor)
+	{
+		var that = this;
+		if (that.globalData && that.globalData[that.currentMapId] && that.globalData[that.currentMapId].map)
+		{
+			var ls = that.globalData[that.currentMapId].map._layers;
+			$.each(ls, function(){
+				if (this.setStyle)
+					this.setStyle({color: newColor})
+			});
+			$.each(L.drawLocal.draw.handlers, function(i,v){
+				var obj = {};
+				obj[i] = {
+					shapeOptions: {
+						color: newColor
+					}
+				}
+				that.globalData[that.currentMapId].drawControl.setDrawingOptions(obj);
+			});
+		}
+	},
+	
 	toggleDrawEditor: function(mapId, b, options)
 	{
 		var that = this;
