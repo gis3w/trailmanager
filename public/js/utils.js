@@ -55,9 +55,9 @@ $.extend(APP.utils,{
 			var errCodeInt = parseInt(param.error.errcode);
 			switch(errCodeInt)
 			{
-//				case 403:
-//					window.location.href = APP.config.localConfig.urls.logout;
-//					return;
+				case 403:
+					window.location.href = APP.config.localConfig.urls.logout;
+					return;
 				case 10000:
 					titleString = param.error.errmsg;
 					break;
@@ -203,105 +203,7 @@ $.extend(APP.utils,{
 			APP.fileuploader.init(form);
 		if (form.find(".jquery_fileupload").length > 0)
 		{
-			var uploadButton = $('<button type="button"/>')
-				.addClass('btn btn-primary')
-				.prop('disabled', true)
-				.text('Processing...')
-				.on('click', function () {
-					var $this = $(this),
-						data = $this.data();
-					$this
-						.off('click')
-						.text('Abort')
-						.on('click', function () {
-							$this.remove();
-							data.abort();
-						});
-					data.submit().always(function () {
-						$this.remove();
-					});
-				});
-				
-			form.find(".jquery_fileupload").fileupload({
-				url: form.find(".jquery_fileupload").attr("data-url"),
-				dataType: 'json',
-				autoUpload: true,
-				//acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
-				//maxFileSize: 5000000, // 5 MB
-				// Enable image resizing, except for Android and Opera,
-				// which actually support image resizing, but fail to
-				// send Blob objects via XHR requests:
-				/*disableImageResize: /Android(?!.*Chrome)|Opera/
-					.test(window.navigator.userAgent),*/
-				previewMaxWidth: 100,
-				previewMaxHeight: 100,
-				previewCrop: true
-			}).on('fileuploadadd', function (e, data) {
-				data.context = $('<div/>').appendTo('#jquery_fileupload_list');
-				$.each(data.files, function (index, file) {
-					var node = $('<p/>')
-							.append($('<span/>').text(file.name));
-					/*if (!index) {
-						node
-							.append('<br>')
-							.append(uploadButton.clone(true).data(data));
-					}*/
-					node.appendTo(data.context);
-				});
-			}).on('fileuploadprocessalways', function (e, data) {
-				var index = data.index,
-					file = data.files[index],
-					node = $(data.context.children()[index]);
-				if (file.preview) {
-					node
-						.prepend('<br>')
-						.prepend(file.preview);
-				}
-				if (file.error) {
-					node
-						.append('<br>')
-						.append($('<span class="text-danger"/>').text(file.error));
-				}
-				if (index + 1 === data.files.length) {
-					data.context.find('button')
-						.text('Upload')
-						.prop('disabled', !!data.files.error);
-				}
-			}).on('fileuploadprogressall', function (e, data) {
-				var progress = parseInt(data.loaded / data.total * 100, 10);
-				$('#progress .progress-bar').css(
-					'width',
-					progress + '%'
-				);
-			}).on('fileuploaddone', function (e, data) {
-				if (APP.utils.checkError(data.result.error, null))
-				{
-					APP.utils.showErrMsg(data.result);
-					return;
-				}
-				$.each(data.result.files, function (index, file) {
-					if (file.url) {
-						var link = $('<a>')
-							.attr('target', '_blank')
-							.prop('href', file.url);
-						$(data.context.children()[index])
-							.wrap(link);
-					} else if (file.error) {
-						var error = $('<span class="text-danger"/>').text(file.error);
-						$(data.context.children()[index])
-							.append('<br>')
-							.append(error);
-					}
-				});
-			}).on('fileuploadfail', function (e, data) {
-				$.each(data.files, function (index, file) {
-					var error = $('<span class="text-danger"/>').text('File upload failed.');
-					$(data.context.children()[index])
-						.append('<br>')
-						.append(error);
-				});
-			}).prop('disabled', !$.support.fileInput)
-				.parent().addClass($.support.fileInput ? undefined : 'disabled');
+			
 		}
 			
 		var ip = form.find(".input-group-prefix"); // prepend
@@ -979,9 +881,9 @@ $.extend(APP.utils,{
 								tmpArr.push(obj);
 						
 						inp = $('<div>\
-									<span class="btn btn-success fileinput-button">\
+									<span class="btn btn-info fileinput-button">\
 										<i class="glyphicon glyphicon-plus"></i>\
-										<span>Add files...</span>\
+										<span>'+APP.i18n.translate("add")+'</span>\
 										<!-- The file input field used as target for the file upload widget -->\
 										<input type="file" id="APP-'+v.name+'" name="'+v.name+'[]" class="jquery_fileupload">\
 									</span>\
@@ -993,14 +895,132 @@ $.extend(APP.utils,{
 									</div>\
 									<!-- The container for the uploaded files -->\
 									<div id="jquery_fileupload_list"></div>\
-								</div>');					
-						
+								</div>');
 						
 						if (v.multiple)
 							inp.find('.jquery_fileupload').attr("multiple",true);
 						
 						inp.find(".jquery_fileupload").attr("data-url",v.urls['data']);
 						
+						/*var uploadButton = $('<button type="button"/>')
+							.addClass('btn btn-primary')
+							.prop('disabled', true)
+							.text(APP.i18n.translate("upload"))
+							.on('click', function () {
+								var $this = $(this),
+									data = $this.data();
+								$this
+									.off('click')
+									.text('Abort')
+									.on('click', function () {
+										$this.remove();
+										data.abort();
+									});
+								data.submit().always(function () {
+									$this.remove();
+								});
+							});*/
+						
+						var deleteButton = $('<button type="button" class="btn btn-danger" style="margin-bottom: 5px"><i class="glyphicon glyphicon-trash"></i> '+APP.i18n.translate("remove")+'</button>');
+										
+						inp.find(".jquery_fileupload").fileupload({
+							url: inp.find(".jquery_fileupload").attr("data-url"),
+							dataType: 'json',
+							autoUpload: true,
+							//acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+							//maxFileSize: 5000000, // 5 MB
+							// Enable image resizing, except for Android and Opera,
+							// which actually support image resizing, but fail to
+							// send Blob objects via XHR requests:
+							/*disableImageResize: /Android(?!.*Chrome)|Opera/
+								.test(window.navigator.userAgent),*/
+							previewMaxWidth: 100,
+							previewMaxHeight: 100,
+							previewCrop: true
+						}).on('fileuploadadd', function (e, data) {
+							data.context = $('<div class="uploadedFileDiv"/>').appendTo('#jquery_fileupload_list');
+							$.each(data.files, function (index, file) {
+								var node = $('<p/>').append($('<span/>').text(file.name));
+								if (!index) {
+									
+								}
+								node.appendTo(data.context);
+							});
+						}).on('fileuploadprocessalways', function (e, data) {
+							var index = data.index,
+								file = data.files[index],
+								node = $(data.context.children()[index]);
+							if (file.preview) {
+								node
+									.prepend('<br>')
+									.prepend(file.preview);
+							}
+							if (file.error) {
+								node
+									.append('<br>')
+									.append($('<span class="text-danger"/>').text(file.error));
+							}/*
+							if (index + 1 === data.files.length) {
+								data.context.find('button')
+									.text('Upload')
+									.prop('disabled', !!data.files.error);
+							}*/
+						}).on('fileuploadprogressall', function (e, data) {
+							var progress = parseInt(data.loaded / data.total * 100, 10);
+							$('#progress .progress-bar').css(
+								'width',
+								progress + '%'
+							);
+						}).on('fileuploaddone', function (e, data) {
+							if (APP.utils.checkError(data.result.error, null))
+							{
+								APP.utils.showErrMsg(data.result);
+								return;
+							}
+							var ix = $(this).attr("name").substr(0,$(this).attr("name").length-2);
+							$.each(data.result.data[ix], function (index, file) {
+								if (file.url) {
+									var link = $('<a>').attr('target', '_blank').prop('href', file.url);
+									$(data.context.children()[index]).wrap(link);
+									$(data.context.children()[index]).parent().append(deleteButton.clone(true).data(file).click(function(){
+										var qb = $(this);
+										$.ajax({
+											type: "DELETE",
+											url: $(this).data().delete_url,
+											dataType: 'json',
+											success: function(x)
+											{
+												if (!APP.utils.checkError(x.error, null))
+												{
+													qb.parents().find('.uploadedFileDiv:first').remove();
+												}
+												else
+													APP.utils.showErrMsg(x);
+											},
+											error: function(x)
+											{
+												APP.utils.showErrMsg(x);
+											}
+										});
+									}));
+								} else if (file.error) {
+									var error = $('<span class="text-danger"/>').text(file.error);
+									$(data.context.children()[index])
+										.append('<br>')
+										.append(error);
+								}
+							});
+						}).on('fileuploadfail', function (e, data) {
+							$.each(data.files, function (index, file) {
+								var error = $('<span class="text-danger"/>').text('File upload failed.');
+								$(data.context.children()[index])
+									.append('<br>')
+									.append(error);
+							});
+						}).prop('disabled', !$.support.fileInput)
+							.parent().addClass($.support.fileInput ? undefined : 'disabled');
+						
+						//inp.find(".jquery_fileupload").trigger('fileuploadadd', {});
 						break;
 					default:
 					
@@ -1132,7 +1152,8 @@ $.extend(APP.utils,{
 				inp = $(inp).val(valore);
 				break;
 			case "textarea":
-				inp = $("<textarea id='APP-"+v.name+"' name='"+v.name+"' rows='9' class='form-control' "+required+">"+valore+"</textarea>");
+				inp = $("<textarea id='APP-"+v.name+"' name='"+v.name+"' rows='9' class='form-control' "+required+"></textarea>");
+				inp.text(valore);
 				if (APP.utils.isset(v.editor) && v.editor === true)
 					inp.addClass("textEditor");
 				break;

@@ -1473,8 +1473,27 @@ $.extend(APP.anagrafica,
 			d.push(o);
         });
 		
+		if (form.find(".jquery_fileupload"))
+			form.attr("enctype","multipart/form-data");
+		
 		if (form.attr("enctype") == "multipart/form-data")
-			d.push(APP.fileuploader.preserialize(form));
+		{
+			
+			if (form.find(".jquery_fileupload"))
+			{
+				var name = form.find(".jquery_fileupload").attr('name');
+				var btns = form.find(".uploadedFileDiv").find("button");
+				
+				$.each(btns, function(i,v){
+					var og = {};
+					og['name'] = name;
+					og['value'] = $(v).data().name;
+					d.push(og);
+				});
+			}
+			else
+				d.push(APP.fileuploader.preserialize(form));
+		}
 		if (form.find(".subformTable").length>0)
 			d.push(APP.subforms.preserialize());
 		if (form.find(":input.mapbox").length>0)
