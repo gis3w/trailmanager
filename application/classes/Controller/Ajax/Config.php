@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 
-class Controller_Ajax_Config extends Controller_Ajax_Auth_Strict{
+class Controller_Ajax_Config extends Controller_Ajax_Main{
     
     public $config;
 
