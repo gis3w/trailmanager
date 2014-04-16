@@ -33,6 +33,7 @@ class Datastruct_Itinerary extends Datastruct {
             return array(
                 "description" => array(
                     'form_input_type' => self::TEXTAREA,
+                    'editor' => TRUE,
                 ),
             );
       }

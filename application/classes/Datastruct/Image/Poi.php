@@ -38,7 +38,7 @@ class Datastruct_Image_Poi extends Datastruct {
                     "form_show" => TRUE,
                     "table_show" => FALSE,
                    "subform_table_show" => TRUE, 
-                    'label' =>__('Images to upload'),
+                    'label' =>__('Image'),
                     'urls' => array(
                         'data' => 'jx/admin/upload/image',
                         'delete' => 'jx//admin/upload/image?file=$1',
@@ -51,6 +51,10 @@ class Datastruct_Image_Poi extends Datastruct {
                             '$2' => 'nome',
                             ),
                     ),  
+                ),
+                 "poi_id" => array(
+                    'form_input_type' => self::HIDDEN,
+                    "subform_table_show" => FALSE,
                 ),
                 "data_ins" => array(
                     'form_show' => FALSE,

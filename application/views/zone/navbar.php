@@ -28,6 +28,14 @@
                     <?php endif; ?>
             <?php endforeach; ?>
         </ul>
+        <?php if(isset($earch)): ?>
+                <form class="navbar-form navbar-left" role="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" placeholder="Search">
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+              </form>
+            <?php endif; ?>
         <ul class="nav navbar-nav navbar-right">
             <?php 
                                                                 foreach ($langs as $I18n => $lang):
@@ -36,7 +44,9 @@
             <?php
 				endforeach;
 			?>
+            <?php if(isset($user)): ?>
             <li><span class=""><?php echo $user->user_data->nome. " ".$user->user_data->cognome."(".$user->username.")";?></span></li>
+            <?php endif; ?>
         </ul>
     </div>
     </div>

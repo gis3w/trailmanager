@@ -280,6 +280,14 @@
       <Cl au="0" df="" nm="color" nu="1">
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
+      <Cl au="0" df="" nm="typology_id" nu="1">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Fk deAc="3" nm="fk_paths_typologies" prLkCl="id" upAc="3">
+        <PrTb mn="0" nm="typologies" oe="1" sch="public" zr="0"/>
+        <CdTb mn="1" nm="paths" oe="1" sch="public" zr="1"/>
+        <ClPr cdCl="typology_id" prCl="id"/>
+      </Fk>
       <SchTrHis/>
     </Tbl>
     <Tbl UsSo="1" nm="pois">
@@ -310,6 +318,14 @@
       <Cl au="0" df="true" nm="publish" nu="0">
         <DT ds="Boolean" en="" id="16" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
+      <Cl au="0" df="" nm="typology_id" nu="1">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Fk deAc="3" nm="fk_pois_typologies" prLkCl="id" upAc="3">
+        <PrTb mn="0" nm="typologies" oe="1" sch="public" zr="0"/>
+        <CdTb mn="1" nm="pois" oe="1" sch="public" zr="1"/>
+        <ClPr cdCl="typology_id" prCl="id"/>
+      </Fk>
       <SchTrHis/>
     </Tbl>
     <Tbl UsSo="1" nm="roles">
@@ -7949,6 +7965,8 @@ WHERE t.typname = 'geography'::name
     <FkGl bkCl="ff000000" nm="public.itineraries_paths.fk_itineraries_paths_paths"/>
     <FkGl bkCl="ff000000" nm="public.itineraries_pois.fk_itineraries_pois_itineraries"/>
     <FkGl bkCl="ff000000" nm="public.itineraries_pois.fk_itineraries_pois_pois"/>
+    <FkGl bkCl="ff000000" nm="public.paths.fk_paths_typologies"/>
+    <FkGl bkCl="ff000000" nm="public.pois.fk_pois_typologies"/>
     <FkGl bkCl="ff000000" nm="public.roles_users.fk_roles_users_roles"/>
     <FkGl bkCl="ff000000" nm="public.roles_users.fk_roles_users_users"/>
     <FkGl bkCl="ff000000" nm="public.typologies_paths.fk_typologies_paths_paths"/>
@@ -7961,7 +7979,7 @@ WHERE t.typname = 'geography'::name
     <Notes/>
     <Zones/>
   </Dgm>
-  <RnmMgr NxRnmId="14">
+  <RnmMgr NxRnmId="16">
     <RnmCh ObjCls="Table" ParCls="Schema" ParNme="public" SupCls="" SupNme="">
       <Rnm id="2" nNm="itineraries" oNm="itinerari"/>
       <Rnm id="1" nNm="itinerari" oNm="itineraries"/>
@@ -7996,6 +8014,12 @@ WHERE t.typname = 'geography'::name
     </RnmCh>
     <RnmCh ObjCls="Table" ParCls="Schema" ParNme="public" SupCls="" SupNme="">
       <Rnm id="13" nNm="video_paths" oNm="video_path"/>
+    </RnmCh>
+    <RnmCh ObjCls="Column" ParCls="Table" ParNme="pois" SupCls="Schema" SupNme="public">
+      <Rnm id="14" nNm="typology_id" oNm="main_typology_id"/>
+    </RnmCh>
+    <RnmCh ObjCls="Column" ParCls="Table" ParNme="paths" SupCls="Schema" SupNme="public">
+      <Rnm id="15" nNm="typology_id" oNm="main_typology_id"/>
     </RnmCh>
   </RnmMgr>
   <DbDocOptionMgr>
