@@ -62,8 +62,8 @@ return array(
              'menu' => array(
                  'type' => 'tabs',
                  'items' => array(
-                      'tipologies' => array(
-                         'name' => __('Tipologies'),
+                      'typologies' => array(
+                         'name' => __('Typologies'),
                          'icon' =>'suitcase',
                          'menu' => array(
                              'type' => 'affix',

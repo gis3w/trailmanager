@@ -103,7 +103,7 @@ return array(
     'Images to upload' => 'Immagini da caricare',
     'Videos to embed' => 'Video da incorporare',
    
-    
+    'global-typology-data' => 'Tipologia',
     
     'user-data-data' => 'Dati',
     'user-data-login' => 'Accesso',

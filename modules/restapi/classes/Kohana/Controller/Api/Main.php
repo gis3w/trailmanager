@@ -366,7 +366,6 @@ abstract class Kohana_Controller_Api_Main extends Kohana_Controller_REST{
      */
     protected function _apply_filters($orm)
     {  
-
         
         if($this->_filters)
         {
@@ -405,14 +404,13 @@ abstract class Kohana_Controller_Api_Main extends Kohana_Controller_REST{
                 {
                     // si recuperano le caratteristiche del filtro
                     $met = '=';
-                    
                     // in questa maniera solo per NULL o null o Null
                     if(strtoupper($val) === 'NULL')
                     {
                         $met = 'IS';
                         $val = DB::expr($val);
                     }
-                    
+
                     $this->_filter_sch_criteria($col,$met,$val);
                     
                     $orm->where($col,$met,$val);
@@ -432,7 +430,7 @@ abstract class Kohana_Controller_Api_Main extends Kohana_Controller_REST{
         $forms_fields = Kohana::$config->load('forms_filters');
         
         $direcoryController = $this->request->directory().'/'.$this->request->controller();
-        
+
         //$prio = ORM::factory('role')->get_levels();
 
         

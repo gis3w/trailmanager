@@ -6,7 +6,16 @@ class Controller_Ajax_Geo_Base extends Controller_Ajax_Base_Crud_GET{
     public function before() {
         parent::before();
         
-        $this->_filters['publish'] = 'true';
+        // si impostano dei filtri
+        if(!isset($_GET['filter']))
+        {
+            $_GET['filter'] = 'publish:true';
+        }
+        else
+        {
+            $_GET['filter'] .=",publish:true";
+        }
+            
     }
 
 
