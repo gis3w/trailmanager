@@ -21,7 +21,7 @@ $.extend(APP.fileuploader,{
 				thumbnail = '<img src="'+fileObj.thumbnail_url+'" alt=""/>';
 				break;
 			default:
-				thumbnail = '<i class="fa fa-file-o"></i>';
+				thumbnail = '<i class="icon icon-file-alt icon-large"></i>';
 				break;
 		}
 		var downUrl = this.urls.download;
@@ -61,17 +61,6 @@ $.extend(APP.fileuploader,{
 		return tr;
 	},
 	
-	/*
-	<td style="vertical-align: middle">\
-		<span class="thumbnailContainer">'+thumbnail+'</span>\
-	</td>\
-	
-	
-	<button class="btn btn-warning fileupload cancel tooltipElement" style="'+display+'" type="button" data-toggle="tooltip" title="'+APP.i18n.translate('remove')+'">\
-							<i class="icon-remove icon-white"></i>\
-						</button>\
-	*/
-	
 	onFileAdd: function(data)
 	{
 		var table = $("#fileToUploadTable");
@@ -97,7 +86,6 @@ $.extend(APP.fileuploader,{
 		{
 			$(".fileinput-button").addClass("disabled");
 			$(".fileinput-button").find("input").attr("disabled", true);
-			
 		}
 		
 		table.find(".tooltipElement").tooltip();
