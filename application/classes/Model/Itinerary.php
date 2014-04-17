@@ -14,6 +14,9 @@ class Model_Itinerary extends ORM {
             'through' => 'itineraries_paths',
             'orm_type' => 'GIS',
         ),
+         'images' => array(
+            'model'   => 'Image_Poi',
+        ),
     );
     
     public function labels() {

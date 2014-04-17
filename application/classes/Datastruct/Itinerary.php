@@ -3,8 +3,7 @@
 class Datastruct_Itinerary extends Datastruct {
     
     protected $_nameORM = "Itinerary";
-    
-    public $icon = 'suitcase';
+
     public $filter = TRUE;
 
     public $groups = array(
@@ -16,7 +15,7 @@ class Datastruct_Itinerary extends Datastruct {
         array(
             'name' => 'itinerary-foreign-data',
             'position' => 'right',
-            'fields' => array('pois','paths'),
+            'fields' => array('pois','paths','the_geom','image_itinerary'),
         ),
        
     );
@@ -61,11 +60,35 @@ class Datastruct_Itinerary extends Datastruct {
              'description' => __('Select one or more paths  for this itinerary'),
         ));
         
+        $fct['image_itinerary'] = array_replace($this->_columnStruct, array(
+                "data_type" => self::SUBFORM,
+                "table_show" => FALSE,
+                'foreign_mode' => self::MULTISELECT,    
+                'foreign_key' => 'itinerary_id',
+                'validation_url' => 'jx/admin/imageitinerary',
+                'label' => __('Images to upload'),
+             )
+        );
+        
       
        
 
         return $fct;
         
+    }
+    
+    protected function _extra_columns_type() {
+        
+        $ext = array();
+        $ext["the_geom"] = array_replace($this->_columnStruct,array(
+                    'form_input_type' => self::MAPBOX,
+                    'map_box_editing' => FALSE,
+                    'map_box_fileloading' => FALSE,
+                    'label' =>__('Geodata'),
+                    'table_show' => FALSE,
+                ));
+        
+        return $ext;
     }
 
 

@@ -105,6 +105,10 @@ return array(
    
     'global-typology-data' => 'Tipologia',
     
+    'capabilitties-data' => 'Capability',
+    'foreign-capabilities-data' => 'Ruoli',
+    'roles-data' => 'Ruolo',
+    
     'user-data-data' => 'Dati',
     'user-data-login' => 'Accesso',
     'user-data-contact' => 'Contatti',

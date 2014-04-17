@@ -119,6 +119,34 @@
       </Cl>
       <SchTrHis/>
     </Tbl>
+    <Tbl UsSo="1" nm="image_itineraries">
+      <TblOpts>WITHOUT OIDS</TblOpts>
+      <Pk ClNs="id" nm="pkimage_itineraries"/>
+      <Cl au="1" df="nextval('image_itineraries_id_seq'::regclass)" nm="id" nu="0">
+        <DT ds="BigInt" en="" id="-5" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="file" nu="0">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="description" nu="1">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="data_ins" nu="0">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="data_mod" nu="1">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="itinerary_id" nu="0">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Fk deAc="3" nm="fk_image_itineraries_itineraries" prLkCl="id" upAc="3">
+        <PrTb mn="0" nm="itineraries" oe="1" sch="public" zr="0"/>
+        <CdTb mn="1" nm="image_itineraries" oe="1" sch="public" zr="1"/>
+        <ClPr cdCl="itinerary_id" prCl="id"/>
+      </Fk>
+      <SchTrHis/>
+    </Tbl>
     <Tbl UsSo="1" nm="image_paths">
       <Cm>Tabella che contiene le immagini dei PATHS</Cm>
       <TblOpts>WITHOUT OIDS</TblOpts>
@@ -7901,6 +7929,7 @@ WHERE t.typname = 'geography'::name
     <Seq incr="1" nm="capabilities_id_seq"/>
     <Seq incr="1" nm="capabilities_roles_id_seq"/>
     <Seq incr="1" nm="i18n_id_seq"/>
+    <Seq incr="1" nm="image_itineraries_id_seq"/>
     <Seq incr="1" nm="image_paths_id_seq"/>
     <Seq incr="1" nm="image_pois_id_seq"/>
     <Seq incr="1" nm="itineraries_id_seq"/>
@@ -7963,8 +7992,10 @@ WHERE t.typname = 'geography'::name
     <TbGl bkCl="ffff6666" sch="public" tbl="image_paths" x="1286" y="627"/>
     <TbGl bkCl="ffff6666" sch="public" tbl="video_pois" x="1291" y="133"/>
     <TbGl bkCl="ffff6666" sch="public" tbl="video_paths" x="1290" y="494"/>
+    <TbGl bkCl="ffff6666" sch="public" tbl="image_itineraries" x="862" y="11"/>
     <FkGl bkCl="ff000000" nm="public.capabilities_roles.fk_capabilities_roles_capabilities"/>
     <FkGl bkCl="ff000000" nm="public.capabilities_roles.fk_capabilities_roles_roles"/>
+    <FkGl bkCl="ff000000" nm="public.image_itineraries.fk_image_itineraries_itineraries"/>
     <FkGl bkCl="ff000000" nm="public.image_paths.fk_image_paths_paths"/>
     <FkGl bkCl="ff000000" nm="public.image_pois.fk_image_pois_pois"/>
     <FkGl bkCl="ff000000" nm="public.itineraries_paths.fk_itineraries_paths_itineraries"/>
@@ -8048,12 +8079,12 @@ WHERE t.typname = 'geography'::name
     </BasicOptionMgr>
   </DbDocOptionMgr>
   <OpenEditors>
-    <OpenEditor ClsNm="Diagram" fqn="null.diagramA" selected="1"/>
+    <OpenEditor ClsNm="Diagram" fqn="null.diagramA" selected="0"/>
   </OpenEditors>
   <TreePaths>
     <TreePath/>
     <TreePath>/Schemas (1)</TreePath>
     <TreePath>/Schemas (1)/public</TreePath>
-    <TreePath>/Schemas (1)/public/Tables (22)</TreePath>
+    <TreePath>/Schemas (1)/public/Tables (23)</TreePath>
   </TreePaths>
 </Db>

@@ -55,6 +55,14 @@ return array(
                 'poi_id',
             )
         ),
+        'image_itineraries' => array(
+            'columns_to_exlude' => array(
+                'file',
+                'data_ins',
+                'data_mod',
+                'path_id',
+            )
+        ),
     ),
     
 );

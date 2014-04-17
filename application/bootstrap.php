@@ -211,6 +211,13 @@ Route::set('jx/admin', 'jx/admin(/<controller>(/<id>(/<filtro>)))')
                     'action'     => 'index',
 	));
 
+Route::set('jx/data', 'jx/data/(<controller>(/<id>(/<filtro>)))')
+	->defaults(array(
+                    'directory' => 'Ajax/Data',
+                    'controller' => 'home',
+                    'action'     => 'index',
+	));
+
 Route::set('jx/geo', 'jx/geo/(<controller>(/<id>(/<filtro>)))')
 	->defaults(array(
                     'directory' => 'Ajax/Geo',

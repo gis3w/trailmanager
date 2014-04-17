@@ -9,7 +9,14 @@ class Controller_Ajax_Admin_Itinerary extends Controller_Ajax_Base_Crud{
     
     protected $_pois = array();
     protected $_paths = array();
+    
+    protected $_upload_path = array(
+         'image_itinerary' => 'image',
+     );
 
+    protected $_subformToSave = array(
+         'image_itinerary' => 'Image_Itinerary' ,
+    );
 
     protected function _edit()
     {
@@ -28,6 +35,7 @@ class Controller_Ajax_Admin_Itinerary extends Controller_Ajax_Base_Crud{
                 $this->_orm->setManyToMany($alias,$this->$var);
             }
             
+            $this->_save_subforms_1XN();
             
                 
             Database::instance()->commit();

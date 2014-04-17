@@ -38,7 +38,8 @@ class ORM extends Kohana_ORM {
                         $i18nData->tb = $this->_table_name;
                         $i18nData->col = $column;
                     }
-                    $i18nData->$colLang = $_POST[$column];
+
+                    $i18nData->$colLang = $this->_object[$column];
                     $i18nData->save();
                     // si elimina dall'array changed l'elemento salvato nella tabela di traduzione
                     unset($this->_changed[$column]);

@@ -28,6 +28,9 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
    protected $_environments;
    
    public $translated;
+   
+   protected $_subformToSave= array();
+   protected $_upload_path = array();
 
 
    public function before() {
@@ -65,7 +68,9 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
 //       }
        
        // dati generali per l'upload
-       $this->uploadPath = APPPATH."../".Controller_Download_Base::UPLOADPATH;
+       $this->_upload_path_base = Controller_Download_Base::UPLOADPATH;
+        foreach($this->_upload_path as $type => $path)
+            $this->_upload_path[$type] = $this->_upload_path_base."/".$path."/";
    }
 
    protected function _ACL()
@@ -388,6 +393,66 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
             }
             
     }
+    
+    protected function _save_subforms_1XN()
+    {
+            foreach($this->_subformToSave as $name_subform => $name_orm)
+           {
+                if(isset($_POST[$name_subform]))
+                {
+                   $subformDatas = $this->_get_subform_data($name_subform);
+                   if(!empty($subformDatas))
+                   {
+                       foreach($subformDatas as $sfd)
+                       {  
+                           if(!isset($sfd['stato']))
+                               continue;
+
+                           // si forza unita_produttiva_id anche per lìinserimento
+                           $sfd[$this->_table_rid.'_id'] = $this->_orm->id;
+                           $id = isset($sfd['id']) ? $sfd['id'] : NULL;
+                           $subformOrm = ORM::factory($name_orm,$id);
+                           switch($sfd['stato'])
+                           {
+                               case "I":
+                               case "U":
+                                   if($sfd['stato'] == 'I')
+                                   {
+                                       $sfd['data_mod'] =$sfd['data_ins'] = time();
+                                   }
+                                   else
+                                   {
+                                       $sfd['data_mod'] = time();
+                                       // si tenta leliminazione del precedente
+                                       if(isset($this->_upload_path[$name_subform]))
+                                        {
+                                            $path_to_delete = APPPATH."../".$this->_upload_path[$name_subform].$subformOrm->file;
+                                             @unlink($path_to_delete);
+                                        }
+                                   }
+                                   $subformOrm->values($sfd)->save();
+                               break;
+
+                               case "D":
+                                   $fileToDelete = $subformOrm->file;
+                                   $subformOrm->delete();
+                                    if(isset($this->_upload_path[$name_subform]))
+                                   {
+                                       $path_to_delete = APPPATH."../".$this->_upload_path[$name_subform].$fileToDelete;
+                                                                               error_log($path_to_delete);
+                                        @unlink($path_to_delete);
+                                   }
+                                  
+                                   
+                               break;
+                           }
+
+                   }
+               } 
+           }
+       }
+    }
+    
 
 
 
