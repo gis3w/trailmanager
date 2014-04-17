@@ -653,7 +653,9 @@ class Kohana_ORM extends Model implements serializable {
 		}
 		elseif (isset($this->_has_many[$column]))
 		{
-			$model = ORM::factory($this->_has_many[$column]['model']);
+                    
+                                                $MODEL = isset($this->_has_many[$column]['orm_type']) ? 'ORM'.$this->_has_many[$column]['orm_type']:'ORM';
+			$model = $MODEL::factory($this->_has_many[$column]['model']);
 
 			if (isset($this->_has_many[$column]['through']))
 			{
@@ -1679,11 +1681,13 @@ class Kohana_ORM extends Model implements serializable {
 		}
 		elseif (isset($this->_has_one[$alias]))
 		{
-			return $this->_related[$alias] = ORM::factory($this->_has_one[$alias]['model']);
+                                                $MODEL = isset($this->_has_one[$alias]['orm_type']) ? 'ORM'.$this->_has_one[$alias]['orm_type']:'ORM';
+			return $this->_related[$alias] = $MODEL::factory($this->_has_one[$alias]['model']);
 		}
 		elseif (isset($this->_belongs_to[$alias]))
 		{
-			return $this->_related[$alias] = ORM::factory($this->_belongs_to[$alias]['model']);
+                                                $MODEL = isset($this->_belongs_to[$alias]['orm_type']) ? 'ORM'.$this->_belongs_to[$alias]['orm_type']:'ORM';
+			return $this->_related[$alias] = $MODEL::factory($this->_belongs_to[$alias]['model']);
 		}
 		else
 		{
