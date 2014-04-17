@@ -5,7 +5,7 @@ return array(
            "publish" => array(
                 'col' => "publish",
                 'met' => 'IS',
-                'val' => "DB::expr('true')"
+                'val' => "DB::expr@#val"
             ),
         ),
     

@@ -9,7 +9,7 @@ class Datastruct_Global_Typology extends Datastruct {
 
     public $groups = array(
         array(
-            'name' => 'globla-typology-data',
+            'name' => 'globlal-typology-data',
             'position' => 'left',
             'fields' => array('id','name','description'),
         ),
