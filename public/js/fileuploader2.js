@@ -238,7 +238,7 @@ $.extend(APP.fileuploader,{
 				var jqXHR = data.submit()
 				.success(function (result, textStatus, jqXHR) {
 					if (!APP.utils.checkError(result.error, form))
-						that.onFileAdd(result.data.files[0]);
+						that.onFileAdd(result.data[that.inputName][0]);
 					else
 						APP.utils.showErrMsg(result);
 					
