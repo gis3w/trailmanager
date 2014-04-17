@@ -939,6 +939,7 @@ $.extend(APP.utils,{
 							// send Blob objects via XHR requests:
 							/*disableImageResize: /Android(?!.*Chrome)|Opera/
 								.test(window.navigator.userAgent),*/
+							sequentialUploads: (v.multiple)? true : false,
 							previewMaxWidth: 100,
 							previewMaxHeight: 100,
 							previewCrop: true
@@ -977,7 +978,7 @@ $.extend(APP.utils,{
 								progress + '%'
 							);
 						}).on('fileuploaddone', function (e, data) {
-							if (APP.utils.checkError(data.result.error, null))
+							if (APP.utils.checkError(data.result.error, $(data.form[0])))
 							{
 								APP.utils.showErrMsg(data.result);
 								return;
@@ -995,7 +996,7 @@ $.extend(APP.utils,{
 											dataType: 'json',
 											success: function(x)
 											{
-												if (!APP.utils.checkError(x.error, null))
+												if (!APP.utils.checkError(x.error, $(data.form[0])))
 												{
 													qb.parents().find('.uploadedFileDiv:first').remove();
 												}

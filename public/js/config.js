@@ -581,8 +581,7 @@ $.extend(APP.config,{
 		this.setFilterDialogsDiv();
 		this.setMenu();
 		
-		$("#itineraryButton").click();
-		
+		$(".navbar-nav:first").find("a:first").click();
 		return;
 	}
 });
