@@ -1586,13 +1586,12 @@ $.extend(APP.anagrafica_ss,
 			d.push(o);
         });
 		
-		if (form.find(".jquery_fileupload"))
-			form.attr("enctype","multipart/form-data");
+		//if (form.find(".jquery_fileupload"))
+			//form.attr("enctype","multipart/form-data");
 		
 		if (form.attr("enctype") == "multipart/form-data")
 		{
-			
-			if (form.find(".jquery_fileupload"))
+			/*if (form.find(".jquery_fileupload"))
 			{
 				var name = form.find(".jquery_fileupload").attr('name');
 				var btns = form.find(".uploadedFileDiv").find("button");
@@ -1604,7 +1603,7 @@ $.extend(APP.anagrafica_ss,
 					d.push(og);
 				});
 			}
-			else
+			else*/
 				d.push(APP.fileuploader.preserialize(form));
 		}
 		if (form.find(".subformTable").length>0)
