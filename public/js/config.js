@@ -571,7 +571,7 @@ $.extend(APP.config,{
 		$(document).on('load_end', function(){ APP.utils.toggleLoadingImage(false); });*/
 		
 		this.xhrObj.init();	
-		this.setResize();
+		//this.setResize();
 		this.setLoadingImage();
 		this.setMsgDialog();
 		this.setDateEu(); // gg/mm/aaaa
@@ -581,7 +581,8 @@ $.extend(APP.config,{
 		this.setFilterDialogsDiv();
 		this.setMenu();
 		
-		$(".navbar-nav:first").find("a:first").click();
+		$("#itineraryButton").click();
+		
 		return;
 	}
 });
