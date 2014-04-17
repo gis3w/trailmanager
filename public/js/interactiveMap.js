@@ -39,6 +39,7 @@ $.extend(APP.interactiveMap,
 							</nav>');
 		
 		bottomNavbar.find(".navbar-nav a").click(function(){
+			//APP.map.removeAllLayers();
 			bottomNavbar.find(".navbar-nav li").removeClass("active");
 			$(this).parents("li").addClass("active");
 			switch($(this).attr("id"))
@@ -47,6 +48,7 @@ $.extend(APP.interactiveMap,
 					
 					break;
 				case "punti":
+					
 					$.ajax({
 						type: 'GET',
 						url: '/jx/geo/poi/',
@@ -55,7 +57,18 @@ $.extend(APP.interactiveMap,
 						{
 							if (!APP.utils.checkError(data.error, null))
 							{
-								new L.Marker([44.160534,11.04126], {bounceOnAdd: true}).addTo(APP.map.globalData[APP.map.currentMapId].map);
+								$.each(data.data.items, function(i,v)
+								{
+									if (v.geoJSON.type === "Point")
+									{
+										var coords = [v.geoJSON.coordinates[1],v.geoJSON.coordinates[0]];
+										new L.Marker(coords,{bounceOnAdd: true}).addTo(APP.map.globalData[APP.map.currentMapId].map);
+									}
+									else
+									{
+										new L.geoJson(v.geoJSON).addTo(APP.map.globalData[APP.map.currentMapId].map);
+									}
+								});
 							}
 							else
 								APP.utils.showErrMsg(data);
