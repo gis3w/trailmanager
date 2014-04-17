@@ -209,7 +209,7 @@ $.extend(APP.fileuploader,{
 						<div class="col-md-5">\
 							<span id="APP-'+this.inputName+'" class="btn btn-warning fileinput-button '+disClass+'">\
 								<span><i class="icon icon-search"></i> '+APP.i18n.translate("select")+'</i></span>\
-								<input type="file" class="fileupload" name="files[]" '+mulAr[1]+' '+disClass+' >\
+								<input type="file" class="fileupload" name="'+this.inputName+'[]" '+mulAr[1]+' '+disClass+' >\
 							</span>\
 						</div>\
 						<div class="col-md-7">\

@@ -874,7 +874,6 @@ $.extend(APP.utils,{
 						inp = APP.fileuploader.getString({"name": v.name, "value": tmpArr, "multiple": v.multiple, "urls": v.urls, "options": v.data_options, "capabilities": sectionTarget.capabilities});
 						break;
 					default:
-					
 						inp = "<input type='text' class='form-control' id='APP-"+v.name+"' name='"+v.name+"' "+required+">";
 						inp = $(inp).val(valore);
 				}
