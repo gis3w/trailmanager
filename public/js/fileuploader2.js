@@ -12,18 +12,23 @@ $.extend(APP.fileuploader,{
 	{
 		var that = this;
 		
-		var tipo = fileObj.type.split("/")[0];
-		var thumbnail = null;
-		
-		switch(tipo)
+		var thumbnail = "";
+		if (fileObj.type)
 		{
-			case "image":
-				thumbnail = '<img src="'+fileObj.thumbnail_url+'" alt=""/>';
-				break;
-			default:
-				thumbnail = '<i class="icon icon-file-alt icon-large"></i>';
-				break;
+			var tipo = fileObj.type.split("/")[0];
+			
+			
+			switch(tipo)
+			{
+				case "image":
+					thumbnail = '<img src="'+fileObj.thumbnail_url+'" alt=""/>';
+					break;
+				default:
+					thumbnail = '<i class="icon icon-file-alt icon-large"></i>';
+					break;
+			}
 		}
+			
 		var downUrl = this.urls.download;
 		if (!APP.utils.isset(fileObj.url))
 		{

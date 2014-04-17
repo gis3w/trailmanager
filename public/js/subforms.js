@@ -143,7 +143,10 @@ $.extend(APP.subforms,
 						{
 							if (vv.stato === "D")
 								return true;
-							value += vv[APP.fileuploader.inputName]+"|";
+							if (vv.type.split("/")[0] === "image")
+								value += '<img src="'+vv.thumbnail_url+'" alt=""> '+vv[APP.fileuploader.inputName]+'|';
+							else
+								value += '<i class="icon icon-file-alt"></i>' + vv[APP.fileuploader.inputName]+"|";
 						});
 						//APP.fileuploader.myFiles = {};
 						value = value.substr(0, value.length-1);

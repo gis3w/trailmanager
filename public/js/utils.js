@@ -1416,8 +1416,26 @@ $.extend(APP.utils,{
 		switch(t.form_input_type)
 		{
 			case "input":
-				if ($.type(data) == "boolean")
-					data = this.boolToString(data);
+				switch(t.data_type)
+				{
+					case "boolean":
+						data = this.boolToString(data);
+						break;
+					case "file":
+						var tipo = data.type.split("/")[0];
+						var thumbnail = null;
+						
+						switch(tipo)
+						{
+							case "image":
+								data = '<img src="'+fileObj.thumbnail_url+'" alt=""/>';
+								break;
+							default:
+								data = '<i class="icon icon-file-alt icon-large"></i>';
+								break;
+						};
+						break;
+				}
 				break;
 			case "datebox":
 				data = this.convertiData(data);
