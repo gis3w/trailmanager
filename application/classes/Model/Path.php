@@ -36,6 +36,7 @@ class Model_Path extends ORMGIS {
             "accessibility" => __("Accessibility"),
             "information_url" => __("Information url"),
             "publish" => __("Published"),
+            "period_schedule" => __("Period schedule"),
         );
     }
     
@@ -55,6 +56,9 @@ class Model_Path extends ORMGIS {
                     array('numeric')
             ),
             'publish' =>array(
+                    array('not_empty'),
+            ),
+            'typology_id' =>array(
                     array('not_empty'),
             ),
             

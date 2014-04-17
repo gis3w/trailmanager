@@ -12,12 +12,12 @@ class Datastruct_Path extends Datastruct {
         array(
             'name' => 'path-data',
             'position' => 'left',
-            'fields' => array('id','title','description','length','altitude_gap','reason','general_features','accessibility','information_url'),
+            'fields' => array('id','title','description','length','altitude_gap','reason','period_schedule','general_features','accessibility','information_url'),
         ),
        array(
             'name' => 'path-foreign-data',
             'position' => 'right',
-            'fields' => array('typology_id','typologies','the_geom','color','images','video_path'),
+            'fields' => array('typology_id','typologies','the_geom','color','image_path'),
         ),
     );
     
@@ -50,6 +50,10 @@ class Datastruct_Path extends Datastruct {
                 "color" => array(
                     "form_input_type" => self::MAPBOX_COLOR,
                     "class" => "color-path",
+                ),
+                 "period_schedule" => array(
+                    'form_input_type' => self::TEXTAREA,
+                    'editor' => TRUE,
                 ),
                  "the_geom" => array(
                     'form_input_type' => self::MAPBOX,
@@ -97,6 +101,16 @@ class Datastruct_Path extends Datastruct {
                         '$2' => 'nome',
                         ),
                 ),
+             )
+        );
+         
+         $fct['image_path'] = array_replace($this->_columnStruct, array(
+                "data_type" => self::SUBFORM,
+                "table_show" => FALSE,
+                'foreign_mode' => self::MULTISELECT,
+                'foreign_key' => 'path_id',
+                'validation_url' => 'jx/admin/imagepath',
+                'label' => __('Images to upload'),
              )
         );
          

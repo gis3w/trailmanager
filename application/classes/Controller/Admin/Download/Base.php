@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Controller_Admin_Download_Base extends Controller_Ajax_Auth_Strict {
+class Controller_Admin_Download_Base extends Controller_Auth_Strict {
     
     protected $_mimetype;
     
@@ -77,6 +77,7 @@ class Controller_Admin_Download_Base extends Controller_Ajax_Auth_Strict {
                  throw HTTP_Exception::factory ('500', SAFE::message ('ehttp','500_no_file_in_fs'));
         
     }
+    
     
     public function after() {
         $this->response->send_file($this->path_to_file);

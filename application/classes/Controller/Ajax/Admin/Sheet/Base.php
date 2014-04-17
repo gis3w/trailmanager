@@ -4,6 +4,21 @@
 class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
     
     protected $_typologies = array();
+    
+     protected $_upload_path_base;
+     protected $_upload_path = array(
+         'image_poi' => 'image',
+         'image_path' => 'image',
+     );
+     
+     public function before() {
+         parent::before();
+         
+         // si impostano i valori per le eleiminazioni dei file
+         $this->_upload_path_base = Controller_Download_Base::UPLOADPATH;
+         foreach($this->_upload_path as $type => $path)
+            $this->_upload_path[$type] = $this->_upload_path_base."/".$path."/";
+     }
 
     protected function _set_the_geom_edit()
     {
@@ -70,7 +85,11 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
     
      protected function _save_subforms_1XN()
     {
-            foreach(array('video_poi' => 'Video_Poi' ,'video_path' => 'Video_Path') as $name_subform => $name_orm)
+            foreach(array(
+                'video_poi' => 'Video_Poi' ,
+                'video_path' => 'Video_Path',
+                'image_poi' => 'Image_Poi',
+                'image_path' => 'Image_Path') as $name_subform => $name_orm)
            {
                 if(isset($_POST[$name_subform]))
                 {
@@ -97,12 +116,26 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
                                    else
                                    {
                                        $sfd['data_mod'] = time();
+                                       // si tenta leliminazione del precedente
+                                       if(isset($this->_upload_path[$name_subform]))
+                                        {
+                                            $path_to_delete = APPPATH."../".$this->_upload_path[$name_subform].$subformOrm->file;
+                                             @unlink($path_to_delete);
+                                        }
                                    }
                                    $subformOrm->values($sfd)->save();
                                break;
 
                                case "D":
+                                   $fileToDelete = $subformOrm->file;
                                    $subformOrm->delete();
+                                    if(isset($this->_upload_path[$name_subform]))
+                                   {
+                                       $path_to_delete = APPPATH."../".$this->_upload_path[$name_subform].$fileToDelete;
+                                        @unlink($path_to_delete);
+                                   }
+                                  
+                                   
                                break;
                            }
 

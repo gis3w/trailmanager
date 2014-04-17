@@ -13,7 +13,7 @@ class Datastruct_Poi extends Datastruct {
         array(
             'name' => 'poi-data',
             'position' => 'left',
-            'fields' => array('id','publish','title','description','reason','accessibility','information_url'),
+            'fields' => array('id','publish','title','description','reason','period_schedule','accessibility','information_url'),
         ),
        array(
             'name' => 'poi-foreign-data',
@@ -41,6 +41,10 @@ class Datastruct_Poi extends Datastruct {
                     'editor' => TRUE,
                 ),
                  "accessibility" => array(
+                    'form_input_type' => self::TEXTAREA,
+                    'editor' => TRUE,
+                ),
+                "period_schedule" => array(
                     'form_input_type' => self::TEXTAREA,
                     'editor' => TRUE,
                 ),

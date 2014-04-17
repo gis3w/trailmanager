@@ -11,16 +11,50 @@ return array(
             'columns_to_exlude' => array(
                 'typology_id',
                 'publish',
+                'the_geom',
             )
         ),
         'paths' => array(
             'columns_to_exlude' => array(
                 'typology_id',
                 'publish',
+                'the_geom',
             )
         ),
         'itineraries' => array(),
         'typologies' => array(),
+        'image_pois' => array(
+            'columns_to_exlude' => array(
+                'file',
+                'data_ins',
+                'data_mod',
+                'poi_id',
+            )
+        ),
+        'image_paths' => array(
+            'columns_to_exlude' => array(
+                'file',
+                'data_ins',
+                'data_mod',
+                'path_id',
+            )
+        ),
+        'video_pois' => array(
+            'columns_to_exlude' => array(
+                'embed',
+                'data_ins',
+                'data_mod',
+                'poi_id',
+            )
+        ),
+        'video_paths' => array(
+            'columns_to_exlude' => array(
+                'embed',
+                'data_ins',
+                'data_mod',
+                'poi_id',
+            )
+        ),
     ),
     
 );

@@ -6,4 +6,11 @@ class Model_Image_Poi extends ORM {
             'poi' => array( ),
         );
     
+    public function labels() {
+        return array(
+            "Image" => __("Image"),
+            "description" => __("Description"),
+        );
+    }
+    
 }

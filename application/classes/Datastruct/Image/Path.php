@@ -1,8 +1,8 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Datastruct_Image_Path extends Datastruct {
+class Datastruct_Image_Path extends Datastruct_Image_Poi {
     
-    protected $_nameORM = "Video_Path";
+    protected $_nameORM = "Image_Path";
 
     protected function _columns_type() {
         $cls = parent::_columns_type();

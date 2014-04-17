@@ -133,7 +133,7 @@
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
       <Cl au="0" df="" nm="data_ins" nu="0">
-        <DT ds="Time" en="" id="92" ln="null" sc="null" sg="1" un="0"/>
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
       <Cl au="0" df="" nm="data_mod" nu="1">
         <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
@@ -283,6 +283,9 @@
       <Cl au="0" df="" nm="typology_id" nu="1">
         <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
+      <Cl au="0" df="" nm="period_schedule" nu="1">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
       <Fk deAc="3" nm="fk_paths_typologies" prLkCl="id" upAc="3">
         <PrTb mn="0" nm="typologies" oe="1" sch="public" zr="0"/>
         <CdTb mn="1" nm="paths" oe="1" sch="public" zr="1"/>
@@ -320,6 +323,9 @@
       </Cl>
       <Cl au="0" df="" nm="typology_id" nu="1">
         <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="period_schedule" nu="1">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
       <Fk deAc="3" nm="fk_pois_typologies" prLkCl="id" upAc="3">
         <PrTb mn="0" nm="typologies" oe="1" sch="public" zr="0"/>
@@ -7979,7 +7985,7 @@ WHERE t.typname = 'geography'::name
     <Notes/>
     <Zones/>
   </Dgm>
-  <RnmMgr NxRnmId="16">
+  <RnmMgr NxRnmId="18">
     <RnmCh ObjCls="Table" ParCls="Schema" ParNme="public" SupCls="" SupNme="">
       <Rnm id="2" nNm="itineraries" oNm="itinerari"/>
       <Rnm id="1" nNm="itinerari" oNm="itineraries"/>
@@ -8020,6 +8026,10 @@ WHERE t.typname = 'geography'::name
     </RnmCh>
     <RnmCh ObjCls="Column" ParCls="Table" ParNme="paths" SupCls="Schema" SupNme="public">
       <Rnm id="15" nNm="typology_id" oNm="main_typology_id"/>
+    </RnmCh>
+    <RnmCh ObjCls="Column" ParCls="Table" ParNme="image_pois" SupCls="Schema" SupNme="public">
+      <Rnm id="17" nNm="file" oNm="images"/>
+      <Rnm id="16" nNm="images" oNm="file"/>
     </RnmCh>
   </RnmMgr>
   <DbDocOptionMgr>

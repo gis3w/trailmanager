@@ -124,7 +124,7 @@ Kohana::modules(array(
 	'cache'      => MODPATH.'cache',      // Caching with multiple backends
 	// 'codebench'  => MODPATH.'codebench',  // Benchmarking tool
 	 'database'   => MODPATH.'database',   // Database access
-	// 'image'      => MODPATH.'image',      // Image manipulation
+	'image'      => MODPATH.'image',      // Image manipulation
 	'minion'     => MODPATH.'minion',     // CLI Tasks
 	 'orm'        => MODPATH.'orm',        // Object Relationship Mapping
                 'ormgis'        => MODPATH.'ormgis',        // Object Relationship Mapping for Postgis table
@@ -218,8 +218,8 @@ Route::set('jx/geo', 'jx/geo/(<controller>(/<id>(/<filtro>)))')
                     'action'     => 'index',
 	));
 
-Route::set('admin/download', 'admin/download(/<controller>(/<action>(/<id>)))')
-	->defaults(array(
+Route::set('admin/download', 'admin/download(/<controller>(/<action>(/<file>)))',array('file' => '.*'))
+	->defaults(array(   
                                 'directory' => 'Admin/Download',
 		'controller' => 'home',
 		'action'     => 'index',

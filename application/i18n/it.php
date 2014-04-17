@@ -87,10 +87,14 @@ return array(
     'Altitude gap' => 'Dislivello',
     'General features' => 'Caratteristiche generali',
     'Information url' => 'URL info',
-    'Typologies' => 'Tipologia',
+    'Typologies' => 'Tipologie',
     'Geodata' => 'Dato spaziale',
     'Accessibility' => 'Accessibilità',
     'Reasons' => 'Motivi di interesse',
+    'Main typology' => 'Tipologia principale',
+    'Period schedule' => 'Periodi e orari',
+    
+    'actions' => 'Azioni',
     
     
     'Points of interest' => 'Punti di interesse',

@@ -108,6 +108,7 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
             'path' => '/jx/admin/path',
             'user' => 'jx/admin/user',
             'image_poi' => 'jx/admin/imagepoi',
+            'image_path' => 'jx/admin/imagepath',
             'video_poi' => 'jx/admin/videopoi',
             'video_path' => 'jx/admin/videopath',
             
