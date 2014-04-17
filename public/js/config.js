@@ -580,7 +580,7 @@ $.extend(APP.config,{
 		this.setMainContent();
 		this.setFilterDialogsDiv();
 		this.setMenu();
-		
+				
 		$(".navbar-nav:first").find("a:first").click();
 		return;
 	}

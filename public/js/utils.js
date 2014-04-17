@@ -182,8 +182,11 @@ $.extend(APP.utils,{
 	
 		if (form.find(".textEditor"))
 		{
-			form.find(".textEditor").tinymce({
-				
+			$.each(form.find(".textEditor"), function(){
+				var el = tinymce.get($(this).attr("id"));
+				if (el)
+					el.remove();
+				$(this).tinymce({menubar: false});
 			});
 		}
 		

@@ -379,6 +379,9 @@ $.extend(APP.subforms,
 		APP.utils.resetFormErrors(form);
 		mtype = (mtype === "add")? "PUT" : ((mtype === "edit")? "POST" : null);
 		
+		if (form.find(".textEditor").length > 0)
+			tinyMCE.triggerSave();
+		
 		if (APP.utils.isset(url) && APP.utils.isset(mtype))
 		{
 			
@@ -495,8 +498,8 @@ $.extend(APP.subforms,
 		$("#modalSubform").find(".modal-footer").html(savebtn);
 		$("#modalSubform").find(".modal-footer").append(closeBtn);
 		that.createFormDialog({ 'div': $("#subformContent"), 'type': type, 'token': tkn});
-		$("#modalSubform").one('shown.bs.modal', function(){
-			APP.utils.setLookForm($("#modalSubform").find("form"), null);
+		$("#modalSubform").one('shown.bs.modal', function(){	
+			APP.utils.setLookForm($("#subformContent").find("form"), null);
 		});
 		$("#modalSubform").modal("show");
 		
