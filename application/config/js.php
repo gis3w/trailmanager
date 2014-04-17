@@ -9,8 +9,8 @@ return array(
     'js_base' => array(
 		'../modules/jquery-1.11.0.min.js',
 		'../modules/jquery-ui-1.10.3/ui/minified/jquery-ui.min.js',
-		'../modules/tinymce/jquery.tinymce.min.js',
 		'../modules/tinymce/tinymce.min.js',
+		'../modules/tinymce/jquery.tinymce.min.js',
 		//'../modules/AnimatedContentMenu/js/AnimatedContentMenu.js',
 		//'../modules/jQuery-File-Upload-9.5.7/js/vendor/jquery.ui.widget.js',
 		'../modules/JavaScript-Load-Image-1.11.1/js/load-image.min.js',
