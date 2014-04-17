@@ -182,9 +182,8 @@ $.extend(APP.utils,{
 	
 		if (form.find(".textEditor"))
 		{
-			tinymce.init({
-				selector: "textarea.textEditor",
-				menubar : false,
+			form.find(".textEditor").tinymce({
+				
 			});
 		}
 		

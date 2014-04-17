@@ -495,9 +495,8 @@ $.extend(APP.subforms,
 		$("#modalSubform").find(".modal-footer").html(savebtn);
 		$("#modalSubform").find(".modal-footer").append(closeBtn);
 		that.createFormDialog({ 'div': $("#subformContent"), 'type': type, 'token': tkn});
-		$("#modalSubform").off('shown.bs.modal').on('shown.bs.modal', function(){
-			APP.utils.setLookForm($("#subformContent"), null);
-			$("#modalSubform").off('shown.bs.modal');
+		$("#modalSubform").one('shown.bs.modal', function(){
+			APP.utils.setLookForm($("#modalSubform").find("form"), null);
 		});
 		$("#modalSubform").modal("show");
 		

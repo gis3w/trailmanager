@@ -27,8 +27,8 @@ $.extend(APP.interactiveMap,
 										</button>\
 									</div>\
 									<!-- Collect the nav links, forms, and other content for toggling -->\
-									<div class="collapse navbar-collapse" id="bottomNavbarCollapse">\
-										<ul class="nav navbar-nav pull-right">\
+									<div class="collapse navbar-collapse " id="bottomNavbarCollapse">\
+										<ul class="nav navbar-nav text-center">\
 											<li><a href="#" id="info"><strong>INFO PRINCIPALI</strong></a></li>\
 											<li><a href="#" id="itinerari"><strong>ITINERARI</strong></a></li>\
 											<li><a href="#" id="percorsi"><strong>PERCORSI</strong></a></li>\
