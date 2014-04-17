@@ -12,7 +12,18 @@ $.extend(APP.fileuploader,{
 	{
 		var that = this;
 		
-		var thumbnail = '<i class="icon icon-file"></i>';
+		var tipo = fileObj.type.split("/")[0];
+		var thumbnail = null;
+		
+		switch(tipo)
+		{
+			case "image":
+				thumbnail = '<img src="'+fileObj.thumbnail_url+'" alt=""/>';
+				break;
+			default:
+				thumbnail = '<i class="fa fa-file-o"></i>';
+				break;
+		}
 		var downUrl = this.urls.download;
 		if (!APP.utils.isset(fileObj.url))
 		{
@@ -36,10 +47,13 @@ $.extend(APP.fileuploader,{
 		
 		var tr = $('<tr>\
 					<td style="vertical-align: middle">\
-						<span class="filenameContainer"></span>\
-					</td>\
-					<td style="text-align: right; vertical-align: middle">\
-						<button type="button" class="close fileupload cancel tooltipElement" style="'+display+'" data-toggle="tooltip" title="'+APP.i18n.translate('remove')+'" aria-hidden="true">&times;</button>\
+						<span class="pull-left">\
+						'+thumbnail+'\
+						</span>\
+						<span class="filenameContainer" style="padding-left: 3px"></span>\
+						<span class="pull-right">\
+							<button type="button" class="close fileupload cancel tooltipElement" style="'+display+'" data-toggle="tooltip" title="'+APP.i18n.translate('remove')+'" aria-hidden="true">&times;</button>\
+						</span>\
 					</td>\
 				</tr>');
 		tr.find(".filenameContainer").html(filename);
@@ -168,7 +182,7 @@ $.extend(APP.fileuploader,{
 								<div class="table-responsive col-md-12" style="margin: 5px 0px 0px 0px">\
 									<table style="display: none;" id="fileToUploadTable" class="table table-striped table-hover">\
 										<thead style="display: none">\
-											<tr style=""><th colspan="2"></th></tr>\
+											<tr style=""><th colspan="1"></th></tr>\
 										</thead>\
 										<tbody class="files"></tbody>\
 									</table>\
@@ -255,14 +269,20 @@ $.extend(APP.fileuploader,{
 				});
 			},
 			done: function (e, data) {
-				var t;
+				
+			},
+			always: function(e, data) {
+				
 			},
 			progressall: function (e, data) {
 				var progress = parseInt(data.loaded / data.total * 100, 10);
 				$('#progress .progress-bar').css('width',progress + '%');
 				
 				//APP.utils.toggleLoadingImage(true);
-			}
+			},
+			previewMaxWidth: 100,
+			previewMaxHeight: 100,
+			previewCrop: true
 		};
 		if (!$.isEmptyObject(this.validationOptions))
 		{
