@@ -1422,6 +1422,8 @@ $.extend(APP.utils,{
 						data = this.boolToString(data);
 						break;
 					case "file":
+						if (!data.type)
+							break;
 						var tipo = data.type.split("/")[0];
 						var thumbnail = null;
 						
