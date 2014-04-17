@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 
-class Controller_Ajax_Geo_Poi extends Controller_Ajax_Base_Crud_GET{
+class Controller_Ajax_Geo_Poi extends Controller_Ajax_Geo_Base{
     
     protected $_pagination = FALSE;
     
@@ -9,14 +9,9 @@ class Controller_Ajax_Geo_Poi extends Controller_Ajax_Base_Crud_GET{
     
     
     protected function _single_request_row($orm) {
-        $toRes = array();
+
+        return $this->_get_geo_base_data_from_orm($orm);
         
-        $toRes['id'] = (int)$orm->id;
-        $toRes['title'] = (int)$orm->title;
-        $toRes['typology_id'] = $orm->typology_id;
-        $toRes['geoJSON'] = json_decode($orm->asgeojson);
-        
-        return $toRes;
     }
   
     
