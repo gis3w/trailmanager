@@ -614,6 +614,7 @@ class UploadHandler
                 }
             } else {
                 $file->size = $file_size;
+                error_log(print_r($_SERVER,true));
                 if (!$content_range && $this->options['discard_aborted_uploads']) {
                     unlink($file_path);
                     $file->error = 'abort';

@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Datastruct_Video_Path extends Datastruct_Video_Poi {
+class Datastruct_Image_Path extends Datastruct {
     
     protected $_nameORM = "Video_Path";
 

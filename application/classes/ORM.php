@@ -40,8 +40,13 @@ class ORM extends Kohana_ORM {
                     }
                     $i18nData->$colLang = $_POST[$column];
                     $i18nData->save();
+                    // si elimina dall'array changed l'elemento salvato nella tabela di traduzione
+                    unset($this->_changed[$column]);
                 }
             }
+            // se il changed è vuoto
+            if(!empty($this->_changed))
+                return parent::save($validation);
             return TRUE;
         }
         else

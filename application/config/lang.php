@@ -10,11 +10,13 @@ return array(
         'pois' => array(
             'columns_to_exlude' => array(
                 'typology_id',
+                'publish',
             )
         ),
         'paths' => array(
             'columns_to_exlude' => array(
                 'typology_id',
+                'publish',
             )
         ),
         'itineraries' => array(),

@@ -34,7 +34,7 @@ class Datastruct_Image_Poi extends Datastruct {
                 "file" => array(
                    "form_input_type" => self::INPUT,
                     "multiple" => FALSE,
-                    "data_type" => 'jquery_fileupload',
+                    "data_type" => self::FILE,
                     "form_show" => TRUE,
                     "table_show" => FALSE,
                    "subform_table_show" => TRUE, 

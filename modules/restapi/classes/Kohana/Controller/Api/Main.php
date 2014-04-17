@@ -307,42 +307,12 @@ abstract class Kohana_Controller_Api_Main extends Kohana_Controller_REST{
                             // per ora va bene per controlle user
                             // TODO:  Da controllare e verificare meglio
                              
-                            case 'unita_produttiva_id':
-                                switch($directoryController)
-                                {
-                                
-                                    case "Ajax/Vehicle":
-                                        $this->_filters[] = array('veicolo_unita_produttiva.'.$key,$value);
-                                    break;
-                                
-                                    case "Ajax/Machine":
-                                        $this->_filters[] = array('macchina_unita_produttiva.'.$key,$value);
-                                    break;
-                                
-                                    case "Ajax/Liftingmachine":
-                                        $this->_filters[] = array('mezzo_sollevamento_unita_produttiva.'.$key,$value);
-                                    break;
-
-
-                                    default:
-                                       $this->_filters[] = array($key,$value);
-                                }
-                            break;
+                            
                         
                             case 'user_id':
                                 switch($directoryController)
                                 {
-                                    case "Ajax/Realtime/Mezzi":
-                                    case "Ajax/Realtime/Mezziows":
-                                    case "Ajax/Realtime/Refresh":
-                                        $this->_filters[] = array('realtime.'.$key,$value);
-                                    break;
-                                                
-                                    case "Ajax/Reportistica/User":
-                                        $this->_filters[] = array('sessione.'.$key,$value);
-                                    break;
-
-
+                                   
                                     default:
                                        $this->_filters[] = array($key,$value);
                                 }
@@ -353,7 +323,7 @@ abstract class Kohana_Controller_Api_Main extends Kohana_Controller_REST{
                          case 'roles':
                                 switch($directoryController)
                                 {
-                                    case "Ajax/User":
+                                    case "Ajax/Admin/User":
                                         $this->_filters[] = array('roles_users.role_id',"'".implode("','",preg_split('/\|/',$value))."'");
                                     break;
 
@@ -363,57 +333,12 @@ abstract class Kohana_Controller_Api_Main extends Kohana_Controller_REST{
                                 }
                             break;
                         
-                             case 'targa':
-                                 
 
-                                switch($directoryController)
-                                {
-                                    case "Ajax/Realtime/Mezzi":
-                                    case "Ajax/Realtime/Mezziows":
-                                    case "Ajax/Realtime/Refresh":
-                                    case "Ajax/Storico/Sessione":
-                                        $this->_filters[] = array('automezzo_anagrafica.'.$key,"'".implode("','",preg_split('/\|/',$value))."'") ;
-                                    break;
-                                
-                                   
-
-                                    default:
-                                       $this->_filters[] = array($key,$value);
-                                }
-                            break;
-                        
-                        case 'automezzo_tipo_id':
-                                 
-                                switch($directoryController)
-                                {
-                                    case "Ajax/Storico/Sessione":
-                                        $this->_filters[] = array('automezzo_anagrafica.'.$key,$value) ;
-                                    break;
-
-
-                                    default:
-                                       $this->_filters[] = array($key,$value);
-                                }
-                            break;
                         
                          case 'datefrom':
                          case 'dateto':
                                 switch($directoryController)
                                 {
-                                    case "Ajax/Storico/Sessione":
-                                    case "Ajax/Reportistica/Vehicle":
-                                    case "Ajax/Reportistica/User":
-                                    case "Ajax/Reportistica/Sessionactivity":
-                                    case "Ajax/Reportistica/Fleetgroup":
-                                          // mettere la data in formato inglese poi costruirci il timestamp
-                                        list($d,$m,$Y) = preg_split('/\//', $value);    
-                                        $timest = strtotime($m.'/'.$d.'/'.$Y) * 1000;
-                                        $prekey = "time_inizio_sessione";
-                                        $key = $prekey."_".$key;
-                                       
-
-                                        $this->_filters[] = array($key, $timest ,DB::expr("date(TIMESTAMP 'epoch' + ".$prekey."/1000* INTERVAL '1 second')"),$value);
-                                    break;
 
 
                                     default:

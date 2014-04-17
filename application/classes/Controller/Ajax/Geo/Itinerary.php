@@ -20,7 +20,7 @@ class Controller_Ajax_Geo_Itinerary extends Controller_Ajax_Geo_Base{
         // si inseriscono i poi e i path:
         foreach(array('pois','paths') as $geo)
         {
-            $geoOrms = $orm->$geo->find_all();
+            $geoOrms = $orm->$geo->where('publish','IS',DB::expr('true'))->find_all();
             $toRes[$geo] = array();
             foreach($geoOrms as $geoOrm)
                 $toRes[$geo][] = $this->_get_geo_base_data_from_orm($geoOrm);
