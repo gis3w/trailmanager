@@ -47,7 +47,7 @@ $.extend(APP.anagrafica,
 				}
 			});
 			*/
-			APP.interactiveMap.start();
+			//APP.interactiveMap.start();
 		}
 		else
 		{
