@@ -55,9 +55,22 @@ $.extend(APP.subforms,
 		return {'name': APP.subforms.subformName, 'value': str};
 	},
 	
+	preserialize_new: function()
+	{
+		var rows = APP.subforms.subformRows;
+		var str = "";
+		$.each(rows, function(i, obj)
+		{
+			str = $.param(obj);
+			str = str.substr(0, str.length-1) + ";";
+		});
+		str = str.substr(0, str.length-1);
+		return {'name': APP.subforms.subformName, 'value': str};
+	},
+	
 	preserialize: function()
 	{
-		return this.preserialize_old();
+		return this.preserialize_new();
 		var str = "";
 		var rows = APP.subforms.subformRows;
 		/*

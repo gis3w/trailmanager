@@ -232,6 +232,12 @@ $.extend(APP.map,
 		}
 	},
 	
+	removeAllLayers: function()
+	{
+		var that = this;
+		var ls = that.globalData[that.currentMapId].map.removeLayer();
+	},
+	
 	changeColors: function(newColor)
 	{
 		var that = this;
