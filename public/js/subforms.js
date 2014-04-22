@@ -271,7 +271,7 @@ $.extend(APP.subforms,
 				obj[v.name] = v.value;
 		});
 		var btnData = btn.data();
-		obj.stato = (APP.utils.isset(btnData.id))? "U" : btnData.stato;
+		obj.stato = (APP.utils.isset(btnData[that.sectionTarget.subforms[that.subformName].primary_key]))? "U" : btnData.stato;
 		obj.token = btnData.token;
 		var index = APP.utils.getIndexFromField(that.subformRows, "token", obj.token);
 		if (index == -1)
@@ -297,7 +297,7 @@ $.extend(APP.subforms,
 		var index = APP.utils.getIndexFromField(that.subformRows, "token", token);
 		if (index == -1)
 			return;
-		if (APP.utils.isset(that.subformRows[index].id))
+		if (APP.utils.isset(that.subformRows[index][that.sectionTarget.subforms[that.subformName].primary_key]))
 			that.subformRows[index].stato = "D";
 		else
 			that.subformRows.splice(index, 1);
@@ -610,8 +610,8 @@ $.extend(APP.subforms,
 						
 						$.each(data, function(x, y)
 						{
-							y = (!$.isPlainObject(y))? y : y.id;
-							var oi = APP.utils.getIndexFromField(fValues, "id", y);
+							y = (!$.isPlainObject(y))? y : y[that.sectionTarget.subforms[that.subformName].primary_key];
+							var oi = APP.utils.getIndexFromField(fValues, that.sectionTarget.subforms[that.subformName].primary_key, y);
 							if (oi > -1)
 								str += APP.config.getValue(fValues[oi], k.foreign_toshow, k.foreign_toshow_params)+", ";//str += APP.config.getValue(k.name, fValues[oi])+", "; 
 						});
@@ -630,8 +630,8 @@ $.extend(APP.subforms,
 						
 						$.each(data, function(x, y)
 						{
-							y = (!$.isPlainObject(y))? y : y.id;
-							var oi = APP.utils.getIndexFromField(fValues, "id", y);
+							y = (!$.isPlainObject(y))? y : y[that.sectionTarget.subforms[that.subformName].primary_key];
+							var oi = APP.utils.getIndexFromField(fValues, that.sectionTarget.subforms[that.subformName].primary_key, y);
 							if (oi > -1)
 								str += APP.config.getValue(fValues[oi], k.foreign_toshow, k.foreign_toshow_params)+", ";//str += APP.config.getValue(k.name, fValues[oi])+", "; 
 						});
