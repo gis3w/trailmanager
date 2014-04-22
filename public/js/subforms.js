@@ -61,8 +61,8 @@ $.extend(APP.subforms,
 		var str = "";
 		$.each(rows, function(i, obj)
 		{
-			str = $.param(obj);
-			str = str.substr(0, str.length-1) + ";";
+			str += $.param(obj)+";";
+			//str = str.substr(0, str.length-1) + ";";
 		});
 		str = str.substr(0, str.length-1);
 		return {'name': APP.subforms.subformName, 'value': str};
