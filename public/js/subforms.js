@@ -656,6 +656,9 @@ $.extend(APP.subforms,
 			});
 		}
 		
+		if (APP.utils.isset(obj.sortable) && obj.sortable === true)
+			tbody.sortable();
+		
 		//$(".datatable tbody tr").click(function(e){ that.onSelectRow(e); });
 		div.find(".datatable").dataTable({ 
 			"bRetrieve": true,
