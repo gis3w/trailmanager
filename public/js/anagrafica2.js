@@ -73,6 +73,7 @@ $.extend(APP.anagrafica,
 		}
 	},
 	
+	/*
 	displayHomeItems: function(data)
 	{
 		if (data.length === 0)
@@ -167,6 +168,7 @@ $.extend(APP.anagrafica,
 			}
 		})
 	},
+	*/
 	
 	createWindow: function()
 	{
@@ -323,10 +325,11 @@ $.extend(APP.anagrafica,
 					arr.push(
 					{
 						htmlString: '<a id="button_save" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("save")+'" class="btn btn-lg btn-success tooltipElement" href="#"><i class="icon-ok icon-white"></i></a>',
-						onClick: function(){ that.formSubmit(t.id, subSection, function(){ 
-							that.finish();
-							that.selectedItem.click();
-						});  }
+						onClick: function(){ 
+							that.formSubmit(t[that.sections[subSection].primary_key], subSection, function(){ 
+								that.finish();
+								that.selectedItem.click();
+							});  }
 					});
 				}
 					
@@ -334,13 +337,13 @@ $.extend(APP.anagrafica,
 				{
 					arr.push({
 						htmlString: '<a id="button_remove" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("remove")+'" class="btn btn-lg btn-danger tooltipElement" href="#"><i class="icon-remove icon-trash"></i></a>',
-						onClick: function(){ that.removeItem(t.id, {'section': subSection, 'contentDiv': contentDiv, 'callback': function(){
+						onClick: function(){ that.removeItem(t[that.sections[subSection].primary_key], {'section': subSection, 'contentDiv': contentDiv, 'callback': function(){
 							that.selectedItem.click();
 						}});  }
 					});
 				}
 				
-				that.editItem(t.id, t, contentDiv.find("#subMainTableDiv"), subSection, arr);
+				that.editItem(t[that.sections[subSection].primary_key], t, contentDiv.find("#subMainTableDiv"), subSection, arr);
 			}
 			else
 			{
@@ -361,7 +364,8 @@ $.extend(APP.anagrafica,
 				{
 					arr.push({
 						htmlString: '<a id="button_save" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("save")+'" class="btn btn-lg btn-success tooltipElement" href="#"><i class="icon-ok icon-white"></i></a>',
-						onClick: function(){ that.formSubmit(t.id, subSection, function(){
+						onClick: function(){ 
+							that.formSubmit(t[that.sections[subSection].primary_key], subSection, function(){
 								//$("body").find(".navbar").first().find(".navbar-inner").first().find("ul").first().find("li.active").find("a").first().click();
 								that.finish();
 								that.selectedItem.click();
@@ -384,13 +388,13 @@ $.extend(APP.anagrafica,
 				{
 					arr.push({
 						htmlString: '<a id="button_remove" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("remove")+'" class="btn btn-lg btn-danger tooltipElement" href="#"><i class="icon-remove icon-trash"></i></a>',
-						onClick: function(){ that.removeItem(t.id, {'section': subSection, 'contentDiv': contentDiv, 'callback': function(){
+						onClick: function(){ that.removeItem(t[that.sections[subSection].primary_key], {'section': subSection, 'contentDiv': contentDiv, 'callback': function(){
 							that.selectedItem.click();
 						}});  }
 					});
 				}
 				
-				that.editItem(t.id, t, that.windows[that.windows.length-1], subSection, arr);
+				that.editItem(t[that.sections[subSection].primary_key], t, that.windows[that.windows.length-1], subSection, arr);
 			}
 		}
 	},
@@ -592,8 +596,8 @@ $.extend(APP.anagrafica,
 					
 					$.each(data, function(x, y)
 					{
-						y = (!$.isPlainObject(y))? y : y.id;
-						var oi = APP.utils.getIndexFromField(fValues, "id", y);
+						y = (!$.isPlainObject(y))? y : y[k.primary_key];
+						var oi = APP.utils.getIndexFromField(fValues, k.primary_key, y);
 						if (oi > -1)
 							str += APP.config.getValue(fValues[oi], k.foreign_toshow, k.foreign_toshow_params)+", ";//str += APP.config.getValue(k.name, fValues[oi])+", "; 
 					});
@@ -614,8 +618,8 @@ $.extend(APP.anagrafica,
 					
 					$.each(data, function(x, y)
 					{
-						y = (!$.isPlainObject(y))? y : y.id;
-						var oi = APP.utils.getIndexFromField(fValues, "id", y);
+						y = (!$.isPlainObject(y))? y : y[k.primary_key];
+						var oi = APP.utils.getIndexFromField(fValues, k.primary_key, y);
 						if (oi > -1)
 							str += APP.config.getValue(fValues[oi], k.foreign_toshow, k.foreign_toshow_params)+", ";//str += APP.config.getValue(k.name, fValues[oi])+", "; 
 					});
@@ -880,7 +884,7 @@ $.extend(APP.anagrafica,
 				{
 					arr.push({
 						htmlString: '<a id="button_save" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("save")+'" class="btn btn-lg btn-success tooltipElement" href="#"><i class="icon-ok icon-white"></i></a>',
-						onClick: function(){ that.formSubmit(data.id, section, function(){
+						onClick: function(){ that.formSubmit(data[that.sections[section].primary_key], section, function(){
 							that.selectedItem = APP.config.bc_getLastSrcElement();
 							that.destroyWindow();
 							if (that.windows.length === 1)
@@ -894,7 +898,7 @@ $.extend(APP.anagrafica,
 				{
 					arr.push({
 						htmlString: '<a id="button_remove" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("remove")+'" class="btn btn-lg btn-danger tooltipElement" href="#"><i class="icon-remove icon-trash"></i></a>',
-						onClick: function(){ that.removeItem(data.id, {'section': section, 'contentDiv': contentDiv, 'callback': function(){
+						onClick: function(){ that.removeItem(data[that.sections[section].primary_key], {'section': section, 'contentDiv': contentDiv, 'callback': function(){
 							that.selectedItem = APP.config.bc_getLastSrcElement();
 							that.destroyWindow();
 							if (that.windows.length === 1)
@@ -909,7 +913,7 @@ $.extend(APP.anagrafica,
 				switch (dataLi.url)
 				{
 					case null:
-						that.editItem(data.id, data, contentDiv.find("#subMainTableDiv"), section, arr);
+						that.editItem(data[that.sections[section].primary_key], data, contentDiv.find("#subMainTableDiv"), section, arr);
 						break;
 					default:
 						var subSection = null;
@@ -1188,7 +1192,7 @@ $.extend(APP.anagrafica,
 			else
 			*/
 			{
-				index = APP.utils.getIndexFromField(sectionTarget.values, "id", identifier);
+				index = APP.utils.getIndexFromField(sectionTarget.values, sectionTarget.primary_key, identifier);
 				if (index > -1)
 					obj = sectionTarget.values[index];
 			}
