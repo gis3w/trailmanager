@@ -56,16 +56,15 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
        parent::before();
        
         // si controlla che il token da cui sta inviando sia quello giunto per i POST PUT AND DLETE
-       // 25/07/2013 rimosso momentaneamente per provare il delete: aggiungere ,HTTP_Request::DELETE
-//       if(in_array($this->_REST_Method,array(HTTP_Request::POST,HTTP_Request::PUT)))
-//       {
-//           $this->_session_token = $this->session->get('token');
-//           if(!isset($_POST['csrf_token']))
-//               throw HTTP_Exception::factory ('500',SAFE::message ('ehttp','500_no_csrf_token_submit'));
-//           $this->_token = $_POST['csrf_token'];
-//           if($this->_token !== $this->_session_token)
-//               throw HTTP_Exception::factory ('500',SAFE::message ('ehttp','500_no_csrf_token_not_match'));
-//       }
+       if(in_array($this->_REST_Method,array(HTTP_Request::POST,HTTP_Request::PUT)))
+       {
+           $this->_session_token = $this->session->get('token');
+           if(!isset($_POST['csrf_token']))
+               throw HTTP_Exception::factory ('500',SAFE::message ('ehttp','500_no_csrf_token_submit'));
+           $this->_token = $_POST['csrf_token'];
+           if($this->_token !== $this->_session_token)
+               throw HTTP_Exception::factory ('500',SAFE::message ('ehttp','500_no_csrf_token_not_match'));
+       }
        
        // dati generali per l'upload
        $this->_upload_path_base = Controller_Download_Base::UPLOADPATH;
@@ -272,6 +271,7 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
        $rows = preg_split("/;/",$_POST[$field]);
        foreach($rows as $row)
        {
+           print_r(parse_url('?'.$row,PHP_URL_QUERY));
            if(!$row)
                continue;
            $subres = array();
@@ -287,6 +287,11 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
            $res[] = $subres;
            
        }
+       
+       exit;
+       
+
+       
         return $res;
     }
     

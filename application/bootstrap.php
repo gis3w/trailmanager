@@ -204,6 +204,13 @@ Route::set('jx/admin/upload', 'jx/admin/upload(/<controller>(/<id>(/<filtro>)))'
                     'action'     => 'index',
 	));
 
+Route::set('jx/admin/change', 'jx/admin/change(/<controller>(/<id>(/<filtro>)))')
+	->defaults(array(
+                    'directory' => 'Ajax/Admin/Change',
+                    'controller' => 'home',
+                    'action'     => 'index',
+	));
+
 Route::set('jx/admin', 'jx/admin(/<controller>(/<id>(/<filtro>)))')
 	->defaults(array(
                     'directory' => 'Ajax/Admin',

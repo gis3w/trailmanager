@@ -48,6 +48,7 @@ class Datastruct_Itinerary extends Datastruct {
             'foreign_toshow_params' => array(
                 '$1' => 'title',
             ),
+            'change' => '/jx/change/itinerarymap?poi_id:',
             'url_values' => '/jx/admin/poi',
             'label' => __('Points of interest'),
              'description' => __('Select one or more points of interest for this itinerary'),
@@ -57,6 +58,7 @@ class Datastruct_Itinerary extends Datastruct {
         $fct['paths']  = array_replace($fct['pois'],array(
             'url_values' => '/jx/admin/path',
             'label' => __('Paths'),
+            'change' => '/jx/change/itinerarymap?path_id:',
              'description' => __('Select one or more paths  for this itinerary'),
         ));
         
