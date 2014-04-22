@@ -56,16 +56,16 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
        parent::before();
        
         // si controlla che il token da cui sta inviando sia quello giunto per i POST PUT AND DLETE
-       if(in_array($this->_REST_Method,array(HTTP_Request::POST,HTTP_Request::PUT)))
-       {
-           $this->_session_token = $this->session->get('token');
-           if(!isset($_POST['csrf_token']))
-               throw HTTP_Exception::factory ('500',SAFE::message ('ehttp','500_no_csrf_token_submit'));
-           $this->_token = $_POST['csrf_token'];
-           if($this->_token !== $this->_session_token)
-               throw HTTP_Exception::factory ('500',SAFE::message ('ehttp','500_no_csrf_token_not_match'));
-       }
-       
+    //       if(in_array($this->_REST_Method,array(HTTP_Request::POST,HTTP_Request::PUT)))
+    //       {
+    //           $this->_session_token = $this->session->get('token');
+    //           if(!isset($_POST['csrf_token']))
+    //               throw HTTP_Exception::factory ('500',SAFE::message ('ehttp','500_no_csrf_token_submit'));
+    //           $this->_token = $_POST['csrf_token'];
+    //           if($this->_token !== $this->_session_token)
+    //               throw HTTP_Exception::factory ('500',SAFE::message ('ehttp','500_no_csrf_token_not_match'));
+    //       }
+    //       
        // dati generali per l'upload
        $this->_upload_path_base = Controller_Download_Base::UPLOADPATH;
         foreach($this->_upload_path as $type => $path)
@@ -271,24 +271,26 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
        $rows = preg_split("/;/",$_POST[$field]);
        foreach($rows as $row)
        {
-           print_r(parse_url('?'.$row,PHP_URL_QUERY));
+           $rowArr = array();
            if(!$row)
                continue;
-           $subres = array();
-           $data = preg_split("/,/", $row);
-           foreach ($data as $d)
-           {
-               if(!$d)
-                   continue;
-
-               list($k,$v) = preg_split("/:/",$d);
-                $subres[$k] = $v;
-           }
-           $res[] = $subres;
+           
+           parse_str($row,$rowArr);
+//           $subres = array();
+//           $data = preg_split("/,/", $row);
+//           foreach ($data as $d)
+//           {
+//               if(!$d)
+//                   continue;
+//
+//               list($k,$v) = preg_split("/:/",$d);
+//                $subres[$k] = $v;
+//           }
+//           $res[] = $subres;
+           $res[] =$rowArr;
            
        }
-       
-       exit;
+
        
 
        

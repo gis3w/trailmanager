@@ -4,10 +4,10 @@
 class Controller_Ajax_Admin_Change_itinerarymap extends Controller_Ajax_Auth_Strict{
     
     public function action_index() {
-        if(isset($_GET['poi_id']))
+        if(isset($_GET['poi_id']) AND is_numeric($_GET['poi_id']))
             $this->_get_poi();
         
-         if(isset($_GET['path_id']))
+         if(isset($_GET['path_id']) AND is_numeric($_GET['path_id']))
             $this->_get_path();
              
     }
@@ -40,7 +40,7 @@ class Controller_Ajax_Admin_Change_itinerarymap extends Controller_Ajax_Auth_Str
         $toData['value'] = array(
             'items' => array(
                 array(
-                    'id' => $pathi->id,
+                    'id' => $path->id,
                     'typology_id' => (int)$path->typology_id,
                     'geoJSON' => json_decode($path->asgeojson),
                     'color' => $path->color
