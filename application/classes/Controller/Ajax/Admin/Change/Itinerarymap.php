@@ -16,8 +16,8 @@ class Controller_Ajax_Admin_Change_itinerarymap extends Controller_Ajax_Auth_Str
     {
         $poi_ids = preg_split('/,/',$_GET['poi_id']);
         $pois = ORMGIS::factory('Poi')
-                ->where('id','IN',DB::expr('('. implode(',', $poi_ids).')'));
-        
+                ->where('id','IN',DB::expr('('. implode(',', $poi_ids).')'))
+                ->find_all();
         $toData = array();
         
         $toData['disabled'] = FALSE;
@@ -41,7 +41,8 @@ class Controller_Ajax_Admin_Change_itinerarymap extends Controller_Ajax_Auth_Str
     {
         $path_ids = preg_split('/,/',$_GET['path_id']);
         $paths = ORMGIS::factory('Path')
-                ->where('id','IN',DB::expr('('. implode(',', $path_ids).')'));
+                ->where('id','IN',DB::expr('('. implode(',', $path_ids).')'))
+                ->find_all();
         
         $toData = array();
         
