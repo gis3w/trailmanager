@@ -7,6 +7,10 @@ class Controller_Ajax_Admin_Videopoi extends Controller_Ajax_Base_Crud{
     
     protected $_datastruct = "Video_Poi";
     
+    protected $_orderings = array(
+        'norder'
+    );
+    
     
      protected function _edit() {
         

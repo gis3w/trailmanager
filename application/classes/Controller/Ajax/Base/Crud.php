@@ -449,15 +449,15 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
                    $subformDatas = $this->_get_subform_data($name_subform);
                    if(!empty($subformDatas))
                    {
-                       foreach($subformDatas as $sfd)
+                       foreach($subformDatas as $norder => $sfd)
                        {  
-                           if(!isset($sfd['stato']))
-                               continue;
-
+                          
                            // si forza unita_produttiva_id anche per lìinserimento
                            $sfd[$this->_table_rid.'_id'] = $this->_orm->id;
                            $id = isset($sfd['id']) ? $sfd['id'] : NULL;
                            $subformOrm = ORM::factory($name_orm,$id);
+                            if(!isset($sfd['stato']))
+                               $sfd['stato'] = NULL;
                            switch($sfd['stato'])
                            {
                                case "I":
@@ -470,7 +470,7 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
                                    {
                                        $sfd['data_mod'] = time();
                                        // si tenta leliminazione del precedente
-                                       if(isset($this->_upload_path[$name_subform]))
+                                       if(isset($subformOrm->file) AND isset($this->_upload_path[$name_subform]))
                                         {
                                             $path_to_delete = APPPATH."../".$this->_upload_path[$name_subform].$subformOrm->file;
                                              @unlink($path_to_delete);
@@ -480,17 +480,22 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
                                break;
 
                                case "D":
-                                   $fileToDelete = $subformOrm->file;
+                                   if(isset($subformOrm->file))
+                                        $fileToDelete = $subformOrm->file;
                                    $subformOrm->delete();
-                                    if(isset($this->_upload_path[$name_subform]))
+                                    if(isset($fileToDelete) and isset($this->_upload_path[$name_subform]))
                                    {
                                        $path_to_delete = APPPATH."../".$this->_upload_path[$name_subform].$fileToDelete;
-                                                                               error_log($path_to_delete);
                                         @unlink($path_to_delete);
                                    }
                                   
                                    
                                break;
+                               
+                               // caso in cui non ci sia lo stato ma si modifica l'ordine
+                               default:
+                                   $subformOrm->norder = $norder;
+                                   $subformOrm->save();
                            }
 
                    }

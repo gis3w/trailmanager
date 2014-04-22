@@ -7,7 +7,13 @@ class Controller_Ajax_Admin_Imagepoi extends Controller_Ajax_Base_Crud{
     
     protected $_datastruct = "Image_Poi";
     
-    
+    protected $_orderings = array(
+        'norder'
+    );
+
+
+
+
     protected function _edit() {
         
         $this->_validation_orm();

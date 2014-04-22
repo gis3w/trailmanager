@@ -169,6 +169,9 @@
       <Cl au="0" df="" nm="path_id" nu="0">
         <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
+      <Cl au="0" df="" nm="norder" nu="1">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
       <Fk deAc="0" nm="fk_image_paths_paths" prLkCl="id" upAc="3">
         <PrTb mn="0" nm="paths" oe="1" sch="public" zr="0"/>
         <CdTb mn="1" nm="image_paths" oe="1" sch="public" zr="1"/>
@@ -196,6 +199,9 @@
         <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
       <Cl au="0" df="" nm="poi_id" nu="0">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="norder" nu="1">
         <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
       <Fk deAc="0" nm="fk_image_pois_pois" prLkCl="id" upAc="3">
@@ -583,6 +589,9 @@
       <Cl au="0" df="" nm="title" nu="0">
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
+      <Cl au="0" df="" nm="norder" nu="1">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
       <Fk deAc="0" nm="fk_video_path_paths" prLkCl="id" upAc="3">
         <PrTb mn="0" nm="paths" oe="1" sch="public" zr="0"/>
         <CdTb mn="1" nm="video_paths" oe="1" sch="public" zr="1"/>
@@ -614,6 +623,9 @@
       </Cl>
       <Cl au="0" df="" nm="title" nu="0">
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="norder" nu="1">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
       <Fk deAc="0" nm="fk_video_pois_pois" prLkCl="id" upAc="3">
         <PrTb mn="0" nm="pois" oe="1" sch="public" zr="0"/>
@@ -8016,7 +8028,7 @@ WHERE t.typname = 'geography'::name
     <Notes/>
     <Zones/>
   </Dgm>
-  <RnmMgr NxRnmId="18">
+  <RnmMgr NxRnmId="19">
     <RnmCh ObjCls="Table" ParCls="Schema" ParNme="public" SupCls="" SupNme="">
       <Rnm id="2" nNm="itineraries" oNm="itinerari"/>
       <Rnm id="1" nNm="itinerari" oNm="itineraries"/>
@@ -8062,6 +8074,9 @@ WHERE t.typname = 'geography'::name
       <Rnm id="17" nNm="file" oNm="images"/>
       <Rnm id="16" nNm="images" oNm="file"/>
     </RnmCh>
+    <RnmCh ObjCls="Column" ParCls="Table" ParNme="image_pois" SupCls="Schema" SupNme="public">
+      <Rnm id="18" nNm="norder" oNm="order"/>
+    </RnmCh>
   </RnmMgr>
   <DbDocOptionMgr>
     <BasicOptionMgr>
@@ -8079,7 +8094,7 @@ WHERE t.typname = 'geography'::name
     </BasicOptionMgr>
   </DbDocOptionMgr>
   <OpenEditors>
-    <OpenEditor ClsNm="Diagram" fqn="null.diagramA" selected="0"/>
+    <OpenEditor ClsNm="Diagram" fqn="null.diagramA" selected="1"/>
   </OpenEditors>
   <TreePaths>
     <TreePath/>
