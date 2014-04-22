@@ -28,7 +28,7 @@ class Controller_Ajax_Admin_Change_itinerarymap extends Controller_Ajax_Auth_Str
             ),
         );
         
-        $this->jres->data = $toData;
+        $this->jres->data->the_geom = $toData;
     }
     
      protected function _get_path()
@@ -48,7 +48,7 @@ class Controller_Ajax_Admin_Change_itinerarymap extends Controller_Ajax_Auth_Str
             ),
         );
         
-        $this->jres->data = $toData;
+        $this->jres->data->the_geom= $toData;
     }
   
     
