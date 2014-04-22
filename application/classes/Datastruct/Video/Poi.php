@@ -3,8 +3,11 @@
 class Datastruct_Video_Poi extends Datastruct {
     
     protected $_nameORM = "Video_Poi";
+    
+    public static $preKeyField = 'videopoi';
 
-
+    public $sortable = TRUE;
+    
     public $icon = 'suitcase';
     public $filter = TRUE;
 

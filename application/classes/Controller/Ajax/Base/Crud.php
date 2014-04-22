@@ -39,10 +39,21 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
        if(isset($this->_datastruct) AND class_exists("Datastruct_".$this->_datastruct,TRUE))
        {
            $this->_datastructName = strtolower($this->_datastruct);
-           $this->_datastruct = Datastruct::factory($this->_datastruct);
+           $datastruct = $this->_datastruct = Datastruct::factory($this->_datastruct);
            $this->_table  = $this->_datastruct->get_nameORM();
            $this->_typeORM = $this->_datastruct->getTypeORM();
            
+           // si filtrano i dati post se ci un prekeyfield
+           if(isset($datastruct::$preKeyField))
+               foreach($_POST as $k => $v)
+                   if(substr_compare($k, $datastruct::$preKeyField, 0, strlen($datastruct::$preKeyField))=== 0)
+                   {
+                       $newK = substr($k, strlen($datastruct::$preKeyField) + 1);
+                       $_POST[$newK] = $v;
+                        unset($_POST[$k]);
+                   }
+ 
+               
            
        }
        elseif(!isset($this->_table))
@@ -165,6 +176,17 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
              foreach($colsTraslated as $colTraslated)
                  $row['traslated_columns'][] = $colTraslated->col;
         }
+        
+            $datastruct = $this->_datastruct;
+            if(isset($datastruct::$preKeyField))
+            {
+                foreach($row as $k => $v)
+                {
+                    $newK = $datastruct::$preKeyField.'-'.$k;
+                    $row[$newK] = $v;
+                    unset($row[$k]);
+                }
+            }
            
            return $row;
     }
@@ -267,6 +289,11 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
      */
     protected function _get_subform_data($field)
     {
+        // si controlla se esiste il datastruct per questo subform
+        $className = Inflector::underscore(ucwords(Inflector::humanize($field)));
+        if(class_exists('Datastruct_'.$className,TRUE))
+            $datastruct = Datastruct::factory($className);
+        
         $res = array();
        $rows = preg_split("/;/",$_POST[$field]);
        foreach($rows as $row)
@@ -287,6 +314,18 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
 //                $subres[$k] = $v;
 //           }
 //           $res[] = $subres;
+           
+           if(isset($datastruct::$preKeyField))
+           {
+                foreach($rowArr as $k => $v)
+                   if(substr_compare($k, $datastruct::$preKeyField, 0, strlen($datastruct::$preKeyField))=== 0)
+                   {
+                       $newK = substr($k, strlen($datastruct::$preKeyField) + 1);
+                       $rowArr[$newK] = $v;
+                        unset($rowArr[$k]);
+                   }
+           }
+           
            $res[] =$rowArr;
            
        }

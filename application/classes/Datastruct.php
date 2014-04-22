@@ -20,8 +20,18 @@ class Datastruct extends Kohana_Formstruct{
     
     public $filter = FALSE;
     
+    /**
+     * Parametri che indicano la lingua co cui deve essere reso il datastruct
+     * @var string
+     */
     public $lang;
     public $lang_default;
+    
+    /**
+     * Valore che deve precedere il nomei dei campi quando presente
+     * @var String
+     */
+    public static $preKeyField;
 
     /**
      * Le colonne del form
@@ -179,6 +189,7 @@ class Datastruct extends Kohana_Formstruct{
         
         if($this->user->main_role_id !== '12' AND !is_null($this->_columns))
             $this->_filter_by_role($this->_columns);
+        
     }
     
     public function getTypeORM()
@@ -198,12 +209,40 @@ class Datastruct extends Kohana_Formstruct{
         {
             $columns = $this->_columns;
         }
+        
+         // nel caso ci sia necessità di meppere un prefisso ai campi
+        if(isset($this::$preKeyField))
+        {
+            $newColumns = array();
+            foreach($columns as $k => $v)
+                $newColumns[$this::$preKeyField.'-'.$k] = $v;
+            $columns = $newColumns;
+            
+            // si aggiustano anche i gruppi:
+            $newGroups = array();
+            foreach ($this->groups as $group)
+            {
+                $appGroup = $group;
+                $appGroup['fields'] = array();
+                foreach($group['fields'] as $field)
+                    $appGroup['fields'][] = $this::$preKeyField.'-'.$field;
+                $newGroups[] = $appGroup;
+            }
+            $this->groups = $newGroups;
+        }
+        
+        
+        
             
         $toRes = array(
             'title' => $this->title,
             'enctype' => $this->enctype,
             'fields' => $columns,
         );
+        
+        if(isset($this->sortable))
+            $toRes['sortable'] = $this->sortable;
+           
         
         foreach(array('groups','menu','fields_to_save','icon','capabilities','filter') as $col)
                 if(isset($this->$col))
