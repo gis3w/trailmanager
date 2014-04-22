@@ -3,6 +3,8 @@
 class Datastruct_Video_Path extends Datastruct_Video_Poi {
     
     protected $_nameORM = "Video_Path";
+    
+    public static $preKeyField = 'videopath';
 
     protected function _columns_type() {
         $cls = parent::_columns_type();

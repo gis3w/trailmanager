@@ -4,7 +4,8 @@ class Datastruct_Image_Poi extends Datastruct {
     
     protected $_nameORM = "Image_Poi";
 
-
+    public static $preKeyField = 'imagepoi';
+    
     public $icon = 'suitcase';
     public $filter = TRUE;
 
@@ -40,12 +41,12 @@ class Datastruct_Image_Poi extends Datastruct {
                    "subform_table_show" => TRUE, 
                     'label' =>__('Image'),
                     'urls' => array(
-                        'data' => 'jx/admin/upload/image',
-                        'delete' => 'jx//admin/upload/image?file=$1',
+                        'data' => 'jx/admin/upload/imagepoi',
+                        'delete' => 'jx/admin/upload/imagepoi?file=$1',
                         'delete_options' => array(
                             '$1' => 'nome',
                         ),
-                        'download' => 'admin/download/image/$1/$2',
+                        'download' => 'admin/download/imagepoi/$1/$2',
                         'download_options' => array(
                             '$1' => 'poi_id',
                             '$2' => 'nome',
