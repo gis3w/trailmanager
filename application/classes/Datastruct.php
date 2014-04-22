@@ -20,6 +20,8 @@ class Datastruct extends Kohana_Formstruct{
     
     public $filter = FALSE;
     
+    public $primary_key = 'id';
+    
     /**
      * Parametri che indicano la lingua co cui deve essere reso il datastruct
      * @var string
@@ -116,6 +118,7 @@ class Datastruct extends Kohana_Formstruct{
         $this->_baseORM = ORM::factory($this->_nameORM);
         $this->_labelsORM = $this->_baseORM->labels();
         $this->_descriptionsORM =$this->_baseORM->descriptions();
+        $this->primary_key = $this->_baseORM->primary_key();
         
         // si inizializza il gruppo principale
         $this->_get_orm_columns();
@@ -165,6 +168,7 @@ class Datastruct extends Kohana_Formstruct{
         $table_columns = $this->_baseORM->table_columns();
         $_columns_type = $this->_columns_type();
         $_extra_columns_type = $this->_extra_columns_type();
+
         
         foreach($table_columns as $name => $colData)
         {            
@@ -174,8 +178,11 @@ class Datastruct extends Kohana_Formstruct{
                 $_column['description'] = $this->_descriptionsORM[$name];
             $_column = array_replace($_column, array_intersect_key($colData, $_column));
             $_column_type = isset($_columns_type[$name]) ? $_columns_type[$name]: array();
+          
+//            if(in_array($name,array('id','gid')))
+//                    $_column['editable'] = FALSE;
             
-            if(in_array($name,array('id','gid')))
+             if($name == $this->primary_key)
                     $_column['editable'] = FALSE;
 
             $_column = array_replace($_column, $_column_type);
@@ -229,6 +236,8 @@ class Datastruct extends Kohana_Formstruct{
                 $newGroups[] = $appGroup;
             }
             $this->groups = $newGroups;
+            
+            $this->primary_key = $this::$preKeyField.'-'.$this->primary_key;
         }
         
         
@@ -238,6 +247,7 @@ class Datastruct extends Kohana_Formstruct{
             'title' => $this->title,
             'enctype' => $this->enctype,
             'fields' => $columns,
+            'primary_key' => $this->primary_key
         );
         
         if(isset($this->sortable))
