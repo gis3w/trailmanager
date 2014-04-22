@@ -665,9 +665,14 @@ $.extend(APP.utils,{
 												fieldToChange.attr("disabled", true);
 											else
 												fieldToChange.val(oldValue);
+											break;
 										}
-										else
-											fieldToChange.val(fieldObj.value.items[0]);
+										if (fieldToChange.is('input') && fieldToChange.hasClass("mapbox"))
+										{
+											alert("Francesco gestisci il change sul mapbox!");
+											break;
+										}
+										fieldToChange.val(fieldObj.value.items[0]);
 										break;
 									case "notify":
 										var to = (APP.utils.isset(actionObj.timeout))? actionObj.timeout : 3000; 
