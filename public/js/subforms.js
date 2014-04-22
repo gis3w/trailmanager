@@ -657,7 +657,21 @@ $.extend(APP.subforms,
 		}
 		
 		if (APP.utils.isset(obj.sortable) && obj.sortable === true)
-			tbody.sortable();
+			tbody.sortable({
+				stop: function( event, ui )
+				{
+					var sfrCopy = that.subformRows;
+					that.subformRows = [];
+					$.each(this.children, function(){
+						var d = $(this).data();
+						delete d['sortableItem'];
+						var fieldKey = that.sectionTarget.subforms[that.subformName].primary_key;
+						var elIndex = APP.utils.getIndexFromField(sfrCopy, fieldKey, d[fieldKey]);
+						d.token = sfrCopy[elIndex].token;
+						that.subformRows.push(d);
+					});
+				}
+			});
 		
 		//$(".datatable tbody tr").click(function(e){ that.onSelectRow(e); });
 		div.find(".datatable").dataTable({ 

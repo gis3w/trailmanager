@@ -48,7 +48,7 @@ $.extend(APP.map,
 	
 	resizeMap: function()
 	{
-		if (!this.isset(this.currentMapId) || ( this.currentMapId == "mapboxDiv"))
+		if (!this.isset(this.currentMapId) || ( this.currentMapId.indexOf("mapboxDiv") === 0))
 			return;
 		var div = $(this.globalData[this.currentMapId].map.getContainer());
 		if (div.length > 0)
@@ -79,157 +79,6 @@ $.extend(APP.map,
 			[parseFloat(extent.miny), parseFloat(extent.minx)],
 			[parseFloat(extent.maxy), parseFloat(extent.maxx)]
 		]);
-	},
-	
-	/*
-	updateGeoJsonTracks: function(id, data)
-	{
-		var jObj = {
-			"type": "Feature",
-			"geometry": data
-		};
-		
-		if (!APP.utils.isset(jObj.geometry))
-			return;
-		
-		if (!APP.utils.isset(this.globalData[this.currentMapId].layers[id].layer))
-			this.globalData[this.currentMapId].layers[id].layer = L.geoJson(jObj, {}).addTo(this.globalData[this.currentMapId].map);
-		else
-			this.globalData[this.currentMapId].layers[id].layer.addData(jObj);
-	},
-	*/
-	
-	removeMarkers: function(params)
-	{
-		var that = this;
-		var obj = (jQuery.type(params) === "boolean")? this.globalData[this.currentMapId].layers : params;
-		
-		$.each(obj, function(i, v)
-		{
-			if (APP.utils.isset(v.markers))
-				$.each(v.markers, function(j, k)
-				{
-					$.each(k, function(j1, k1)
-					{
-						that.globalData[that.currentMapId].map.removeLayer(k1);
-					});
-				});
-			if (APP.utils.isset(v.tracks))
-				$.each(v.tracks, function(j, k)
-				{
-					$.each(k, function(j1, k1)
-					{
-						that.globalData[that.currentMapId].map.removeLayer(k1);
-					});
-				});
-			if (APP.utils.isset(that.globalData[that.currentMapId].layers[i]))
-				//that.layers.splice(i,1);
-				delete that.globalData[that.currentMapId].layers[i];
-		});
-	},
-	
-	addWMSLayer: function(url, options, boundsObj, div, T)
-	{
-		this.setMap(div);
-		L.tileLayer.wms(url, options).addTo(this.globalData[this.currentMapId].map);
-		
-		if (this.isset(boundsObj.extent))
-		{
-			this.setExtent(boundsObj.extent);
-			
-			if (this.isset(boundsObj.startstopoint))
-			{
-				L.marker([parseFloat(boundsObj.startstopoint.start.lat),parseFloat(boundsObj.startstopoint.start.lon)], {icon: this.startIcon}).addTo(this.globalData[this.currentMapId].map);
-				L.marker([parseFloat(boundsObj.startstopoint.stop.lat),parseFloat(boundsObj.startstopoint.stop.lon)], {icon: this.stopIcon}).addTo(this.globalData[this.currentMapId].map);
-			}
-		}
-	},
-	
-	setGeoJsonMap: function(geojsonFeature, div, T, type)
-	{
-		var that = this;
-		this.setMap(div);
-		
-		switch(type)
-		{
-			case "Point":
-				$.each(geojsonFeature, function(i, v)
-				{
-					if (!that.isset(v.properties) || !that.isset(v.properties.id))
-						return true;
-					if (!APP.utils.isset(that.globalData[that.currentMapId].layers[v.properties.id]))
-						that.globalData[that.currentMapId].layers[v.properties.id] = {};
-					if (!APP.utils.isset(that.globalData[that.currentMapId].layers[v.properties.id].markers))
-						that.globalData[that.currentMapId].layers[v.properties.id].markers = {};
-					if (!APP.utils.isset(that.globalData[that.currentMapId].layers[v.properties.id].markers[v.properties.layerType]))
-						that.globalData[that.currentMapId].layers[v.properties.id].markers[v.properties.layerType] = {};
-						
-					var markerIcon = null;
-					var defaultLayerType = false;
-					switch(v.properties.layerType)
-					{
-						case "last_realtime":
-							markerIcon = that.unselectedMarker;
-							break;
-						case "start":
-							markerIcon = that.startIcon;
-							break;
-						case "stop":
-							markerIcon = that.stopIcon;
-							break;
-						default: // 
-							defaultLayerType = true;
-							markerIcon = that.unselectedMarker;
-					}
-					if (defaultLayerType)
-					{
-						if (!APP.utils.isset(that.globalData[that.currentMapId].layers[v.properties.id].markers[v.properties.layerType][v.properties.subType]))
-							that.globalData[that.currentMapId].layers[v.properties.id].markers[v.properties.layerType][v.properties.subType] = [];
-						that.globalData[that.currentMapId].layers[v.properties.id].markers[v.properties.layerType][v.properties.subType][that.globalData[that.currentMapId].layers[v.properties.id].markers[v.properties.layerType][v.properties.subType].length] = L.marker([parseFloat(v.geometry.coordinates[1]), parseFloat(v.geometry.coordinates[0])], {icon: markerIcon})
-						.on("click", function(e){
-							T.onSelRow(v.properties.id);
-							//T.bindPU(this, v.properties.id);
-						})
-						.addTo(that.globalData[that.currentMapId].map);
-					}
-					else
-					{
-						if ($.isEmptyObject(that.globalData[that.currentMapId].layers[v.properties.id].markers[v.properties.layerType]))
-						{
-							that.globalData[that.currentMapId].layers[v.properties.id].markers[v.properties.layerType][0] = L.marker([parseFloat(v.geometry.coordinates[1]), parseFloat(v.geometry.coordinates[0])], {icon: markerIcon})
-							.on("click", function(e){
-								T.onSelRow(v.properties.id);
-								//T.bindPU(this, v.properties.id);
-							})
-							.addTo(that.globalData[that.currentMapId].map);
-						}
-						else
-							that.globalData[that.currentMapId].layers[v.properties.id].markers[v.properties.layerType][0].setLatLng([parseFloat(v.geometry.coordinates[1]), parseFloat(v.geometry.coordinates[0])]);
-					}
-				});
-				break;
-			case "LineString":
-				$.each(geojsonFeature, function(i, v)
-				{
-					if (!that.isset(v.properties) || !that.isset(v.properties.id))
-						return true;
-					var id = v.properties.id;
-					if (!APP.utils.isset(that.globalData[that.currentMapId].layers[id]))
-						that.globalData[that.currentMapId].layers[id] = {};
-					if (!APP.utils.isset(that.globalData[that.currentMapId].layers[id].tracks))
-						that.globalData[that.currentMapId].layers[id].tracks = {};
-					if (!APP.utils.isset(that.globalData[that.currentMapId].layers[id].tracks[v.properties.layerType]))
-						that.globalData[that.currentMapId].layers[id].tracks[v.properties.layerType] = [];
-					if (!APP.utils.isset(that.globalData[that.currentMapId].layers[id].tracks[v.properties.layerType][that.globalData[that.currentMapId].layers[id].tracks[v.properties.layerType].length]))
-						that.globalData[that.currentMapId].layers[id].tracks[v.properties.layerType][that.globalData[that.currentMapId].layers[id].tracks[v.properties.layerType].length] = L.geoJson(v, {}).addTo(that.globalData[that.currentMapId].map);
-					else
-						that.globalData[that.currentMapId].layers[id].tracks[v.properties.layerType][that.globalData[that.currentMapId].layers[id].tracks[v.properties.layerType].length].addData(v);					
-				});
-				break;
-			default:
-				console.log("altro tipo GeojsonMap: "+type);
-				break;
-		}
 	},
 	
 	removeAllLayers: function()
@@ -319,7 +168,7 @@ $.extend(APP.map,
 			
 		this.globalData[id] = {
 			map: {},
-			layers: {},			
+			layerGroup: [],			
 			drawControl: null,
 			drawnItems: null,
 			miniMapControl: null,

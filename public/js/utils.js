@@ -408,7 +408,7 @@ $.extend(APP.utils,{
 			});
 		}
 		
-		if (form.find(".mapBoxColor").length > 0 && form.find("#mapboxDiv").length>0)
+		if (form.find(".mapBoxColor").length > 0 && form.find(".mapboxDiv").length>0)
 		{
 			APP.map.changeColors(form.find(".mapBoxColor").val());
 		}
@@ -669,7 +669,22 @@ $.extend(APP.utils,{
 										}
 										if (fieldToChange.is('input') && fieldToChange.hasClass("mapbox"))
 										{
-											alert("Francesco gestisci il change sul mapbox!");
+											/*
+											var ls = APP.map.globalData['mapboxDiv-'+fieldToChange.attr("name")].layers;
+											var map = APP.map.globalData['mapboxDiv-'+fieldToChange.attr("name")].map;
+											
+											$.each(ls, function(layerId, layerValue){
+												map.removeLayer(layerValue);
+											});
+											ls = {};
+											if (!APP.utils.isset(fieldObj.value.items[0].geoJSON))
+												break;
+											
+											map.remove();
+												
+											var gj = new L.geoJson(fieldObj.value.items[0].geoJSON);
+											gj.addTo(APP.map.globalData['mapboxDiv-'+fieldToChange.attr("name")].map);
+											*/
 											break;
 										}
 										fieldToChange.val(fieldObj.value.items[0]);
@@ -1380,11 +1395,12 @@ $.extend(APP.utils,{
 				inp = "<input type='color' id='APP-"+v.name+"' name='"+v.name+"' class='form-control' value='"+valore+"' "+required+">";
 				break;
 			case "mapbox":
-				inp = "<div id='mapboxDiv' class='mapbox' style='width: 100%; height: 400px;'></div>";
-				if (valore == "")
-					inp += "<input type='hidden' id='APP-"+v.name+"' name='"+v.name+"' class='mapbox' value=''>";
-				else
-					inp += "<input type='hidden' id='APP-"+v.name+"' name='"+v.name+"' class='mapbox' value='"+JSON.stringify(valore)+"'>";
+				inp = $("<div  style='width: 100%;'></div>");
+				inp.append("<div id='mapboxDiv-"+v.name+"' class='mapbox mapboxDiv' style='width: 100%; height: 400px;'></div>");
+				var tmpInp = $("<input type='hidden' id='APP-"+v.name+"' name='"+v.name+"' class='mapbox'>");
+				if (valore != "")
+					tmpInp.val(JSON.stringify(valore));
+				inp.append(tmpInp);
 				break;
 			case "mapbox_color":
 				inp = "<input type='color' id='APP-"+v.name+"' name='"+v.name+"' class='form-control mapBoxColor' value='"+valore+"' "+required+">";
