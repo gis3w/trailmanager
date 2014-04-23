@@ -96,6 +96,7 @@ return array(
     
     'actions' => 'Azioni',
     
+    'Image' => 'Immagine',
     
     'Points of interest' => 'Punti di interesse',
     'Paths' => 'Percorsi',

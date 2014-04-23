@@ -8,6 +8,8 @@ class Datastruct_Image_Poi extends Datastruct {
     
     public $icon = 'suitcase';
     public $filter = TRUE;
+    
+    public $sortable = TRUE;
 
     public $groups = array(
         array(

@@ -494,8 +494,12 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
                                
                                // caso in cui non ci sia lo stato ma si modifica l'ordine
                                default:
-                                   $subformOrm->norder = $norder;
-                                   $subformOrm->save();
+                                   if(in_array('norder', array_keys($subformOrm->table_columns())))
+                                   {
+                                       $subformOrm->norder = $norder;
+                                       $subformOrm->save();
+                                   }
+                                   
                            }
 
                    }

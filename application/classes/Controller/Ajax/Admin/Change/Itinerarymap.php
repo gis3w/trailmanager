@@ -3,7 +3,17 @@
 
 class Controller_Ajax_Admin_Change_itinerarymap extends Controller_Ajax_Auth_Strict{
     
+    protected $_res;
+
+
     public function action_index() {
+        
+        // si prepara la risposta vuota
+        $this->_res['disabled'] = FALSE;
+        $this->_res['value'] = array(
+            'items' => array(),
+        );
+        
         if(isset($_GET['poi_id']) AND $_GET['poi_id'] != 'null')
             $this->_get_poi();
         
@@ -19,22 +29,18 @@ class Controller_Ajax_Admin_Change_itinerarymap extends Controller_Ajax_Auth_Str
                 ->where('id','IN',DB::expr('('. implode(',', $poi_ids).')'))
                 ->find_all();
         $toData = array();
-        
-        $toData['disabled'] = FALSE;
-        $toData['value'] = array(
-            'items' => array(),
-        );
+     
         
         foreach($pois as $poi)
         {
-            $toData['value']['items'][] =array(
+            $this->_res['value']['items'][] =array(
                     'id' => $poi->id,
                     'typology_id' => (int)$poi->typology_id,
                     'geoJSON' => json_decode($poi->asgeojson)
                 );
         }
         
-        $this->jres->data->the_geom = $toData;
+        
     }
     
      protected function _get_path()
@@ -44,24 +50,24 @@ class Controller_Ajax_Admin_Change_itinerarymap extends Controller_Ajax_Auth_Str
                 ->where('id','IN',DB::expr('('. implode(',', $path_ids).')'))
                 ->find_all();
         
-        $toData = array();
-        
-        $toData['disabled'] = FALSE;
-        $toData['value'] = array(
-            'items' => array(),
-        );
         
         foreach($paths as $path)
         {
-            $toData['value']['items'][] =array(
+            $this->_res['value']['items'][] =array(
                     'id' => $path->id,
                     'typology_id' => (int)$path->typology_id,
                     'color' => $path->color,
                     'geoJSON' => json_decode($path->asgeojson)
                 );
         }
+
+    }
+    
+    public function after() {
         
-        $this->jres->data->the_geom= $toData;
+        $this->jres->data->the_geom = $this->_res;
+        
+        parent::after();
     }
   
     
