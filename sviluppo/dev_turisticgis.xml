@@ -140,6 +140,9 @@
       <Cl au="0" df="" nm="itinerary_id" nu="0">
         <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
+      <Cl au="0" df="" nm="norder" nu="1">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
       <Fk deAc="3" nm="fk_image_itineraries_itineraries" prLkCl="id" upAc="3">
         <PrTb mn="0" nm="itineraries" oe="1" sch="public" zr="0"/>
         <CdTb mn="1" nm="image_itineraries" oe="1" sch="public" zr="1"/>
