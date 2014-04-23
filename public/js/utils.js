@@ -669,22 +669,7 @@ $.extend(APP.utils,{
 										}
 										if (fieldToChange.is('input') && fieldToChange.hasClass("mapbox"))
 										{
-											/*
-											var ls = APP.map.globalData['mapboxDiv-'+fieldToChange.attr("name")].layers;
-											var map = APP.map.globalData['mapboxDiv-'+fieldToChange.attr("name")].map;
-											
-											$.each(ls, function(layerId, layerValue){
-												map.removeLayer(layerValue);
-											});
-											ls = {};
-											if (!APP.utils.isset(fieldObj.value.items[0].geoJSON))
-												break;
-											
-											map.remove();
-												
-											var gj = new L.geoJson(fieldObj.value.items[0].geoJSON);
-											gj.addTo(APP.map.globalData['mapboxDiv-'+fieldToChange.attr("name")].map);
-											*/
+											APP.map.updateLayerGroups(elem.attr("id"), 'mapboxDiv-'+fieldToChange.attr("name"), fieldObj.value.items);
 											break;
 										}
 										fieldToChange.val(fieldObj.value.items[0]);

@@ -158,6 +158,28 @@ $.extend(APP.map,
 		this.currentMapId = (APP.utils.isset(this.globalData[newMapId]))? newMapId : null;
 	},
 	
+	updateLayerGroups: function(groupId, mapId, items)
+	{
+		var that = this;
+		var ls = that.globalData[mapId].layerGroups;
+		var map = that.globalData[mapId].map;
+		var elemId = groupId;
+		
+		if (!APP.utils.isset(ls))
+			ls = {};
+		if (APP.utils.isset(ls[elemId]))
+		{
+			$.each(ls[elemId], function(){
+				map.removeLayer(this);
+			});
+		}
+		ls[elemId] = [];
+		$.each(items, function(){
+			ls[elemId].push(L.geoJson(this.geoJSON));
+			ls[elemId][ls[elemId].length-1].addTo(map);
+		});
+	},
+	
 	setMap: function(div)
 	{	
 		var that = this;
@@ -168,7 +190,7 @@ $.extend(APP.map,
 			
 		this.globalData[id] = {
 			map: {},
-			layerGroup: [],			
+			layerGroups: {},			
 			drawControl: null,
 			drawnItems: null,
 			miniMapControl: null,
