@@ -1,8 +1,6 @@
 $.extend(APP.subforms,
 {
 	sectionTarget: null,
-	subformName: null,
-	subformRows: [],
 	subformValidationUrl: null,
 	token: 0,
 	
@@ -15,88 +13,30 @@ $.extend(APP.subforms,
 		div.find(".icon-off").parents("button").first().tooltip({title: APP.i18n.translate("on")});
 	},
 	
-	generateActionButtonsString: function(i)
+	generateActionButtonsString: function(i, subformName)
 	{
 		var that = this;
-		var str = '<div class="actionButtonsString">';
-		if ($.inArray("update", that.sectionTarget.subforms[that.subformName].capabilities) > -1)
-			str +=	"<button type='button' id='edit_"+i+"' name='edit' class='btn btn-default' ><i class='icon-pencil'></i></button>";
+		var str = $('<div class="actionButtonsString"></div>');
+		if ($.inArray("update", that.sectionTarget.subforms[subformName].capabilities) > -1)
+			str.append("<button type='button' id='edit_"+i+"' data-subformname='"+subformName+"' name='edit' class='btn btn-default' ><i class='icon-pencil'></i></button>");
 		else
-			str += 	"<button type='button' id='show_"+i+"' name='show' class='btn btn-default' ><i class='icon-eye-open'></i></button>";
-		if ($.inArray("delete", that.sectionTarget.subforms[that.subformName].capabilities) > -1)
-			str +=	"<button type='button' id='remove_"+i+"' name='remove' class='btn btn-danger' ><i class='icon-trash'></i></button>"
-		return str+"</div>";
+			str.append("<button type='button' id='show_"+i+"' data-subformname='"+subformName+"' name='show' class='btn btn-default' ><i class='icon-eye-open'></i></button>");
+		if ($.inArray("delete", that.sectionTarget.subforms[subformName].capabilities) > -1)
+			str.append("<button type='button' id='remove_"+i+"' data-subformname='"+subformName+"' name='remove' class='btn btn-danger' ><i class='icon-trash'></i></button>");
+		//str.find("button").data({subformName: subformName});
+		return str.html();
 	},
 	
-	preserialize_old: function()
+	preserialize: function(subformName)
 	{
+		var that = this;
 		var str = "";
-		var rows = APP.subforms.subformRows;
-		$.each(rows, function(i, obj)
+		$.each(that.sectionTarget.subforms[subformName].values, function()
 		{
-			var t;
-			$.each(obj, function(j, valueArr)
-			{
-				var value = valueArr;
-				if ($.isArray(valueArr))
-				{
-					value = "";
-					$.each(valueArr, function(k, v)
-					{
-						value += v + "|";
-					});
-					value = value.substr(0, value.length-1);
-				}
-				str += j +":"+value+",";
-			});
-			str = str.substr(0, str.length-1) + ";";
+			str += $.param(this)+";";
 		});
 		str = str.substr(0, str.length-1);
-		return {'name': APP.subforms.subformName, 'value': str};
-	},
-	
-	preserialize_new: function()
-	{
-		var rows = APP.subforms.subformRows;
-		var str = "";
-		$.each(rows, function(i, obj)
-		{
-			str += $.param(obj)+";";
-			//str = str.substr(0, str.length-1) + ";";
-		});
-		str = str.substr(0, str.length-1);
-		return {'name': APP.subforms.subformName, 'value': str};
-	},
-	
-	preserialize: function()
-	{
-		return this.preserialize_new();
-		var str = "";
-		var rows = APP.subforms.subformRows;
-		/*
-		$.each(rows, function(i, obj)
-		{
-			var t;
-			$.each(obj, function(j, valueArr)
-			{
-				var value = valueArr;
-				if ($.isArray(valueArr))
-				{
-					value = "";
-					$.each(valueArr, function(k, v)
-					{
-						value += v + "|";
-					});
-					value = value.substr(0, value.length-1);
-				}
-				str += j +":"+value+",";
-			});
-			str = str.substr(0, str.length-1) + ";";
-		});
-		
-		str = str.substr(0, str.length-1);*/
-		str = JSON.stringify(rows);
-		return {'name': APP.subforms.subformName, 'value': str};
+		return {'name': subformName, 'value': str};
 	},
 	
 	setActionButtonsClick: function(recipient, params)
@@ -113,7 +53,7 @@ $.extend(APP.subforms,
 		that.setTooltips(recipient);
 	},
 	
-	addSubformItem: function(form, tableDiv)
+	addSubformItem: function(form, tableDiv, subformName)
 	{
 		var that = this;
 		var table = tableDiv.find(".datatable").dataTable();
@@ -174,7 +114,7 @@ $.extend(APP.subforms,
 					console.log("Aggiungi questo tagName: "+v.tagName);
 			}
 		});
-		data.actions = that.generateActionButtonsString(that.token);
+		data.actions = that.generateActionButtonsString(that.token, subformName);
 		var dataArr = [];
 		$.each(data, function(i,v)
 		{
@@ -196,12 +136,12 @@ $.extend(APP.subforms,
 		});
 		$.extend(obj, {'token' : that.token, 'stato' : "I"});
 		
-		that.subformRows.push(obj);
+		that.sectionTarget.subforms[subformName].values.push(obj);
 		that.setActionButtonsClick($(table.find("tbody").find("tr")[newRowIndex[0]]), obj);
 		that.token++;
 	},
 	
-	editSubformItem: function(form, tableDiv, btn)
+	editSubformItem: function(form, tableDiv, btn, subformName)
 	{
 		var that = this;
 		var table = tableDiv.find(".datatable").dataTable();
@@ -271,15 +211,15 @@ $.extend(APP.subforms,
 				obj[v.name] = v.value;
 		});
 		var btnData = btn.data();
-		obj.stato = (APP.utils.isset(btnData[that.sectionTarget.subforms[that.subformName].primary_key]))? "U" : btnData.stato;
+		obj.stato = (APP.utils.isset(btnData[that.sectionTarget.subforms[subformName].primary_key]))? "U" : btnData.stato;
 		obj.token = btnData.token;
-		var index = APP.utils.getIndexFromField(that.subformRows, "token", obj.token);
+		var index = APP.utils.getIndexFromField(that.sectionTarget.subforms[subformName].values, "token", obj.token);
 		if (index == -1)
 			return;
 		//that.subformRows[index] = obj;
-		$.extend(that.subformRows[index], obj);
+		$.extend(that.sectionTarget.subforms[subformName].values[index], obj);
 				
-		data.actions = that.generateActionButtonsString(obj.token);
+		data.actions = that.generateActionButtonsString(obj.token, subformName);
 		var dataArr = [];
 		$.each(data, function(i,v)
 		{
@@ -289,18 +229,18 @@ $.extend(APP.subforms,
 		that.setActionButtonsClick(tr, obj);
 	},
 	
-	removeSubformItem: function(btn)
+	removeSubformItem: function(btn, subformName)
 	{
 		var that = this;
 		var btnData = $(btn).data();
 		var token = btnData.token;
-		var index = APP.utils.getIndexFromField(that.subformRows, "token", token);
+		var index = APP.utils.getIndexFromField(that.sectionTarget.subforms[subformName].values, "token", token);
 		if (index == -1)
 			return;
-		if (APP.utils.isset(that.subformRows[index][that.sectionTarget.subforms[that.subformName].primary_key]))
-			that.subformRows[index].stato = "D";
+		if (APP.utils.isset(that.sectionTarget.subforms[subformName].values[index][that.sectionTarget.subforms[subformName].primary_key]))
+			that.sectionTarget.subforms[subformName].values[index].stato = "D";
 		else
-			that.subformRows.splice(index, 1);
+			that.sectionTarget.subforms[subformName].values[index].splice(index, 1);
 		
 		var table = btn.parents("table").first().dataTable();
 		var tr = btn.parents("tr");
@@ -311,16 +251,14 @@ $.extend(APP.subforms,
 	{
 		var that = this;
 		var identifier = APP.utils.isset(params.token)? params.token : null;
-		
-		//var form = this.generalData.ctx.createFormTemplate(identifier, {}, that.sectionTarget.subforms[that.subformName], that.subformName, []);
-		
-		var enctype = APP.utils.isset(that.sectionTarget.subforms[that.subformName].enctype)? 'enctype="'+that.sectionTarget.subforms[that.subformName].enctype+'"' : '';
+				
+		var enctype = APP.utils.isset(that.sectionTarget.subforms[params.subformName].enctype)? 'enctype="'+that.sectionTarget.subforms[params.subformName].enctype+'"' : '';
 		var form = $('<form class="form-horizontal" '+enctype+' role="form"></form>');
 		if (APP.utils.isset(APP.config.getToken) && $.isFunction(APP.config.getToken))
-			form.append('<input type="hidden" name="csrf_token" class="tokenInput subform" value="'+APP.config.getToken(that.subformName)+'">');
+			form.append('<input type="hidden" name="csrf_token" class="tokenInput subform" value="'+APP.config.getToken(params.subformName)+'">');
 		params.div.html(form);
 		
-		$.each(that.sectionTarget.subforms[that.subformName].columns, function(j1, v)
+		$.each(that.sectionTarget.subforms[params.subformName].columns, function(j1, v)
 		{
 			var required = (APP.utils.isset(v.required) && v.required)? " required " : "";
 			var inp = null;
@@ -329,10 +267,10 @@ $.extend(APP.subforms,
 			var obj = null;
 			if (params.type == "edit" || params.type == "show")
 			{
-				var index = APP.utils.getIndexFromField(that.subformRows, "token", identifier);
+				var index = APP.utils.getIndexFromField(that.sectionTarget.subforms[params.subformName].values, "token", identifier);
 				if (index == -1)
 					return;
-				obj = that.subformRows[index];
+				obj = that.sectionTarget.subforms[params.subformName].values[index];
 				if (v.data_type == "integer")
 				{
 					if ($.isArray(obj[v.name]))
@@ -364,7 +302,7 @@ $.extend(APP.subforms,
 			//if (!v.form_show || (!v.editable && (!APP.utils.isset(valore) || APP.utils.isEmptyString(valore)))) // se deve essere visualizzato nel form
 				return true;
 			
-			inp = APP.utils.getInputFormat(identifier, obj, required, that.subformName, that.sectionTarget.subforms[that.subformName], that, v, valore, null);
+			inp = APP.utils.getInputFormat(identifier, obj, required, params.subformName, that.sectionTarget.subforms[params.subformName], that, v, valore, null);
 			inp.find(":input").addClass("subform");
 			
 			var displayOnOff = (v.form_input_type == "hidden")? "style='display: none'" : "";
@@ -380,7 +318,7 @@ $.extend(APP.subforms,
 				ctrlGrp.find(".descrInput").append($('<span id="description_'+v.name+'" data-toggle="tooltip" title="'+v.description+'" data-placement="auto" data-container="#subformContent" class="tooltipElement text-muted" style="padding-left: 5px"><i class="icon icon-info-sign"></i></span>'));
 			form.append(ctrlGrp);
 			
-			if (($.type(v.editable) === "boolean" && !v.editable) || ($.isPlainObject(v.editable) && ((!v.editable.insert && !APP.utils.isset(identifier)) || (!v.editable.update && APP.utils.isset(identifier)))) || (APP.utils.isset(identifier) && $.inArray("update", that.sectionTarget.subforms[that.subformName].capabilities) === -1) || (!APP.utils.isset(identifier) && $.inArray("insert", that.sectionTarget.subforms[that.subformName].capabilities) === -1))//if (!v.editable || $.inArray("update", sectionTarget.capabilities) === -1)
+			if (($.type(v.editable) === "boolean" && !v.editable) || ($.isPlainObject(v.editable) && ((!v.editable.insert && !APP.utils.isset(identifier)) || (!v.editable.update && APP.utils.isset(identifier)))) || (APP.utils.isset(identifier) && $.inArray("update", that.sectionTarget.subforms[params.subformName].capabilities) === -1) || (!APP.utils.isset(identifier) && $.inArray("insert", that.sectionTarget.subforms[params.subformName].capabilities) === -1))//if (!v.editable || $.inArray("update", sectionTarget.capabilities) === -1)
 				params.div.find("#APP-"+v.name).attr("disabled", true);
 		});
 	},
@@ -470,7 +408,7 @@ $.extend(APP.subforms,
 					var form = $("#modalSubform").find("form");
 					if (!that.formValidator(form, that.subformValidationUrl, type))
 						return; 
-					that.addSubformItem(form, div); 
+					that.addSubformItem(form, div, data.subformname); 
 					$("#modalSubform").modal("hide");
 				});
 				break;
@@ -481,7 +419,7 @@ $.extend(APP.subforms,
 					var form = $("#modalSubform").find("form");
 					if (!that.formValidator(form, that.subformValidationUrl, type))
 						return; 
-					that.editSubformItem(form, $("#div_"+that.subformName), btn);
+					that.editSubformItem(form, $("#div_"+data.subformname), btn, data.subformname);
 					$("#modalSubform").modal("hide");
 				});
 				break;
@@ -494,7 +432,7 @@ $.extend(APP.subforms,
 				var yesBtn = $(btns[0]);
 				yesBtn.click(function()
 				{
-					that.removeSubformItem(btn);
+					that.removeSubformItem(btn, data.subformname);
 					$("#defaultMessageDialog").modal("hide");
 				});
 				var deleteConfirmMsg = (APP.utils.isset(that.sectionTarget.messages) && APP.utils.isset(that.sectionTarget.messages['delete_confirm']))? that.sectionTarget.messages['delete_confirm'] : APP.i18n.translate("remove_confirm");
@@ -510,7 +448,7 @@ $.extend(APP.subforms,
 				
 		$("#modalSubform").find(".modal-footer").html(savebtn);
 		$("#modalSubform").find(".modal-footer").append(closeBtn);
-		that.createFormDialog({ 'div': $("#subformContent"), 'type': type, 'token': tkn});
+		that.createFormDialog({ 'div': $("#subformContent"), 'type': type, 'token': tkn, 'subformName': data.subformname});
 		$("#modalSubform").one('shown.bs.modal', function(){	
 			APP.utils.setLookForm($("#subformContent").find("form"), null);
 		});
@@ -521,19 +459,23 @@ $.extend(APP.subforms,
 	showSubformTable: function(params)
 	{
 		var that = this;
-		that.subformRows = [];
-		that.sectionTarget = params.sectionTarget;
-		that.subformName = params.subformName;
+		var subformName = params.subformName;
+		if (!APP.utils.isset(that.sectionTarget))
+			that.sectionTarget = params.sectionTarget;
+		if (!APP.utils.isset(that.sectionTarget.subforms))
+			that.sectionTarget.subforms = {}
+		if (!APP.utils.isset(that.sectionTarget.subforms[subformName]))
+			that.sectionTarget.subforms[subformName] = params.sectionTarget.subforms[subformName];
 		
 		if (!APP.utils.isset(that.sectionTarget.subforms))
 		{
-			alert("non e' settato l'array subforms in "+that.sectionTarget.resource);
+			alert("non e' settato l'array subforms in "+ that.sectionTarget.resource);
 			return;
 		}
 				
-		var s = $(	'<div id="div_'+that.subformName+'">\
+		var s = $(	'<div id="div_'+ subformName+'">\
 						<div class="table-responsive">\
-							<table class="table table-striped table-bordered table-hover datatable subformTable">\
+							<table name="'+subformName+'" class="table table-striped table-bordered table-hover datatable subformTable">\
 								<thead><tr></tr></thead>\
 								<tbody></tbody>\
 							</table>\
@@ -552,20 +494,21 @@ $.extend(APP.subforms,
 						</div>\
 					</div>');
 		
-		var div = $("#APP-"+that.subformName);
-		if ($.inArray("insert", that.sectionTarget.subforms[that.subformName].capabilities) > -1)
+		var div = $("#APP-"+ subformName);
+		if ($.inArray("insert",  that.sectionTarget.subforms[ subformName].capabilities) > -1)
 		{
-			s.prepend('<span id="add_'+that.subformName+'" name="add" class="btn btn-primary" style="margin-bottom: 20px; margin-right: 40px; float: left"><i class="icon-plus icon-white"></i> '+APP.i18n.translate("add")+'</span>');
+			var addSpan = $('<span id="add_'+subformName+'" name="add" data-subformname="'+subformName+'" class="btn btn-primary" style="margin-bottom: 20px; margin-right: 40px; float: left"><i class="icon-plus icon-white"></i> '+APP.i18n.translate("add")+'</span>');
+			s.prepend(addSpan);
 		}
 		div.html(s);
 		$("#modalSubform").modal({'show': false});
-		that.setActionButtonsClick(div, that.subformName);
+		that.setActionButtonsClick(div, subformName);
 		
 		var thead = div.find("thead").find("tr");
 		var tbody =  div.find("tbody");
 		var cols = [];
 		
-		var obj = that.sectionTarget.subforms[that.subformName];
+		var obj = that.sectionTarget.subforms[subformName];
 		var valori = {};
 		
 		$.each(obj.columns, function(i, v)
@@ -577,7 +520,7 @@ $.extend(APP.subforms,
 			
 			if (APP.utils.isset(v.description))
 			{
-				var tthh = $('<th name="'+v.name+suffix+'" class="table-th" data-container="#APP-'+that.subformName+'" data-toggle="tooltip " data-placement="top" title="'+v.description+'">'+v.label+'</th>');
+				var tthh = $('<th name="'+v.name+suffix+'" class="table-th" data-container="#APP-'+subformName+'" data-toggle="tooltip " data-placement="top" title="'+v.description+'">'+v.label+'</th>');
 				tthh.tooltip();
 				thead.append(tthh);
 			}
@@ -610,8 +553,8 @@ $.extend(APP.subforms,
 						
 						$.each(data, function(x, y)
 						{
-							y = (!$.isPlainObject(y))? y : y[that.sectionTarget.subforms[that.subformName].primary_key];
-							var oi = APP.utils.getIndexFromField(fValues, that.sectionTarget.subforms[that.subformName].primary_key, y);
+							y = (!$.isPlainObject(y))? y : y[that.sectionTarget.subforms[subformName].primary_key];
+							var oi = APP.utils.getIndexFromField(fValues, that.sectionTarget.subforms[subformName].primary_key, y);
 							if (oi > -1)
 								str += APP.config.getValue(fValues[oi], k.foreign_toshow, k.foreign_toshow_params)+", ";//str += APP.config.getValue(k.name, fValues[oi])+", "; 
 						});
@@ -630,8 +573,8 @@ $.extend(APP.subforms,
 						
 						$.each(data, function(x, y)
 						{
-							y = (!$.isPlainObject(y))? y : y[that.sectionTarget.subforms[that.subformName].primary_key];
-							var oi = APP.utils.getIndexFromField(fValues, that.sectionTarget.subforms[that.subformName].primary_key, y);
+							y = (!$.isPlainObject(y))? y : y[that.sectionTarget.subforms[subformName].primary_key];
+							var oi = APP.utils.getIndexFromField(fValues, that.sectionTarget.subforms[subformName].primary_key, y);
 							if (oi > -1)
 								str += APP.config.getValue(fValues[oi], k.foreign_toshow, k.foreign_toshow_params)+", ";//str += APP.config.getValue(k.name, fValues[oi])+", "; 
 						});
@@ -647,9 +590,11 @@ $.extend(APP.subforms,
 					}
 					tr.append("<td class='table-td'>"+APP.utils.displayData(v[k.name], k)+"</td>");
 				});
-				tr.append("<td>"+that.generateActionButtonsString(that.token)+"</td>");
+				var tiddi = $('<td></td>');
+				tiddi.append(that.generateActionButtonsString(that.token, subformName));
+				tr.append(tiddi);
 				$.extend(v, {'token' : that.token});
-				that.subformRows.push(v);
+				//subformRows.push(v);
 				that.token++;
 				that.setActionButtonsClick(tr, v);
 				tbody.append(tr);
@@ -660,16 +605,19 @@ $.extend(APP.subforms,
 			tbody.sortable({
 				stop: function( event, ui )
 				{
+					alert("Francesco devi gestire l'ordinamento!!!");
+					/*
 					var sfrCopy = that.subformRows;
 					that.subformRows = [];
 					$.each(this.children, function(){
 						var d = $(this).data();
 						delete d['sortableItem'];
-						var fieldKey = that.sectionTarget.subforms[that.subformName].primary_key;
+						var fieldKey = that.sectionTarget.subforms[subformName].primary_key;
 						var elIndex = APP.utils.getIndexFromField(sfrCopy, fieldKey, d[fieldKey]);
 						d.token = sfrCopy[elIndex].token;
 						that.subformRows.push(d);
 					});
+					*/
 				}
 			});
 		

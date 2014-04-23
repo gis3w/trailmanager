@@ -1503,7 +1503,13 @@ $.extend(APP.anagrafica,
 				d.push(APP.fileuploader.preserialize(form));
 		}
 		if (form.find(".subformTable").length>0)
-			d.push(APP.subforms.preserialize());
+		{
+			$.each(form.find(".subformTable"), function()
+			{
+				var sfn = $(this).attr("name");
+				d.push(APP.subforms.preserialize(sfn));
+			});
+		}
 		if (form.find(":input.mapbox").length>0)
 		{
 			$.each(form.find(":input.mapbox"), function(i,v)
