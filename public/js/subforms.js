@@ -1,8 +1,6 @@
 $.extend(APP.subforms,
 {
 	sectionTarget: null,
-	subformValidationUrl: null,
-	token: 0,
 	
 	setTooltips: function(div)
 	{
@@ -17,6 +15,7 @@ $.extend(APP.subforms,
 	{
 		var that = this;
 		var str = $('<div class="actionButtonsString"></div>');
+		str.css('white-space','nowrap');
 		if ($.inArray("update", that.sectionTarget.subforms[subformName].capabilities) > -1)
 			str.append("<button type='button' id='edit_"+i+"' data-subformname='"+subformName+"' name='edit' class='btn btn-default' ><i class='icon-pencil'></i></button>");
 		else
@@ -114,7 +113,7 @@ $.extend(APP.subforms,
 					console.log("Aggiungi questo tagName: "+v.tagName);
 			}
 		});
-		data.actions = that.generateActionButtonsString(that.token, subformName);
+		data.actions = that.generateActionButtonsString(that.sectionTarget.subforms[subformName].token, subformName);
 		var dataArr = [];
 		$.each(data, function(i,v)
 		{
@@ -134,11 +133,11 @@ $.extend(APP.subforms,
 			else
 				obj[v.name] = v.value;
 		});
-		$.extend(obj, {'token' : that.token, 'stato' : "I"});
+		$.extend(obj, {'token' : that.sectionTarget.subforms[subformName].token, 'stato' : "I"});
 		
 		that.sectionTarget.subforms[subformName].values.push(obj);
 		that.setActionButtonsClick($(table.find("tbody").find("tr")[newRowIndex[0]]), obj);
-		that.token++;
+		that.sectionTarget.subforms[subformName].token++;
 	},
 	
 	editSubformItem: function(form, tableDiv, btn, subformName)
@@ -402,11 +401,11 @@ $.extend(APP.subforms,
 		switch(type)
 		{
 			case "add":
-				tkn = that.token;
+				tkn = that.sectionTarget.subforms[data.subformname].token;
 				savebtn.click(function()
 				{
 					var form = $("#modalSubform").find("form");
-					if (!that.formValidator(form, that.subformValidationUrl, type))
+					if (!that.formValidator(form, that.sectionTarget.subforms[data.subformname].subformValidationUrl, type))
 						return; 
 					that.addSubformItem(form, div, data.subformname); 
 					$("#modalSubform").modal("hide");
@@ -417,7 +416,7 @@ $.extend(APP.subforms,
 				savebtn.click(function()
 				{
 					var form = $("#modalSubform").find("form");
-					if (!that.formValidator(form, that.subformValidationUrl, type))
+					if (!that.formValidator(form, that.sectionTarget.subforms[data.subformname].subformValidationUrl, type))
 						return; 
 					that.editSubformItem(form, $("#div_"+data.subformname), btn, data.subformname);
 					$("#modalSubform").modal("hide");
@@ -591,11 +590,11 @@ $.extend(APP.subforms,
 					tr.append("<td class='table-td'>"+APP.utils.displayData(v[k.name], k)+"</td>");
 				});
 				var tiddi = $('<td></td>');
-				tiddi.append(that.generateActionButtonsString(that.token, subformName));
+				tiddi.append(that.generateActionButtonsString(that.sectionTarget.subforms[subformName].token, subformName));
 				tr.append(tiddi);
-				$.extend(v, {'token' : that.token});
+				$.extend(v, {'token' : that.sectionTarget.subforms[subformName].token});
 				//subformRows.push(v);
-				that.token++;
+				that.sectionTarget.subforms[subformName].token++;
 				that.setActionButtonsClick(tr, v);
 				tbody.append(tr);
 			});

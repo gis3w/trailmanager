@@ -992,7 +992,6 @@ $.extend(APP.utils,{
 								</select>";
 						break;
 					case "subform":
-						APP.subforms.subformValidationUrl = (this.isset(v.validation_url))? v.validation_url : null;
 						if (!this.isset(sectionTarget.subforms))
 							sectionTarget.subforms = {};
 						if (!this.isset(sectionTarget.subforms[v.name]))
@@ -1012,6 +1011,8 @@ $.extend(APP.utils,{
 								{
 									sectionTarget.subforms[v.name] = APP.utils.setBaseStructure(v.name, sectionLabel);
 									context.loadStructure(data, sectionTarget.subforms[v.name]);
+									sectionTarget.subforms[v.name].subformValidationUrl = (that.isset(v.validation_url))? v.validation_url : null;
+									sectionTarget.subforms[v.name].token = 0;
 									context.loadData(APP.config.localConfig.urls[v.name]+"?filter="+v.foreign_key+":"+identifier, sectionTarget.subforms[v.name], function(obj){
 										var oggetto = {};
 										$.extend(oggetto, {"subformName": v.name, "sectionTarget": sectionTarget, "ctx": context, "res": obj, "idl": APP.config.default_iDisplayLength});
