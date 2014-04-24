@@ -2,4 +2,6 @@
 
 class Controller_Admin_Download_Imageitinerary extends Controller_Admin_Download_Image {
     
+    protected $_subpath_download = 'imageitinerary';
+    
 }

@@ -31,28 +31,16 @@ abstract class Controller_Ajax_Admin_Base_Upload extends Controller_Ajax_Auth_St
         if(isset($controller_down::$keyField))
             $this->_column_document_key = $controller_down::$keyField;
         
-        // nel cso specifico 
-//         if(in_array($this->request->method(), array(HTTP_Request::POST,  HTTP_Request::PUT)))
-//        {
-//             if(!isset($_POST[$this->_column_document_key]))
-//                throw HTTP_Exception::factory(500,SAFE::message('upload','500_no_'.$this->_subpath_upload));
-//        
-//            $this->_subpath_upload .= "/".$_POST[$this->_column_document_key];
-//
-//             if(Kohana::$environment === Kohana::DEVELOPMENT)
-//                    Kohana::$log->add(LOG::DEBUG, "UPLOAD POST DATA: ".print_r($_POST,TRUE)   );
-//        }
-//        elseif (in_array($this->request->method(), array(HTTP_Request::DELETE)))
-//        {
-//            $this->_subpath_upload .= "/".$this->request->param('id');
-//        }
+        $this->_subpath_download = $this->_subpath_upload;
+         if(isset($controller_down::$subpathDownload))
+            $this->_subpath_download .= "/".$controller_down::$subpathDownload;
         
         $this->_upload_path = Controller_Download_Base::UPLOADPATH;
         
         if(isset($this->_subpath_upload))
         {
             $this->_upload_path .= "/".$this->_subpath_upload."/";
-            $this->_download_url .= "/".$this->_subpath_upload."/";
+            $this->_download_url .= "/".$this->_subpath_download."/index/";
         }
             
         

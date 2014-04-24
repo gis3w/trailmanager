@@ -17,7 +17,7 @@ class Controller_Admin_Download_Image extends Controller_Admin_Download_Base {
         if(!file_exists($this->path_to_file))
                  throw HTTP_Exception::factory ('500', SAFE::message ('ehttp','500_no_file_in_fs'));
         
-        $this->image_file = Image::factory($this->path_to_file);
+        //$this->image_file = Image::factory($this->path_to_file);
     }
     
     public function action_thumbnail()
@@ -33,7 +33,7 @@ class Controller_Admin_Download_Image extends Controller_Admin_Download_Base {
     }
     
     public function after() {
-        $this->response->body($this->image_file);
+        $this->response->send_file($this->path_to_file);
     }
     
 }
