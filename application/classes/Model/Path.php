@@ -73,6 +73,9 @@ class Model_Path extends ORMGIS {
             'length' => array(
                     array('Filter::comma2point')
             ),
+            'altitude_gap' => array(
+                    array('Filter::comma2point')
+            ),
             
             
         );
@@ -83,6 +86,7 @@ class Model_Path extends ORMGIS {
         switch($column)
         {
             case "length":
+            case "altitude_gap":
                 $value = Filter::point2comma((string)parent::get($column));
             break;
         
