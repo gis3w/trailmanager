@@ -536,7 +536,7 @@ $.extend(APP.subforms,
 		{
 			$.each(obj.values, function(i, v)
 			{
-				var tr =  $("<tr></tr>");
+				var tr =  $("<tr name='"+subformName+"'></tr>");
 				tr.css("cursor", "pointer");
 				tr.data(v);
 				$.each(cols, function(j, k)
@@ -604,19 +604,17 @@ $.extend(APP.subforms,
 			tbody.sortable({
 				stop: function( event, ui )
 				{
-					alert("Francesco devi gestire l'ordinamento!!!");
-					/*
-					var sfrCopy = that.subformRows;
-					that.subformRows = [];
+					var sfn = $(ui.item[0]).attr("name");
+					var sfrCopy = that.sectionTarget.subforms[sfn].values;
+					that.sectionTarget.subforms[sfn].values = [];
 					$.each(this.children, function(){
 						var d = $(this).data();
 						delete d['sortableItem'];
-						var fieldKey = that.sectionTarget.subforms[subformName].primary_key;
+						var fieldKey = that.sectionTarget.subforms[sfn].primary_key;
 						var elIndex = APP.utils.getIndexFromField(sfrCopy, fieldKey, d[fieldKey]);
 						d.token = sfrCopy[elIndex].token;
-						that.subformRows.push(d);
+						that.sectionTarget.subforms[sfn].values.push(d);
 					});
-					*/
 				}
 			});
 		
