@@ -2,6 +2,8 @@
 
 class Datastruct_Image_Poi extends Datastruct {
     
+    public $enctype = self::ECNTYPE_MULTIPART;
+    
     protected $_nameORM = "Image_Poi";
 
     public static $preKeyField = 'imagepoi';

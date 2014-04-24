@@ -178,7 +178,7 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
         }
         
             $datastruct = $this->_datastruct;
-            if(isset($datastruct::$preKeyField))
+            if(isset($datastruct) AND isset($datastruct::$preKeyField))
             {
                 foreach($row as $k => $v)
                 {
