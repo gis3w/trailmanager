@@ -610,6 +610,8 @@ $.extend(APP.subforms,
 				{
 					var sfn = $(ui.item[0]).parents("table:first").attr("name");
 					var sfrCopy = that.subformRows[sfn];
+					if (sfrCopy.length===0)
+						return;
 					that.subformRows[sfn] = [];
 					$.each(this.children, function(){
 						var d = $(this).data();
