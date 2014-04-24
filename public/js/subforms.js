@@ -258,7 +258,7 @@ $.extend(APP.subforms,
 	{
 		var that = this;
 		var identifier = APP.utils.isset(params.token)? params.token : null;
-				
+		
 		var enctype = APP.utils.isset(that.sectionTarget.subforms[params.subformName].enctype)? 'enctype="'+that.sectionTarget.subforms[params.subformName].enctype+'"' : '';
 		var form = $('<form class="form-horizontal" '+enctype+' role="form"></form>');
 		if (APP.utils.isset(APP.config.getToken) && $.isFunction(APP.config.getToken))
@@ -468,6 +468,7 @@ $.extend(APP.subforms,
 		var that = this;
 		that.sectionTarget = params.sectionTarget;
 		var subformName = params.subformName;
+		that.subformRows[subformName] = that.sectionTarget.subforms[subformName].values;
 			
 		if (!APP.utils.isset(that.sectionTarget.subforms))
 		{
@@ -539,7 +540,7 @@ $.extend(APP.subforms,
 		{
 			$.each(obj.values, function(i, v)
 			{
-				var tr =  $("<tr name='"+subformName+"'></tr>");
+				var tr =  $("<tr></tr>");
 				tr.css("cursor", "pointer");
 				tr.data(v);
 				$.each(cols, function(j, k)
@@ -607,7 +608,7 @@ $.extend(APP.subforms,
 			tbody.sortable({
 				stop: function( event, ui )
 				{
-					var sfn = $(ui.item[0]).attr("name");
+					var sfn = $(ui.item[0]).parents("table:first").attr("name");
 					var sfrCopy = that.subformRows[sfn];
 					that.subformRows[sfn] = [];
 					$.each(this.children, function(){
