@@ -996,6 +996,8 @@ $.extend(APP.utils,{
 							sectionTarget.subforms = {};
 						if (!this.isset(sectionTarget.subforms[v.name]))
 							sectionTarget.subforms[v.name] = {};
+						if (!this.isset(APP.subforms.subformRows[v.name]))
+							APP.subforms.subformRows[v.name] = sectionTarget.subforms[v.name].values;
 							
 						inp = "<div id='APP-"+v.name+"'></div>";
 						

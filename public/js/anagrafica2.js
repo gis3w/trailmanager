@@ -4,6 +4,7 @@ $.extend(APP.anagrafica,
 	{
 		$("body").off("table_shown");
 		APP.map.finish();
+		APP.subforms.finish();
 	},
 	
 	start: function(el, titolo, section, div)

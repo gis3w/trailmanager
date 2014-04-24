@@ -1,6 +1,12 @@
 $.extend(APP.subforms,
 {
 	sectionTarget: null,
+	subformRows: {},
+	
+	finish: function()
+	{
+		this.subformRows = {};
+	},
 	
 	setTooltips: function(div)
 	{
@@ -30,7 +36,7 @@ $.extend(APP.subforms,
 	{
 		var that = this;
 		var str = "";
-		$.each(that.sectionTarget.subforms[subformName].values, function()
+		$.each(that.subformRows[subformName], function()
 		{
 			str += $.param(this)+";";
 		});
@@ -135,7 +141,9 @@ $.extend(APP.subforms,
 		});
 		$.extend(obj, {'token' : that.sectionTarget.subforms[subformName].token, 'stato' : "I"});
 		
-		that.sectionTarget.subforms[subformName].values.push(obj);
+		if (!APP.utils.isset(that.subformRows[subformName]))
+			that.subformRows[subformName] = [];
+		that.subformRows[subformName].push(obj);
 		that.setActionButtonsClick($(table.find("tbody").find("tr")[newRowIndex[0]]), obj);
 		that.sectionTarget.subforms[subformName].token++;
 	},
@@ -212,11 +220,11 @@ $.extend(APP.subforms,
 		var btnData = btn.data();
 		obj.stato = (APP.utils.isset(btnData[that.sectionTarget.subforms[subformName].primary_key]))? "U" : btnData.stato;
 		obj.token = btnData.token;
-		var index = APP.utils.getIndexFromField(that.sectionTarget.subforms[subformName].values, "token", obj.token);
+		var index = APP.utils.getIndexFromField(that.subformRows[subformName], "token", obj.token);
 		if (index == -1)
 			return;
 		//that.subformRows[index] = obj;
-		$.extend(that.sectionTarget.subforms[subformName].values[index], obj);
+		$.extend(that.subformRows[subformName][index], obj);
 				
 		data.actions = that.generateActionButtonsString(obj.token, subformName);
 		var dataArr = [];
@@ -233,13 +241,13 @@ $.extend(APP.subforms,
 		var that = this;
 		var btnData = $(btn).data();
 		var token = btnData.token;
-		var index = APP.utils.getIndexFromField(that.sectionTarget.subforms[subformName].values, "token", token);
+		var index = APP.utils.getIndexFromField(that.subformRows[subformName], "token", token);
 		if (index == -1)
 			return;
-		if (APP.utils.isset(that.sectionTarget.subforms[subformName].values[index][that.sectionTarget.subforms[subformName].primary_key]))
-			that.sectionTarget.subforms[subformName].values[index].stato = "D";
+		if (APP.utils.isset(that.subformRows[subformName][index][that.sectionTarget.subforms[subformName].primary_key]))
+			that.subformRows[subformName][index].stato = "D";
 		else
-			that.sectionTarget.subforms[subformName].values[index].splice(index, 1);
+			that.subformRows[subformName].splice(index, 1);
 		
 		var table = btn.parents("table").first().dataTable();
 		var tr = btn.parents("tr");
@@ -266,10 +274,10 @@ $.extend(APP.subforms,
 			var obj = null;
 			if (params.type == "edit" || params.type == "show")
 			{
-				var index = APP.utils.getIndexFromField(that.sectionTarget.subforms[params.subformName].values, "token", identifier);
+				var index = APP.utils.getIndexFromField(that.subformRows[params.subformName], "token", identifier);
 				if (index == -1)
 					return;
-				obj = that.sectionTarget.subforms[params.subformName].values[index];
+				obj = that.subformRows[params.subformName][index];
 				if (v.data_type == "integer")
 				{
 					if ($.isArray(obj[v.name]))
@@ -458,17 +466,12 @@ $.extend(APP.subforms,
 	showSubformTable: function(params)
 	{
 		var that = this;
+		that.sectionTarget = params.sectionTarget;
 		var subformName = params.subformName;
-		if (!APP.utils.isset(that.sectionTarget))
-			that.sectionTarget = params.sectionTarget;
-		if (!APP.utils.isset(that.sectionTarget.subforms))
-			that.sectionTarget.subforms = {}
-		if (!APP.utils.isset(that.sectionTarget.subforms[subformName]))
-			that.sectionTarget.subforms[subformName] = params.sectionTarget.subforms[subformName];
-		
+			
 		if (!APP.utils.isset(that.sectionTarget.subforms))
 		{
-			alert("non e' settato l'array subforms in "+ that.sectionTarget.resource);
+			alert("non e' settato l'array subforms in "+that.sectionTarget.resource);
 			return;
 		}
 				
@@ -605,15 +608,15 @@ $.extend(APP.subforms,
 				stop: function( event, ui )
 				{
 					var sfn = $(ui.item[0]).attr("name");
-					var sfrCopy = that.sectionTarget.subforms[sfn].values;
-					that.sectionTarget.subforms[sfn].values = [];
+					var sfrCopy = that.subformRows[sfn];
+					that.subformRows[sfn] = [];
 					$.each(this.children, function(){
 						var d = $(this).data();
 						delete d['sortableItem'];
 						var fieldKey = that.sectionTarget.subforms[sfn].primary_key;
 						var elIndex = APP.utils.getIndexFromField(sfrCopy, fieldKey, d[fieldKey]);
 						d.token = sfrCopy[elIndex].token;
-						that.sectionTarget.subforms[sfn].values.push(d);
+						that.subformRows[sfn].push(d);
 					});
 				}
 			});
