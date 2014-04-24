@@ -58,7 +58,17 @@ class Datastruct_Poi extends Datastruct {
                     'label' =>__('Geodata'),
                     'table_show' => FALSE,
                 ),
-                
+                "typology_id" => array(
+                    'form_input_type' => self::SELECT,
+                    'foreign_mode' => self::SINGLESELECT,
+                    'foreign_toshow' => '$1',
+                    'foreign_toshow_params' => array(
+                        '$1' => 'name',
+                    ),
+                    'url_values' => '/jx/typology',
+                     'description' => __('Select the main typology  for this point of interest'),
+                     "table_show" => TRUE,
+                )
             );
       }
       
@@ -116,20 +126,6 @@ class Datastruct_Poi extends Datastruct {
 
 
       protected function _foreign_column_type() {
-            
-         $fct['typology_id']  = array_replace($this->_columnStruct,array(
-            'data_type' => 'integer',
-            'form_input_type' => self::SELECT,
-            'foreign_mode' => self::SINGLESELECT,
-            'foreign_toshow' => '$1',
-            'foreign_toshow_params' => array(
-                '$1' => 'name',
-            ),
-            'url_values' => '/jx/typology',
-            'label' => __('Main typology'),
-             'description' => __('Select the main typology  for this point of interest'),
-             "table_show" => TRUE,
-        ));
                 
         $fct['typologies']  = array_replace($this->_columnStruct,array(
             'data_type' => 'integer',

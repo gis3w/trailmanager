@@ -8,8 +8,17 @@ class Model_Image_Poi extends ORM {
     
     public function labels() {
         return array(
-            "Image" => __("Image"),
+            "file" => __("Image"),
             "description" => __("Description"),
+        );
+    }
+    
+    public function rules()
+    {
+        return array(
+            'file' => array(
+                    array('not_empty'),
+            ),
         );
     }
     

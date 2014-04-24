@@ -50,7 +50,11 @@ class Datastruct_Video_Poi extends Datastruct {
                     'form_show' => FALSE,
                     'subform_table_show' => FALSE,
                 ),
-             
+                "norder" => array(
+                    'form_show' => FALSE,
+                    'subform_table_show' => FALSE,
+                ),
+                
             );
       }               
         

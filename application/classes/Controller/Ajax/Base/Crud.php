@@ -583,9 +583,26 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
             $this->vErrors = Arr::push ($this->vErrors,$this->_vorm->errors('validation'));
         
         if(!empty($this->vErrors))
-                throw new Validation_Exception($this->_vorm);
+        {
+            $this->_preKeyFiled2errors();
+            throw new Validation_Exception($this->_vorm);
+        }
+                
     }
     
+    protected function _preKeyFiled2errors()
+    {
+        $datastruct = $this->_datastruct;
+        if(isset($datastruct::$preKeyField))
+            foreach($this->vErrors as  $key => $error)
+            {
+                $newKey = $datastruct::$preKeyField.'-'.$key;
+                $this->vErrors[$newKey] = $error;
+                unset($this->vErrors[$key]);
+            }
+    }
+
+
     protected function _validation_orm()
     {
          try

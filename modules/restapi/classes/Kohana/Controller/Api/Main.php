@@ -693,15 +693,7 @@ abstract class Kohana_Controller_Api_Main extends Kohana_Controller_REST{
         // 2) BASE 20000 ERRORI DI VALIDAZIONE/CONFERMA PER DELETE
         
         switch($code)
-        {
-            case 20001:
-                $this->jres->error->errmsg = TRK::message('validation','not_delete_fleetgroup_node');
-            break;
-            
-            case 20002:
-                $this->jres->error->errmsg = TRK::message('validation','ask_delete_parent');
-            break;
-                
+        {                
             default:
                 $this->jres->error->errmsg = 'Errori di validazione';
         }

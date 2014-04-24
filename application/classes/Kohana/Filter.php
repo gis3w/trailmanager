@@ -133,5 +133,16 @@ class Kohana_Filter
         foreach($tounset as $key)
             unset($_POST[$key]);
     }
+    
+    
+    static function comma2point($number)
+    {
+        return preg_replace('/,/', ".", $number);
+    }
+    
+    static function  point2comma($number)
+    {
+        return preg_replace('/\./', ",", $number);
+    }
 }
 

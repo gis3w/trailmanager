@@ -8,8 +8,8 @@ class Controller_Test extends Controller{
     
     public function action_index(){
 
-        echo floatval('10.3456');
-        echo (float)'10.3456';
+        //echo floatval('10,3456');
+        echo number_format('10,3456',2,',');
         exit;
     
     }

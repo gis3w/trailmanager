@@ -36,6 +36,7 @@ class Model_Path extends ORMGIS {
             "accessibility" => __("Accessibility"),
             "information_url" => __("Information url"),
             "publish" => __("Published"),
+            "typology_id" => __("Main typology"),
             "period_schedule" => __("Period schedule"),
         );
     }
@@ -63,6 +64,33 @@ class Model_Path extends ORMGIS {
             ),
             
         );
+    }
+    
+     public function filters()
+    {
+        return array(
+          
+            'length' => array(
+                    array('Filter::comma2point')
+            ),
+            
+            
+        );
+    }
+    
+    public function get($column) {
+        
+        switch($column)
+        {
+            case "length":
+                $value = Filter::point2comma((string)parent::get($column));
+            break;
+        
+            default:
+                $value = parent::get($column);
+        }
+        return $value;
+        
     }
 
 }

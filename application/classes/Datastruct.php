@@ -18,6 +18,11 @@ class Datastruct extends Kohana_Formstruct{
 
     protected $_descriptionsORM;
     
+    protected $_rulesORM;
+    
+    protected $_requiredColumns;
+
+
     public $filter = FALSE;
     
     public $primary_key = 'id';
@@ -118,7 +123,11 @@ class Datastruct extends Kohana_Formstruct{
         $this->_baseORM = ORM::factory($this->_nameORM);
         $this->_labelsORM = $this->_baseORM->labels();
         $this->_descriptionsORM =$this->_baseORM->descriptions();
+        $this->_rulesORM = $this->_baseORM->rules();
         $this->primary_key = $this->_baseORM->primary_key();
+        
+        // si costruisce l'array dei required basato su rules
+        $this->_get_required_columns();
         
         // si inizializza il gruppo principale
         $this->_get_orm_columns();
@@ -132,6 +141,23 @@ class Datastruct extends Kohana_Formstruct{
         $this->_get_fields_to_save();
     }
     
+    /**
+     * Basato sulle rules dell'ORM si restituisce un array
+     * di colonne che sono obbligatorie
+     */
+    protected function _get_required_columns()
+    {
+        $this->_requiredColumns = array();
+        foreach($this->_rulesORM as $column => $rules)
+        {
+            foreach($rules as $rule)
+                if($rule[0] === 'not_empty')
+                    $this->_requiredColumns[] = $column;
+        }
+        
+    }
+
+
     protected function _set_lang()
     {
         $this->lang = Session::instance()->get('lang');
@@ -169,7 +195,7 @@ class Datastruct extends Kohana_Formstruct{
         $_columns_type = $this->_columns_type();
         $_extra_columns_type = $this->_extra_columns_type();
 
-        
+
         foreach($table_columns as $name => $colData)
         {            
             $_column = $this->_columnStruct;
@@ -178,12 +204,12 @@ class Datastruct extends Kohana_Formstruct{
                 $_column['description'] = $this->_descriptionsORM[$name];
             $_column = array_replace($_column, array_intersect_key($colData, $_column));
             $_column_type = isset($_columns_type[$name]) ? $_columns_type[$name]: array();
-          
-//            if(in_array($name,array('id','gid')))
-//                    $_column['editable'] = FALSE;
-            
+                      
              if($name == $this->primary_key)
                     $_column['editable'] = FALSE;
+             
+             // aggiunta del required
+             $_column['required'] = in_array($name, $this->_requiredColumns) ? TRUE : FALSE;
 
             $_column = array_replace($_column, $_column_type);
 
