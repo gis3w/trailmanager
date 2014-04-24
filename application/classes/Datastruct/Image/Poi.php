@@ -32,10 +32,7 @@ class Datastruct_Image_Poi extends Datastruct {
      protected function _columns_type() {
         
             return array(
-                "id" => array(
-                    'form_input_type' => self::HIDDEN,
-                    "subform_table_show" => FALSE, 
-                ),
+               
                 "description" => array(
                     'form_input_type' => self::TEXTAREA,
                     'editor' => TRUE,

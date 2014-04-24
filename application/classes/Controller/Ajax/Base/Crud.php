@@ -302,31 +302,8 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
            if(!$row)
                continue;
            
-           parse_str($row,$rowArr);
-//           $subres = array();
-//           $data = preg_split("/,/", $row);
-//           foreach ($data as $d)
-//           {
-//               if(!$d)
-//                   continue;
-//
-//               list($k,$v) = preg_split("/:/",$d);
-//                $subres[$k] = $v;
-//           }
-//           $res[] = $subres;
-           
-           if(isset($datastruct::$preKeyField))
-           {
-                foreach($rowArr as $k => $v)
-                   if(substr_compare($k, $datastruct::$preKeyField, 0, strlen($datastruct::$preKeyField))=== 0)
-                   {
-                       $newK = substr($k, strlen($datastruct::$preKeyField) + 1);
-                       $rowArr[$newK] = $v;
-                        unset($rowArr[$k]);
-                   }
-           }
-           
-           $res[] =$rowArr;
+           parse_str($row,$rowArr);           
+           $res[]= $this->_removePreKeyFieldFromData($rowArr,$datastruct);           
            
        }
 
@@ -571,6 +548,8 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
     
     protected function _get_validation_orm()
     {
+        // si deve ripulire il post dai prekeyfiled
+        $this->_removePreKeyFieldFromPost();
          $this->_vorm = Validation::factory($_POST);
         
         // si aggiungono le rules per user
@@ -590,16 +569,37 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
                 
     }
     
-    protected function _preKeyFiled2errors()
+    protected function _preKeyFiled2errors($datastruct = NULL)
     {
-        $datastruct = $this->_datastruct;
-        if(isset($datastruct::$preKeyField))
+        $datastruct = isset($datastruct) ? $datastruct : $this->_datastruct;
+        if(isset($datastruct) AND isset($datastruct::$preKeyField))
             foreach($this->vErrors as  $key => $error)
             {
                 $newKey = $datastruct::$preKeyField.'-'.$key;
                 $this->vErrors[$newKey] = $error;
                 unset($this->vErrors[$key]);
             }
+    }
+    
+    protected function _removePreKeyFieldFromData($data,$datastruct = NULL)
+    {
+        $datastruct = isset($datastruct) ? $datastruct : $this->_datastruct;
+        if(isset($datastruct) AND isset($datastruct::$preKeyField))
+           {
+                foreach($data as $k => $v)
+                   if(substr_compare($k, $datastruct::$preKeyField, 0, strlen($datastruct::$preKeyField))=== 0)
+                   {
+                       $newK = substr($k, strlen($datastruct::$preKeyField) + 1);
+                       $data[$newK] = $v;
+                        unset($data[$k]);
+                   }
+           }
+       return $data;
+    }
+    
+    protected function _removePreKeyFieldFromPost()
+    {
+        $_POST = $this->_removePreKeyFieldFromData($_POST);
     }
 
 
