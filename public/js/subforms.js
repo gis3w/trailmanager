@@ -109,7 +109,7 @@ $.extend(APP.subforms,
 						//APP.fileuploader.myFiles = {};
 						value = value.substr(0, value.length-1);
 						data[APP.fileuploader.inputName] = APP.utils.replaceAll('|', '<br>', value);
-						obj[APP.fileuploader.inputName] = value.split('|');
+						obj[APP.fileuploader.inputName] = APP.fileuploader.myFiles;
 						break;
 					}
 					var value = $(v).val();
@@ -476,7 +476,7 @@ $.extend(APP.subforms,
 			return;
 		}
 				
-		var s = $(	'<div id="div_'+ subformName+'">\
+		var s = $(	'<div id="div_'+subformName+'">\
 						<div class="table-responsive">\
 							<table name="'+subformName+'" class="table table-striped table-bordered table-hover datatable subformTable">\
 								<thead><tr></tr></thead>\

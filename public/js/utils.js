@@ -1649,20 +1649,7 @@ $.extend(APP.utils,{
 						data = this.boolToString(data);
 						break;
 					case "file":
-						if (!data.type)
-							break;
-						var tipo = data.type.split("/")[0];
-						var thumbnail = null;
-						
-						switch(tipo)
-						{
-							case "image":
-								data = '<img src="'+fileObj.thumbnail_url+'" alt=""/>';
-								break;
-							default:
-								data = '<i class="icon icon-file-alt icon-large"></i>';
-								break;
-						};
+						data = APP.fileuploader.displayTagFromFilename($.parseJSON(data));
 						break;
 				}
 				break;

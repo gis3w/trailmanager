@@ -8,26 +8,45 @@ $.extend(APP.fileuploader,{
 		this.inputName = null;
 	},
 	
+	displayTagFromFilename: function(fileObj)
+	{
+		var that = this;
+		var thumbnail = "";
+		var tipo = fileObj.type.split("/")[0];
+		/*
+		var tipo = null;
+		if (!APP.utils.isset(source))
+		{
+			var index = APP.utils.getIndexFromField(that.myFiles, "name", filename);
+			source = that.myFiles[index].url;
+		}
+			
+		var imageExtensions = ['jpg', 'jpeg', 'gif', 'png'];
+		var exts = filename.split(".");
+		var extension = exts[exts.length-1].toLowerCase();
+		if ($.inArray(extension, imageExtensions) !== -1)
+			tipo = "image";
+		*/
+					
+		switch(tipo)
+		{
+			case "image":
+				thumbnail = '<img src="'+fileObj.thumbnail_url+'" alt=""/>';
+				break;
+			default:
+				thumbnail = '<i class="icon icon-file-alt icon-large"></i>';
+				break;
+		}
+		
+		return thumbnail;
+	},
+	
 	getTrString: function(fileObj)
 	{
 		var that = this;
 		
-		var thumbnail = "";
-		if (fileObj.type)
-		{
-			var tipo = fileObj.type.split("/")[0];
-			
-			
-			switch(tipo)
-			{
-				case "image":
-					thumbnail = '<img src="'+fileObj.thumbnail_url+'" alt=""/>';
-					break;
-				default:
-					thumbnail = '<i class="icon icon-file-alt icon-large"></i>';
-					break;
-			}
-		}
+		//var thumbnail = that.displayTagFromFilename(fileObj[that.inputName], fileObj.thumbnail_url);
+		var thumbnail = that.displayTagFromFilename(fileObj);
 			
 		var downUrl = this.urls.download;
 		if (!APP.utils.isset(fileObj.url))
@@ -74,6 +93,8 @@ $.extend(APP.fileuploader,{
 			data[this.inputName] = data.name;
 		data.stato = "I";
 		
+		this.myFiles.push(data);
+		
 		var str = this.getTrString(data);
 		
 		str.find("button.cancel").click(function(){
@@ -84,8 +105,6 @@ $.extend(APP.fileuploader,{
 		
 		var tbody = table.find("tbody");
 		tbody.append(str);
-		
-		this.myFiles.push(data);
 		
 		if (!this.bMultiple)
 		{
@@ -150,7 +169,6 @@ $.extend(APP.fileuploader,{
 				this.myFiles[index].stato = "D";
 				onFileRemoved();
 			}
-			
 		}
 		else
 		{
