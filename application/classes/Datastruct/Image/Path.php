@@ -20,12 +20,11 @@ class Datastruct_Image_Path extends Datastruct_Image_Poi {
                         'data' => 'jx/admin/upload/imagepath',
                         'delete' => 'jx/admin/upload/imagepath?file=$1',
                         'delete_options' => array(
-                            '$1' => 'nome',
+                           '$1' => self::$preKeyField.'-file',
                         ),
-                        'download' => 'admin/download/imagepath/$1/$2',
+                        'download' => 'admin/download/imagepath/$1',
                         'download_options' => array(
-                            '$1' => 'poi_id',
-                            '$2' => 'nome',
+                            '$1' => self::$preKeyField.'-file',
                             ),
                     )
                 )
