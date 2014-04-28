@@ -20,12 +20,11 @@ class Datastruct_Image_Itinerary extends Datastruct_Image_Poi {
                         'data' => 'jx/admin/upload/imageitinerary',
                         'delete' => 'jx/admin/upload/imageitinerary?file=$1',
                         'delete_options' => array(
-                            '$1' => 'nome',
+                            '$1' => self::$preKeyField.'-file',
                         ),
-                        'download' => 'admin/download/imageitinerary/$1/$2',
+                        'download' => 'admin/download/imageitinerary/$1',
                         'download_options' => array(
-                            '$1' => 'poi_id',
-                            '$2' => 'nome',
+                            '$1' => self::$preKeyField.'-file',
                             ),
                     )
                 )
