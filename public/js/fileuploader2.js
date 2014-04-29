@@ -12,21 +12,27 @@ $.extend(APP.fileuploader,{
 	{
 		var that = this;
 		var thumbnail = "";
-		var tipo = fileObj.type.split("/")[0];
-		/*
+		
 		var tipo = null;
-		if (!APP.utils.isset(source))
+		if (!fileObj.type)
 		{
-			var index = APP.utils.getIndexFromField(that.myFiles, "name", filename);
-			source = that.myFiles[index].url;
+			/*
+			if (!APP.utils.isset(source))
+			{
+				var index = APP.utils.getIndexFromField(that.myFiles, "name", filename);
+				source = that.myFiles[index].url;
+			}
+				
+			var imageExtensions = ['jpg', 'jpeg', 'gif', 'png'];
+			var exts = filename.split(".");
+			var extension = exts[exts.length-1].toLowerCase();
+			if ($.inArray(extension, imageExtensions) !== -1)
+				tipo = "image";
+			*/
+			return '<i class="icon icon-file-alt icon-large"></i>';
 		}
-			
-		var imageExtensions = ['jpg', 'jpeg', 'gif', 'png'];
-		var exts = filename.split(".");
-		var extension = exts[exts.length-1].toLowerCase();
-		if ($.inArray(extension, imageExtensions) !== -1)
-			tipo = "image";
-		*/
+		else
+			tipo = fileObj.type.split("/")[0];
 					
 		switch(tipo)
 		{
@@ -45,7 +51,6 @@ $.extend(APP.fileuploader,{
 	{
 		var that = this;
 		
-		//var thumbnail = that.displayTagFromFilename(fileObj[that.inputName], fileObj.thumbnail_url);
 		var thumbnail = that.displayTagFromFilename(fileObj);
 			
 		var downUrl = this.urls.download;

@@ -109,7 +109,7 @@ $.extend(APP.subforms,
 						//APP.fileuploader.myFiles = {};
 						value = value.substr(0, value.length-1);
 						data[APP.fileuploader.inputName] = APP.utils.replaceAll('|', '<br>', value);
-						obj[APP.fileuploader.inputName] = APP.fileuploader.myFiles;
+						obj[APP.fileuploader.inputName] = APP.fileuploader.myFiles[APP.fileuploader.myFiles.length-1][APP.fileuploader.inputName];
 						break;
 					}
 					var value = $(v).val();
@@ -590,6 +590,10 @@ $.extend(APP.subforms,
 						var str = APP.utils.getSecondaryValue(k); 
 						tr.append("<td class='table-td'>"+APP.utils.displayData(str, k)+"</td>");
 						return true;
+					}
+					if (k.form_input_type === "input" && k.data_type === "file")
+					{
+						
 					}
 					tr.append("<td class='table-td'>"+APP.utils.displayData(v[k.name], k)+"</td>");
 				});

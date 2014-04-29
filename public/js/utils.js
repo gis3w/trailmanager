@@ -1648,8 +1648,7 @@ $.extend(APP.utils,{
 					case "boolean":
 						data = this.boolToString(data);
 						break;
-					case "file":
-						data = APP.fileuploader.displayTagFromFilename($.parseJSON(data));
+					default:
 						break;
 				}
 				break;
