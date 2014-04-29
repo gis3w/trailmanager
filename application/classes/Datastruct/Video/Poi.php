@@ -15,7 +15,7 @@ class Datastruct_Video_Poi extends Datastruct {
         array(
             'name' => 'poi-data',
             'position' => 'left',
-            'fields' => array('id','title','description','embed'),
+            'fields' => array('id','description','embed','title'),
         ),
        
     );
