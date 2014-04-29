@@ -26,6 +26,10 @@ class Datastruct_Image_Itinerary extends Datastruct_Image_Poi {
                         'download_options' => array(
                             '$1' => self::$preKeyField.'-file',
                             ),
+                        'thumbnail' => 'admin/download/imageitinerary/thumbnail/$1',
+                        'thumbnail_options' => array(
+                            '$1' => self::$preKeyField.'-file',
+                            ),
                     )
                 )
             );
