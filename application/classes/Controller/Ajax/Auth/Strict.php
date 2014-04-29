@@ -81,19 +81,19 @@ abstract class Controller_Ajax_Auth_Strict extends Controller_Ajax_Main {
                 Kohana::$log->add(LOG::DEBUG, "ACL CONTROLLER FIT: ".$controller    );
             
             if($this->request->action() === 'create' AND !$this->user->allow_capa($controller.'-insert'))
-                    throw HTTP_Exception::factory(403,SAFE::message('capability','default',NULL,$controller.'-insert'));
+                    throw HTTP_Exception::factory(500,SAFE::message('capability','default',NULL,$controller.'-insert'));
             
             if($this->request->action() === 'update' AND !$this->user->allow_capa($controller.'-update'))
-                    throw HTTP_Exception::factory(403,SAFE::message('capability','default',NULL,$controller.'-update'));
+                    throw HTTP_Exception::factory(500,SAFE::message('capability','default',NULL,$controller.'-update'));
 
             if($this->request->action() === 'index' AND is_numeric($this->id) AND !$this->user->allow_capa($controller.'-get'))
-                    throw HTTP_Exception::factory(403,SAFE::message('capability','default',NULL,$controller.'-get'));
+                    throw HTTP_Exception::factory(500,SAFE::message('capability','default',NULL,$controller.'-get'));
             
             if($this->request->action() === 'delete' AND is_numeric($this->id) AND !$this->user->allow_capa($controller.'-delete'))
-                    throw HTTP_Exception::factory(403,SAFE::message('capability','default',NULL,$controller.'-delete'));
+                    throw HTTP_Exception::factory(500,SAFE::message('capability','default',NULL,$controller.'-delete'));
 
              if($this->id === 'list' AND !$this->user->allow_capa($controller.'-list'))
-                    throw HTTP_Exception::factory(403,SAFE::message('capability','default',NULL,$controller.'-list'));
+                    throw HTTP_Exception::factory(500,SAFE::message('capability','default',NULL,$controller.'-list'));
         }
         
         /**
@@ -102,12 +102,13 @@ abstract class Controller_Ajax_Auth_Strict extends Controller_Ajax_Main {
         protected function _directory_ACL()
         {
             $directory = strtolower(preg_replace("/Ajax\//", "", $this->request->directory()));
+            $directory = preg_replace("/\//", "-",$directory);
             
              if(Kohana::$environment === Kohana::DEVELOPMENT)
                 Kohana::$log->add(LOG::DEBUG, "ACL DIRECOTORY FIT: ".$directory);
             
              if(!$this->user->role->allow_capa('access-'.$directory) AND !$this->user->allow_capa($directory.'-usage'))
-                    throw HTTP_Exception::factory(403,SAFE::message('capability','default',NULL,'access-'.$directory));
+                    throw HTTP_Exception::factory(500,SAFE::message('capability','default',NULL,'access-'.$directory));
         }
         
         protected function _get_url_filters()

@@ -2,6 +2,6 @@
 
 class Controller_Admin_Download_Imagepoi extends Controller_Admin_Download_Image {
     
-    protected $_subpath_download = 'imagepoi';
+    public static $subpathDownload = 'imagepoi';
     
 }   

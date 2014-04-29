@@ -17,7 +17,7 @@ class Datastruct_Path extends Datastruct {
        array(
             'name' => 'path-foreign-data',
             'position' => 'right',
-            'fields' => array('typology_id','typologies','the_geom','color','image_path'),
+            'fields' => array('typology_id','typologies','the_geom','color','image_path','video_path'),
         ),
     );
     
