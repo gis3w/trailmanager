@@ -16,7 +16,7 @@ $.extend(APP.fileuploader,{
 		var tipo = null;
 		if (!fileObj.type)
 		{
-			/*
+                                                /*
 			if (!APP.utils.isset(source))
 			{
 				var index = APP.utils.getIndexFromField(that.myFiles, "name", filename);
@@ -28,7 +28,7 @@ $.extend(APP.fileuploader,{
 			var extension = exts[exts.length-1].toLowerCase();
 			if ($.inArray(extension, imageExtensions) !== -1)
 				tipo = "image";
-			*/
+                                                */
 			return '<i class="icon icon-file-alt icon-large"></i>';
 		}
 		else

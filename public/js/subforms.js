@@ -593,7 +593,33 @@ $.extend(APP.subforms,
 					}
 					if (k.form_input_type === "input" && k.data_type === "file")
 					{
-						
+                                                                                                var imageExtensions = ['jpg', 'jpeg', 'gif', 'png'];
+                                                                                                var exts = v[k.name].split(".");
+                                                                                                var extension = exts[exts.length-1].toLowerCase();
+                                                                                                var tipo = null;
+                                                                                                var stringa = "";
+                                                                                                if ($.inArray(extension, imageExtensions) !== -1)
+                                                                                                        tipo = "image";
+                                                                                                switch(tipo)
+                                                                                                {
+                                                                                                    case "image":
+                                                                                                        if (k.urls.thumbnail)
+                                                                                                        {
+                                                                                                            var downUrl = k.urls.thumbnail;
+                                                                                                            $.each(k.urls.thumbnail_options, function(laChiave, ilValore){
+                                                                                                                downUrl = APP.utils.replaceAll(laChiave, v[ilValore], downUrl);
+                                                                                                            });
+                                                                                                            stringa = '<img src="/'+downUrl+'" style="widt">';
+                                                                                                            break;
+                                                                                                        }
+                                                                                                    default:
+                                                                                                        stringa = '<i class="icon icon-file-alt">'+v[k.name]+'</i>';
+                                                                                                        break;
+                                                                                                }
+                                                                                                
+                                        
+						tr.append("<td class='table-td'>"+stringa+"</td>");
+                        return true;
 					}
 					tr.append("<td class='table-td'>"+APP.utils.displayData(v[k.name], k)+"</td>");
 				});
