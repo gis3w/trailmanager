@@ -22,7 +22,7 @@ class Datastruct_Image_Itinerary extends Datastruct_Image_Poi {
                         'delete_options' => array(
                             '$1' => self::$preKeyField.'-file',
                         ),
-                        'download' => 'admin/download/imageitinerary/$1',
+                        'download' => 'admin/download/imageitinerary/index/$1',
                         'download_options' => array(
                             '$1' => self::$preKeyField.'-file',
                             ),

@@ -22,7 +22,7 @@ class Datastruct_Image_Path extends Datastruct_Image_Poi {
                         'delete_options' => array(
                            '$1' => self::$preKeyField.'-file',
                         ),
-                        'download' => 'admin/download/imagepath/$1',
+                        'download' => 'admin/download/imagepath/index/$1',
                         'download_options' => array(
                             '$1' => self::$preKeyField.'-file',
                             ),
