@@ -102,7 +102,7 @@ $.extend(APP.subforms,
 							if (vv.stato === "D")
 								return true;
 							if (vv.type.split("/")[0] === "image")
-								value += '<img src="'+vv.thumbnail_url+'" alt=""> '+vv[APP.fileuploader.inputName]+'|';
+								value += '<img src="'+vv.thumbnail_url+'" alt="">|';
 							else
 								value += '<i class="icon icon-file-alt"></i>' + vv[APP.fileuploader.inputName]+"|";
 						});
@@ -191,11 +191,33 @@ $.extend(APP.subforms,
 						{
 							if (vv.stato === "D")
 								return true;
-							value += vv[APP.fileuploader.inputName]+"|";
+							
+							if (vv.type)
+							{
+								if (vv.type.split("/")[0] === "image")
+									value += '<img src="'+vv.thumbnail_url+'" alt="">|';
+								else
+									value += '<i class="icon icon-file-alt"></i>' + vv[APP.fileuploader.inputName]+"|";
+							}
+							else
+							{
+								if (APP.utils.isImageFile(vv[APP.fileuploader.inputName]))
+								{
+									var index = APP.utils.getIndexFromField(that.sectionTarget.subforms[subformName].columns, "name", APP.fileuploader.inputName);
+									var tu = APP.utils.getThumbnailUrl(that.sectionTarget.subforms[subformName].columns[index].urls, vv);
+									if (tu)
+										value += '<img src="'+tu+'" alt="">|';
+									else
+										value += '<i class="icon icon-file-alt"></i>' + vv[APP.fileuploader.inputName]+"|";
+								}
+								else
+									value += '<i class="icon icon-file-alt"></i>' + vv[APP.fileuploader.inputName]+"|";
+							}
 						});
+						//APP.fileuploader.myFiles = {};
 						value = value.substr(0, value.length-1);
-						data[APP.fileuploader.inputName] = APP.utils.replaceAll('|','<br>',value);
-						obj[APP.fileuploader.inputName] = value.split('|');
+						data[APP.fileuploader.inputName] = APP.utils.replaceAll('|', '<br>', value);
+						obj[APP.fileuploader.inputName] = APP.fileuploader.myFiles[APP.fileuploader.myFiles.length-1][APP.fileuploader.inputName];
 						break;
 					}
 					var value = $(v).val();
@@ -593,31 +615,23 @@ $.extend(APP.subforms,
 					}
 					if (k.form_input_type === "input" && k.data_type === "file")
 					{
-                                                                                                var imageExtensions = ['jpg', 'jpeg', 'gif', 'png'];
-                                                                                                var exts = v[k.name].split(".");
-                                                                                                var extension = exts[exts.length-1].toLowerCase();
-                                                                                                var tipo = null;
-                                                                                                var stringa = "";
-                                                                                                if ($.inArray(extension, imageExtensions) !== -1)
-                                                                                                        tipo = "image";
-                                                                                                switch(tipo)
-                                                                                                {
-                                                                                                    case "image":
-                                                                                                        if (k.urls.thumbnail)
-                                                                                                        {
-                                                                                                            var downUrl = k.urls.thumbnail;
-                                                                                                            $.each(k.urls.thumbnail_options, function(laChiave, ilValore){
-                                                                                                                downUrl = APP.utils.replaceAll(laChiave, v[ilValore], downUrl);
-                                                                                                            });
-                                                                                                            stringa = '<img src="/'+downUrl+'" style="widt">';
-                                                                                                            break;
-                                                                                                        }
-                                                                                                    default:
-                                                                                                        stringa = '<i class="icon icon-file-alt">'+v[k.name]+'</i>';
-                                                                                                        break;
-                                                                                                }
-                                                                                                
-                                        
+						var tipo = (APP.utils.isImageFile(v[k.name]))? "image" : null;
+						var stringa = "";
+						
+						switch(tipo)
+						{
+							case "image":
+								var tu = APP.utils.getThumbnailUrl(k.urls, v);
+								if (tu)
+									stringa = '<img src="/'+tu+'" style="">';
+								else
+									stringa = '<i class="icon icon-file-alt">'+v[k.name]+'</i>';
+								break;
+							default:
+								stringa = '<i class="icon icon-file-alt">'+v[k.name]+'</i>';
+								break;
+						}
+						
 						tr.append("<td class='table-td'>"+stringa+"</td>");
                         return true;
 					}
