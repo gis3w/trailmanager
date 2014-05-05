@@ -307,9 +307,6 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
            
        }
 
-       
-
-       
         return $res;
     }
     
@@ -446,6 +443,7 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
                                    else
                                    {
                                        $sfd['data_mod'] = time();
+                                       unset($sfd['data_ins']);
                                        // si tenta leliminazione del precedente
                                        if(isset($subformOrm->file) AND isset($this->_upload_path[$name_subform]))
                                         {
