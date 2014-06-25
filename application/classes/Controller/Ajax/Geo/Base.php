@@ -1,22 +1,9 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 
-class Controller_Ajax_Geo_Base extends Controller_Ajax_Base_Crud_NoStrict_GET{
+class Controller_Ajax_Geo_Base extends Controller_Ajax_Data_Base{
     
-    public function before() {
-        parent::before();
-        
-        // si impostano dei filtri
-        if(!isset($_GET['filter']))
-        {
-            $_GET['filter'] = 'publish:true';
-        }
-        else
-        {
-            $_GET['filter'] .=",publish:true";
-        }
-            
-    }
+   
 
 
     protected function _get_geo_base_data_from_orm($orm) {

@@ -22,6 +22,14 @@ class Controller_Ajax_Data_Base extends Controller_Ajax_Base_Crud_NoStrict_GET{
         
             
     }
+    
+    protected function _get_item() {
+        // si controllo se il dato è pubblicato altrimenti si mette un 404
+        if($this->request->controller() != 'Itinerary' AND !$this->_orm->publish)
+            throw new HTTP_Exception_404();
+        
+            parent::_get_item();
+    }
 
 
     protected function _get_base_data_from_orm($orm) {
@@ -43,6 +51,18 @@ class Controller_Ajax_Data_Base extends Controller_Ajax_Base_Crud_NoStrict_GET{
         $toRes['id'] = (int)$orm->id;
         if(isset($orm->typology_id))
             $toRes['typology_id'] = (int)$orm->typology_id;
+        
+        switch($this->request->controller())
+        {
+            case "Itinerary":
+               // si aggiungon gli id dei paths e dei pois
+                $toRes['paths'] = array_keys($orm->paths->where('publish','IS',DB::expr('true'))->find_all()->as_array('id'));
+                $toRes['pois'] = array_keys($orm->pois->where('publish','IS',DB::expr('true'))->find_all()->as_array('id'));
+             break;
+         
+            default:
+                $toRes['itineraries'] = array_keys($orm->itineraries->find_all()->as_array('id'));
+        }
         
         
         
