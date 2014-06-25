@@ -58,6 +58,8 @@ $.extend(APP.interactiveMap,
 								if (myModal.length === 0)
 								{
 									myModal = $('<div id="modal-'+section+'" class="modal fade" tabindex="-1">\
+													<div class="modal-dialog">\
+														<div class="modal-content">\
 														  <div class="modal-header">\
 															<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>\
 															<h3>'+APP.i18n.translate(section+"_list")+'</h3>\
@@ -68,7 +70,9 @@ $.extend(APP.interactiveMap,
 														  <div class="modal-footer">\
 															<button type="button" data-dismiss="modal" class="btn btn-default">'+APP.i18n.translate('close')+'</button>\
 														  </div>\
-														</div>');
+														</div>\
+													</div>\
+												</div>');
 									
 									$("#mainContent").append(myModal);
 								}
@@ -131,6 +135,8 @@ $.extend(APP.interactiveMap,
 								if (myModal.length === 0)
 								{
 									myModal = $('<div id="modal-'+section+'" class="modal fade" tabindex="-1">\
+													<div class="modal-dialog">\
+														<div class="modal-content">\
 														  <div class="modal-header">\
 															<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>\
 															<h3>'+APP.i18n.translate(section+"_list")+'</h3>\
@@ -141,7 +147,9 @@ $.extend(APP.interactiveMap,
 														  <div class="modal-footer">\
 															<button type="button" data-dismiss="modal" class="btn btn-default">'+APP.i18n.translate('close')+'</button>\
 														  </div>\
-														</div>');
+														</div>\
+													</div>\
+												</div>');
 									
 									$("#mainContent").append(myModal);
 								}
@@ -235,6 +243,8 @@ $.extend(APP.interactiveMap,
 								if (myModal.length === 0)
 								{
 									myModal = $('<div id="modal-'+section+'" class="modal fade" tabindex="-1">\
+													<div class="modal-dialog">\
+														<div class="modal-content">\
 														  <div class="modal-header">\
 															<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>\
 															<h3>'+APP.i18n.translate(section+"_list")+'</h3>\
@@ -245,7 +255,9 @@ $.extend(APP.interactiveMap,
 														  <div class="modal-footer">\
 															<button type="button" data-dismiss="modal" class="btn btn-default">'+APP.i18n.translate('close')+'</button>\
 														  </div>\
-														</div>');
+														</div>\
+													</div>\
+												</div>');
 									
 									$("#mainContent").append(myModal);
 								}
