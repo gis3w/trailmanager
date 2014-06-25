@@ -571,7 +571,7 @@ $.extend(APP.config,{
 		$(document).on('load_end', function(){ APP.utils.toggleLoadingImage(false); });*/
 		
 		this.xhrObj.init();	
-		//this.setResize();
+		this.setResize();
 		this.setLoadingImage();
 		this.setMsgDialog();
 		this.setDateEu(); // gg/mm/aaaa

@@ -45,13 +45,154 @@ $.extend(APP.interactiveMap,
 			switch($(this).attr("id"))
 			{
 				case "itinerari":
-					
-					break;
-				case "punti":
-					
+					var section = "itinerary";
 					$.ajax({
 						type: 'GET',
-						url: '/jx/geo/poi/',
+						url: '/jx/data/'+section+'/',
+						dataType: 'json',
+						success: function(data)
+						{
+							if (!APP.utils.checkError(data.error, null))
+							{
+								var myModal = $("#mainContent").find("#modal-"+section);
+								if (myModal.length === 0)
+								{
+									myModal = $('<div id="modal-'+section+'" class="modal fade" tabindex="-1">\
+														  <div class="modal-header">\
+															<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>\
+															<h3>'+APP.i18n.translate(section+"_list")+'</h3>\
+														  </div>\
+														  <div class="modal-body">\
+															<div class="list-group"></div>\
+														  </div>\
+														  <div class="modal-footer">\
+															<button type="button" data-dismiss="modal" class="btn btn-default">'+APP.i18n.translate('close')+'</button>\
+														  </div>\
+														</div>');
+									
+									$("#mainContent").append(myModal);
+								}
+								else
+									myModal.find(".modal-body .list-group").empty();
+								
+								$.each(data.data.items, function(){
+								var media = $(	'<div class="media">\
+												  <a class="pull-left" href="#">\
+													<img class="media-object img-rounded" src="'+this.thumb_main_image+'" alt="" style="width: 60px; height: 60px">\
+												  </a>\
+												  <div class="media-body">\
+													<h4 class="media-heading">'+this.name+'</h4>\
+												  </div>\
+												</div>');
+								
+									var a = $('<a href="#" class="list-group-item"></a>');
+									a.append(media);
+									myModal.find(".modal-body .list-group").append(a);
+								});
+								
+								myModal.modal("show");
+								
+								/*
+								bootbox.dialog({
+								  message: "Qui ci sar&agrave; la Lista degli itinerari",
+								  title: "Qui ci sar&agrave; il titolo",
+								  className: "container",
+								  onEscape: true,
+								  buttons: {
+									'Close': {
+									  className: "btn-default",
+									  callback: function() {}
+									},
+								  },
+								  closeButton: true,
+								});
+								*/
+							}
+							else
+								APP.utils.showErrMsg(data);
+						},
+						error: function(result)
+						{
+							APP.utils.showErrMsg(result);
+						}
+					});
+					break;
+				case "punti":
+					var section = "poi";
+					$.ajax({
+						type: 'GET',
+						url: '/jx/data/'+section+'/',
+						dataType: 'json',
+						success: function(data)
+						{
+							if (!APP.utils.checkError(data.error, null))
+							{
+								var myModal = $("#mainContent").find("#modal-"+section);
+								if (myModal.length === 0)
+								{
+									myModal = $('<div id="modal-'+section+'" class="modal fade" tabindex="-1">\
+														  <div class="modal-header">\
+															<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>\
+															<h3>'+APP.i18n.translate(section+"_list")+'</h3>\
+														  </div>\
+														  <div class="modal-body">\
+															<div class="list-group"></div>\
+														  </div>\
+														  <div class="modal-footer">\
+															<button type="button" data-dismiss="modal" class="btn btn-default">'+APP.i18n.translate('close')+'</button>\
+														  </div>\
+														</div>');
+									
+									$("#mainContent").append(myModal);
+								}
+								else
+									myModal.find(".modal-body .list-group").empty();
+								
+								$.each(data.data.items, function(){
+								var media = $(	'<div class="media">\
+												  <a class="pull-left" href="#">\
+													<img class="media-object img-rounded" src="'+this.thumb_main_image+'" alt="" style="width: 60px; height: 60px">\
+												  </a>\
+												  <div class="media-body">\
+													<h4 class="media-heading">'+this.title+'</h4>\
+												  </div>\
+												</div>');
+								
+									var a = $('<a href="#" class="list-group-item"></a>');
+									a.append(media);
+									myModal.find(".modal-body .list-group").append(a);
+								});
+								
+								myModal.modal("show");
+								
+								/*
+								bootbox.dialog({
+								  message: "Qui ci sar&agrave; la Lista degli itinerari",
+								  title: "Qui ci sar&agrave; il titolo",
+								  className: "container",
+								  onEscape: true,
+								  buttons: {
+									'Close': {
+									  className: "btn-default",
+									  callback: function() {}
+									},
+								  },
+								  closeButton: true,
+								});
+								*/
+							}
+							else
+								APP.utils.showErrMsg(data);
+						},
+						error: function(result)
+						{
+							APP.utils.showErrMsg(result);
+						}
+					});
+					/*
+					$.ajax({
+						type: 'GET',
+						url: '/jx/data/poi/',
 						dataType: 'json',
 						success: function(data)
 						{
@@ -78,6 +219,113 @@ $.extend(APP.interactiveMap,
 							APP.utils.showErrMsg(result);
 						}
 					});
+					*/
+					break;
+				case "percorsi":
+					var section = "path";
+					$.ajax({
+						type: 'GET',
+						url: '/jx/data/'+section+'/',
+						dataType: 'json',
+						success: function(data)
+						{
+							if (!APP.utils.checkError(data.error, null))
+							{
+								var myModal = $("#mainContent").find("#modal-"+section);
+								if (myModal.length === 0)
+								{
+									myModal = $('<div id="modal-'+section+'" class="modal fade" tabindex="-1">\
+														  <div class="modal-header">\
+															<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>\
+															<h3>'+APP.i18n.translate(section+"_list")+'</h3>\
+														  </div>\
+														  <div class="modal-body">\
+															<div class="list-group"></div>\
+														  </div>\
+														  <div class="modal-footer">\
+															<button type="button" data-dismiss="modal" class="btn btn-default">'+APP.i18n.translate('close')+'</button>\
+														  </div>\
+														</div>');
+									
+									$("#mainContent").append(myModal);
+								}
+								else
+									myModal.find(".modal-body .list-group").empty();
+								
+								$.each(data.data.items, function(){
+								var media = $(	'<div class="media">\
+												  <a class="pull-left" href="#">\
+													<img class="media-object img-rounded" src="'+this.thumb_main_image+'" alt="" style="width: 60px; height: 60px">\
+												  </a>\
+												  <div class="media-body">\
+													<h4 class="media-heading">'+this.title+'</h4>\
+												  </div>\
+												</div>');
+								
+									var a = $('<a href="#" class="list-group-item"></a>');
+									a.append(media);
+									myModal.find(".modal-body .list-group").append(a);
+								});
+								
+								myModal.modal("show");
+								
+								/*
+								bootbox.dialog({
+								  message: "Qui ci sar&agrave; la Lista degli itinerari",
+								  title: "Qui ci sar&agrave; il titolo",
+								  className: "container",
+								  onEscape: true,
+								  buttons: {
+									'Close': {
+									  className: "btn-default",
+									  callback: function() {}
+									},
+								  },
+								  closeButton: true,
+								});
+								*/
+							}
+							else
+								APP.utils.showErrMsg(data);
+						},
+						error: function(result)
+						{
+							APP.utils.showErrMsg(result);
+						}
+					});
+				
+					/*
+					$.ajax({
+						type: 'GET',
+						url: '/jx/data/path/',
+						dataType: 'json',
+						success: function(data)
+						{
+							if (!APP.utils.checkError(data.error, null))
+							{
+								
+								bootbox.dialog({
+								  message: "Qui ci sar&agrave; la Lista dei percorsi",
+								  title: "Qui ci sar&agrave; il titolo",
+								  onEscape: true,
+								  buttons: {
+									'Close': {
+									  className: "btn-default",
+									  callback: function() {}
+									},
+								  },
+								  closeButton: true,
+								});
+							}
+							else
+								APP.utils.showErrMsg(data);
+						},
+						error: function(result)
+						{
+							APP.utils.showErrMsg(result);
+						}
+					});
+					*/
 					break;
 				default:
 					break;
