@@ -18,6 +18,9 @@
         <div id="login_form" class="">
         <?php echo$form;  ?>
         </div>
+        <div class="login-sub-data">
+            Version: <?php echo SAFE::VERSION; ?>
+        </div>
     </div>
 </div>
 

@@ -1,20 +1,25 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 
-class Controller_Ajax_Data_Base extends Controller_Ajax_Base_Crud_GET{
+class Controller_Ajax_Data_Base extends Controller_Ajax_Base_Crud_NoStrict_GET{
+
     
     public function before() {
         parent::before();
+
+        if($this->request->controller() != 'Itinerary')
+        {
+            // si impostano dei filtri
+            if(!isset($_GET['filter']))
+            {
+                $_GET['filter'] = 'publish:true';
+            }
+            else
+            {
+                $_GET['filter'] .=",publish:true";
+            }
+        }
         
-        // si impostano dei filtri
-        if(!isset($_GET['filter']))
-        {
-            $_GET['filter'] = 'publish:true';
-        }
-        else
-        {
-            $_GET['filter'] .=",publish:true";
-        }
             
     }
 
@@ -36,7 +41,8 @@ class Controller_Ajax_Data_Base extends Controller_Ajax_Base_Crud_GET{
                 );
         
         $toRes['id'] = (int)$orm->id;
-        $toRes['typology_id'] = (int)$orm->typology_id;
+        if(isset($orm->typology_id))
+            $toRes['typology_id'] = (int)$orm->typology_id;
         
         
         

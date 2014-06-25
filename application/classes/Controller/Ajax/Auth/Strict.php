@@ -20,6 +20,9 @@ abstract class Controller_Ajax_Auth_Strict extends Controller_Ajax_Main {
     
     public $user;
     
+    protected $_exeLogin = TRUE;
+
+
     protected $_current_year;
     
     protected $_url_filters;
@@ -38,29 +41,35 @@ abstract class Controller_Ajax_Auth_Strict extends Controller_Ajax_Main {
            $this->session= Session::instance();
            // ORA parte il processo di autenticazione
            $this->a = Auth::instance();
+
            
+           if($this->_exeLogin)
+           {
+                if (!$this->a->logged_in()){
 
-            if (!$this->a->logged_in()){
+                    throw new HTTP_Exception_403 (SAFE::message('ehttp','403_auth_strict'));
 
-                throw new HTTP_Exception_403 (SAFE::message('ehttp','403_auth_strict'));
+                }
 
+
+
+                // si recuperano i dati di autenticazione
+                $this->user = $this->a->get_user();
+
+
+
+                /*
+             * Controllo ACL sono per le richieste iniziali non interne
+              *
+              * Dopo il before del controller rest così prende gli action rest
+              * che è impostato specificatemente in ogni controller
+             */
+                $this->_ACL();
             }
-            
-
-
-            // si recuperano i dati di autenticazione
-            $this->user = $this->a->get_user();
-            
-            
-
-            /*
-         * Controllo ACL sono per le richieste iniziali non interne
-          *
-          * Dopo il before del controller rest così prende gli action rest
-          * che è impostato specificatemente in ogni controller
-         */
-            $this->_ACL();
-            
+            else
+            {
+                $this->_get_orm_base();
+            }
 
 
 	}

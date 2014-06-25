@@ -34,7 +34,7 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
 
 
    public function before() {
-       
+
        //si carica anche il datastruct per rsuperare altri dati se c'è e anche il resto a catena
        if(isset($this->_datastruct) AND class_exists("Datastruct_".$this->_datastruct,TRUE))
        {
@@ -59,7 +59,8 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
        elseif(!isset($this->_table))
        {
            // si prende il modello dal controller
-           $this->_table = Inflector::camelize($this->request->controller());
+           //$this->_table =  Inflector::camelize($this->request->controller());
+           $this->_table =  Text::ucfirst($this->request->controller(),'_');
        }
        
         if(!isset($this->_table_rid))
@@ -87,6 +88,13 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
     {
         $this->_controller_ACL();
         
+        $this->_get_orm_base();
+        
+        
+    }
+    
+    protected function _get_orm_base()
+    {
         $typeORM = $this->_typeORM;
         
         if(is_numeric($this->id))
@@ -114,9 +122,11 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
             }
         }
     }
-    
-     
-   protected function _get_data()
+
+
+
+
+    protected function _get_data()
    {
        $orm = $this->_orm;
 
@@ -528,21 +538,6 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
             $this->_orm->$method($this->$pKey);
     }
       
-    protected function _join_for_azienda_user($orm)
-    {
-        if(!in_array($this->user->main_role_id,array(12,13)))
-        {
-            $orm->join('users_azienda')
-                    ->on('users_azienda.azienda_id','=','azienda.id')
-                    ->where('users_azienda.time_dissociazione','IS',DB::expr('null'))
-                    ->where('users_azienda.user_id','=',$this->user->id);
-        }
-        else
-        {
-            $orm->group_by($this->_table_rid.'.id');
-        }
-             
-    }
     
     protected function _get_validation_orm()
     {

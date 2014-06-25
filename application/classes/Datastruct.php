@@ -184,7 +184,7 @@ class Datastruct extends Kohana_Formstruct{
         if(method_exists($this, '_menu_items'))
             $this->menu = $this->_menu_items();
 
-        if($this->user->main_role_id !== '12' AND !is_null($this->menu))
+        if(isset($this->user->main_role_id) AND $this->user->main_role_id !== '12' AND !is_null($this->menu))
             $this->_filter_by_capability($this->menu);
                
     }
@@ -220,7 +220,7 @@ class Datastruct extends Kohana_Formstruct{
         // si aggiungon le colonne extra se si cono
         $this->_columns += $this->_extra_columns_type();
         
-        if($this->user->main_role_id !== '12' AND !is_null($this->_columns))
+        if(isset($this->user->main_role_id) AND $this->user->main_role_id !== '12' AND !is_null($this->_columns))
             $this->_filter_by_role($this->_columns);
         
     }
@@ -369,7 +369,7 @@ class Datastruct extends Kohana_Formstruct{
             
         
         // si fa la query sul db per le capabilities
-        if($this->user->main_role_id == 12)
+        if(!isset($this->user->main_role_id) OR $this->user->main_role_id == 12)
             return;
         
         $capabilities = $this->user->get_allow_capabilities(FALSE,array(array('name','LIKE','%'.$this->_capablity_name.'%')));

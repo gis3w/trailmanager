@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 
-class Controller_Ajax_Geo_Base extends Controller_Ajax_Base_Crud_GET{
+class Controller_Ajax_Geo_Base extends Controller_Ajax_Base_Crud_NoStrict_GET{
     
     public function before() {
         parent::before();

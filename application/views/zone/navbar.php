@@ -44,9 +44,12 @@
             <?php
 				endforeach;
 			?>
+             <li>
             <?php if(isset($user)): ?>
-            <li><span class=""><?php echo $user->user_data->nome. " ".$user->user_data->cognome."(".$user->username.")";?></span></li>
+            <span class=""><?php echo $user->user_data->nome. " ".$user->user_data->cognome."(".$user->username.")";?></span><br />
             <?php endif; ?>
+            <span><?php echo __('Version: '.SAFE::VERSION) ?></span>
+             </li>
         </ul>
     </div>
     </div>

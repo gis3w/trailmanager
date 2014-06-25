@@ -733,6 +733,8 @@ abstract class Kohana_Controller_Api_Main extends Kohana_Controller_REST{
      */
     protected function _apply_default_filters($orm)
     {
+        if(!isset($this->user->main_role_id))
+            return;
         $main_role_id = $this->user->main_role_id;
         $method = "_role_".$main_role_id."_filters";
         if(method_exists($this, $method))

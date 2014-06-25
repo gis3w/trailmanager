@@ -113,10 +113,17 @@ textarea {
 	/*float: right;*/
 }
 
+.login-sub-data {
+    text-align: center;
+    color:gray;
+}
+
 .login {
     background: #fff;
     
 }
+
+
 
 .login #logo_login {
     background: #2d3032;
