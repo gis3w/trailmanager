@@ -13,9 +13,10 @@ return array(
     'css_path' => 'public/css/',
     'css_base' => array(
 		'../modules/jquery-ui-1.10.3/themes/base/minified/jquery-ui.min.css' => 'screen',
+		//'../modules/bootstrap3/css/bootstrap.min.css' => 'screen',
         '../modules/bootstrap-3.1.1/css/bootstrap.min.css' => 'screen',
-		'../modules/bootstrap-modal/css/bootstrap-modal-bs3patch.css' => 'screen',
-		'../modules/bootstrap-modal/css/bootstrap-modal.css' => 'screen',
+		//'../modules/bootstrap-modal/css/bootstrap-modal-bs3patch.css' => 'screen',
+		//'../modules/bootstrap-modal/css/bootstrap-modal.css' => 'screen',
 		//'../modules/AnimatedContentMenu/css/style.css' => 'screen',
 		//'../modules/bootstrap3/css/bootstrap-theme.min.css' => 'screen',
 		'../modules/fullcalendar-1.6.1/fullcalendar/fullcalendar.css' => 'screen',
@@ -34,8 +35,8 @@ return array(
 		'../modules/font-awesome/css/font-awesome-ie7.css' => 'screen',
 		'../modules/jquery-timepicker/jquery.timepicker.css' => 'screen',
 		//'../modules/jquery_layout/layout-default-latest.css' => 'screen',
-        //'style.css' => 'screen',
-        //'layout.css' => 'screen',
+        'style.css' => 'screen',
+        'layout.css' => 'screen',
     ),
     'css_base_mobile' => array(
         /*'../modules/bootstrap3/css/bootstrap.min.css' => 'screen',
