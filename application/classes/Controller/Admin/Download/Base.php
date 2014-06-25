@@ -28,7 +28,13 @@ class Controller_Admin_Download_Base extends Controller_Auth_Strict {
     public function before() {
         parent::before();
                 
-        // si riscustruisce il path
+        $this->_initialize();
+       
+    }
+    
+    protected function _initialize()
+    {
+       // si riscustruisce il path
         $this->_upload_path = APPPATH."../".self::UPLOADPATH;
         
         if(isset(static::$keyField))
@@ -47,12 +53,11 @@ class Controller_Admin_Download_Base extends Controller_Auth_Strict {
             throw HTTP_Exception::factory ('500', SAFE::message ('ehttp','500_download_no_file_get'));
         
         $this->filename = $this->request->param('file');
-        $this->obj_id = $this->request->param('obj_id');
-        
-
+        $this->obj_id = $this->request->param('obj_id');  
     }
-    
-       public function action_index(){
+
+
+    public function action_index(){
 
         
         // si controlla che il file sia presente si ain db che in filesystem

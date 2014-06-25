@@ -15,7 +15,7 @@ class Model_Itinerary extends ORM {
             'orm_type' => 'GIS',
         ),
          'images' => array(
-            'model'   => 'Image_Poi',
+            'model'   => 'Image_Itinerary',
         ),
     );
     

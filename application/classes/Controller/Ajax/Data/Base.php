@@ -44,9 +44,16 @@ class Controller_Ajax_Data_Base extends Controller_Ajax_Base_Crud_NoStrict_GET{
                 $toRes['extent'],
                 $toRes['x'],
                 $toRes['y'],
-                $toRes['centroid']
-
+                $toRes['centroid'],
+                $toRes['publish']
                 );
+        
+        // si aggiunge anche la foto principale
+        $main_image = $orm->images
+                ->order_by('norder','ASC')
+                ->find();
+        
+        $toRes['thumb_main_image'] = isset($main_image->id) ? $this->_thumb_uri.$main_image->file : NULL;
         
         $toRes['id'] = (int)$orm->id;
         if(isset($orm->typology_id))

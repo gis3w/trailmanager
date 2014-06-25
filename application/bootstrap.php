@@ -246,6 +246,13 @@ Route::set('admin', 'admin(/<controller>(/<action>(/<id>)))')
 		'action'     => 'index',
 	));
 
+Route::set('download', 'download(/<controller>(/<action>(/<file>)))',array('file' => '.*'))
+	->defaults(array(   
+                                'directory' => 'Download',
+		'controller' => 'home',
+		'action'     => 'index',
+	));
+
 Route::set('jx', 'jx/(<controller>(/<id>(/<filtro>)))')
 	->defaults(array(
                     'directory' => 'ajax',
