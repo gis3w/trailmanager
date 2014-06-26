@@ -5,14 +5,11 @@ class Controller_Ajax_Media_Poi extends Controller_Ajax_Media_Base{
     
     protected $_pagination = FALSE;
     
-    protected $_datastruct = "Image_Poi";
+    protected $_datastruct = "Poi";
+    
+    protected $_image_uri ="/download/imagepoi/index/"; 
+    protected $_image_thumb_uri ="/download/imagepoi/thumbnail/"; 
 
-
-
-    protected function _single_request_row($orm) {
-        return $this->_get_base_data_from_orm($orm);
-        
-    }
   
     
 }

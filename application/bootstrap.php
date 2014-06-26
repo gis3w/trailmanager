@@ -232,6 +232,13 @@ Route::set('jx/geo', 'jx/geo/(<controller>(/<id>(/<filtro>)))')
                     'action'     => 'index',
 	));
 
+Route::set('jx/media', 'jx/media/(<controller>(/<id>(/<filtro>)))')
+	->defaults(array(
+                    'directory' => 'Ajax/Media',
+                    'controller' => 'home',
+                    'action'     => 'index',
+	));
+
 Route::set('admin/download', 'admin/download(/<controller>(/<action>(/<file>)))',array('file' => '.*'))
 	->defaults(array(   
                                 'directory' => 'Admin/Download',
