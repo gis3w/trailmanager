@@ -21,6 +21,7 @@ class Controller_Ajax_Config extends Controller_Ajax_Main{
 //        $this->_set_roles();
 //        $this->_set_authuser();
         $this->_set_i18n();
+        $this->_set_typologies();
 //        $this->_set_timezone();
 //        $this->_set_menu();
         $this->_set_url();
@@ -41,6 +42,11 @@ class Controller_Ajax_Config extends Controller_Ajax_Main{
     protected function _set_i18n()
     {
         $this->config->i18n = I18n::lang();
+    }
+    
+    protected function _set_typologies()
+    {
+        $this->_get_table('Typology');
     }
 
 
