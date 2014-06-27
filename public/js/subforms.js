@@ -97,19 +97,20 @@ $.extend(APP.subforms,
 					if ($(v).hasClass("fileupload"))
 					{
 						var value = "";
-						$.each(APP.fileuploader.myFiles, function(ii, vv)
+						name = name.split("[]")[0];
+						$.each(APP.fileuploader.fileRows[name].myFiles, function(ii, vv)
 						{
 							if (vv.stato === "D")
 								return true;
 							if (vv.type.split("/")[0] === "image")
 								value += '<img src="'+vv.thumbnail_url+'" alt="">|';
 							else
-								value += '<i class="icon icon-file-alt"></i>' + vv[APP.fileuploader.inputName]+"|";
+								value += '<i class="icon icon-file-alt"></i>' + vv[name]+"|";
 						});
-						//APP.fileuploader.myFiles = {};
+						
 						value = value.substr(0, value.length-1);
-						data[APP.fileuploader.inputName] = APP.utils.replaceAll('|', '<br>', value);
-						obj[APP.fileuploader.inputName] = APP.fileuploader.myFiles[APP.fileuploader.myFiles.length-1][APP.fileuploader.inputName];
+						data[name] = APP.utils.replaceAll('|', '<br>', value);
+						obj[name] = APP.fileuploader.fileRows[name].myFiles[APP.fileuploader.fileRows[name].myFiles.length-1][name];
 						break;
 					}
 					var value = $(v).val();
@@ -187,7 +188,8 @@ $.extend(APP.subforms,
 					if ($(v).hasClass("fileupload"))
 					{
 						var value = "";
-						$.each(APP.fileuploader.myFiles, function(ii, vv)
+						var name = name.split("[]")[0];
+						$.each(APP.fileuploader.fileRows[name].myFiles, function(ii, vv)
 						{
 							if (vv.stato === "D")
 								return true;
@@ -197,27 +199,27 @@ $.extend(APP.subforms,
 								if (vv.type.split("/")[0] === "image")
 									value += '<img src="'+vv.thumbnail_url+'" alt="">|';
 								else
-									value += '<i class="icon icon-file-alt"></i>' + vv[APP.fileuploader.inputName]+"|";
+									value += '<i class="icon icon-file-alt"></i>' + vv[name]+"|";
 							}
 							else
 							{
-								if (APP.utils.isImageFile(vv[APP.fileuploader.inputName]))
+								if (APP.utils.isImageFile(vv[name]))
 								{
-									var index = APP.utils.getIndexFromField(that.sectionTarget.subforms[subformName].columns, "name", APP.fileuploader.inputName);
+									var index = APP.utils.getIndexFromField(that.sectionTarget.subforms[subformName].columns, "name", name);
 									var tu = APP.utils.getThumbnailUrl(that.sectionTarget.subforms[subformName].columns[index].urls, vv);
 									if (tu)
 										value += '<img src="'+tu+'" alt="">|';
 									else
-										value += '<i class="icon icon-file-alt"></i>' + vv[APP.fileuploader.inputName]+"|";
+										value += '<i class="icon icon-file-alt"></i>' + vv[name]+"|";
 								}
 								else
-									value += '<i class="icon icon-file-alt"></i>' + vv[APP.fileuploader.inputName]+"|";
+									value += '<i class="icon icon-file-alt"></i>' + vv[name]+"|";
 							}
 						});
-						//APP.fileuploader.myFiles = {};
+						
 						value = value.substr(0, value.length-1);
-						data[APP.fileuploader.inputName] = APP.utils.replaceAll('|', '<br>', value);
-						obj[APP.fileuploader.inputName] = APP.fileuploader.myFiles[APP.fileuploader.myFiles.length-1][APP.fileuploader.inputName];
+						data[name] = APP.utils.replaceAll('|', '<br>', value);
+						obj[name] = APP.fileuploader.fileRows[name].myFiles[APP.fileuploader.fileRows[name].myFiles.length-1][name];
 						break;
 					}
 					var value = $(v).val();
@@ -379,7 +381,8 @@ $.extend(APP.subforms,
 				$.each(form.find(".fileupload"), function()
 				{
 					var n = $(this).attr("name");
-					d.push(APP.fileuploader.preserialize(n));
+					if (APP.utils.isset(n))
+						d.push(APP.fileuploader.preserialize(n));
 				});
 			}
 			/*if (form.find(".subformTable").length>0)

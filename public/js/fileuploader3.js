@@ -318,7 +318,7 @@ $.extend(APP.fileuploader,{
 		var that = this;
 		inputName = inputName.split("[]")[0];
 		var str = "";
-		$.each(that.fileRows[inputName], function()
+		$.each(that.fileRows[inputName].myFiles, function()
 		{
 			str += $.param(this)+";";
 		});

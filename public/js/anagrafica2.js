@@ -1491,7 +1491,8 @@ $.extend(APP.anagrafica,
 			$.each(form.find(".fileupload"), function()
 			{
 				var n = $(this).attr("name");
-				d.push(APP.fileuploader.preserialize(n));
+				if (APP.utils.isset(n))
+					d.push(APP.fileuploader.preserialize(n));
 			});
 		}
 		if (form.find(".subformTable").length>0)
