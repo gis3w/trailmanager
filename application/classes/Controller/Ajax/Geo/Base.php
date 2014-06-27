@@ -12,6 +12,8 @@ class Controller_Ajax_Geo_Base extends Controller_Ajax_Data_Base{
         $toRes['id'] = (int)$orm->id;
         $toRes['title'] = $orm->title;
         $toRes['typology_id'] = (int)$orm->typology_id;
+        if($this->request->controller() == 'Path')
+            $toRes['color'] = $orm->color;
         $toRes['geoJSON'] = json_decode($orm->asgeojson);
         
         return $toRes;
