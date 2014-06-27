@@ -1488,20 +1488,11 @@ $.extend(APP.anagrafica,
 		
 		if (form.attr("enctype") == "multipart/form-data")
 		{
-			/*if (form.find(".jquery_fileupload"))
+			$.each(form.find(".fileupload"), function()
 			{
-				var name = form.find(".jquery_fileupload").attr('name');
-				var btns = form.find(".uploadedFileDiv").find("button");
-				
-				$.each(btns, function(i,v){
-					var og = {};
-					og['name'] = name;
-					og['value'] = $(v).data().name;
-					d.push(og);
-				});
-			}
-			else*/
-				d.push(APP.fileuploader.preserialize(form));
+				var n = $(this).attr("name");
+				d.push(APP.fileuploader.preserialize(n));
+			});
 		}
 		if (form.find(".subformTable").length>0)
 		{
