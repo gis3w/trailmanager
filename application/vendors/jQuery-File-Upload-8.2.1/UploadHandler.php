@@ -287,8 +287,8 @@ class UploadHandler
         if (!$img_width || !$img_height) {
             return false;
         }
-        $max_width = $options['max_width'];
-        $max_height = $options['max_height'];
+        $max_width = isset($options['max_width']) ? $options['max_width'] : $img_width;
+        $max_height = isset($options['max_height']) ? $options['max_height'] : $img_height;
         $scale = min(
             $max_width / $img_width,
             $max_height / $img_height
@@ -572,7 +572,7 @@ class UploadHandler
     }
 
     protected function handle_file_upload($uploaded_file, $name, $size, $type, $error,
-            $index = null, $content_range = null) {
+            $index = null, $content_range = null) {        
         $file = new stdClass();
         $file->name = $this->get_file_name($name, $type, $index, $content_range);
         $file->size = $this->fix_integer_overflow(intval($size));
@@ -614,7 +614,6 @@ class UploadHandler
                 }
             } else {
                 $file->size = $file_size;
-                error_log(print_r($_SERVER,true));
                 if (!$content_range && $this->options['discard_aborted_uploads']) {
                     unlink($file_path);
                     $file->error = 'abort';

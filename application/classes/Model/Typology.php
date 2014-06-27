@@ -27,6 +27,9 @@ class Model_Typology extends ORM {
             'name' => array(
                     array('not_empty'),
             ),
+            'icon' => array(
+                    array('not_empty'),
+            ),
         );
     }
 

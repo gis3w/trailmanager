@@ -11,7 +11,7 @@ class Datastruct_Global_Typology extends Datastruct {
         array(
             'name' => 'globlal-typology-data',
             'position' => 'left',
-            'fields' => array('id','name','description'),
+            'fields' => array('id','name','description','icon'),
         ),
        
     );
@@ -29,8 +29,58 @@ class Datastruct_Global_Typology extends Datastruct {
                 "description" => array(
                     'form_input_type' => self::TEXTAREA,
                 ),
+                "icon" => array(
+                    "form_input_type" => self::INPUT,
+                    "multiple" => FALSE,
+                    "data_type" => self::FILE,
+                    "form_show" => TRUE,
+                    "table_show" => FALSE,
+                   "subform_table_show" => TRUE, 
+                    'label' =>__('Icon'),
+                    'urls' => array(
+                        'data' => 'jx/admin/upload/typologyicon',
+                        'delete' => 'jx/admin/upload/typologyicon?file=$1',
+                        'delete_options' => array(
+                           '$1' => self::$preKeyField.'-file',
+                        ),
+                        'download' => 'admin/download/typologyicon/index/$1',
+                        'download_options' => array(
+                            '$1' => self::$preKeyField.'-file',
+                            ),
+                        'thumbnail' => 'admin/download/typologyicon/thumbnail/$1',
+                        'thumbnail_options' => array(
+                            '$1' => self::$preKeyField.'-file',
+                            ),
+                    ),  
+                ),
+//                "marker" => array(
+//                    "form_input_type" => self::INPUT,
+//                    "multiple" => FALSE,
+//                    "data_type" => self::FILE,
+//                    "form_show" => TRUE,
+//                    "table_show" => FALSE,
+//                   "subform_table_show" => TRUE, 
+//                    'label' =>__('Marker'),
+//                    'urls' => array(
+//                        'data' => 'jx/admin/upload/typologymarker',
+//                        'delete' => 'jx/admin/upload/typologymarker?file=$1',
+//                        'delete_options' => array(
+//                           '$1' => self::$preKeyField.'-file',
+//                        ),
+//                        'download' => 'admin/download/typologymarker/index/$1',
+//                        'download_options' => array(
+//                            '$1' => self::$preKeyField.'-file',
+//                            ),
+//                        'thumbnail' => 'admin/download/typologymarker/thumbnail/$1',
+//                        'thumbnail_options' => array(
+//                            '$1' => self::$preKeyField.'-file',
+//                            ),
+//                    ),  
+//                ),
             );
       }
+      
+      
      
     
 }

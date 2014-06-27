@@ -445,6 +445,9 @@
       <Cl au="0" df="" nm="description" nu="1">
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
+      <Cl au="0" df="" nm="icon" nu="1">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
       <SchTrHis/>
     </Tbl>
     <Tbl UsSo="1" nm="typologies_paths">

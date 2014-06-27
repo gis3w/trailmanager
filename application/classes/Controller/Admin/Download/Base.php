@@ -87,4 +87,8 @@ class Controller_Admin_Download_Base extends Controller_Auth_Strict {
     public function after() {
         $this->response->send_file($this->path_to_file);
     }
+    
+    public static function getSubpathUpload(){
+        return self::$subpathUpload;
+    }
 }
