@@ -21,7 +21,7 @@ return array(
 		//'../modules/bootstrap3/css/bootstrap-theme.min.css' => 'screen',
 		'../modules/fullcalendar-1.6.1/fullcalendar/fullcalendar.css' => 'screen',
 		'../modules/chosen_v1.0.0/chosen.css' => 'screen',
-		'../modules/leaflet-0.7.2/leaflet.css' => 'screen',
+		'../modules/leaflet-0.7.3/leaflet.css' => 'screen',
 		'../modules/Leaflet.draw/dist/leaflet.draw.css' => 'screen',
 		//'../modules/pixelmatrix-uniform-3e9cd85/themes/default/css/uniform.default.css' => 'screen',
 		'../modules/jQuery-File-Upload-9.5.7/css/jquery.fileupload.css' => 'screen',

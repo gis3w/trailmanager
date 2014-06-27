@@ -375,7 +375,13 @@ $.extend(APP.subforms,
 				d.push(o);
 			});
 			if (form.attr("enctype") === "multipart/form-data")
-				d.push(APP.fileuploader.preserialize(form));
+			{
+				$.each(form.find(".fileupload"), function()
+				{
+					var n = $(this).attr("name");
+					d.push(APP.fileuploader.preserialize(n));
+				});
+			}
 			/*if (form.find(".subformTable").length>0)
 				d.push(APP.subforms.preserialize());*/
 			
