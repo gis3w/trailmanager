@@ -192,12 +192,14 @@ $.extend(APP.interactiveMap,
 							{
 								var panel = $(	'<div class="panel panel-default">\
 													<div class="panel-heading">\
-														<span class="glyphicon glyphicon-chevron-right pull-left" style="margin-right: 5px"></span>\
-														<span class="badge pull-right" style="">0</span>\
 														<h4 class="panel-title">\
+															<span class="pull-left" style="">\
+																<img src="'+this.icon+'" class="img-responsive" alt="">\
+															</span>\
 															<a data-toggle="collapse" data-parent="#accordion-'+section+'" href="#collapse_'+section+"_"+this.id+'">\
 																'+this.name+'\
 															</a>\
+															<span class="badge pull-right" style="">0</span>\
 														</h4>\
 													</div>\
 													<div id="collapse_'+section+"_"+this.id+'" class="panel-collapse collapse">\
@@ -225,7 +227,7 @@ $.extend(APP.interactiveMap,
 												  </a>\
 												  <div class="media-body">\
 													<h3 class="media-heading lead">'+this.title+'</h3>\
-													<div class="subtypologies">Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</div>\
+													<div class="subtypologies row"></div>\
 												  </div>\
 												</div>');
 								
@@ -252,7 +254,7 @@ $.extend(APP.interactiveMap,
 										{
 											var thumb =	$(	'<div class="col-md-2">\
 																<span class="thumbnail">\
-																  <img data-src="'+APP.config.localConfig.typology[index].icon+'" alt="...">\
+																  <img src="'+APP.config.localConfig.typology[index].icon+'" alt="...">\
 																</span>\
 															</div>');
 											media.find(".subtypologies").append(thumb);
@@ -309,19 +311,19 @@ $.extend(APP.interactiveMap,
 							var coords = [v.geoJSON.coordinates[1],v.geoJSON.coordinates[0]];
 							
 							var myIcon = null;
-							var myIndex = APP.utils.getIndexFromField(APP.config.localConfig.typology, "id", v.id);
+							var myIndex = APP.utils.getIndexFromField(APP.config.localConfig.typology, "id", v.typology_id);
 							if (myIndex > -1)
 							{
 								myIcon = L.icon({
 									iconUrl: APP.config.localConfig.typology[myIndex].marker,
 									//iconRetinaUrl: 'my-icon@2x.png',
-									iconSize: [38, 95],
-									iconAnchor: [22, 94],
-									popupAnchor: [-3, -76],
+									//iconSize: [38, 95],
+									iconAnchor: [16, 37],
+									//popupAnchor: [-3, -76],
 									//shadowUrl: 'my-icon-shadow.png',
 									//shadowRetinaUrl: 'my-icon-shadow@2x.png',
-									shadowSize: [68, 95],
-									shadowAnchor: [22, 94]
+									//shadowSize: [68, 95],
+									//shadowAnchor: [22, 94]
 								});
 							}
 							
