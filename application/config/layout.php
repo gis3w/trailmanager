@@ -14,7 +14,8 @@ return array(
     'css_base' => array(
 		'../modules/jquery-ui-1.10.3/themes/base/minified/jquery-ui.min.css' => 'screen',
 		//'../modules/bootstrap3/css/bootstrap.min.css' => 'screen',
-        '../modules/bootstrap-3.1.1/css/bootstrap.min.css' => 'screen',
+        //'../modules/bootstrap-3.1.1/css/bootstrap.min.css' => 'screen',
+		'../modules/bootstrap-3.2.0/css/bootstrap.min.css' => 'screen',
 		//'../modules/bootstrap-modal/css/bootstrap-modal-bs3patch.css' => 'screen',
 		//'../modules/bootstrap-modal/css/bootstrap-modal.css' => 'screen',
 		//'../modules/AnimatedContentMenu/css/style.css' => 'screen',
