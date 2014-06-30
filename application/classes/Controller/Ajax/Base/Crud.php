@@ -312,8 +312,16 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
            if(!$row)
                continue;
            
-           parse_str($row,$rowArr);           
-           $res[]= $this->_removePreKeyFieldFromData($rowArr,$datastruct);           
+           parse_str($row,$rowArr);         
+           if(isset($datastruct))
+           {
+               $res[]= $this->_removePreKeyFieldFromData($rowArr,$datastruct);
+           }
+           else
+           {
+               $res[] = $rowArr;
+           }
+                       
            
        }
 
@@ -440,6 +448,7 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
                            $sfd[$this->_table_rid.'_id'] = $this->_orm->id;
                            $id = isset($sfd['id']) ? $sfd['id'] : NULL;
                            $subformOrm = ORM::factory($name_orm,$id);
+                           $subformOrm->norder = $norder;
                             if(!isset($sfd['stato']))
                                $sfd['stato'] = NULL;
                            switch($sfd['stato'])
@@ -455,10 +464,13 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
                                        $sfd['data_mod'] = time();
                                        unset($sfd['data_ins']);
                                        // si tenta leliminazione del precedente
-                                       if(isset($subformOrm->file) AND isset($this->_upload_path[$name_subform]))
+                                       if(isset($subformOrm->file) AND isset($this->_upload_path[$name_subform]) AND $subformOrm->file != $sfd['file'])
                                         {
                                             $path_to_delete = APPPATH."../".$this->_upload_path[$name_subform].$subformOrm->file;
                                              @unlink($path_to_delete);
+                                             // anche le thimbnails
+                                            $path_to_delete_thimb = APPPATH."../".$this->_upload_path[$name_subform].'thumbnail/'.$subformOrm->file;
+                                            @unlink($path_to_delete_thimb);
                                         }
                                    }
                                    $subformOrm->values($sfd)->save();
@@ -472,6 +484,9 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
                                    {
                                        $path_to_delete = APPPATH."../".$this->_upload_path[$name_subform].$fileToDelete;
                                         @unlink($path_to_delete);
+                                        // anche le thimbnails
+                                        $path_to_delete_thimb = APPPATH."../".$this->_upload_path[$name_subform].'thumbnail/'.$fileToDelete;
+                                        @unlink($path_to_delete_thimb);
                                    }
                                   
                                    

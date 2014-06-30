@@ -55,6 +55,9 @@ return array(
     'apply' => 'Invia',
     'select' => 'Seleziona',
     
+    'Color' => 'Colore',
+    'Width' => 'Larghezza',
+    
     //TRADUZIONI DELLE VALIDAZIONI
     ':field must not be empty' => ':field non deve essere vuoto',
     ':field does not match the required format' => ':field non ha il formato giusto (gg/mm/aaaa)',
