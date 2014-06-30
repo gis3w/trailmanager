@@ -119,77 +119,6 @@ $.extend(APP.interactiveMap,
 		});
 	},
 	
-	getGeo: function(section, callback)
-	{
-		var that = this;
-		$.ajax({
-			type: 'GET',
-			url: '/jx/geo/'+section+'/',
-			dataType: 'json',
-			success: function(data)
-			{
-				if (!APP.utils.checkError(data.error, null))
-				{
-					that.myData[section] = {};
-					
-					$.each(data.data.items, function(i,v)
-					{
-						that.myData[section][v.id] = v;
-						if (v.geoJSON.type === "Point")
-						{
-							var coords = [v.geoJSON.coordinates[1],v.geoJSON.coordinates[0]];
-							
-							var myIcon = null;
-							var myIndex = APP.utils.getIndexFromField(APP.config.localConfig.typology, "id", v.id);
-							if (myIndex > -1)
-							{
-								myIcon = L.icon({
-									iconUrl: APP.config.localConfig.typology[myIndex].marker,
-									//iconRetinaUrl: 'my-icon@2x.png',
-									iconSize: [38, 95],
-									iconAnchor: [22, 94],
-									popupAnchor: [-3, -76],
-									//shadowUrl: 'my-icon-shadow.png',
-									//shadowRetinaUrl: 'my-icon-shadow@2x.png',
-									shadowSize: [68, 95],
-									shadowAnchor: [22, 94]
-								});
-							}
-							
-							var myObj = {bounceOnAdd: true};
-							if (myIcon)
-								myObj.icon = myIcon;
-							
-							new L.Marker(coords,myObj)
-								.on("click", function(){ that.showInformation(section, v.id); })
-								.addTo(APP.map.globalData[APP.map.currentMapId].map);
-						}
-						else
-						{
-							new L.geoJson(v.geoJSON, {
-								style: function (feature) {
-									return {color: v.color};
-								},
-								onEachFeature: function (feature, layer) {
-									layer.on("click", function(){ that.showInformation(section, v.id); });
-								}
-							}).addTo(APP.map.globalData[APP.map.currentMapId].map);
-						}
-					});
-					
-					if (APP.utils.isset(callback) && $.isFunction(callback))
-						callback(section);
-				}
-				else
-					APP.utils.showErrMsg(data);
-			},
-			error: function(result)
-			{
-				APP.utils.showErrMsg(result);
-			}
-		});
-	},
-	
 	getData: function(section, callback)
 	{
 		var that = this;
@@ -295,8 +224,8 @@ $.extend(APP.interactiveMap,
 													<img class="media-object img-rounded" src="'+this.thumb_main_image+'" alt="'+APP.i18n.translate('no_image')+'" style="width: 60px; height: 60px">\
 												  </a>\
 												  <div class="media-body">\
-													<h4 class="media-heading">'+this.title+'</h4>\
-													<div class="subtypologies"></div>\
+													<h3 class="media-heading lead">'+this.title+'</h3>\
+													<div class="subtypologies">Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</div>\
 												  </div>\
 												</div>');
 								
@@ -316,10 +245,18 @@ $.extend(APP.interactiveMap,
 								
 								if (v.typologies)
 								{
-									$.each(v.typologies, function(ii,vv){
+									$.each(v.typologies, function(ii,vv)
+									{
 										var index = APP.utils.getIndexFromField(APP.config.localConfig.typology, "id", vv);
 										if (index > -1 && APP.utils.isset(APP.config.localConfig.typology[index].icon))
-											media.find(".subtypologies").append('<span class="fa fa-'+APP.config.localConfig.typology[index].icon+'"></span>');
+										{
+											var thumb =	$(	'<div class="col-md-2">\
+																<span class="thumbnail">\
+																  <img data-src="'+APP.config.localConfig.typology[index].icon+'" alt="...">\
+																</span>\
+															</div>');
+											media.find(".subtypologies").append(thumb);
+										}
 									});
 								}
 								
@@ -337,6 +274,77 @@ $.extend(APP.interactiveMap,
 					}
 					
 					myModal.modal();
+					
+					if (APP.utils.isset(callback) && $.isFunction(callback))
+						callback(section);
+				}
+				else
+					APP.utils.showErrMsg(data);
+			},
+			error: function(result)
+			{
+				APP.utils.showErrMsg(result);
+			}
+		});
+	},
+	
+	getGeo: function(section, callback)
+	{
+		var that = this;
+		$.ajax({
+			type: 'GET',
+			url: '/jx/geo/'+section+'/',
+			dataType: 'json',
+			success: function(data)
+			{
+				if (!APP.utils.checkError(data.error, null))
+				{
+					that.myData[section] = {};
+					
+					$.each(data.data.items, function(i,v)
+					{
+						that.myData[section][v.id] = v;
+						if (v.geoJSON.type === "Point")
+						{
+							var coords = [v.geoJSON.coordinates[1],v.geoJSON.coordinates[0]];
+							
+							var myIcon = null;
+							var myIndex = APP.utils.getIndexFromField(APP.config.localConfig.typology, "id", v.id);
+							if (myIndex > -1)
+							{
+								myIcon = L.icon({
+									iconUrl: APP.config.localConfig.typology[myIndex].marker,
+									//iconRetinaUrl: 'my-icon@2x.png',
+									iconSize: [38, 95],
+									iconAnchor: [22, 94],
+									popupAnchor: [-3, -76],
+									//shadowUrl: 'my-icon-shadow.png',
+									//shadowRetinaUrl: 'my-icon-shadow@2x.png',
+									shadowSize: [68, 95],
+									shadowAnchor: [22, 94]
+								});
+							}
+							
+							var myObj = {bounceOnAdd: true};
+							if (myIcon)
+								myObj.icon = myIcon;
+							
+							new L.Marker(coords,myObj)
+								.on("click", function(){ that.showInformation(section, v.id); })
+								.addTo(APP.map.globalData[APP.map.currentMapId].map);
+						}
+						else
+						{
+							new L.geoJson(v.geoJSON, {
+								style: function (feature) {
+									return {color: v.color};
+								},
+								onEachFeature: function (feature, layer) {
+									layer.on("click", function(){ that.showInformation(section, v.id); });
+								}
+							}).addTo(APP.map.globalData[APP.map.currentMapId].map);
+						}
+					});
 					
 					if (APP.utils.isset(callback) && $.isFunction(callback))
 						callback(section);

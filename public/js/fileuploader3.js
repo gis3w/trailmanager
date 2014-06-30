@@ -1,11 +1,6 @@
 $.extend(APP.fileuploader,{
 	fileRows: {},
 	
-	finish: function()
-	{
-		this.fileRows = {};
-	},
-	
 	displayTagFromFilename: function(name, fileObj)
 	{
 		var that = this;
@@ -218,14 +213,14 @@ $.extend(APP.fileuploader,{
 						return true;
 					var o = {};
 					$.extend(o, v);
-					o[that.fileRows[params.name].inputName] = vv;
+					$.extend(o[that.fileRows[params.name].inputName], vv);
 					that.fileRows[params.name].myFiles.push(o);
 					tbody.append(that.getTrString(params.name, o));
 				});
 			}
 			else
 			{
-				that.fileRows[params.name].myFiles.push(v);
+				that.fileRows[params.name].myFiles.push($.extend({}, v));
 				tbody.append(that.getTrString(params.name, v));
 			}
 		});
@@ -318,7 +313,6 @@ $.extend(APP.fileuploader,{
 		var that = this;
 		var filesToSend = [];
 		inputName = inputName.split("[]")[0];
-		var str = "";
 		$.each(that.fileRows[inputName].myFiles, function()
 		{
 			var obj = {'name': this[inputName]};
@@ -327,20 +321,5 @@ $.extend(APP.fileuploader,{
 		});
 		var str = JSON.stringify(filesToSend);
 		return {'name': inputName, 'value': str};
-	
-	
-		/*
-		var that = this;
-		//form.find(".fileupload").remove(); // tolgo l'input di default di Fileupload senza del quale il plugin non avrebbe potuto funzionare fino ad ora
-		var filesToSend = [];
-		$.each(this.myFiles, function(i,v)
-		{
-			var obj = {'name': v[that.inputName]};
-			obj.stato = (APP.utils.isset(v.stato))? v.stato : "U";
-			filesToSend.push(obj);
-		});
-		var str = JSON.stringify(filesToSend);
-		return {"name": this.inputName, "value": str};
-		*/
 	}
 });
