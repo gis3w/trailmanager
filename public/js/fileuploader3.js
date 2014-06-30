@@ -316,13 +316,16 @@ $.extend(APP.fileuploader,{
 	preserialize: function(inputName)
 	{
 		var that = this;
+		var filesToSend = [];
 		inputName = inputName.split("[]")[0];
 		var str = "";
 		$.each(that.fileRows[inputName].myFiles, function()
 		{
-			str += $.param(this)+";";
+			var obj = {'name': this[inputName]};
+			obj.stato = (APP.utils.isset(this.stato))? this.stato : "U";
+			filesToSend.push(obj);
 		});
-		str = str.substr(0, str.length-1);
+		var str = JSON.stringify(filesToSend);
 		return {'name': inputName, 'value': str};
 	
 	

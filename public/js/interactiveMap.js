@@ -138,7 +138,29 @@ $.extend(APP.interactiveMap,
 						if (v.geoJSON.type === "Point")
 						{
 							var coords = [v.geoJSON.coordinates[1],v.geoJSON.coordinates[0]];
-							new L.Marker(coords,{bounceOnAdd: true})
+							
+							var myIcon = null;
+							var myIndex = APP.utils.getIndexFromField(APP.config.localConfig.typology, "id", v.id);
+							if (myIndex > -1)
+							{
+								myIcon = L.icon({
+									iconUrl: APP.config.localConfig.typology[myIndex].marker,
+									//iconRetinaUrl: 'my-icon@2x.png',
+									iconSize: [38, 95],
+									iconAnchor: [22, 94],
+									popupAnchor: [-3, -76],
+									//shadowUrl: 'my-icon-shadow.png',
+									//shadowRetinaUrl: 'my-icon-shadow@2x.png',
+									shadowSize: [68, 95],
+									shadowAnchor: [22, 94]
+								});
+							}
+							
+							var myObj = {bounceOnAdd: true};
+							if (myIcon)
+								myObj.icon = myIcon;
+							
+							new L.Marker(coords,myObj)
 								.on("click", function(){ that.showInformation(section, v.id); })
 								.addTo(APP.map.globalData[APP.map.currentMapId].map);
 						}
@@ -279,8 +301,14 @@ $.extend(APP.interactiveMap,
 												</div>');
 								
 								var row = $('<div class="row" style="margin: 5px; cursor: pointer"></div>');
-								row.click(function(){
+								row
+								.mousedown(function(){
 									$(this).css("background-color","#428BCA");
+								})
+								.mouseup(function(){
+									$(this).css("background-color","");
+								})
+								.click(function(){
 									myModal.modal("hide");
 									//that.showInformation(section, v.id);
 									that.zoomAt(section, v.id);
