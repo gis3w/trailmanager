@@ -1,45 +1,84 @@
 $.extend(APP.interactiveMap, 
 {
+	myData: {},
+	
+	showInformation: function(section, id)
+	{
+		var that = this;
+		that.getMedia(section, id, function(sezione, identificativo){ that.openInfo(sezione, identificativo); });
+	},
+	
+	openInfo: function(section, id)
+	{
+		var that = this;
+		var myModal = $("body").find("#modal-"+section+"-info");
+		if (myModal.length > 0)
+			myModal.remove();
+		
+		myModal = $('<div id="modal-'+section+'-info" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="'+section+'" aria-hidden="true">\
+						<div class="modal-dialog modal-lg">\
+							<div class="modal-content">\
+							  <div class="modal-header">\
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>\
+								<h3>'+that.myData[section][id].title+'</h3>\
+							  </div>\
+							  <div class="modal-body">\
+								<div class="coverImage" style="margin: -14px -14px 20px -14px"></div>\
+							  </div>\
+							  <div class="modal-footer">\
+								<button type="button" data-dismiss="modal" class="btn btn-default">'+APP.i18n.translate('close')+'</button>\
+							  </div>\
+							</div>\
+						</div>\
+					</div>');
+		
+		if (that.myData[section][id].media.images.length > 0)
+		{
+			var img = $('<img src="'+that.myData[section][id].media.images[0].image_url+'" alt="" style="width: 100%; height: 70px">');
+			myModal.find(".coverImage").append(img);
+		}
+		
+		myModal.find(".modal-body").append(that.myData[section][id].description);
+		
+		$("body").append(myModal);
+		
+		myModal.modal();
+	},
+	
 	zoomAt: function(section, id)
 	{
+		var that = this;		
 		
+		switch(section)
+		{
+			case "poi":
+				var maxZoom = APP.map.globalData[APP.map.currentMapId].map.getMaxZoom();
+				var latLng = [that.myData[section][id].geoJSON.coordinates[1], that.myData[section][id].geoJSON.coordinates[0]];
+				APP.map.globalData[APP.map.currentMapId].map.setView(latLng, maxZoom, {animate: true});
+				break;
+			case "path": case "itinerary":
+				APP.map.globalData[APP.map.currentMapId].map.setExtent(that.myData[section][id].extent);
+				break;
+			default:
+				break;
+		}		
 	},
 	
-	getMedia: function()
-	{
-		
-	},
-	
-	getGeo: function(section)
+	getMedia: function(section, id, callback)
 	{
 		var that = this;
 		$.ajax({
 			type: 'GET',
-			url: '/jx/geo/'+section+'/',
+			url: '/jx/media/'+section+'/'+id,
 			dataType: 'json',
 			success: function(data)
 			{
 				if (!APP.utils.checkError(data.error, null))
 				{
-					$.each(data.data.items, function(i,v)
-					{
-						if (v.geoJSON.type === "Point")
-						{
-							var coords = [v.geoJSON.coordinates[1],v.geoJSON.coordinates[0]];
-							new L.Marker(coords,{bounceOnAdd: true}).addTo(APP.map.globalData[APP.map.currentMapId].map);
-						}
-						else
-						{
-							new L.geoJson(v.geoJSON, {
-								style: function (feature) {
-									return {color: v.color};
-								},
-								onEachFeature: function (feature, layer) {
-									//layer.bindPopup(feature.properties.description);
-								}
-							}).addTo(APP.map.globalData[APP.map.currentMapId].map);
-						}
-					});
+					if (APP.utils.isset(data.data) && APP.utils.isset(data.data.items) && data.data.items.length === 1)
+						that.myData[section][id].media = data.data.items[0];
+					if (APP.utils.isset(callback) && $.isFunction(callback))
+						callback(section, id);
 				}
 				else
 					APP.utils.showErrMsg(data);
@@ -51,9 +90,62 @@ $.extend(APP.interactiveMap,
 		});
 	},
 	
-	getData: function(section)
+	getGeo: function(section, callback)
 	{
 		var that = this;
+		$.ajax({
+			type: 'GET',
+			url: '/jx/geo/'+section+'/',
+			dataType: 'json',
+			success: function(data)
+			{
+				if (!APP.utils.checkError(data.error, null))
+				{
+					that.myData[section] = {};
+					
+					$.each(data.data.items, function(i,v)
+					{
+						that.myData[section][v.id] = v;
+						if (v.geoJSON.type === "Point")
+						{
+							var coords = [v.geoJSON.coordinates[1],v.geoJSON.coordinates[0]];
+							new L.Marker(coords,{bounceOnAdd: true})
+								.on("click", function(){ that.showInformation(section, v.id); })
+								.addTo(APP.map.globalData[APP.map.currentMapId].map);
+						}
+						else
+						{
+							new L.geoJson(v.geoJSON, {
+								style: function (feature) {
+									return {color: v.color};
+								},
+								onEachFeature: function (feature, layer) {
+									layer.on("click", function(){ that.showInformation(section, v.id); });
+								}
+							}).addTo(APP.map.globalData[APP.map.currentMapId].map);
+						}
+					});
+					
+					if (APP.utils.isset(callback) && $.isFunction(callback))
+						callback(section);
+				}
+				else
+					APP.utils.showErrMsg(data);
+			},
+			error: function(result)
+			{
+				APP.utils.showErrMsg(result);
+			}
+		});
+	},
+	
+	getData: function(section, callback)
+	{
+		var that = this;
+		
+		if (!APP.utils.isset(that.myData[section]))
+			that.myData[section] = {};
+		
 		$.ajax({
 			type: 'GET',
 			url: '/jx/data/'+section+'/',
@@ -63,28 +155,31 @@ $.extend(APP.interactiveMap,
 				if (!APP.utils.checkError(data.error, null))
 				{
 					var myModal = $("body").find("#modal-"+section);
-					if (myModal.length === 0)
-					{
-						myModal = $('<div id="modal-'+section+'" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="'+section+'" aria-hidden="true">\
-										<div class="modal-dialog">\
-											<div class="modal-content">\
-											  <div class="modal-header">\
-												<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>\
-												<h3>'+APP.i18n.translate(section+"_list")+'</h3>\
-											  </div>\
-											  <div class="modal-body">\
-											  </div>\
-											  <div class="modal-footer">\
-												<button type="button" data-dismiss="modal" class="btn btn-default">'+APP.i18n.translate('close')+'</button>\
-											  </div>\
-											</div>\
+					if (myModal.length > 0)
+						myModal.remove();
+					
+					myModal = $('<div id="modal-'+section+'" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="'+section+'" aria-hidden="true">\
+									<div class="modal-dialog">\
+										<div class="modal-content">\
+										  <div class="modal-header">\
+											<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>\
+											<h3>'+APP.i18n.translate(section+"_list")+'</h3>\
+										  </div>\
+										  <div class="modal-body">\
+										  </div>\
+										  <div class="modal-footer">\
+											<button type="button" data-dismiss="modal" class="btn btn-default">'+APP.i18n.translate('close')+'</button>\
+										  </div>\
 										</div>\
-									</div>');
-						
-						$("body").append(myModal);
-					}
-					else
-						myModal.find(".modal-body").empty();
+									</div>\
+								</div>');
+					
+					myModal.on('hidden.bs.modal', function (e) {
+						APP.config.removeActiveClasses($('#bottomNavbarCollapse').find("ul"), "li");
+					});
+					
+					$("body").append(myModal);
+					
 						
 					switch(section)
 					{
@@ -92,6 +187,8 @@ $.extend(APP.interactiveMap,
 							$("body").find('.modal-body').html('<div class="list-group"></div>');
 							$.each(data.data.items, function()
 							{
+								$.extend(that.myData[section][this.id], this);
+								
 								var media = $(	'<div class="media">\
 												  <a class="pull-left" href="#">\
 													<img class="media-object img-rounded" src="'+this.thumb_main_image+'" alt="'+APP.i18n.translate('no_image')+'" style="width: 60px; height: 60px">\
@@ -107,6 +204,8 @@ $.extend(APP.interactiveMap,
 							});
 							break;
 						case "poi": case "path":
+							if ($("body").find('#accordion-'+section).length > 0)
+								$("body").find('#accordion-'+section).remove();
 							var accordion = $('<div class="panel-group" id="accordion-'+section+'"></div>');
 							
 							$.each(APP.config.localConfig.typology, function()
@@ -114,6 +213,7 @@ $.extend(APP.interactiveMap,
 								var panel = $(	'<div class="panel panel-default">\
 													<div class="panel-heading">\
 														<span class="glyphicon glyphicon-chevron-right pull-left" style="margin-right: 5px"></span>\
+														<span class="badge pull-right" style="">0</span>\
 														<h4 class="panel-title">\
 															<a data-toggle="collapse" data-parent="#accordion-'+section+'" href="#collapse_'+section+"_"+this.id+'">\
 																'+this.name+'\
@@ -121,7 +221,8 @@ $.extend(APP.interactiveMap,
 														</h4>\
 													</div>\
 													<div id="collapse_'+section+"_"+this.id+'" class="panel-collapse collapse">\
-														<div class="panel-body container-fluid" style="padding: 0px">\
+														<div class="panel-body" style="padding: 0px">\
+															<div class="row no_result" style="margin-left: 15px">'+APP.i18n.translate("no_result")+'</div>\
 														</div>\
 													</div>\
 												</div>');
@@ -132,7 +233,11 @@ $.extend(APP.interactiveMap,
 							});
 							$.each(data.data.items, function(i, v)
 							{
-								var container = accordion.find("#collapse_"+section+"_"+this.typology_id+" .container-fluid");
+								$.extend(that.myData[section][v.id], v);
+							
+								var container = accordion.find("#collapse_"+section+"_"+this.typology_id+" .panel-body");
+								if (container.find(".no_result").length>0)
+									container.find(".no_result").remove();
 								
 								var media = $(	'<div class="media">\
 												  <a class="pull-left" href="#">\
@@ -140,17 +245,33 @@ $.extend(APP.interactiveMap,
 												  </a>\
 												  <div class="media-body">\
 													<h4 class="media-heading">'+this.title+'</h4>\
+													<div class="subtypologies"></div>\
 												  </div>\
 												</div>');
 								
-								var row = $('<div class="row" style="margin: 5px"></div>');
+								var row = $('<div class="row" style="margin: 5px; cursor: pointer"></div>');
 								row.click(function(){
+									$(this).css("background-color","#428BCA");
+									myModal.modal("hide");
+									//that.showInformation(section, v.id);
 									that.zoomAt(section, v.id);
 								});
+								
+								if (v.typologies)
+								{
+									$.each(v.typologies, function(ii,vv){
+										var index = APP.utils.getIndexFromField(APP.config.localConfig.typology, "id", vv);
+										if (index > -1 && APP.utils.isset(APP.config.localConfig.typology[index].icon))
+											media.find(".subtypologies").append('<span class="fa fa-'+APP.config.localConfig.typology[index].icon+'"></span>');
+									});
+								}
+								
 								row.append(media);
 								container.append(row);
 								if (!container.parent().hasClass("in"))
 									container.parent().addClass("in");
+								var counter = parseInt(container.parents(".panel:first").find(".badge").text());
+								container.parents(".panel:first").find(".badge").text(counter+1)
 							});
 							$("body").find('.modal-body').html(accordion);
 							break;
@@ -159,6 +280,9 @@ $.extend(APP.interactiveMap,
 					}
 					
 					myModal.modal();
+					
+					if (APP.utils.isset(callback) && $.isFunction(callback))
+						callback(section);
 				}
 				else
 					APP.utils.showErrMsg(data);
@@ -173,6 +297,7 @@ $.extend(APP.interactiveMap,
 	start: function()
 	{
 		var that = this;
+		
 		$("html").css({"height":"100%","width":"100%"});
 		$("body").css({"height":"100%","width":"100%","padding-top":"50px", "padding-bottom":"50px"});
 		
