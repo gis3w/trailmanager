@@ -43,15 +43,15 @@ class Datastruct_Global_Typology extends Datastruct {
                         'data' => 'jx/admin/upload/typologyicon',
                         'delete' => 'jx/admin/upload/typologyicon?file=$1',
                         'delete_options' => array(
-                           '$1' => self::$preKeyField.'-file',
+                           '$1' => 'icon',
                         ),
                         'download' => 'admin/download/typologyicon/index/$1',
                         'download_options' => array(
-                            '$1' => self::$preKeyField.'-file',
+                            '$1' => 'icon',
                             ),
                         'thumbnail' => 'admin/download/typologyicon/thumbnail/$1',
                         'thumbnail_options' => array(
-                            '$1' => self::$preKeyField.'-file',
+                            '$1' =>'icon',
                             ),
                     ),  
                 ),
@@ -67,15 +67,15 @@ class Datastruct_Global_Typology extends Datastruct {
                         'data' => 'jx/admin/upload/typologymarker',
                         'delete' => 'jx/admin/upload/typologymarker?file=$1',
                         'delete_options' => array(
-                           '$1' => self::$preKeyField.'-file',
+                           '$1' => 'marker',
                         ),
                         'download' => 'admin/download/typologymarker/index/$1',
                         'download_options' => array(
-                            '$1' => self::$preKeyField.'-file',
+                            '$1' => 'marker',
                             ),
                         'thumbnail' => 'admin/download/typologymarker/thumbnail/$1',
                         'thumbnail_options' => array(
-                            '$1' => self::$preKeyField.'-file',
+                            '$1' => 'marker',
                             ),
                     ),  
                 ),
