@@ -8,8 +8,6 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
      protected $_upload_path = array(
          'image_poi' => 'image',
          'image_path' => 'image',
-         'typology_icon' => 'typologyicon',
-         'typology_marker' => 'typologymarker'
      );
      
      protected  $_subformToSave = array(

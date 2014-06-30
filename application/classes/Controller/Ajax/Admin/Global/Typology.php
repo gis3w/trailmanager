@@ -7,6 +7,11 @@ class Controller_Ajax_Admin_Global_Typology extends Controller_Ajax_Base_Crud{
     
     protected $_datastruct = "Global_Typology";
     
+    protected $_upload_path = array(
+         'typology_icon' => 'typologyicon',
+         'typology_marker' => 'typologymarker'
+     );
+    
     
      protected function _base_edit()
     {
@@ -17,8 +22,7 @@ class Controller_Ajax_Admin_Global_Typology extends Controller_Ajax_Base_Crud{
             $this->_get_extra_validation();
             
             //si recuparano ifile immagini da caricare
-            $this->_get_subform_data('icon');
-            $this->_get_subform_data('marker');
+            $this->_get_icon_marker();
             
             $this->_orm->values($_POST)->save($this->_extra_validation);
             
@@ -47,26 +51,36 @@ class Controller_Ajax_Admin_Global_Typology extends Controller_Ajax_Base_Crud{
         }
     }
     
-    protected function _get_subform_data($field) {
-        $data = parent::_get_subform_data($field);
-        $iconSet = FALSE;
-        foreach($data as $row)
+    protected function _get_icon_marker() {
+        
+        $fields = array('icon','marker');
+        
+   
+
+        foreach($fields as $field)
         {
-            if(!isset($row['stato']))
+            $postField = json_decode($_POST[$field]);
+            if(empty($postField))
+            {
+                $_POST[$field] = '';
                 continue;
-            
-            if($row['stato'] == 'D')
-            {
-                @unlink(APPPATH."../".$this->_upload_path['typology_'.$field].$fileToDelete);
-                $_POST[$field] = NULL;
             }
-                
             
-            if($row['stato'] == 'I')
+            foreach ($postField as $data)
             {
-                $iconSet = TRUE;
-                $_POST[$field] = $row[$field];
+                 if($data->stato == 'D')
+                {
+                    @unlink(APPPATH."../".$this->_upload_path['typology_'.$field].$data->name);
+                    $_POST[$field] = NULL;
+                }
+
+
+                if($data->stato == 'I' OR $data->stato == 'U')
+                {
+                    $_POST[$field] = $data->name;
+                }
             }
+           
         }
         
        
