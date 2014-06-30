@@ -2,6 +2,8 @@
 
 class Datastruct_Global_Typology extends Datastruct {
     
+    public $enctype = self::ECNTYPE_MULTIPART;
+    
     protected $_nameORM = "Typology";
     
     public $icon = 'suitcase';
