@@ -10,12 +10,6 @@ class Controller_Ajax_Data_Poi extends Controller_Ajax_Data_Base{
     protected $_thumb_uri ="/download/imagepoi/thumbnail/"; 
 
 
-
-
-
-
-
-
     protected function _single_request_row($orm) {
         return $this->_get_base_data_from_orm($orm);
         

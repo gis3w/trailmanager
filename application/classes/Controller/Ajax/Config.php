@@ -4,6 +4,9 @@
 class Controller_Ajax_Config extends Controller_Ajax_Main{
     
     public $config;
+    
+    protected $_icon_uri ="/download/typologyicon/";
+    protected $_marker_uri ="/download/typologymarker/";
 
     public function before()
     {
@@ -47,6 +50,12 @@ class Controller_Ajax_Config extends Controller_Ajax_Main{
     protected function _set_typologies()
     {
         $this->_get_table('Typology');
+        foreach($this->config->typology as &$typologies)
+        {
+            $typologies['icon'] =$this->_icon_uri.$typologies['icon'];
+            $typologies['marker'] =$this->_marker_uri.$typologies['marker'];;
+        }
+        
     }
 
 

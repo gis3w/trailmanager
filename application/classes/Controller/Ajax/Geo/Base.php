@@ -16,6 +16,9 @@ class Controller_Ajax_Geo_Base extends Controller_Ajax_Data_Base{
             $toRes['color'] = $orm->color;
         $toRes['geoJSON'] = json_decode($orm->asgeojson);
         
+        // si aggiunge l'ensensione
+        $toRes['extent'] = $orm->bbox;
+        
         return $toRes;
     }
     

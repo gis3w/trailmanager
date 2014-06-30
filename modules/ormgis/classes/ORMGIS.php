@@ -101,6 +101,11 @@ class ORMGIS extends ORM {
             list($arr['minx'],$arr['miny']) = preg_split("/\ /",$cornLB);
 
             list($arr['maxx'],$arr['maxy']) = preg_split("/\ /",$cornRT);
+            
+            // forsiamo il tutto a float
+            $arr = array_map(function($value){
+                return (float)$value;
+            }, $arr);
 
             return $arr;
             

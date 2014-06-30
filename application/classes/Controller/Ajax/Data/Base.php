@@ -69,7 +69,9 @@ class Controller_Ajax_Data_Base extends Controller_Ajax_Base_Crud_NoStrict_GET{
          
             default:
                 $toRes['itineraries'] = array_keys($orm->itineraries->find_all()->as_array('id'));
-        }
+                // si aggiungono le subtipologie
+                $toRes['typologies'] = array_keys($orm->typologies->find_all()->as_array('id'));
+        }       
         
         
         

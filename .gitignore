@@ -1,1 +1,6 @@
 /nbproject/private/
+/vendor/
+/upload/
+/application/logs/
+/application/cache/
+consolser.lock
