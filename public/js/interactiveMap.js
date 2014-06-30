@@ -23,7 +23,20 @@ $.extend(APP.interactiveMap,
 								<h3>'+that.myData[section][id].title+'</h3>\
 							  </div>\
 							  <div class="modal-body">\
-								<div class="coverImage" style="margin: -14px -14px 20px -14px"></div>\
+								<div id="carousel-example-generic" style="margin: -14px -15px 20px -15px;" class="carousel slide" data-ride="carousel">\
+								  <!-- Indicators -->\
+								  <ol class="carousel-indicators"></ol>\
+								  <!-- Wrapper for slides -->\
+								  <div class="carousel-inner"></div>\
+								  <!-- Controls -->\
+								  <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">\
+									<span class="glyphicon glyphicon-chevron-left"></span>\
+								  </a>\
+								  <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">\
+									<span class="glyphicon glyphicon-chevron-right"></span>\
+								  </a>\
+								</div>\
+								<div class="description"></div>\
 							  </div>\
 							  <div class="modal-footer">\
 								<button type="button" data-dismiss="modal" class="btn btn-default">'+APP.i18n.translate('close')+'</button>\
@@ -32,13 +45,29 @@ $.extend(APP.interactiveMap,
 						</div>\
 					</div>');
 		
-		if (that.myData[section][id].media.images.length > 0)
+		$.each(that.myData[section][id].media.images, function(i,v)
 		{
-			var img = $('<img src="'+that.myData[section][id].media.images[0].image_url+'" alt="" style="width: 100%; height: 70px">');
-			myModal.find(".coverImage").append(img);
-		}
+			var div = $('<div class="item">\
+							<img src="'+v.image_url+'" alt="" style="width: 100%; height: 220px">\
+							<div class="carousel-caption">\
+								<h3>'+v.description+'</h3>\
+							</div>\
+						</div>');
+			
+			var indicatorLi = $('<li data-target="#carousel-example-generic" data-slide-to="'+i+'"></li>');
+			if (i === 0)
+			{
+				div.addClass("active");
+				indicatorLi.addClass("active");
+			}
+			
+			div.find("img").css({"width": "100%", "height": 220});
+			
+			myModal.find(".carousel-indicators").append(indicatorLi);
+			myModal.find(".carousel-inner").append(div);
+		});
 		
-		myModal.find(".modal-body").append(that.myData[section][id].description);
+		myModal.find(".modal-body .description").append(that.myData[section][id].description);
 		
 		$("body").append(myModal);
 		
@@ -57,7 +86,7 @@ $.extend(APP.interactiveMap,
 				APP.map.globalData[APP.map.currentMapId].map.setView(latLng, maxZoom, {animate: true});
 				break;
 			case "path": case "itinerary":
-				APP.map.globalData[APP.map.currentMapId].map.setExtent(that.myData[section][id].extent);
+				APP.map.setExtent(that.myData[section][id].extent);
 				break;
 			default:
 				break;
