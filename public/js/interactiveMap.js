@@ -5,7 +5,11 @@ $.extend(APP.interactiveMap,
 	showInformation: function(section, id)
 	{
 		var that = this;
-		that.getMedia(section, id, function(sezione, identificativo){ that.openInfo(sezione, identificativo); });
+		that.getData(section, function(){
+			that.getMedia(section, id, function(){
+				that.openInfo(section, id); 
+			});
+		});
 	},
 	
 	openInfo: function(section, id)
@@ -36,7 +40,7 @@ $.extend(APP.interactiveMap,
 									<span class="glyphicon glyphicon-chevron-right"></span>\
 								  </a>\
 								</div>\
-								<div class="description"></div>\
+								<div class="paragraphes"></div>\
 							  </div>\
 							  <div class="modal-footer">\
 								<button type="button" data-dismiss="modal" class="btn btn-default">'+APP.i18n.translate('close')+'</button>\
@@ -48,7 +52,7 @@ $.extend(APP.interactiveMap,
 		$.each(that.myData[section][id].media.images, function(i,v)
 		{
 			var div = $('<div class="item">\
-							<img src="'+v.image_url+'" alt="" class="img-responsive" style="width: 100%; height: 220px">\
+							<img src="'+v.image_url+'" alt="" class="img-responsive" style="width: 100%; max-height: 250px">\
 							<div class="carousel-caption">\
 								<h3>'+v.description+'</h3>\
 							</div>\
@@ -67,7 +71,62 @@ $.extend(APP.interactiveMap,
 			myModal.find(".carousel-inner").append(div);
 		});
 		
-		myModal.find(".modal-body .description").append(that.myData[section][id].description);
+		var parToAppend = [];
+		var checkVoice = function(voice, type)
+		{
+			var div = $('<div class="'+voice+'"><h2 class="text-capitalize">'+APP.i18n.translate(voice)+'</h2></div>');
+			switch(type)
+			{
+				case "text":
+					if (APP.utils.isset(that.myData[section][id][voice]) && !APP.utils.isEmptyString(that.myData[section][id][voice]))
+						div.append(that.myData[section][id][voice]);
+					else
+						div.append('<p><em>'+APP.i18n.translate("no_content")+'</em></p>');
+					break;
+				case "array":
+					if (APP.utils.isset(that.myData[section][id][voice]) && !APP.utils.isEmptyString(that.myData[section][id][voice]))
+						div.append(that.myData[section][id][voice]);
+					else
+						div.append('<p><em>'+APP.i18n.translate("no_content")+'</em></p>');
+					break;
+				case "video":
+					if (APP.utils.isset(that.myData[section][id][voice]) && !APP.utils.isEmptyString(that.myData[section][id][voice]))
+						div.append(that.myData[section][id][voice]);
+					else
+						div.append('<p><em>'+APP.i18n.translate("no_content")+'</em></p>');
+					break;
+				default:
+					break;
+			}
+			parToAppend.push(div);
+		};
+		
+		switch(section)
+		{
+			case "poi":
+				checkVoice('description', 'text');
+				checkVoice('reason', 'text');
+				checkVoice('period_schedule', 'text');
+				checkVoice('accessibility', 'text');
+				checkVoice('information_url', 'text');
+				break;
+			case "path":
+				checkVoice('typology', 'array');
+				checkVoice('description', 'text');
+				checkVoice('length', 'text');
+				checkVoice('altitude_gap', 'text');
+				checkVoice('reason', 'text');
+				checkVoice('period_schedule', 'text');
+				checkVoice('accessibility', 'text');
+				checkVoice('information_url', 'text');
+				checkVoice('video_path', 'video');
+				break;
+			default:
+				break;
+		}
+		$.each(parToAppend, function(){
+			myModal.find(".modal-body .paragraphes").append(this);
+		});
 		
 		$("body").append(myModal);
 		
@@ -93,6 +152,147 @@ $.extend(APP.interactiveMap,
 		}		
 	},
 	
+	showItems: function(section, callback)
+	{
+		var that = this;
+		var myModal = $("body").find("#modal-"+section);
+		if (myModal.length > 0)
+			myModal.remove();
+		
+		myModal = $('<div id="modal-'+section+'" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="'+section+'" aria-hidden="true">\
+						<div class="modal-dialog">\
+							<div class="modal-content">\
+							  <div class="modal-header">\
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>\
+								<h3 class="lead">'+APP.i18n.translate(section+"_list")+'</h3>\
+							  </div>\
+							  <div class="modal-body">\
+							  </div>\
+							  <div class="modal-footer">\
+								<button type="button" data-dismiss="modal" class="btn btn-default">'+APP.i18n.translate('close')+'</button>\
+							  </div>\
+							</div>\
+						</div>\
+					</div>');
+		
+		myModal.on('hidden.bs.modal', function (e) {
+			APP.config.removeActiveClasses($('#bottomNavbarCollapse').find("ul"), "li");
+		});
+		
+		$("body").append(myModal);					
+			
+		switch(section)
+		{
+			case "itinerary":
+				$("body").find('.modal-body').html('<div class="list-group list-group-wo-radius"></div>');
+				$.each(that.myData[section], function()
+				{					
+					var media = $(	'<div class="media">\
+									  <a class="pull-left" href="#">\
+										<img class="media-object img-rounded" src="'+this.thumb_main_image+'" alt="'+APP.i18n.translate('no_image')+'" style="max-width: 60px; max-height: 60px">\
+									  </a>\
+									  <div class="media-body">\
+										<h4 class="media-heading lead">'+this.name+'</h4>\
+									  </div>\
+									</div>');
+					
+					var a = $('<a href="#" class="list-group-item"></a>');
+					a.append(media);
+					myModal.find(".modal-body .list-group").append(a);
+				});
+				break;
+			case "poi": case "path":
+				if ($("body").find('#accordion-'+section).length > 0)
+					$("body").find('#accordion-'+section).remove();
+				var accordion = $('<div class="panel-group" id="accordion-'+section+'"></div>');
+				
+				$.each(APP.config.localConfig.typology, function()
+				{
+					var panel = $(	'<div class="panel panel-default">\
+										<div class="panel-heading">\
+											<h4 class="panel-title" style="vertical-align: middle">\
+												<span class="pull-left iconImage" style="margin-right: 5px"></span>\
+												<a data-toggle="collapse" data-parent="#accordion-'+section+'" href="#collapse_'+section+"_"+this.id+'">\
+													'+this.name+'\
+												</a>\
+												<span class="badge pull-right" style="">0</span>\
+											</h4>\
+										</div>\
+										<div id="collapse_'+section+"_"+this.id+'" class="panel-collapse collapse">\
+											<div class="panel-body list-group list-group-wo-radius" style="padding: 0px; margin-bottom: 0px">\
+												<a href="#" class="list-group-item disabled no_result">'+APP.i18n.translate("no_result")+'</a>\
+											</div>\
+										</div>\
+									</div>');
+					
+					var iconImage = $('<span class="glyphicon glyphicon-chevron-right"></span>');
+					if (APP.utils.isset(this.icon) && this.icon !== "")
+						var iconImage = $('<img src="'+this.icon+'" class="img-responsive" alt="" style="margin-top: -14px; max-height: 30px; max-width: 35px;">');
+					
+					panel.find(".panel-title .iconImage").html(iconImage);
+					
+					panel.find('.collapse').collapse({toggle: false});
+					
+					accordion.append(panel);
+				});
+				$.each(that.myData[section], function(i, v)
+				{				
+					var container = accordion.find("#collapse_"+section+"_"+this.typology_id+" .panel-body");
+					if (container.find(".no_result").length>0)
+						container.find(".no_result").remove();
+					
+					var media = $(	'<div class="media">\
+									  <a class="pull-left" href="#" >\
+										<img class="media-object img-responsive img-rounded" src="'+this.thumb_main_image+'" alt="'+APP.i18n.translate('no_image')+'" style="width: 60px; height: 60px">\
+									  </a>\
+									  <div class="media-body">\
+										<h3 class="media-heading lead">'+this.title+'<span class="subtypologies pull-right row"></span></h3>\
+									  </div>\
+									</div>');
+					
+					var row = $('<a href="#" class="list-group-item"</a>');
+					row.click(function(){
+						myModal.modal("hide");
+						//that.showInformation(section, v.id);
+						that.zoomAt(section, v.id);
+					});
+					
+					if (v.typologies)
+					{
+						$.each(v.typologies, function(ii,vv)
+						{
+							var index = APP.utils.getIndexFromField(APP.config.localConfig.typology, "id", vv);
+							if (index > -1 && APP.utils.isset(APP.config.localConfig.typology[index].icon))
+							{
+								var thumb =	$('<span class="col-md-1"><img src="'+APP.config.localConfig.typology[index].icon+'" alt="" class="img-responsive img-thumbnail" style="max-width: 25px; max-height: 20px; padding:0px"></span>');
+								thumb.find("img").tooltip({
+									title: APP.config.localConfig.typology[index].name,
+									container: "body",
+								});
+								media.find(".subtypologies").append(thumb);
+							}
+						});
+					}
+					
+					row.append(media);
+					container.append(row);
+					if (!container.parent().hasClass("in"))
+						container.parent().addClass("in");
+					var counter = parseInt(container.parents(".panel:first").find(".badge").text());
+					container.parents(".panel:first").find(".badge").text(counter+1)
+				});
+				$("body").find('.modal-body').html(accordion);
+				break;
+			default:
+				break;						
+		}
+		
+		myModal.modal();
+		
+		if (APP.utils.isset(callback) && $.isFunction(callback))
+			callback();
+	},
+	
 	getMedia: function(section, id, callback)
 	{
 		var that = this;
@@ -107,7 +307,7 @@ $.extend(APP.interactiveMap,
 					if (APP.utils.isset(data.data) && APP.utils.isset(data.data.items) && data.data.items.length === 1)
 						that.myData[section][id].media = data.data.items[0];
 					if (APP.utils.isset(callback) && $.isFunction(callback))
-						callback(section, id);
+						callback();
 				}
 				else
 					APP.utils.showErrMsg(data);
@@ -134,147 +334,15 @@ $.extend(APP.interactiveMap,
 			{
 				if (!APP.utils.checkError(data.error, null))
 				{
-					var myModal = $("body").find("#modal-"+section);
-					if (myModal.length > 0)
-						myModal.remove();
-					
-					myModal = $('<div id="modal-'+section+'" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="'+section+'" aria-hidden="true">\
-									<div class="modal-dialog">\
-										<div class="modal-content">\
-										  <div class="modal-header">\
-											<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>\
-											<h3 class="lead">'+APP.i18n.translate(section+"_list")+'</h3>\
-										  </div>\
-										  <div class="modal-body">\
-										  </div>\
-										  <div class="modal-footer">\
-											<button type="button" data-dismiss="modal" class="btn btn-default">'+APP.i18n.translate('close')+'</button>\
-										  </div>\
-										</div>\
-									</div>\
-								</div>');
-					
-					myModal.on('hidden.bs.modal', function (e) {
-						APP.config.removeActiveClasses($('#bottomNavbarCollapse').find("ul"), "li");
-					});
-					
-					$("body").append(myModal);
-					
-						
-					switch(section)
+					if (data.data && data.data.items)
 					{
-						case "itinerary":
-							$("body").find('.modal-body').html('<div class="list-group list-group-wo-radius"></div>');
-							$.each(data.data.items, function()
-							{
-								$.extend(that.myData[section][this.id], this);
-								
-								var media = $(	'<div class="media">\
-												  <a class="pull-left" href="#">\
-													<img class="media-object img-rounded" src="'+this.thumb_main_image+'" alt="'+APP.i18n.translate('no_image')+'" style="max-width: 60px; max-height: 60px">\
-												  </a>\
-												  <div class="media-body">\
-													<h4 class="media-heading lead">'+this.name+'</h4>\
-												  </div>\
-												</div>');
-								
-								var a = $('<a href="#" class="list-group-item"></a>');
-								a.append(media);
-								myModal.find(".modal-body .list-group").append(a);
-							});
-							break;
-						case "poi": case "path":
-							if ($("body").find('#accordion-'+section).length > 0)
-								$("body").find('#accordion-'+section).remove();
-							var accordion = $('<div class="panel-group" id="accordion-'+section+'"></div>');
-							
-							$.each(APP.config.localConfig.typology, function()
-							{
-								var panel = $(	'<div class="panel panel-default">\
-													<div class="panel-heading">\
-														<h4 class="panel-title" style="vertical-align: middle">\
-															<span class="pull-left iconImage" style="margin-right: 5px"></span>\
-															<a data-toggle="collapse" data-parent="#accordion-'+section+'" href="#collapse_'+section+"_"+this.id+'">\
-																'+this.name+'\
-															</a>\
-															<span class="badge pull-right" style="">0</span>\
-														</h4>\
-													</div>\
-													<div id="collapse_'+section+"_"+this.id+'" class="panel-collapse collapse">\
-														<div class="panel-body list-group list-group-wo-radius" style="padding: 0px; margin-bottom: 0px">\
-															<a href="#" class="list-group-item disabled no_result">'+APP.i18n.translate("no_result")+'</a>\
-														</div>\
-													</div>\
-												</div>');
-								
-								var iconImage = $('<span class="glyphicon glyphicon-chevron-right"></span>');
-								if (APP.utils.isset(this.icon) && this.icon !== "")
-									var iconImage = $('<img src="'+this.icon+'" class="img-responsive" alt="" style="margin-top: -14px; max-height: 30px; max-width: 35px;">');
-								
-								panel.find(".panel-title .iconImage").html(iconImage);
-								
-								panel.find('.collapse').collapse({toggle: false});
-								
-								accordion.append(panel);
-							});
-							$.each(data.data.items, function(i, v)
-							{
-								$.extend(that.myData[section][v.id], v);
-							
-								var container = accordion.find("#collapse_"+section+"_"+this.typology_id+" .panel-body");
-								if (container.find(".no_result").length>0)
-									container.find(".no_result").remove();
-								
-								var media = $(	'<div class="media">\
-												  <a class="pull-left" href="#" >\
-													<img class="media-object img-responsive img-rounded" src="'+this.thumb_main_image+'" alt="'+APP.i18n.translate('no_image')+'" style="width: 60px; height: 60px">\
-												  </a>\
-												  <div class="media-body">\
-													<h3 class="media-heading lead">'+this.title+'<span class="subtypologies pull-right row"></span></h3>\
-												  </div>\
-												</div>');
-								
-								var row = $('<a href="#" class="list-group-item"</a>');
-								row.click(function(){
-									myModal.modal("hide");
-									//that.showInformation(section, v.id);
-									that.zoomAt(section, v.id);
-								});
-								
-								if (v.typologies)
-								{
-									$.each(v.typologies, function(ii,vv)
-									{
-										var index = APP.utils.getIndexFromField(APP.config.localConfig.typology, "id", vv);
-										if (index > -1 && APP.utils.isset(APP.config.localConfig.typology[index].icon))
-										{
-											var thumb =	$('<span class="col-md-1"><img src="'+APP.config.localConfig.typology[index].icon+'" alt="" class="img-responsive img-thumbnail" style="max-width: 25px; max-height: 20px; padding:0px"></span>');
-											thumb.find("img").tooltip({
-												title: APP.config.localConfig.typology[index].name,
-												container: "body",
-											});
-											media.find(".subtypologies").append(thumb);
-										}
-									});
-								}
-								
-								row.append(media);
-								container.append(row);
-								if (!container.parent().hasClass("in"))
-									container.parent().addClass("in");
-								var counter = parseInt(container.parents(".panel:first").find(".badge").text());
-								container.parents(".panel:first").find(".badge").text(counter+1)
-							});
-							$("body").find('.modal-body').html(accordion);
-							break;
-						default:
-							break;						
+						$.each(data.data.items, function(i, v)
+						{
+							that.myData[section][v.id] = $.extend({}, that.myData[section][v.id], v);
+						});
 					}
-					
-					myModal.modal();
-					
 					if (APP.utils.isset(callback) && $.isFunction(callback))
-						callback(section);
+						callback();
 				}
 				else
 					APP.utils.showErrMsg(data);
@@ -302,6 +370,7 @@ $.extend(APP.interactiveMap,
 					$.each(data.data.items, function(i,v)
 					{
 						that.myData[section][v.id] = v;
+						
 						if (v.geoJSON.type === "Point")
 						{
 							var coords = [v.geoJSON.coordinates[1],v.geoJSON.coordinates[0]];
@@ -350,7 +419,7 @@ $.extend(APP.interactiveMap,
 					});
 					
 					if (APP.utils.isset(callback) && $.isFunction(callback))
-						callback(section);
+						callback();
 				}
 				else
 					APP.utils.showErrMsg(data);
@@ -384,9 +453,9 @@ $.extend(APP.interactiveMap,
 									<div class="collapse navbar-collapse " id="bottomNavbarCollapse">\
 										<ul class="nav navbar-nav text-center">\
 											<li><a href="#" id="info"><strong>INFO PRINCIPALI</strong></a></li>\
-											<li><a href="#" id="itinerari"><strong>ITINERARI</strong></a></li>\
-											<li><a href="#" id="percorsi"><strong>PERCORSI</strong></a></li>\
-											<li><a href="#" id="punti"><strong>PUNTI DI INTERESSE</strong></a></li>\
+											<li class="disabled"><a href="#" id="itinerari"><strong>ITINERARI</strong></a></li>\
+											<li class="disabled"><a href="#" id="percorsi"><strong>PERCORSI</strong></a></li>\
+											<li class="disabled"><a href="#" id="punti"><strong>PUNTI DI INTERESSE</strong></a></li>\
 										</ul>\
 									</div><!-- /.navbar-collapse -->\
 								</div><!-- /.container-fluid -->\
@@ -402,13 +471,13 @@ $.extend(APP.interactiveMap,
 			switch($(this).attr("id"))
 			{
 				case "itinerari":
-					that.getData("itinerary");
+					that.showItems("itinerary");
 					break;
 				case "punti":
-					that.getData("poi");
+					that.showItems("poi");
 					break;
 				case "percorsi":
-					that.getData("path");
+					that.showItems("path");
 					break;
 				default:
 					break;
@@ -420,8 +489,19 @@ $.extend(APP.interactiveMap,
 		
 		APP.map.setMap($("#mainContent"));
 		$("#mainContent").height($("#mainContent").height());
-		
-		that.getGeo("poi");
-		that.getGeo("path");
+				
+		that.getData("itinerary", function(){
+			$("body").find('#bottomNavbarCollapse #itinerari').parents("li:first").removeClass("disabled");
+		}); 
+		that.getGeo("poi", function(){
+			that.getData("poi", function(){
+				$("body").find('#bottomNavbarCollapse #punti').parents("li:first").removeClass("disabled");
+			}); 
+		});
+		that.getGeo("path", function(){
+			that.getData("path", function(){
+				$("body").find('#bottomNavbarCollapse #percorsi').parents("li:first").removeClass("disabled");
+			}); 
+		});
 	}
 });
