@@ -13,7 +13,11 @@ class Controller_Ajax_Geo_Base extends Controller_Ajax_Data_Base{
         $toRes['title'] = $orm->title;
         $toRes['typology_id'] = (int)$orm->typology_id;
         if($this->request->controller() == 'Path')
+        {
             $toRes['color'] = $orm->color;
+            $toRes['width'] = $orm->width;
+        }
+            
         $toRes['geoJSON'] = json_decode($orm->asgeojson);
         
         // si aggiunge l'ensensione
