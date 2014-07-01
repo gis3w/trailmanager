@@ -34,6 +34,7 @@ return array(
 		'../modules/jQuery-File-Upload-9.5.7/js/jquery.fileupload-validate.js',
 		//'../modules/jQuery-File-Upload-9.5.7/js/jquery.fileupload-ui.js',
 		'../modules/jquery.fileDownload.js',
+		'../modules/croppic/croppic.min.js',
 		'../modules/fullcalendar-1.6.1/fullcalendar/fullcalendar.min.js',
 		'../modules/chosen_v1.0.0/chosen.jquery.min.js',
 		'../modules/pixelmatrix-uniform-3e9cd85/jquery.uniform.min.js',

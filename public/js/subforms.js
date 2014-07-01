@@ -103,7 +103,7 @@ $.extend(APP.subforms,
 							if (vv.stato === "D")
 								return true;
 							if (vv.type.split("/")[0] === "image")
-								value += '<img src="'+vv.thumbnail_url+'" alt="">|';
+								value += '<img class="img-responsive img-thumbnail" src="'+vv.thumbnail_url+'" alt="">|';
 							else
 								value += '<i class="icon icon-file-alt"></i>' + vv[name]+"|";
 						});
@@ -199,7 +199,7 @@ $.extend(APP.subforms,
 							if (vv.type)
 							{
 								if (vv.type.split("/")[0] === "image")
-									value += '<img src="'+vv.thumbnail_url+'" alt="">|';
+									value += '<img class="img-responsive img-thumbnail" src="'+vv.thumbnail_url+'" alt="">|';
 								else
 									value += '<i class="icon icon-file-alt"></i>' + vv[name]+"|";
 							}
@@ -210,7 +210,7 @@ $.extend(APP.subforms,
 									var index = APP.utils.getIndexFromField(that.sectionTarget.subforms[subformName].columns, "name", name);
 									var tu = APP.utils.getThumbnailUrl(that.sectionTarget.subforms[subformName].columns[index].urls, vv);
 									if (tu)
-										value += '<img src="'+tu+'" alt="">|';
+										value += '<img src="'+tu+'" alt="" class="img-responsive img-thumbnail">|';
 									else
 										value += '<i class="icon icon-file-alt"></i>' + vv[name]+"|";
 								}
@@ -634,7 +634,7 @@ $.extend(APP.subforms,
 							case "image":
 								var tu = APP.utils.getThumbnailUrl(k.urls, v);
 								if (tu)
-									stringa = '<img src="/'+tu+'" style="">';
+									stringa = '<img src="/'+tu+'" class="img-responsive img-thumbnail">';
 								else
 									stringa = '<i class="icon icon-file-alt">'+v[k.name]+'</i>';
 								break;

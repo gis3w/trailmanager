@@ -20,19 +20,19 @@ $.extend(APP.interactiveMap,
 							<div class="modal-content">\
 							  <div class="modal-header">\
 								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>\
-								<h3>'+that.myData[section][id].title+'</h3>\
+								<h3 class="lead">'+that.myData[section][id].title+'</h3>\
 							  </div>\
 							  <div class="modal-body">\
-								<div id="carousel-example-generic" style="margin: -14px -15px 20px -15px;" class="carousel slide" data-ride="carousel">\
+								<div id="carousel-'+section+'-info" style="margin: -14px -15px 20px -15px;" class="carousel slide" data-ride="carousel">\
 								  <!-- Indicators -->\
 								  <ol class="carousel-indicators"></ol>\
 								  <!-- Wrapper for slides -->\
 								  <div class="carousel-inner"></div>\
 								  <!-- Controls -->\
-								  <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">\
+								  <a class="left carousel-control" href="#carousel-'+section+'-info" role="button" data-slide="prev">\
 									<span class="glyphicon glyphicon-chevron-left"></span>\
 								  </a>\
-								  <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">\
+								  <a class="right carousel-control" href="#carousel-'+section+'-info" role="button" data-slide="next">\
 									<span class="glyphicon glyphicon-chevron-right"></span>\
 								  </a>\
 								</div>\
@@ -48,13 +48,13 @@ $.extend(APP.interactiveMap,
 		$.each(that.myData[section][id].media.images, function(i,v)
 		{
 			var div = $('<div class="item">\
-							<img src="'+v.image_url+'" alt="" style="width: 100%; height: 220px">\
+							<img src="'+v.image_url+'" alt="" class="img-responsive" style="width: 100%; height: 220px">\
 							<div class="carousel-caption">\
 								<h3>'+v.description+'</h3>\
 							</div>\
 						</div>');
 			
-			var indicatorLi = $('<li data-target="#carousel-example-generic" data-slide-to="'+i+'"></li>');
+			var indicatorLi = $('<li data-target="#carousel-'+section+'-info" data-slide-to="'+i+'"></li>');
 			if (i === 0)
 			{
 				div.addClass("active");
@@ -143,7 +143,7 @@ $.extend(APP.interactiveMap,
 										<div class="modal-content">\
 										  <div class="modal-header">\
 											<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>\
-											<h3>'+APP.i18n.translate(section+"_list")+'</h3>\
+											<h3 class="lead">'+APP.i18n.translate(section+"_list")+'</h3>\
 										  </div>\
 										  <div class="modal-body">\
 										  </div>\
@@ -164,17 +164,17 @@ $.extend(APP.interactiveMap,
 					switch(section)
 					{
 						case "itinerary":
-							$("body").find('.modal-body').html('<div class="list-group"></div>');
+							$("body").find('.modal-body').html('<div class="list-group list-group-wo-radius"></div>');
 							$.each(data.data.items, function()
 							{
 								$.extend(that.myData[section][this.id], this);
 								
 								var media = $(	'<div class="media">\
 												  <a class="pull-left" href="#">\
-													<img class="media-object img-rounded" src="'+this.thumb_main_image+'" alt="'+APP.i18n.translate('no_image')+'" style="width: 60px; height: 60px">\
+													<img class="media-object img-rounded" src="'+this.thumb_main_image+'" alt="'+APP.i18n.translate('no_image')+'" style="max-width: 60px; max-height: 60px">\
 												  </a>\
 												  <div class="media-body">\
-													<h4 class="media-heading">'+this.name+'</h4>\
+													<h4 class="media-heading lead">'+this.name+'</h4>\
 												  </div>\
 												</div>');
 								
@@ -192,10 +192,8 @@ $.extend(APP.interactiveMap,
 							{
 								var panel = $(	'<div class="panel panel-default">\
 													<div class="panel-heading">\
-														<h4 class="panel-title">\
-															<span class="pull-left" style="">\
-																<img src="'+this.icon+'" class="img-responsive" alt="">\
-															</span>\
+														<h4 class="panel-title" style="vertical-align: middle">\
+															<span class="pull-left iconImage" style="margin-top: -14px; margin-right: 5px"></span>\
 															<a data-toggle="collapse" data-parent="#accordion-'+section+'" href="#collapse_'+section+"_"+this.id+'">\
 																'+this.name+'\
 															</a>\
@@ -203,11 +201,17 @@ $.extend(APP.interactiveMap,
 														</h4>\
 													</div>\
 													<div id="collapse_'+section+"_"+this.id+'" class="panel-collapse collapse">\
-														<div class="panel-body" style="padding: 0px">\
-															<div class="row no_result" style="margin-left: 15px">'+APP.i18n.translate("no_result")+'</div>\
+														<div class="panel-body list-group list-group-wo-radius" style="padding: 0px; margin-bottom: 0px">\
+															<a href="#" class="list-group-item disabled no_result">'+APP.i18n.translate("no_result")+'</a>\
 														</div>\
 													</div>\
 												</div>');
+								
+								var iconImage = $('<span class="glyphicon glyphicon-chevron-right"></span>');
+								if (APP.utils.isset(this.icon) && this.icon !== "")
+									var iconImage = $('<img src="'+this.icon+'" class="img-responsive" alt="" style="max-height: 30px; max-width: 35px;">');
+								
+								panel.find(".panel-title .iconImage").html(iconImage);
 								
 								panel.find('.collapse').collapse({toggle: false});
 								
@@ -222,24 +226,16 @@ $.extend(APP.interactiveMap,
 									container.find(".no_result").remove();
 								
 								var media = $(	'<div class="media">\
-												  <a class="pull-left" href="#">\
-													<img class="media-object img-rounded" src="'+this.thumb_main_image+'" alt="'+APP.i18n.translate('no_image')+'" style="width: 60px; height: 60px">\
+												  <a class="pull-left" href="#" >\
+													<img class="media-object img-responsive img-rounded" src="'+this.thumb_main_image+'" alt="'+APP.i18n.translate('no_image')+'" style="width: 60px; height: 60px">\
 												  </a>\
 												  <div class="media-body">\
-													<h3 class="media-heading lead">'+this.title+'</h3>\
-													<div class="subtypologies row"></div>\
+													<h3 class="media-heading lead">'+this.title+'<span class="subtypologies pull-right row"></span></h3>\
 												  </div>\
 												</div>');
 								
-								var row = $('<div class="row" style="margin: 5px; cursor: pointer"></div>');
-								row
-								.mousedown(function(){
-									$(this).css("background-color","#428BCA");
-								})
-								.mouseup(function(){
-									$(this).css("background-color","");
-								})
-								.click(function(){
+								var row = $('<a href="#" class="list-group-item"</a>');
+								row.click(function(){
 									myModal.modal("hide");
 									//that.showInformation(section, v.id);
 									that.zoomAt(section, v.id);
@@ -252,11 +248,11 @@ $.extend(APP.interactiveMap,
 										var index = APP.utils.getIndexFromField(APP.config.localConfig.typology, "id", vv);
 										if (index > -1 && APP.utils.isset(APP.config.localConfig.typology[index].icon))
 										{
-											var thumb =	$(	'<div class="col-md-2">\
-																<span class="thumbnail">\
-																  <img src="'+APP.config.localConfig.typology[index].icon+'" alt="...">\
-																</span>\
-															</div>');
+											var thumb =	$('<span class="col-md-1"><img src="'+APP.config.localConfig.typology[index].icon+'" alt="" class="img-responsive img-thumbnail" style="max-width: 25px; max-height: 20px; padding:0px"></span>');
+											thumb.find("img").tooltip({
+												title: APP.config.localConfig.typology[index].name,
+												container: "body",
+											});
 											media.find(".subtypologies").append(thumb);
 										}
 									});
@@ -339,7 +335,12 @@ $.extend(APP.interactiveMap,
 						{
 							new L.geoJson(v.geoJSON, {
 								style: function (feature) {
-									return {color: v.color};
+									var oo = {};
+									if (v.color)
+										oo.color = v.color;
+									oo.weight = APP.utils.isset(v.width)? v.width : 7;
+										
+									return oo;
 								},
 								onEachFeature: function (feature, layer) {
 									layer.on("click", function(){ that.showInformation(section, v.id); });

@@ -13,7 +13,7 @@ $.extend(APP.fileuploader,{
 			{
 				var tu = APP.utils.getThumbnailUrl(that.fileRows[name].urls, fileObj);
 				if (tu)
-					return '<img src="'+tu+'" alt="">';
+					return '<img src="'+tu+'" alt="" class="img-responsive img-thumbnail">';
 				return '<i class="icon icon-file-alt"></i>' + fileObj[name];
 			}
 			return '<i class="icon icon-file-alt"></i>' + fileObj[name];
@@ -24,7 +24,7 @@ $.extend(APP.fileuploader,{
 		switch(tipo)
 		{
 			case "image":
-				thumbnail = '<img src="'+fileObj.thumbnail_url+'" alt=""/>';
+				thumbnail = '<img src="'+fileObj.thumbnail_url+'" class="img-responsive img-thumbnail" alt=""/>';
 				break;
 			default:
 				thumbnail = '<i class="icon icon-file-alt icon-large"></i>';
@@ -67,11 +67,16 @@ $.extend(APP.fileuploader,{
 						'+thumbnail+'\
 						</span>\
 						<span class="filenameContainer" style="padding-left: 3px"></span>\
-						<span class="pull-right">\
+						<span class="pull-right moreActions">\
 							<button type="button" class="close fileupload cancel tooltipElement" style="'+display+'" data-toggle="tooltip" title="'+APP.i18n.translate('remove')+'" aria-hidden="true">&times;</button>\
 						</span>\
 					</td>\
 				</tr>');
+		
+		if (true || APP.utils.isset(that.fileRows[name].croppic) && that.fileRows[name].croppic === true)
+		{
+			tr.find(".moreActions").prepend('<button type="button" class="btn btn-default btn-xs" style="'+display+'" data-toggle="tooltip" title="'+APP.i18n.translate('crop')+'" ><span class="glyphicon glyphicon-picture"></span></button>');
+		}
 		
 		tr.data({inputName: name});
 		tr.find(".filenameContainer").html(filename);

@@ -20,7 +20,7 @@ $.extend(APP.fileuploader,{
 			{
 				var tu = APP.utils.getThumbnailUrl(that.urls, fileObj);
 				if (tu)
-					return '<img src="'+tu+'" alt="">';
+					return '<img src="'+tu+'" alt="" class="img-responsive img-thumbnail">';
 				return '<i class="icon icon-file-alt"></i>' + fileObj[that.inputName];
 			}
 			return '<i class="icon icon-file-alt"></i>' + fileObj[that.inputName];

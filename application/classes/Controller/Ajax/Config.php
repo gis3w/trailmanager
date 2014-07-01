@@ -5,8 +5,8 @@ class Controller_Ajax_Config extends Controller_Ajax_Main{
     
     public $config;
     
-    protected $_icon_uri ="/download/typologyicon/";
-    protected $_marker_uri ="/download/typologymarker/";
+    protected $_icon_uri ="/download/typologyicon/index/";
+    protected $_marker_uri ="/download/typologymarker/index/";
 
     public function before()
     {
