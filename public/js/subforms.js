@@ -103,7 +103,7 @@ $.extend(APP.subforms,
 							if (vv.stato === "D")
 								return true;
 							if (vv.type.split("/")[0] === "image")
-								value += '<img src="'+vv.thumbnail_url+'" alt="">|';
+								value += '<img class="img-responsive img-thumbnail" src="'+vv.thumbnail_url+'" alt="">|';
 							else
 								value += '<i class="icon icon-file-alt"></i>' + vv[name]+"|";
 						});
@@ -127,7 +127,9 @@ $.extend(APP.subforms,
 			dataArr.push(v);
 		});
 		var newRowIndex = table.fnAddData(dataArr);
-		$(table.find("tbody").find("tr")[newRowIndex[0]]).find("td").addClass("table-td");
+		var tr = $(table.find("tbody").find("tr")[newRowIndex[0]]);
+		tr.find("td").addClass("table-td");
+		tr.css("cursor","pointer");
 		$.each(serializedData, function(i, v)
 		{
 			if (v.name.substr(v.name.length-2) == "[]")
@@ -141,11 +143,11 @@ $.extend(APP.subforms,
 				obj[v.name] = v.value;
 		});
 		$.extend(obj, {'token' : that.sectionTarget.subforms[subformName].token, 'stato' : "I"});
-		
+		tr.data(obj);
 		if (!APP.utils.isset(that.subformRows[subformName]))
 			that.subformRows[subformName] = [];
 		that.subformRows[subformName].push(obj);
-		that.setActionButtonsClick($(table.find("tbody").find("tr")[newRowIndex[0]]), obj);
+		that.setActionButtonsClick(tr, obj);
 		that.sectionTarget.subforms[subformName].token++;
 	},
 	
@@ -197,7 +199,7 @@ $.extend(APP.subforms,
 							if (vv.type)
 							{
 								if (vv.type.split("/")[0] === "image")
-									value += '<img src="'+vv.thumbnail_url+'" alt="">|';
+									value += '<img class="img-responsive img-thumbnail" src="'+vv.thumbnail_url+'" alt="">|';
 								else
 									value += '<i class="icon icon-file-alt"></i>' + vv[name]+"|";
 							}
@@ -208,7 +210,7 @@ $.extend(APP.subforms,
 									var index = APP.utils.getIndexFromField(that.sectionTarget.subforms[subformName].columns, "name", name);
 									var tu = APP.utils.getThumbnailUrl(that.sectionTarget.subforms[subformName].columns[index].urls, vv);
 									if (tu)
-										value += '<img src="'+tu+'" alt="">|';
+										value += '<img src="'+tu+'" alt="" class="img-responsive img-thumbnail">|';
 									else
 										value += '<i class="icon icon-file-alt"></i>' + vv[name]+"|";
 								}
@@ -632,7 +634,7 @@ $.extend(APP.subforms,
 							case "image":
 								var tu = APP.utils.getThumbnailUrl(k.urls, v);
 								if (tu)
-									stringa = '<img src="/'+tu+'" style="">';
+									stringa = '<img src="/'+tu+'" class="img-responsive img-thumbnail">';
 								else
 									stringa = '<i class="icon icon-file-alt">'+v[k.name]+'</i>';
 								break;
@@ -659,7 +661,7 @@ $.extend(APP.subforms,
 		
 		if (APP.utils.isset(obj.sortable) && obj.sortable === true)
 			tbody.sortable({
-				stop: function( event, ui )
+				update: function( event, ui )
 				{
 					var sfn = $(ui.item[0]).parents("table:first").attr("name");
 					var sfrCopy = that.subformRows[sfn];
