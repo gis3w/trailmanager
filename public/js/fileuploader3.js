@@ -73,9 +73,11 @@ $.extend(APP.fileuploader,{
 					</td>\
 				</tr>');
 		
-		if (true || APP.utils.isset(that.fileRows[name].croppic) && that.fileRows[name].croppic === true)
+		if (APP.utils.isset(that.fileRows[name].croppic) && that.fileRows[name].croppic === true)
 		{
-			tr.find(".moreActions").prepend('<button type="button" class="btn btn-default btn-xs" style="'+display+'" data-toggle="tooltip" title="'+APP.i18n.translate('crop')+'" ><span class="glyphicon glyphicon-picture"></span></button>');
+			var croppicBtn = $('<button type="button" class="btn btn-default btn-xs" style="'+display+'" data-toggle="tooltip" title="'+APP.i18n.translate('crop')+'"><span class="glyphicon glyphicon-picture"></span></button>');
+			croppicBtn.click(function(){});
+			tr.find(".moreActions").prepend(croppicBtn);
 		}
 		
 		tr.data({inputName: name});

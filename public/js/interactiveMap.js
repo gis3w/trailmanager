@@ -193,7 +193,7 @@ $.extend(APP.interactiveMap,
 								var panel = $(	'<div class="panel panel-default">\
 													<div class="panel-heading">\
 														<h4 class="panel-title" style="vertical-align: middle">\
-															<span class="pull-left iconImage" style="margin-top: -14px; margin-right: 5px"></span>\
+															<span class="pull-left iconImage" style="margin-right: 5px"></span>\
 															<a data-toggle="collapse" data-parent="#accordion-'+section+'" href="#collapse_'+section+"_"+this.id+'">\
 																'+this.name+'\
 															</a>\
@@ -209,7 +209,7 @@ $.extend(APP.interactiveMap,
 								
 								var iconImage = $('<span class="glyphicon glyphicon-chevron-right"></span>');
 								if (APP.utils.isset(this.icon) && this.icon !== "")
-									var iconImage = $('<img src="'+this.icon+'" class="img-responsive" alt="" style="max-height: 30px; max-width: 35px;">');
+									var iconImage = $('<img src="'+this.icon+'" class="img-responsive" alt="" style="margin-top: -14px; max-height: 30px; max-width: 35px;">');
 								
 								panel.find(".panel-title .iconImage").html(iconImage);
 								
