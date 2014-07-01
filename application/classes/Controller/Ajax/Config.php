@@ -52,8 +52,8 @@ class Controller_Ajax_Config extends Controller_Ajax_Main{
         $this->_get_table('Typology');
         foreach($this->config->typology as &$typologies)
         {
-            $typologies['icon'] =$this->_icon_uri.$typologies['icon'];
-            $typologies['marker'] =$this->_marker_uri.$typologies['marker'];;
+            $typologies['icon'] =(isset($typologies['icon']) AND $typologies['icon'] != '') ? $this->_icon_uri.$typologies['icon'] : NULL;
+            $typologies['marker'] =(isset($typologies['marker']) AND $typologies['marker'] != '') ? $this->_marker_uri.$typologies['marker'] : NULL;
         }
         
     }
