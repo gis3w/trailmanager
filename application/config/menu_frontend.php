@@ -10,6 +10,13 @@ return array(
             'capability' => NULL,
             'icon' => 'globe',
         ),
+         'locateButton' => array(
+            'id' =>'locateButton',
+            'name' => __('Localize me'),
+            'url' => '#',
+            'capability' => NULL,
+            'icon' => 'globe',
+        ),
     ),
     
 );
