@@ -40,10 +40,13 @@ $.extend(APP.interactiveMap,
 									<span class="glyphicon glyphicon-chevron-right"></span>\
 								  </a>\
 								</div>\
-								<div class="paragraphes"></div>\
+								<div class="">\
+									<div class="well pull-right overview" style="margin-left: 20px"></div>\
+									<div class="paragraphes text-justify"></div>\
+								</div>\
 							  </div>\
 							  <div class="modal-footer">\
-								<button type="button" data-dismiss="modal" class="btn btn-default">'+APP.i18n.translate('close')+'</button>\
+								<button type="button" data-dismiss="modal" class="btn btn-primary">'+APP.i18n.translate('close')+'</button>\
 							  </div>\
 							</div>\
 						</div>\
@@ -52,7 +55,7 @@ $.extend(APP.interactiveMap,
 		$.each(that.myData[section][id].media.images, function(i,v)
 		{
 			var div = $('<div class="item">\
-							<img src="'+v.image_url+'" alt="" class="img-responsive" style="width: 100%; max-height: 250px">\
+							<img src="'+v.image_url+'" alt="" class="img-responsive" style="width: 100%;">\
 							<div class="carousel-caption">\
 								<h3>'+v.description+'</h3>\
 							</div>\
@@ -65,14 +68,15 @@ $.extend(APP.interactiveMap,
 				indicatorLi.addClass("active");
 			}
 			
-			div.find("img").css({"width": "100%", "height": 220});
+			//div.find("img").css({"width": "100%"});
 			
 			myModal.find(".carousel-indicators").append(indicatorLi);
 			myModal.find(".carousel-inner").append(div);
 		});
 		
 		var parToAppend = [];
-		var checkVoice = function(voice, type)
+		var overviewToAppend = {};
+		var checkVoice = function(voice, type, moreParams)
 		{
 			var div = $('<div class="'+voice+'"><h2 class="text-capitalize">'+APP.i18n.translate(voice)+'</h2></div>');
 			switch(type)
@@ -83,12 +87,33 @@ $.extend(APP.interactiveMap,
 					else
 						div.append('<p><em>'+APP.i18n.translate("no_content")+'</em></p>');
 					break;
-				case "array":
-					if (APP.utils.isset(that.myData[section][id][voice]) && !APP.utils.isEmptyString(that.myData[section][id][voice]))
-						div.append(that.myData[section][id][voice]);
+				case "fk":
+					if (APP.utils.isset(that.myData[section][id][voice]) && APP.utils.isset(moreParams) && $.isArray(moreParams.values))
+					{
+						if (!APP.utils.isset(overviewToAppend[voice]))
+							overviewToAppend[voice] = [];
+						var arr = [];
+						if (!$.isArray(that.myData[section][id][voice]))
+							arr[0] = that.myData[section][id][voice];
+						else
+							arr = that.myData[section][id][voice];
+							
+						$.each(arr, function(i, v)
+						{
+							var ii = APP.utils.getIndexFromField(moreParams.values, "id", v);
+							if (ii > -1)
+							{
+								var img  = $('<img src="'+moreParams.values[ii][moreParams.icon]+'" alt="'+moreParams.values[ii][moreParams.label]+'">');
+								img.tooltip({container: 'body', placement: 'auto', title: moreParams.values[ii][moreParams.label]});
+								overviewToAppend[voice].push(img);
+							}
+						});
+						if (arr.length === 0)
+							div.append('<p><em>'+APP.i18n.translate("no_content")+'</em></p>');
+					}
 					else
 						div.append('<p><em>'+APP.i18n.translate("no_content")+'</em></p>');
-					break;
+					return;
 				case "video":
 					if (APP.utils.isset(that.myData[section][id][voice]) && !APP.utils.isEmptyString(that.myData[section][id][voice]))
 						div.append(that.myData[section][id][voice]);
@@ -104,6 +129,8 @@ $.extend(APP.interactiveMap,
 		switch(section)
 		{
 			case "poi":
+				checkVoice('typology_id', 'fk', {values: APP.config.localConfig.typology, label: 'name', icon: "icon"});
+				checkVoice('typologies', 'fk', {values: APP.config.localConfig.typology, label: 'name', icon: "icon"});
 				checkVoice('description', 'text');
 				checkVoice('reason', 'text');
 				checkVoice('period_schedule', 'text');
@@ -111,7 +138,8 @@ $.extend(APP.interactiveMap,
 				checkVoice('information_url', 'text');
 				break;
 			case "path":
-				checkVoice('typology', 'array');
+				checkVoice('typology_id', 'fk', {values: APP.config.localConfig.typology, label: 'name', icon: "icon"});
+				checkVoice('typologies', 'fk', {values: APP.config.localConfig.typology, label: 'name', icon: "icon"});
 				checkVoice('description', 'text');
 				checkVoice('length', 'text');
 				checkVoice('altitude_gap', 'text');
@@ -126,6 +154,10 @@ $.extend(APP.interactiveMap,
 		}
 		$.each(parToAppend, function(){
 			myModal.find(".modal-body .paragraphes").append(this);
+		});
+		$.each(overviewToAppend, function(key, value){
+			myModal.find(".modal-body .overview").append('<p style="margin-top: 5px"><b>'+APP.i18n.translate(key)+':</b></p>');
+			myModal.find(".modal-body .overview").append(this);
 		});
 		
 		$("body").append(myModal);
@@ -169,7 +201,7 @@ $.extend(APP.interactiveMap,
 							  <div class="modal-body">\
 							  </div>\
 							  <div class="modal-footer">\
-								<button type="button" data-dismiss="modal" class="btn btn-default">'+APP.i18n.translate('close')+'</button>\
+								<button type="button" data-dismiss="modal" class="btn btn-primary">'+APP.i18n.translate('close')+'</button>\
 							  </div>\
 							</div>\
 						</div>\
@@ -253,7 +285,7 @@ $.extend(APP.interactiveMap,
 					var row = $('<a href="#" class="list-group-item"</a>');
 					row.click(function(){
 						myModal.modal("hide");
-						//that.showInformation(section, v.id);
+						that.showInformation(section, v.id);
 						that.zoomAt(section, v.id);
 					});
 					

@@ -29,7 +29,7 @@ return array(
 		'../modules/jQuery-File-Upload-9.5.7/css/jquery.fileupload.css' => 'screen',
 		'../modules/jQuery-File-Upload-9.5.7/css/jquery.fileupload-ui.css' => 'screen',
 		'../modules/jWizard/jquery.jWizard.css' => 'screen',
-		//'../modules/CLEditor1_3_0/jquery.cleditor.css' => 'screen',
+		'../modules/brunob-leaflet.fullscreen-e47142c/Control.FullScreen.css' => 'screen',
 		//'../modules/elfinder-2.0-rc1/css/elfinder.min.css' => 'screen',
 		'../modules/Gritter-master/css/jquery.gritter.css' => 'screen',
 		'../modules/DataTables-1.9.4/media/css/jquery.dataTables.css' => 'screen',
