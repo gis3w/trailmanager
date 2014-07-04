@@ -5,11 +5,14 @@ $.extend(APP.interactiveMap,
 	showInformation: function(section, id)
 	{
 		var that = this;
+		/*
 		that.getData(section, function(){
 			that.getMedia(section, id, function(){
 				that.openInfo(section, id); 
 			});
 		});
+		*/
+		that.openInfo(section, id); 
 	},
 	
 	openInfo: function(section, id)
@@ -23,8 +26,8 @@ $.extend(APP.interactiveMap,
 						<div class="modal-dialog modal-lg">\
 							<div class="modal-content">\
 							  <div class="modal-header">\
-								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>\
-								<h3 class="lead">'+that.myData[section][id].title+'</h3>\
+								<button type="button" class="btn-lg close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove"></span></button>\
+								<h3 class="lead">'+that.myData[section][id].data.title+'</h3>\
 							  </div>\
 							  <div class="modal-body">\
 								<div id="carousel-'+section+'-info" style="margin: -14px -15px 20px -15px;" class="carousel slide" data-ride="carousel">\
@@ -82,28 +85,28 @@ $.extend(APP.interactiveMap,
 			switch(type)
 			{
 				case "text":
-					if (APP.utils.isset(that.myData[section][id][voice]) && !APP.utils.isEmptyString(that.myData[section][id][voice]))
-						div.append(that.myData[section][id][voice]);
+					if (APP.utils.isset(that.myData[section][id].data[voice]) && !APP.utils.isEmptyString(that.myData[section][id].data[voice]))
+						div.append(that.myData[section][id].data[voice]);
 					else
 						div.append('<p><em>'+APP.i18n.translate("no_content")+'</em></p>');
 					break;
 				case "fk":
-					if (APP.utils.isset(that.myData[section][id][voice]) && APP.utils.isset(moreParams) && $.isArray(moreParams.values))
+					if (APP.utils.isset(that.myData[section][id].data[voice]) && APP.utils.isset(moreParams) && $.isArray(moreParams.values))
 					{
 						if (!APP.utils.isset(overviewToAppend[voice]))
 							overviewToAppend[voice] = [];
 						var arr = [];
-						if (!$.isArray(that.myData[section][id][voice]))
-							arr[0] = that.myData[section][id][voice];
+						if (!$.isArray(that.myData[section][id].data[voice]))
+							arr[0] = that.myData[section][id].data[voice];
 						else
-							arr = that.myData[section][id][voice];
+							arr = that.myData[section][id].data[voice];
 							
 						$.each(arr, function(i, v)
 						{
 							var ii = APP.utils.getIndexFromField(moreParams.values, "id", v);
 							if (ii > -1)
 							{
-								var img  = $('<img src="'+moreParams.values[ii][moreParams.icon]+'" alt="'+moreParams.values[ii][moreParams.label]+'">');
+								var img  = $('<img src="'+moreParams.values[ii][moreParams.icon]+'" class="img-responsive" style="margin-top: -14px" alt="'+moreParams.values[ii][moreParams.label]+'">');
 								img.tooltip({container: 'body', placement: 'auto', title: moreParams.values[ii][moreParams.label]});
 								overviewToAppend[voice].push(img);
 							}
@@ -115,8 +118,8 @@ $.extend(APP.interactiveMap,
 						div.append('<p><em>'+APP.i18n.translate("no_content")+'</em></p>');
 					return;
 				case "video":
-					if (APP.utils.isset(that.myData[section][id][voice]) && !APP.utils.isEmptyString(that.myData[section][id][voice]))
-						div.append(that.myData[section][id][voice]);
+					if (APP.utils.isset(that.myData[section][id].data[voice]) && !APP.utils.isEmptyString(that.myData[section][id].data[voice]))
+						div.append(that.myData[section][id].data[voice]);
 					else
 						div.append('<p><em>'+APP.i18n.translate("no_content")+'</em></p>');
 					break;
@@ -156,10 +159,20 @@ $.extend(APP.interactiveMap,
 			myModal.find(".modal-body .paragraphes").append(this);
 		});
 		$.each(overviewToAppend, function(key, value){
+			var l = value.length;
+			if (l === 0)
+				return true;
+			var size = parseInt(12/l);
 			myModal.find(".modal-body .overview").append('<p style="margin-top: 5px"><b>'+APP.i18n.translate(key)+':</b></p>');
-			myModal.find(".modal-body .overview").append(this);
+			var row = $('<div class="row"></div>');
+			$.each(value, function(k1,v1){
+				var col = $('<div class="col-md-'+size+'"></div>');
+				col.append(v1);
+				row.append(col);
+			});
+			myModal.find(".modal-body .overview").append(row);
 		});
-		
+		//myModal.find(".modal-body .overview").append(overview);
 		$("body").append(myModal);
 		
 		myModal.modal();
@@ -173,11 +186,11 @@ $.extend(APP.interactiveMap,
 		{
 			case "poi":
 				var maxZoom = APP.map.globalData[APP.map.currentMapId].map.getMaxZoom();
-				var latLng = [that.myData[section][id].geoJSON.coordinates[1], that.myData[section][id].geoJSON.coordinates[0]];
+				var latLng = [that.myData[section][id].geo.geoJSON.coordinates[1], that.myData[section][id].geo.geoJSON.coordinates[0]];
 				APP.map.globalData[APP.map.currentMapId].map.setView(latLng, maxZoom, {animate: true});
 				break;
 			case "path": case "itinerary":
-				APP.map.setExtent(that.myData[section][id].extent);
+				APP.map.setExtent(that.myData[section][id].geo.extent);
 				break;
 			default:
 				break;
@@ -195,7 +208,7 @@ $.extend(APP.interactiveMap,
 						<div class="modal-dialog">\
 							<div class="modal-content">\
 							  <div class="modal-header">\
-								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>\
+								<button type="button" class="btn-lg close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove"></span></button>\
 								<h3 class="lead">'+APP.i18n.translate(section+"_list")+'</h3>\
 							  </div>\
 							  <div class="modal-body">\
@@ -221,10 +234,10 @@ $.extend(APP.interactiveMap,
 				{					
 					var media = $(	'<div class="media">\
 									  <a class="pull-left" href="#">\
-										<img class="media-object img-rounded" src="'+this.thumb_main_image+'" alt="'+APP.i18n.translate('no_image')+'" style="max-width: 60px; max-height: 60px">\
+										<img class="media-object img-rounded" src="'+this.data.thumb_main_image+'" alt="'+APP.i18n.translate('no_image')+'" style="max-width: 60px; max-height: 60px">\
 									  </a>\
 									  <div class="media-body">\
-										<h4 class="media-heading lead">'+this.name+'</h4>\
+										<h4 class="media-heading lead">'+this.data.name+'</h4>\
 									  </div>\
 									</div>');
 					
@@ -269,24 +282,24 @@ $.extend(APP.interactiveMap,
 				});
 				$.each(that.myData[section], function(i, v)
 				{				
-					var container = accordion.find("#collapse_"+section+"_"+this.typology_id+" .panel-body");
+					var container = accordion.find("#collapse_"+section+"_"+v.data.typology_id+" .panel-body");
 					if (container.find(".no_result").length>0)
 						container.find(".no_result").remove();
 					
 					var media = $(	'<div class="media">\
 									  <a class="pull-left" href="#" >\
-										<img class="media-object img-responsive img-rounded" src="'+this.thumb_main_image+'" alt="'+APP.i18n.translate('no_image')+'" style="width: 60px; height: 60px">\
+										<img class="media-object img-responsive img-rounded" src="'+v.data.thumb_main_image+'" alt="'+APP.i18n.translate('no_image')+'" style="width: 60px; height: 60px">\
 									  </a>\
 									  <div class="media-body">\
-										<h3 class="media-heading lead">'+this.title+'<span class="subtypologies pull-right row"></span></h3>\
+										<h3 class="media-heading lead">'+v.data.title+'<span class="subtypologies pull-right row"></span></h3>\
 									  </div>\
 									</div>');
 					
 					var row = $('<a href="#" class="list-group-item"</a>');
 					row.click(function(){
 						myModal.modal("hide");
-						that.showInformation(section, v.id);
-						that.zoomAt(section, v.id);
+						that.showInformation(section, v.data.id);
+						that.zoomAt(section, v.data.id);
 					});
 					
 					if (v.typologies)
@@ -308,8 +321,6 @@ $.extend(APP.interactiveMap,
 					
 					row.append(media);
 					container.append(row);
-					if (!container.parent().hasClass("in"))
-						container.parent().addClass("in");
 					var counter = parseInt(container.parents(".panel:first").find(".badge").text());
 					container.parents(".panel:first").find(".badge").text(counter+1)
 				});
@@ -328,16 +339,28 @@ $.extend(APP.interactiveMap,
 	getMedia: function(section, id, callback)
 	{
 		var that = this;
+		
+		if (!APP.utils.isset(that.myData[section]))
+			that.myData[section] = {};
+		
+		var myUrl = (APP.utils.isset(id))? '/jx/media/'+section+'/'+id : '/jx/media/'+section;
 		$.ajax({
 			type: 'GET',
-			url: '/jx/media/'+section+'/'+id,
+			url: myUrl,
 			dataType: 'json',
 			success: function(data)
 			{
 				if (!APP.utils.checkError(data.error, null))
 				{
-					if (APP.utils.isset(data.data) && APP.utils.isset(data.data.items) && data.data.items.length === 1)
-						that.myData[section][id].media = data.data.items[0];
+					if (APP.utils.isset(data.data) && APP.utils.isset(data.data.items))
+					{
+						$.each(data.data.items, function(i, v)
+						{
+							if (!APP.utils.isset(that.myData[section][v.id]))
+								that.myData[section][v.id] = {};
+							that.myData[section][v.id].media = v;
+						});
+					}
 					if (APP.utils.isset(callback) && $.isFunction(callback))
 						callback();
 				}
@@ -370,7 +393,9 @@ $.extend(APP.interactiveMap,
 					{
 						$.each(data.data.items, function(i, v)
 						{
-							that.myData[section][v.id] = $.extend({}, that.myData[section][v.id], v);
+							if (!APP.utils.isset(that.myData[section][v.id]))
+								that.myData[section][v.id] = {};
+							that.myData[section][v.id].data = v;
 						});
 					}
 					if (APP.utils.isset(callback) && $.isFunction(callback))
@@ -401,7 +426,8 @@ $.extend(APP.interactiveMap,
 					
 					$.each(data.data.items, function(i,v)
 					{
-						that.myData[section][v.id] = v;
+						that.myData[section][v.id] = {};
+						that.myData[section][v.id].geo = v;
 						
 						if (v.geoJSON.type === "Point")
 						{
@@ -524,16 +550,19 @@ $.extend(APP.interactiveMap,
 				
 		that.getData("itinerary", function(){
 			$("body").find('#bottomNavbarCollapse #itinerari').parents("li:first").removeClass("disabled");
+			that.getMedia("itinerary"); 
 		}); 
 		that.getGeo("poi", function(){
 			that.getData("poi", function(){
 				$("body").find('#bottomNavbarCollapse #punti').parents("li:first").removeClass("disabled");
 			}); 
+			that.getMedia("poi");
 		});
 		that.getGeo("path", function(){
 			that.getData("path", function(){
 				$("body").find('#bottomNavbarCollapse #percorsi').parents("li:first").removeClass("disabled");
-			}); 
+			});
+			that.getMedia("path");
 		});
 	}
 });

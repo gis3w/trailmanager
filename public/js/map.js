@@ -5,6 +5,12 @@ $.extend(APP.map,
 	globalData: {},
 	currentMapId: null,
 	
+	currentPosition: {
+		id: null,
+		marker: null,
+		centerize: false,
+	},	
+	
 	cautionIcon: L.icon({
 		iconUrl: '/public/img/map/caution.png',
 		iconAnchor: [16, 37],
@@ -39,11 +45,66 @@ $.extend(APP.map,
 	
 	finish: function()
 	{
+		this.removeGeolocation();
 		$.each(this.globalData, function(i,v){
 			v.map.remove();
 		});
 		this.globalData = {};
 		this.currentMapId = null;
+	},
+	
+	removeGeolocation: function()
+	{
+		var that = this;
+		navigator.geolocation.clearWatch(that.currentPosition.id);		
+		that.globalData[that.currentMapId].map.removeLayer(that.currentPosition.marker);
+		that.currentPosition = {
+			id: null,
+			marker: null,
+			centerize: false,
+		};
+	},
+	
+	setGeolocation: function(elem)
+	{
+		var that = this;
+		if (navigator.geolocation)
+		{
+			elem.click(function()
+			{
+				
+				var li = elem.parents("li:first").toggleClass("active");
+				$('body').find("#main_navbar_admin").collapse('hide');
+				if (li.hasClass("active"))
+				{
+					if (!APP.utils.isset(that.currentMapId) || !APP.utils.isset(that.globalData[that.currentMapId].map))
+						return;
+					if (APP.utils.isset(that.currentPosition.id))
+					{
+						that.removeGeolocation();
+					}
+					that.currentPosition.id = navigator.geolocation.watchPosition(function(position)
+					{
+						var coords = [position.coords.latitude, position.coords.longitude];
+						if (!APP.utils.isset(that.currentPosition.marker) || that.currentPosition.centerize)
+							that.globalData[that.currentMapId].map.panTo(coords);
+						if (!APP.utils.isset(that.currentPosition.marker))
+						{
+							that.currentPosition.marker = new L.Marker(coords, {bounceOnAdd: true});
+							that.currentPosition.marker.bindPopup(APP.i18n.translate("you_are_here"));
+							that.currentPosition.marker.addTo(that.globalData[that.currentMapId].map);
+						}
+						else
+							that.currentPosition.marker.setLatLng(coords);
+					});
+				}
+				else
+					that.removeGeolocation();
+				
+			});
+		}
+		else 
+			alert("Geolocation is not supported by this browser.");
 	},
 	
 	resizeMap: function()
@@ -69,33 +130,36 @@ $.extend(APP.map,
 			return;
 		}
 		
+		if (!APP.utils.isset(this.globalData[this.currentMapId].globalExtent))
+			this.globalData[this.currentMapId].globalExtent = {};
+		
 		var value;
 		if (APP.utils.isset(extent.maxx))
 		{
 			value = parseFloat(extent.maxx);
-			if (!this.globalData[1].globalExtent.hasOwnProperty("maxx") || this.globalExtent.maxx < value)
-				this.globalExtent.maxx = value;
+			if (!this.globalData[this.currentMapId].globalExtent.hasOwnProperty("maxx") || this.globalData[this.currentMapId].globalExtent.maxx < value)
+				this.globalData[this.currentMapId].globalExtent.maxx = value;
 		}
 		
 		if (APP.utils.isset(extent.maxy))
 		{
 			value = parseFloat(extent.maxy);
-			if (!this.globalExtent.hasOwnProperty("maxy") || this.globalExtent.maxy < value)
-				this.globalExtent.maxy = value;
+			if (!this.globalData[this.currentMapId].globalExtent.hasOwnProperty("maxy") || this.globalData[this.currentMapId].globalExtent.maxy < value)
+				this.globalData[this.currentMapId].globalExtent.maxy = value;
 		}
 		
 		if (APP.utils.isset(extent.minx))
 		{
 			value = parseFloat(extent.minx);
-			if (!this.globalExtent.hasOwnProperty("minx") || this.globalExtent.minx > value)
-				this.globalExtent.minx = value;
+			if (!this.globalData[this.currentMapId].globalExtent.hasOwnProperty("minx") || this.globalData[this.currentMapId].globalExtent.minx > value)
+				this.globalData[this.currentMapId].globalExtent.minx = value;
 		}
 		
 		if (APP.utils.isset(extent.miny))
 		{
 			value = parseFloat(extent.miny);
-			if (!this.globalExtent.hasOwnProperty("miny") || this.globalExtent.miny > value)
-				this.globalExtent.miny = value;
+			if (!this.globalData[this.currentMapId].globalExtent.hasOwnProperty("miny") || this.globalData[this.currentMapId].globalExtent.miny > value)
+				this.globalData[this.currentMapId].globalExtent.miny = value;
 		}
 	},
 	
@@ -295,6 +359,12 @@ $.extend(APP.map,
 			'zoom': 9,
 			'layers': [defaultLayer],
 		});
+		
+		if (!APP.utils.isset(APP.config.localConfig.default_extent))
+			APP.config.localConfig.default_extent = {maxy:43.92, maxx:10.92, miny:43.71, minx:10.67};
+			
+		that.setGlobalExtent(APP.config.localConfig.default_extent);
+		that.setExtent(that.globalData[id].globalExtent);
 		
 		baseLayers[defLayName] = defaultLayer;
 		L.control.layers(baseLayers).addTo(that.globalData[id].map);	
