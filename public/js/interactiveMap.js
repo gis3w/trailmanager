@@ -435,7 +435,7 @@ $.extend(APP.interactiveMap,
 							
 							var myIcon = null;
 							var myIndex = APP.utils.getIndexFromField(APP.config.localConfig.typology, "id", v.typology_id);
-							if (myIndex > -1)
+							if (myIndex > -1 && APP.utils.isset(APP.config.localConfig.typology[myIndex].marker))
 							{
 								myIcon = L.icon({
 									iconUrl: APP.config.localConfig.typology[myIndex].marker,
