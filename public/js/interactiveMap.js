@@ -499,6 +499,7 @@ $.extend(APP.interactiveMap,
 		var that = this;		
 		
 		if (!APP.utils.isset(APP.config.localConfig) || 
+			!APP.utils.isset(APP.config.localConfig.default_extent) || 
 			!APP.utils.isset(APP.config.localConfig.background_layer) || 
 			!APP.utils.isset(APP.config.localConfig.typology) ||
 			!APP.utils.isset(APP.config.localConfig.urls)

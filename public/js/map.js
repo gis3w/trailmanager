@@ -360,9 +360,6 @@ $.extend(APP.map,
 			'zoom': 9,
 			'layers': [defaultLayer],
 		});
-		
-		if (!APP.utils.isset(APP.config.localConfig.default_extent))
-			APP.config.localConfig.default_extent = {maxy:43.92, maxx:10.92, miny:43.71, minx:10.67};
 			
 		that.setGlobalExtent(APP.config.localConfig.default_extent);
 		that.setExtent(that.globalData[id].globalExtent);
