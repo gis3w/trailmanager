@@ -496,8 +496,33 @@ $.extend(APP.interactiveMap,
 	
 	start: function()
 	{
-		var that = this;
+		var that = this;		
 		
+		if (!APP.utils.isset(APP.config.localConfig) || 
+			!APP.utils.isset(APP.config.localConfig.background_layer) || 
+			!APP.utils.isset(APP.config.localConfig.typology) ||
+			!APP.utils.isset(APP.config.localConfig.urls)
+		)
+		{
+			APP.utils.showNoty({title: APP.i18n.translate("error"), type: "error", content: APP.i18n.translate("config_not_configured")});
+			return;
+		}
+		
+		var errorIM = false;
+		$.each(APP.config.localConfig.typology, function(){
+			if (!APP.utils.isset(this.icon) || !APP.utils.isset(this.marker))
+			{
+				errorIM = true;
+				return false;
+			}
+		});
+		
+		if (errorIM)
+		{
+			APP.utils.showNoty({title: APP.i18n.translate("error"), type: "error", content: APP.i18n.translate("typology_icon_marker_requested")});
+			return;
+		}
+			
 		$("html").css({"height":"100%","width":"100%"});
 		$("body").css({"height":"100%","width":"100%","padding-top":"50px", "padding-bottom":"50px"});
 		

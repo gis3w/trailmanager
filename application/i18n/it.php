@@ -137,5 +137,6 @@ return array(
     'Do you want insert a new record?' =>'Si desidera inserire un nuovo record?',
     
     'typology_icon_marker_requested' => 'Per proseguire è necessario definire le icone ed i marker per le varie tipologie',
+	'config_not_configured' => 'Il config non risulta impostato correttamente',
     
 );
