@@ -25,6 +25,7 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
         $this->_set_background_layer();
         $this->_set_menu();
         $this->_set_url();
+        $this->_set_global_configs();
         
         
         /**
@@ -36,6 +37,40 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
     protected function _set_i18n()
     {
         $this->config->i18n = I18n::lang();
+    }
+
+    
+    /**
+     * Si recuperano i dati dalla tabella global_configs e si inviano al config se indicato
+     */
+    protected function _set_global_configs()
+    {
+        $cds = ORM::factory('Global_Config')
+                ->where('to_config','IS',DB::expr('true'))
+                ->find_all();
+        
+        foreach($cds as $cd)
+        {
+            switch($cd->parametro)
+            {
+                case "default_extent":
+                    $extentStr = preg_split("/,/", $cd->valore);
+                    $valore = array(
+                        'minx'=>(float)$extentStr[0],
+                        'maxx'=>(float)$extentStr[1],
+                        'miny'=>(float)$extentStr[2],
+                         'maxy'=>(float)$extentStr[3]
+                        );
+                    
+                    
+                break;
+            
+                default:
+                    $valore = $cd->valore;
+            }
+            $this->config->{$cd->parametro} = $valore;
+        }
+            
     }
 
 

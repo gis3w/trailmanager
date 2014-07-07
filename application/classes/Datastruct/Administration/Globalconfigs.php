@@ -16,7 +16,7 @@ class Datastruct_Administration_Globalconfigs extends Datastruct {
         array(
             'name' => 'globalconfigs-data',
             'position' => 'left',
-            'fields' => array('id','paramentro','valore','to_config'),
+            'fields' => array('id','parametro','valore','to_config'),
         ),
     );
     
