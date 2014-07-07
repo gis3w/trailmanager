@@ -92,6 +92,24 @@
       </Cl>
       <SchTrHis/>
     </Tbl>
+    <Tbl UsSo="1" nm="global_configs">
+      <Cm>Tabella contenente paramentri di natura generale</Cm>
+      <TblOpts>WITHOUT OIDS</TblOpts>
+      <Pk ClNs="id" nm="pkglobal_configs"/>
+      <Cl au="1" df="nextval('global_config_id_seq'::regclass)" nm="id" nu="0">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="parametro" nu="0">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="valore" nu="0">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="false" nm="to_config" nu="0">
+        <DT ds="Boolean" en="" id="16" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <SchTrHis/>
+    </Tbl>
     <Tbl UsSo="1" nm="i18n">
       <Cm>Tabella delle traduzioni rispeto a quella base</Cm>
       <TblOpts>WITHOUT OIDS</TblOpts>
@@ -323,6 +341,9 @@
       <Cl au="0" df="" nm="period_schedule" nu="1">
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
+      <Cl au="0" df="" nm="width" nu="1">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
       <Fk deAc="3" nm="fk_paths_typologies" prLkCl="id" upAc="3">
         <PrTb mn="0" nm="typologies" oe="1" sch="public" zr="0"/>
         <CdTb mn="1" nm="paths" oe="1" sch="public" zr="1"/>
@@ -409,6 +430,45 @@
         <PrTb mn="0" nm="users" oe="1" sch="public" zr="0"/>
         <CdTb mn="1" nm="roles_users" oe="1" sch="public" zr="1"/>
         <ClPr cdCl="user_id" prCl="id"/>
+      </Fk>
+      <SchTrHis/>
+    </Tbl>
+    <Tbl UsSo="1" nm="sections">
+      <Cm>Sezioni di lavoro dell'applicativo</Cm>
+      <TblOpts>WITHOUT OIDS</TblOpts>
+      <Pk ClNs="id" nm="pksections"/>
+      <Cl au="1" df="nextval('sections_id_seq'::regclass)" nm="id" nu="0">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="section" nu="0">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="description" nu="1">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <SchTrHis/>
+    </Tbl>
+    <Tbl UsSo="1" nm="sections_background_layers">
+      <TblOpts>WITHOUT OIDS</TblOpts>
+      <Pk ClNs="id" nm="pksections_background_layers"/>
+      <Cl au="1" df="nextval('sections_background_layers_id_seq'::regclass)" nm="id" nu="0">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="section_id" nu="0">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="background_layer_id" nu="0">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Fk deAc="0" nm="fk_sections_background_layers_background_layers" prLkCl="id" upAc="3">
+        <PrTb mn="0" nm="background_layers" oe="1" sch="public" zr="0"/>
+        <CdTb mn="1" nm="sections_background_layers" oe="1" sch="public" zr="1"/>
+        <ClPr cdCl="background_layer_id" prCl="id"/>
+      </Fk>
+      <Fk deAc="0" nm="fk_sections_background_layers_sections" prLkCl="id" upAc="3">
+        <PrTb mn="0" nm="sections" oe="1" sch="public" zr="0"/>
+        <CdTb mn="1" nm="sections_background_layers" oe="1" sch="public" zr="1"/>
+        <ClPr cdCl="section_id" prCl="id"/>
       </Fk>
       <SchTrHis/>
     </Tbl>
@@ -7949,6 +8009,7 @@ WHERE t.typname = 'geography'::name
     <Seq incr="1" nm="background_layers_id_seq"/>
     <Seq incr="1" nm="capabilities_id_seq"/>
     <Seq incr="1" nm="capabilities_roles_id_seq"/>
+    <Seq incr="1" nm="global_config_id_seq"/>
     <Seq incr="1" nm="i18n_id_seq"/>
     <Seq incr="1" nm="image_itineraries_id_seq"/>
     <Seq incr="1" nm="image_paths_id_seq"/>
@@ -7961,6 +8022,8 @@ WHERE t.typname = 'geography'::name
     <Seq incr="1" nm="roles_id_seq"/>
     <Seq incr="1" nm="roles_users_id_seq"/>
     <Seq incr="1" nm="routes_gid_seq"/>
+    <Seq incr="1" nm="sections_background_layers_id_seq"/>
+    <Seq incr="1" nm="sections_id_seq"/>
     <Seq incr="1" nm="typolgies_id_seq"/>
     <Seq incr="1" nm="typologies_paths_id_seq"/>
     <Seq incr="1" nm="typologies_pois_id_seq"/>
@@ -8008,12 +8071,15 @@ WHERE t.typname = 'geography'::name
     <TbGl bkCl="ffcccccc" sch="public" tbl="typologies_paths" x="1294" y="390"/>
     <TbGl bkCl="ffcccccc" sch="public" tbl="typologies_pois" x="1279" y="294"/>
     <TbGl bkCl="ff3399ff" sch="public" tbl="i18n" x="699" y="333"/>
-    <TbGl bkCl="ffccccff" sch="public" tbl="background_layers" x="544" y="241"/>
+    <TbGl bkCl="ff003333" sch="public" tbl="background_layers" x="544" y="241"/>
     <TbGl bkCl="ffff6666" sch="public" tbl="image_pois" x="1283" y="26"/>
     <TbGl bkCl="ffff6666" sch="public" tbl="image_paths" x="1286" y="627"/>
     <TbGl bkCl="ffff6666" sch="public" tbl="video_pois" x="1291" y="133"/>
     <TbGl bkCl="ffff6666" sch="public" tbl="video_paths" x="1290" y="494"/>
     <TbGl bkCl="ffff6666" sch="public" tbl="image_itineraries" x="862" y="11"/>
+    <TbGl bkCl="ff003333" sch="public" tbl="sections" x="532" y="444"/>
+    <TbGl bkCl="ff003333" sch="public" tbl="sections_background_layers" x="498" y="367"/>
+    <TbGl bkCl="ff003333" sch="public" tbl="global_configs" x="306" y="424"/>
     <FkGl bkCl="ff000000" nm="public.capabilities_roles.fk_capabilities_roles_capabilities"/>
     <FkGl bkCl="ff000000" nm="public.capabilities_roles.fk_capabilities_roles_roles"/>
     <FkGl bkCl="ff000000" nm="public.image_itineraries.fk_image_itineraries_itineraries"/>
@@ -8027,6 +8093,8 @@ WHERE t.typname = 'geography'::name
     <FkGl bkCl="ff000000" nm="public.pois.fk_pois_typologies"/>
     <FkGl bkCl="ff000000" nm="public.roles_users.fk_roles_users_roles"/>
     <FkGl bkCl="ff000000" nm="public.roles_users.fk_roles_users_users"/>
+    <FkGl bkCl="ff000000" nm="public.sections_background_layers.fk_sections_background_layers_background_layers"/>
+    <FkGl bkCl="ff000000" nm="public.sections_background_layers.fk_sections_background_layers_sections"/>
     <FkGl bkCl="ff000000" nm="public.typologies_paths.fk_typologies_paths_paths"/>
     <FkGl bkCl="ff000000" nm="public.typologies_paths.fk_typologies_paths_typolgies"/>
     <FkGl bkCl="ff000000" nm="public.typologies_pois.fk_typologies_pois_pois"/>
@@ -8037,7 +8105,7 @@ WHERE t.typname = 'geography'::name
     <Notes/>
     <Zones/>
   </Dgm>
-  <RnmMgr NxRnmId="19">
+  <RnmMgr NxRnmId="22">
     <RnmCh ObjCls="Table" ParCls="Schema" ParNme="public" SupCls="" SupNme="">
       <Rnm id="2" nNm="itineraries" oNm="itinerari"/>
       <Rnm id="1" nNm="itinerari" oNm="itineraries"/>
@@ -8086,6 +8154,13 @@ WHERE t.typname = 'geography'::name
     <RnmCh ObjCls="Column" ParCls="Table" ParNme="image_pois" SupCls="Schema" SupNme="public">
       <Rnm id="18" nNm="norder" oNm="order"/>
     </RnmCh>
+    <RnmCh ObjCls="Column" ParCls="Table" ParNme="sections_background_layers" SupCls="Schema" SupNme="public">
+      <Rnm id="19" nNm="background_layer_id" oNm="background_layers_id"/>
+    </RnmCh>
+    <RnmCh ObjCls="Table" ParCls="Schema" ParNme="public" SupCls="" SupNme="">
+      <Rnm id="21" nNm="global_configs" oNm="global_config"/>
+      <Rnm id="20" nNm="global_config" oNm="globals"/>
+    </RnmCh>
   </RnmMgr>
   <DbDocOptionMgr>
     <BasicOptionMgr>
@@ -8103,12 +8178,12 @@ WHERE t.typname = 'geography'::name
     </BasicOptionMgr>
   </DbDocOptionMgr>
   <OpenEditors>
-    <OpenEditor ClsNm="Diagram" fqn="null.diagramA" selected="0"/>
+    <OpenEditor ClsNm="Diagram" fqn="null.diagramA" selected="1"/>
   </OpenEditors>
   <TreePaths>
     <TreePath/>
     <TreePath>/Schemas (1)</TreePath>
     <TreePath>/Schemas (1)/public</TreePath>
-    <TreePath>/Schemas (1)/public/Tables (23)</TreePath>
+    <TreePath>/Schemas (1)/public/Tables (26)</TreePath>
   </TreePaths>
 </Db>

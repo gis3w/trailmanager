@@ -90,6 +90,13 @@ return array(
             'menu' => array(
                 'type' => 'tabs',
                 'items' => array(
+                    'administration_globalconfigs' => array(
+                        'id' =>'globalconfigs',
+                        'name' => __('Global configs'),
+                        'url' => '/jx/admin/administration/globalconfigs',
+                        'capability' => 'access-administration-globalconfigs',
+                        'icon' => 'cog',
+                    ),
                     'administration_capabilities' => array(
                         'id' =>'capabilities',
                         'name' => __('ACL'),
@@ -103,6 +110,13 @@ return array(
                         'url' => '/jx/admin/administration/roles',
                         'capability' => 'access-administration-roles',
                         'icon' => 'user',
+                    ),
+                    'administration_backgroundlayers' => array(
+                        'id' =>'backgroundlayers',
+                        'name' => __('Background layers'),
+                        'url' => '/jx/admin/administration/backgroundlayers',
+                        'capability' => 'access-administration-backgroundlayers',
+                        'icon' => 'leaf',
                     ),
              ),
             ),

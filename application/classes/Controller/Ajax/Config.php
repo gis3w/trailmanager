@@ -39,7 +39,11 @@ class Controller_Ajax_Config extends Controller_Ajax_Main{
     
     protected function _set_background_layer()
     {
-        $this->_get_table('Background_Layer');
+                // si recuperano solo i layers che del backend
+        $bkls = ORM::factory('Background_Layer')->getLayersBySection('FRONTEND');
+        $this->config->background_layer = array();
+        foreach($bkls as $bkl)
+            $this->config->background_layer[] = $bkl->as_array();
     }
     
     protected function _set_i18n()
