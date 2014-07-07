@@ -518,7 +518,7 @@ $.extend(APP.interactiveMap,
 		});
 	},
 	
-	checkRequestedObjects: function(myObj)
+	isAvailableObject: function(myObj)
 	{
 		if (!APP.utils.isset(myObj.obj))
 		{
@@ -560,7 +560,7 @@ $.extend(APP.interactiveMap,
 		
 		var errorObj = false;
 		$.each(arr, function(){
-			if (that.checkRequestedObjects(this))
+			if (!that.isAvailableObject(this))
 				return false;
 		});
 		
