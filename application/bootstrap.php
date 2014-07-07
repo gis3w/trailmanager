@@ -272,3 +272,19 @@ Route::set('default', '(<controller>(/<action>(/<id>)))')
 		'controller' => 'home',
 		'action'     => 'index',
 	));
+
+
+/**
+ * AGGIUNTA DEI PARAMETRI GENERALI SALVATI DB
+*/
+$parms = ORM::factory('Global_Config')->find_all()->as_array('parametro');
+
+foreach($parms as $parametro => $valore)
+    if(is_object($valore))
+    {
+        define(strtoupper($parametro), $valore->valore); 
+    }
+    else
+    {
+        define(strtoupper($parametro), $valore); 
+    }
