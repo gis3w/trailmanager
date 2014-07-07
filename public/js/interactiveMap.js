@@ -435,7 +435,7 @@ $.extend(APP.interactiveMap,
 							
 							var myIcon = null;
 							var myIndex = APP.utils.getIndexFromField(APP.config.localConfig.typology, "id", v.typology_id);
-							if (myIndex > -1 && APP.utils.isset(APP.config.localConfig.typology[myIndex].marker))
+							if (myIndex > -1 && APP.utils.isset(APP.config.localConfig.typology[myIndex].marker) && APP.utils.isset(APP.config.localConfig.typology[myIndex].icon))
 							{
 								myIcon = L.icon({
 									iconUrl: APP.config.localConfig.typology[myIndex].marker,
@@ -448,6 +448,11 @@ $.extend(APP.interactiveMap,
 									//shadowSize: [68, 95],
 									//shadowAnchor: [22, 94]
 								});
+							}
+							else
+							{
+								APP.utils.showNoty({title: APP.i18n.translate("error"), content: APP.i18n.translate("typology_icon_marker_requested"), type: "error"});
+								return false;
 							}
 							
 							var myObj = {bounceOnAdd: true};

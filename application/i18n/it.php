@@ -134,8 +134,8 @@ return array(
     'Do you check data?' => 'Si dichiara di aver controllato la correttezza dei dati inseriti?',
     'Are you sure to delete record?' =>'Sei sicuro che vuoi eliminare il record dal database?',
     'To continue is necessary to save' => 'Per proseguire è necessario effettuare il salvataggio',
-    'Do you want insert a new record?' =>'Si desidera inserire un nuovo record?'
+    'Do you want insert a new record?' =>'Si desidera inserire un nuovo record?',
     
-    
+    'typology_icon_marker_requested' => 'Per proseguire è necessario definire le icone ed i marker per le varie tipologie',
     
 );
