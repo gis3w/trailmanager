@@ -561,7 +561,10 @@ $.extend(APP.interactiveMap,
 		var errorObj = false;
 		$.each(arr, function(){
 			if (!that.isAvailableObject(this))
+			{
+				errorObj = true;
 				return false;
+			}
 		});
 		
 		if (errorObj)
