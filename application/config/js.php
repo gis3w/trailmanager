@@ -20,6 +20,8 @@ return array(
 		'../modules/bootstrap-3.2.0/js/bootstrap.min.js',
 		//'../modules/bootstrap-modal/js/bootstrap-modalmanager.js',
 		//'../modules/bootstrap-modal/js/bootstrap-modal.js',
+		//'../modules/pikachoose/lib/jquery.jcarousel.min.js',
+		//'../modules/pikachoose/lib/jquery.pikachoose.min.js',
 		'../modules/leaflet-0.7.3/leaflet.js',
 		'../modules/Leaflet.draw/dist/leaflet.draw.js',
 		'../modules/Leaflet.FileLayer/leaflet.filelayer.js',
@@ -36,6 +38,7 @@ return array(
 		'../modules/jquery.fileDownload.js',
 		//'../modules/croppic/croppic.min.js',
 		'../modules/jquery.blImageCenter.js',
+		
 		'../modules/fullcalendar-1.6.1/fullcalendar/fullcalendar.min.js',
 		'../modules/chosen_v1.0.0/chosen.jquery.min.js',
 		'../modules/pixelmatrix-uniform-3e9cd85/jquery.uniform.min.js',

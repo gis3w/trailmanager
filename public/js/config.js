@@ -560,6 +560,7 @@ $.extend(APP.config,{
 	{
 		$(window).on("resize",function(){
 			APP.map.resizeMap();
+			APP.interactiveMap.resize();
 		});
 	},
 		

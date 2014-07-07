@@ -22,6 +22,7 @@ return array(
 		//'../modules/bootstrap3/css/bootstrap-theme.min.css' => 'screen',
 		'../modules/fullcalendar-1.6.1/fullcalendar/fullcalendar.css' => 'screen',
 		//'../modules/croppic/croppic.css' => 'screen',
+		//'../modules/pikachoose/styles/bottom.css' => 'screen',
 		'../modules/chosen_v1.0.0/chosen.css' => 'screen',
 		'../modules/leaflet-0.7.3/leaflet.css' => 'screen',
 		'../modules/Leaflet.draw/dist/leaflet.draw.css' => 'screen',

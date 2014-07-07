@@ -1,6 +1,15 @@
 $.extend(APP.interactiveMap, 
 {
 	myData: {},
+	body: null,
+	
+	resize: function()
+	{
+		var x = this.body.find(".centerImage");
+		x.css("width","100%");
+		x.centerImage();
+		
+	},
 	
 	showInformation: function(section, id)
 	{
@@ -30,18 +39,9 @@ $.extend(APP.interactiveMap,
 								<h3 class="lead">'+that.myData[section][id].data.title+'</h3>\
 							  </div>\
 							  <div class="modal-body">\
-								<div id="carousel-'+section+'-info" style="margin: -14px -15px 20px -15px;" class="carousel slide" data-ride="carousel">\
-								  <!-- Indicators -->\
-								  <ol class="carousel-indicators"></ol>\
-								  <!-- Wrapper for slides -->\
-								  <div class="carousel-inner"></div>\
-								  <!-- Controls -->\
-								  <a class="left carousel-control" href="#carousel-'+section+'-info" role="button" data-slide="prev">\
-									<span class="glyphicon glyphicon-chevron-left"></span>\
-								  </a>\
-								  <a class="right carousel-control" href="#carousel-'+section+'-info" role="button" data-slide="next">\
-									<span class="glyphicon glyphicon-chevron-right"></span>\
-								  </a>\
+								<div class="gallery" style="margin: -15px -15px 0px -15px">\
+									<div class="overviewImage" style="width: 100%; height: 300px"></div>\
+									<div class="row thumbnailsRow" style="padding: 20px;"></div>\
 								</div>\
 								<div class="">\
 									<div class="well pull-right overview" style="margin-left: 20px"></div>\
@@ -54,47 +54,48 @@ $.extend(APP.interactiveMap,
 							</div>\
 						</div>\
 					</div>');
-					
+				
 		if (that.myData[section][id].media.images.length === 0)
 		{
-			var div = $('<div class="item" style="width: 100%; height: 250px">\
-							<img src="'+APP.config.localConfig.default_overview_image+'" alt="" class="img-responsive">\
-							<div class="carousel-caption">\
-								<h3>'+APP.i18n.translate('no_image')+'</h3>\
-							</div>\
-						</div>');
-			
-			var indicatorLi = $('<li data-target="#carousel-'+section+'-info" data-slide-to="'+0+'"></li>');			
-			div.addClass("active");
-			indicatorLi.addClass("active");			
-			
-			div.find("img").centerImage();
-			
-			myModal.find(".carousel-indicators").append(indicatorLi);
-			myModal.find(".carousel-inner").append(div);
+			var img = $('<img alt="" class="img-responsive centerImage" style="width: 100%; height:100%;">');
+			img.attr('src', APP.config.localConfig.default_overview_image);			
+			myModal.find(".overviewImage").append(img);			
+			/*var thumbnail = $('<div class="col-xs-4 col-md-2">\
+								<a href="#" class="thumbnail">\
+								  <img src="'+APP.config.localConfig.default_overview_image+'" alt="">\
+								</a>\
+							  </div>');
+			myModal.find(".thumbnailsRow").append(thumbnail)*/
 		}
 		else
 		{
 			$.each(that.myData[section][id].media.images, function(i,v)
 			{
-				var div = $('<div class="item" style="width: 100%; height: 250px">\
-								<img src="'+v.image_url+'" alt="" class="img-responsive">\
-								<div class="carousel-caption">\
-									<h3>'+v.description+'</h3>\
-								</div>\
-							</div>');
-				
-				var indicatorLi = $('<li data-target="#carousel-'+section+'-info" data-slide-to="'+i+'"></li>');
 				if (i === 0)
 				{
-					div.addClass("active");
-					indicatorLi.addClass("active");
+					var img = $('<img alt="" data-toggle="tooltip" class="img-responsive centerImage" style="width: 100%; height:100%">');
+					img.attr('src', v.image_url);
+					img.tooltip({container: '#modal-'+section+'-info', placement: 'top', title: $(v.description).text()});
+					myModal.find(".overviewImage").append(img);
 				}
+				var thumbnail = $('<div class="col-xs-4 col-md-2">\
+									<a href="#" class="thumbnail">\
+									  <img src="'+v.image_thumb_url+'" alt="'+v.description+'">\
+									</a>\
+								  </div>');
 				
-				div.find("img").centerImage();
+				thumbnail.find('img').data(v).tooltip({container: '#modal-'+section+'-info', placement: 'auto', title: $(v.description).text()}).click(function(){
+					var dd = $(this).data();
+					var imgToEdit = myModal.find(".overviewImage img");
+					imgToEdit.fadeOut(function(){
+						imgToEdit.attr("src", dd.image_url).bind('onreadystatechange load', function(){
+							  if (this.complete) $(this).fadeIn();
+						});
+				   }); 
+					imgToEdit.tooltip('destroy').tooltip({title: dd.description});
+				});
 				
-				myModal.find(".carousel-indicators").append(indicatorLi);
-				myModal.find(".carousel-inner").append(div);
+				myModal.find(".thumbnailsRow").append(thumbnail)
 			});
 		}
 		
@@ -194,9 +195,15 @@ $.extend(APP.interactiveMap,
 			myModal.find(".modal-body .overview").append(row);
 		});
 		//myModal.find(".modal-body .overview").append(overview);
-		$("body").append(myModal);
+				
 		
+		myModal.on('shown.bs.modal', function(){
+			myModal.find(".centerImage").centerImage();
+		});
+		
+		$("body").append(myModal);
 		myModal.modal();
+		
 	},
 	
 	zoomAt: function(section, id)
@@ -583,6 +590,8 @@ $.extend(APP.interactiveMap,
 			
 		$("html").css({"height":"100%","width":"100%"});
 		$("body").css({"height":"100%","width":"100%","padding-top":"50px", "padding-bottom":"50px"});
+		
+		that.body = $("body");
 		
 		var bottomNavbar = $('<nav class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">\
 								<div class="container-fluid">\
