@@ -56,8 +56,9 @@ $.extend(APP.map,
 	removeGeolocation: function()
 	{
 		var that = this;
-		navigator.geolocation.clearWatch(that.currentPosition.id);		
-		that.globalData[that.currentMapId].map.removeLayer(that.currentPosition.marker);
+		navigator.geolocation.clearWatch(that.currentPosition.id);
+		if (APP.utils.isset(that.currentMapId) && APP.utils.isset(that.globalData[that.currentMapId].map) && APP.utils.isset(that.currentPosition.marker))
+			that.globalData[that.currentMapId].map.removeLayer(that.currentPosition.marker);
 		that.currentPosition = {
 			id: null,
 			marker: null,
