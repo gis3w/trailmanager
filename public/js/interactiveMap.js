@@ -54,13 +54,13 @@ $.extend(APP.interactiveMap,
 							</div>\
 						</div>\
 					</div>');
-		
-		$.each(that.myData[section][id].media.images, function(i,v)
+					
+		if (that.myData[section][id].media.images.length === 0)
 		{
 			var div = $('<div class="item">\
-							<img src="'+v.image_url+'" alt="" class="img-responsive" style="width: 100%;">\
+							<img src="'+APP.config.localConfig.default_overview_image+'" alt="" class="img-responsive" style="width: 100%;">\
 							<div class="carousel-caption">\
-								<h3>'+v.description+'</h3>\
+								<h3>'+APP.i18n.translate('no_image')+'</h3>\
 							</div>\
 						</div>');
 			
@@ -75,7 +75,31 @@ $.extend(APP.interactiveMap,
 			
 			myModal.find(".carousel-indicators").append(indicatorLi);
 			myModal.find(".carousel-inner").append(div);
-		});
+		}
+		else
+		{
+			$.each(that.myData[section][id].media.images, function(i,v)
+			{
+				var div = $('<div class="item">\
+								<img src="'+v.image_url+'" alt="" class="img-responsive" style="width: 100%;">\
+								<div class="carousel-caption">\
+									<h3>'+v.description+'</h3>\
+								</div>\
+							</div>');
+				
+				var indicatorLi = $('<li data-target="#carousel-'+section+'-info" data-slide-to="'+i+'"></li>');
+				if (i === 0)
+				{
+					div.addClass("active");
+					indicatorLi.addClass("active");
+				}
+				
+				//div.find("img").css({"width": "100%"});
+				
+				myModal.find(".carousel-indicators").append(indicatorLi);
+				myModal.find(".carousel-inner").append(div);
+			});
+		}
 		
 		var parToAppend = [];
 		var overviewToAppend = {};
@@ -494,20 +518,54 @@ $.extend(APP.interactiveMap,
 		});
 	},
 	
+	checkRequestedObjects: function(myObj)
+	{
+		if (!APP.utils.isset(myObj.obj))
+		{
+			APP.utils.showNoty({title: APP.i18n.translate("error"), type: "error", content: myObj.label+" "+APP.i18n.translate("not_configured")});
+			return false;
+		}
+		return true;
+	},
+	
 	start: function()
 	{
 		var that = this;		
+		var arr = [
+			{
+				obj: APP.config.localConfig,
+				label: 'config',
+			},
+			{
+				obj: APP.config.localConfig.default_overview_image,
+				label: 'default_overview_image',
+			},
+			{
+				obj: APP.config.localConfig.default_extent,
+				label: 'default_extent',
+			},
+			{
+				obj: APP.config.localConfig.background_layer,
+				label: 'background_layer',
+			},
+			{
+				obj: APP.config.localConfig.typology,
+				label: 'typology',
+			},
+			{
+				obj: APP.config.localConfig.urls,
+				label: 'urls',
+			},
+		];		
 		
-		if (!APP.utils.isset(APP.config.localConfig) || 
-			!APP.utils.isset(APP.config.localConfig.default_extent) || 
-			!APP.utils.isset(APP.config.localConfig.background_layer) || 
-			!APP.utils.isset(APP.config.localConfig.typology) ||
-			!APP.utils.isset(APP.config.localConfig.urls)
-		)
-		{
-			APP.utils.showNoty({title: APP.i18n.translate("error"), type: "error", content: APP.i18n.translate("config_not_configured")});
+		var errorObj = false;
+		$.each(arr, function(){
+			if (that.checkRequestedObjects(this))
+				return false;
+		});
+		
+		if (errorObj)
 			return;
-		}
 		
 		var errorIM = false;
 		$.each(APP.config.localConfig.typology, function(){
@@ -517,7 +575,6 @@ $.extend(APP.interactiveMap,
 				return false;
 			}
 		});
-		
 		if (errorIM)
 		{
 			APP.utils.showNoty({title: APP.i18n.translate("error"), type: "error", content: APP.i18n.translate("typology_icon_marker_requested")});
