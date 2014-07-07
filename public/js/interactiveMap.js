@@ -57,21 +57,18 @@ $.extend(APP.interactiveMap,
 					
 		if (that.myData[section][id].media.images.length === 0)
 		{
-			var div = $('<div class="item">\
-							<img src="'+APP.config.localConfig.default_overview_image+'" alt="" class="img-responsive" style="width: 100%;">\
+			var div = $('<div class="item" style="width: 100%; height: 250px">\
+							<img src="'+APP.config.localConfig.default_overview_image+'" alt="" class="img-responsive">\
 							<div class="carousel-caption">\
 								<h3>'+APP.i18n.translate('no_image')+'</h3>\
 							</div>\
 						</div>');
 			
-			var indicatorLi = $('<li data-target="#carousel-'+section+'-info" data-slide-to="'+i+'"></li>');
-			if (i === 0)
-			{
-				div.addClass("active");
-				indicatorLi.addClass("active");
-			}
+			var indicatorLi = $('<li data-target="#carousel-'+section+'-info" data-slide-to="'+0+'"></li>');			
+			div.addClass("active");
+			indicatorLi.addClass("active");			
 			
-			//div.find("img").css({"width": "100%"});
+			div.find("img").centerImage();
 			
 			myModal.find(".carousel-indicators").append(indicatorLi);
 			myModal.find(".carousel-inner").append(div);
@@ -80,8 +77,8 @@ $.extend(APP.interactiveMap,
 		{
 			$.each(that.myData[section][id].media.images, function(i,v)
 			{
-				var div = $('<div class="item">\
-								<img src="'+v.image_url+'" alt="" class="img-responsive" style="width: 100%;">\
+				var div = $('<div class="item" style="width: 100%; height: 250px">\
+								<img src="'+v.image_url+'" alt="" class="img-responsive">\
 								<div class="carousel-caption">\
 									<h3>'+v.description+'</h3>\
 								</div>\
@@ -94,7 +91,7 @@ $.extend(APP.interactiveMap,
 					indicatorLi.addClass("active");
 				}
 				
-				//div.find("img").css({"width": "100%"});
+				div.find("img").centerImage();
 				
 				myModal.find(".carousel-indicators").append(indicatorLi);
 				myModal.find(".carousel-inner").append(div);
@@ -312,7 +309,7 @@ $.extend(APP.interactiveMap,
 					
 					var media = $(	'<div class="media">\
 									  <a class="pull-left" href="#" >\
-										<img class="media-object img-responsive img-rounded" src="'+v.data.thumb_main_image+'" alt="'+APP.i18n.translate('no_image')+'" style="width: 60px; height: 60px">\
+										<img class="media-object img-responsive img-rounded" src="'+(APP.utils.isset(v.data.thumb_main_image)? v.data.thumb_main_image : APP.config.localConfig.default_overview_image)+'" alt="'+APP.i18n.translate('no_image')+'" style="width: 60px; height: 60px">\
 									  </a>\
 									  <div class="media-body">\
 										<h3 class="media-heading lead">'+v.data.title+'<span class="subtypologies pull-right row"></span></h3>\
