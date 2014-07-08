@@ -331,7 +331,7 @@ $.extend(APP.map,
 						l = new L.BingLayer();
 						break;					
 					default:
-						l = new L.tileLayer(v.url, {minZoom: 5, maxZoom: 19, attribution: v.description});
+						l = new L.tileLayer(v.url, {/*minZoom: 5, maxZoom: 19,*/ attribution: v.description});
 				}
 				if (v.def)
 				{
@@ -349,7 +349,7 @@ $.extend(APP.map,
 		else
 		{
 			defLayUrl = "http://{s}.tile.osm.org/{z}/{x}/{y}.png";
-			defaultLayer = new L.tileLayer(defLayUrl, {minZoom: 3, maxZoom: 19, attribution: "Mappa stradale"});
+			defaultLayer = new L.tileLayer(defLayUrl, {/*minZoom: 3, maxZoom: 18,*/ attribution: "Mappa stradale"});
 			defLayName = "Openstreetmap";
 		}
 		
