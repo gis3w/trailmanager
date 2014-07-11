@@ -23,7 +23,7 @@ $.extend(APP.interactiveMap,
 			});
 		});
 		*/
-		that.openInfo(section, id); 
+		that.openInfo(section, id);
 	},
 	
 	openInfo: function(section, id)
