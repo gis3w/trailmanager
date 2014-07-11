@@ -5,6 +5,8 @@ $.extend(APP.interactiveMap,
 	
 	resize: function()
 	{
+		if (!APP.utils.isset(this.body))
+			return;
 		var x = this.body.find(".centerImage");
 		x.css("width","100%");
 		x.centerImage();
