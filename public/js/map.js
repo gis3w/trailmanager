@@ -4,6 +4,10 @@ $.extend(APP.map,
 {
 	globalData: {},
 	currentMapId: null,
+	sidebar: {
+		div: null,
+		control: null,
+	},
 	
 	currentPosition: {
 		id: null,
@@ -45,7 +49,7 @@ $.extend(APP.map,
 	
 	finish: function()
 	{
-		this.removeGeolocation();
+		//this.removeGeolocation();
 		$.each(this.globalData, function(i,v){
 			v.map.remove();
 		});
@@ -53,6 +57,7 @@ $.extend(APP.map,
 		this.currentMapId = null;
 	},
 	
+	/*
 	removeGeolocation: function()
 	{
 		var that = this;
@@ -106,6 +111,12 @@ $.extend(APP.map,
 		}
 		else 
 			alert("Geolocation is not supported by this browser.");
+	},
+	*/
+	
+	getMap: function()
+	{
+		return this.globalData[this.currentMapId].map;
 	},
 	
 	resizeMap: function()
@@ -194,10 +205,84 @@ $.extend(APP.map,
 		]);
 	},
 	
+	addLayer: function(layer, id)
+	{
+		var that = this;
+		var foundLayer = false;
+		
+		var myId = APP.utils.getIndexFromField(that.globalData[that.currentMapId].addedLayers, "id", id);
+		if (myId > -1)
+			that.globalData[that.currentMapId].addedLayers[myId].visible = true;
+		else
+			that.globalData[that.currentMapId].addedLayers[id] = { id: id, layer: layer, visible: true};
+			
+		if (!that.globalData[that.currentMapId].map.hasLayer(that.globalData[that.currentMapId].addedLayers[id].layer))
+				that.globalData[that.currentMapId].addedLayers[id].layer.addTo(that.globalData[that.currentMapId].map);
+	},
+	
+	showLayer: function(layer, id)
+	{
+		var that = this;
+		var index = APP.utils.getIndexFromField(that.globalData[that.currentMapId].addedLayers, "id", id);
+		if (index === -1)
+			that.addLayer(layer, id);
+		else
+		{
+			that.globalData[that.currentMapId].addedLayers[index].visible = true;
+			if (!that.globalData[that.currentMapId].map.hasLayer(that.globalData[that.currentMapId].addedLayers[index].layer))
+				that.globalData[that.currentMapId].addedLayers[index].layer.addTo(that.globalData[that.currentMapId].map);
+		}
+	},
+	
+	showAllLayers: function()
+	{
+		var that = this;
+		$.each(that.globalData[that.currentMapId].addedLayers, function(i, v){
+			that.showLayer(v.layer, i);
+		});
+	},
+	
+	hideLayer: function(id)
+	{
+		var that = this;
+		var index = APP.utils.getIndexFromField(that.globalData[that.currentMapId].addedLayers, "id", id);
+		if (index !== -1)
+		{
+			that.globalData[that.currentMapId].addedLayers[index].visible = false;
+			if (that.globalData[that.currentMapId].map.hasLayer(that.globalData[that.currentMapId].addedLayers[index].layer))
+				that.globalData[that.currentMapId].map.removeLayer(that.globalData[that.currentMapId].addedLayers[index].layer);
+		}
+	},
+	
+	hideAllLayers: function()
+	{
+		var that = this;
+		$.each(that.globalData[that.currentMapId].addedLayers, function(i, v){
+			that.hideLayer(i);
+		});
+	},
+	
+	removeLayer: function(id)
+	{
+		var that = this;
+		
+		var index = APP.utils.getIndexFromField(that.globalData[that.currentMapId].addedLayers, "id", id);
+		if (index !== -1)
+		{
+			if (that.globalData[that.currentMapId].map.hasLayer(that.globalData[that.currentMapId].addedLayers[index].layer))
+				that.globalData[that.currentMapId].map.removeLayer(that.globalData[that.currentMapId].addedLayers[index].layer);
+			delete that.globalData[that.currentMapId].addedLayers[index];
+		}
+	},
+	
 	removeAllLayers: function()
 	{
 		var that = this;
-		var ls = that.globalData[that.currentMapId].map.removeLayer();
+		
+		$.each(that.globalData[that.currentMapId].addedLayers, function(i,v)
+		{
+			that.removeLayer(i);
+		});
 	},
 	
 	changeColors: function(newColor)
@@ -303,6 +388,7 @@ $.extend(APP.map,
 			
 		this.globalData[id] = {
 			map: {},
+			addedLayers: {},
 			layerGroups: {},			
 			drawControl: null,
 			drawnItems: null,
@@ -368,6 +454,26 @@ $.extend(APP.map,
 		L.control.layers(baseLayers).addTo(that.globalData[id].map);	
 
 		that.setMapControls();
+		
+		// locate control
+		if (APP.utils.isset(L.control.locate))
+		{
+			L.control.locate({
+				position: 'bottomright',  // set the location of the control
+				icon: "icon-direction",
+			}).addTo(that.globalData[id].map);
+			
+			$('.leaflet-control-locate').find("a").append('<i class="icon icon-location-arrow"></i>')
+		}
+		
+		// sidebar
+		if (L.control.sidebar && $("#leafletSidebar").length > 0)
+		{
+			that.sidebar.control = L.control.sidebar('leafletSidebar', {
+				position: 'left'
+			});
+			that.sidebar.control.addTo(that.globalData[id].map);
+		}
 		
 		//MOUSE COORDINATES
 		if (APP.utils.isset(L.control.coordinates))

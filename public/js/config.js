@@ -459,7 +459,6 @@ $.extend(APP.config,{
 		if (!that.localConfig.menu)
 		{
 			APP.interactiveMap.start();
-			APP.map.setGeolocation($("body").find('#main_navbar_admin #locateButtonButton'));
 			return;
 		}
 		$.each(that.localConfig.menu, function(i, v){
