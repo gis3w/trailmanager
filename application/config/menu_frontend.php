@@ -3,19 +3,42 @@
 
 return array(
     'main' => array(
+		/*
         'map' => array(
             'id' =>'map',
             'name' => __('Map'),
             'url' => 'jx/home',
             'capability' => NULL,
             'icon' => 'globe',
-        ),
-         'locateButton' => array(
-            'id' =>'locateButton',
-            'name' => __('Localize me'),
-            'url' => '#',
+        )
+		*/
+		'info' => array(
+            'id' =>'info',
+            'name' => __('Info'),
+            'url' => NULL,
             'capability' => NULL,
-            'icon' => 'globe',
+            'icon' => NULL,
+        ),
+		'itinerary' => array(
+            'id' =>'itinerary',
+            'name' => __('Itinerary'),
+            'url' => NULL,
+            'capability' => NULL,
+            'icon' => NULL,
+        ),
+		'path' => array(
+            'id' =>'path',
+            'name' => __('Path'),
+            'url' => NULL,
+            'capability' => NULL,
+            'icon' => NULL,
+        ),
+		'poi' => array(
+            'id' =>'poi',
+            'name' => __('Poi'),
+            'url' => NULL,
+            'capability' => NULL,
+            'icon' => NULL,
         ),
     ),
     
