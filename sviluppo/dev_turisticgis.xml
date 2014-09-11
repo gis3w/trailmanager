@@ -8006,6 +8006,34 @@ WHERE t.typname = 'geography'::name
         AND c.relnamespace = n.oid
         AND NOT pg_is_other_temp_schema(c.relnamespace)</Sql>
     </View>
+    <View nm="search_datas">
+      <Sql>( SELECT
+    pois.id,
+    pois.title,
+    pois.description,
+    pois.reason,
+    pois.accessibility,
+    pois.information_url,
+    'Poi'::text AS type,
+    0 AS order_show_search
+FROM pois UNION SELECT paths.id,
+    paths.title,
+    paths.description,
+    paths.reason,
+    paths.accessibility,
+    paths.information_url,
+    'Path'::text AS type,
+    0 AS order_show_search
+FROM paths) UNION SELECT itineraries.id,
+    itineraries.name AS title,
+    itineraries.description,
+    NULL::character varying AS reason,
+    NULL::character varying AS accessibility,
+    NULL::character varying AS information_url,
+    'Itinerary'::text AS type,
+    1 AS order_show_search
+FROM itineraries</Sql>
+    </View>
     <Seq incr="1" nm="background_layers_id_seq"/>
     <Seq incr="1" nm="capabilities_id_seq"/>
     <Seq incr="1" nm="capabilities_roles_id_seq"/>
@@ -8178,12 +8206,12 @@ WHERE t.typname = 'geography'::name
     </BasicOptionMgr>
   </DbDocOptionMgr>
   <OpenEditors>
-    <OpenEditor ClsNm="Diagram" fqn="null.diagramA" selected="1"/>
+    <OpenEditor ClsNm="Diagram" fqn="null.diagramA" selected="0"/>
   </OpenEditors>
   <TreePaths>
     <TreePath/>
     <TreePath>/Schemas (1)</TreePath>
     <TreePath>/Schemas (1)/public</TreePath>
-    <TreePath>/Schemas (1)/public/Tables (26)</TreePath>
+    <TreePath>/Schemas (1)/public/Views (2)</TreePath>
   </TreePaths>
 </Db>
