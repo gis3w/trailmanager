@@ -8,7 +8,7 @@ $.extend(APP.interactiveMap,
 		top: null,
 		bottom: null,
 	},
-	infoDelay: 1000,
+	infoDelay: 1500,
 	itemsOnSidebar: true,
 	mySidebar: {
 		control: null,
@@ -32,6 +32,43 @@ $.extend(APP.interactiveMap,
 		x.centerImage();
 	},
 	
+	checkVideoUrl: function(url)
+	{
+		var that = this;
+		
+		var arr = url.split("/");
+		var id = arr[arr.length-1];
+		id = id.split('?')[0];
+		
+		if (url.indexOf("vimeo") >= 0)
+			return {
+				href: 'https://vimeo.com/'+id,
+				type: 'text/html',
+				vimeo: id,
+				//poster: 'https://secure-b.vimeocdn.com/ts/'+id+'.jpg'
+			};
+		if (url.indexOf("youtube") >= 0)
+			return {
+				href: 'https://www.youtube.com/watch?v='+id,
+				type: 'text/html',
+				youtube: id,
+				poster: 'https://img.youtube.com/vi/'+id+'/maxresdefault.jpg',
+			};
+		return false;
+	},
+	
+	highlightLayer: function(section, id)
+	{
+		if (section == "path" || section == "poi")
+			if (APP.map.globalData.mainContent.addedLayers[section+"_"+id].layer)
+				APP.map.highlightLayer(section+"_"+id);
+	},
+	
+	resetHighlightLayer: function()
+	{
+		APP.map.highlightLayer(null);
+	},
+	
 	showInformation: function(section, id, onCloseCallback)
 	{
 		var that = this;
@@ -42,6 +79,7 @@ $.extend(APP.interactiveMap,
 			});
 		});
 		*/
+		
 		if (that.itemsOnSidebar && L.control.sidebar)
 			APP.map.sidebar.control.hide();
 			
@@ -64,18 +102,27 @@ $.extend(APP.interactiveMap,
 		botNav = $(	'<nav class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">\
 						<div class="container-fluid">\
 							<div class="navbar-header">\
-								<a class="navbar-brand" href="#" style="display:none; color: white">\
-									'+APP.i18n.translate(section)+": "+myTitle+'\
+								<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bottomNavbarCollapse">\
+									<span class="sr-only">Toggle navigation</span>\
+									<span class="icon-bar"></span>\
+									<span class="icon-bar"></span>\
+									<span class="icon-bar"></span>\
+								</button>\
+								<a class="navbar-brand" href="#" style="display:none; color:white">\
+									<span class="hidden-sm hidden-xs">'+APP.i18n.translate(section)+': </span> '+myTitle+'\
 								</a>\
 							</div>\
 							<div id="bottomNavbarCollapse" class="navbar-collapse collapse">\
 								<ul class="nav navbar-nav navbar-right">\
-									<li><a href="#"><button type="button" class="btn btn-success detailsButton"><i class="icon icon-search"></i> '+APP.i18n.translate("details")+'</button></a></li>\
-									<li><a href="#"><button type="button" class="btn btn-default closeButton"><i class="icon icon-remove"></i> '+APP.i18n.translate("close")+'</button></a></li>\
+									<li><a href="#" class="detailsButton"><i class="icon icon-search"></i> '+APP.i18n.translate("details")+'</a></li>\
+									<li><a href="#" class="closeButton"><i class="icon icon-remove"></i> '+APP.i18n.translate("close")+'</a></li>\
 								</ul>\
 							</div>\
 						</div>\
 					</nav>');
+		
+		/*<li><a href="#"><button type="button" class="btn btn-success detailsButton"><i class="icon icon-search"></i> '+APP.i18n.translate("details")+'</button></a></li>\
+		<li><a href="#"><button type="button" class="btn btn-default closeButton"><i class="icon icon-remove"></i> '+APP.i18n.translate("close")+'</button></a></li>\*/
 					
 		botNav.find(".detailsButton").click(function(){
 			that.showInformation(section, id, function(){
@@ -132,10 +179,10 @@ $.extend(APP.interactiveMap,
 							  <div class="modal-body">\
 								<div class="gallery" style="margin: -15px -15px 0px -15px">\
 									<div class="overviewImage" style="width: 100%; height: 300px"></div>\
-									<div class="row thumbnailsRow" style="padding: 20px;"></div>\
+									<div class="row thumbnailsRow" style="padding: 20px; vertical-align: middle"></div>\
 								</div>\
 								<div class="">\
-									<div class="well pull-right overview" style="margin-left: 20px"></div>\
+									<div class="overview"><h2>'+APP.i18n.translate('general_informations')+'</h2></div>\
 									<div class="paragraphes text-justify"></div>\
 								</div>\
 							  </div>\
@@ -160,6 +207,8 @@ $.extend(APP.interactiveMap,
 		}
 		else
 		{
+			var imageGalleryId = 'big_'+section+'_'+id;
+			
 			$.each(that.myData[section][id].media.images, function(i,v)
 			{
 				if (i === 0)
@@ -170,38 +219,39 @@ $.extend(APP.interactiveMap,
 					myModal.find(".overviewImage").append(img);
 				}
 				var thumbnail = $('<div class="col-xs-4 col-md-2">\
-									<a href="#" class="thumbnail">\
-									  <img src="'+v.image_thumb_url+'" alt="'+v.description+'">\
+									<a href="'+v.image_url+'" title="'+$(v.description).text()+'" class="" data-gallery="#'+imageGalleryId+'">\
+									  <img src="'+v.image_thumb_url+'" alt="'+v.description+'" class="img-thumbnail">\
 									</a>\
 								  </div>');
 				
-				thumbnail.find('img').data(v).tooltip({container: '#modal-'+section+'-info', placement: 'auto', title: $(v.description).text()}).click(function(){
-					var dd = $(this).data();
-					var imgToEdit = myModal.find(".overviewImage img");
-					imgToEdit.fadeOut(function(){
-						imgToEdit.attr("src", dd.image_url).bind('onreadystatechange load', function(){
-							  if (this.complete) $(this).fadeIn();
-						});
-				   }); 
-					imgToEdit.tooltip('destroy').tooltip({title: dd.description});
-				});
+				thumbnail.find('img').tooltip({container: '#modal-'+section+'-info', placement: 'auto', title: $(v.description).text()});
 				
 				myModal.find(".thumbnailsRow").append(thumbnail)
 			});
+			
+			that.setBlueimpGalleryDiv({
+				container: that.body,
+				id: imageGalleryId,
+				classes: 'blueimp-gallery blueimp-gallery-controls',
+				closeBtn: true,
+			});
 		}
 		
+		var videosContainer = null;
+		var videos = [];
 		var parToAppend = [];
 		var overviewToAppend = {};
 		var checkVoice = function(voice, type, moreParams)
 		{
-			var div = $('<div class="'+voice+'"><h2 class="text-capitalize">'+APP.i18n.translate(voice)+'</h2></div>');
+			var div = $('<div class="'+voice+'"><h2>'+APP.i18n.translate(voice)+'</h2></div>');
+			var bInsert = true;
 			switch(type)
 			{
 				case "text":
 					if (APP.utils.isset(that.myData[section][id].data[voice]) && !APP.utils.isEmptyString(that.myData[section][id].data[voice]))
 						div.append(that.myData[section][id].data[voice]);
 					else
-						div.append('<p><em>'+APP.i18n.translate("no_content")+'</em></p>');
+						bInsert = false;
 					break;
 				case "ov-img":
 					if (APP.utils.isset(that.myData[section][id].data[voice]) && APP.utils.isset(moreParams) && $.isArray(moreParams.values))
@@ -219,16 +269,18 @@ $.extend(APP.interactiveMap,
 							var ii = APP.utils.getIndexFromField(moreParams.values, "id", v);
 							if (ii > -1)
 							{
-								var img  = $('<img src="'+moreParams.values[ii][moreParams.icon]+'" class="img-responsive" style="margin-top: -14px" alt="'+moreParams.values[ii][moreParams.label]+'">');
-								img.tooltip({container: 'body', placement: 'auto', title: moreParams.values[ii][moreParams.label]});
+								var img  = $('<div class="media">\
+												<a class="pull-left" href="#">\
+													<img src="'+moreParams.values[ii][moreParams.icon]+'" class="img-responsive" style="margin-top: -14px" alt="'+moreParams.values[ii][moreParams.label]+'">\
+												</a>\
+												<div class="media-body">\
+													<h5 class="media-heading"><span class="label label-default">'+moreParams.values[ii][moreParams.label]+'</span></h5>\
+												</div>\
+											</div>');
 								overviewToAppend[voice].push(img);
 							}
 						});
-						if (arr.length === 0)
-							div.append('<p><em>'+APP.i18n.translate("no_content")+'</em></p>');
 					}
-					else
-						div.append('<p><em>'+APP.i18n.translate("no_content")+'</em></p>');
 					return;
 				case "ov-icon":
 					if (APP.utils.isset(that.myData[section][id].data[voice]) && !APP.utils.isEmptyString(that.myData[section][id].data[voice]))
@@ -239,20 +291,79 @@ $.extend(APP.interactiveMap,
 						var span = $('<span><i class="fa fa-'+moreParams.icon+'"></i> '+that.myData[section][id].data[voice]+'</span>');
 						overviewToAppend[voice].push(span);
 					}
-					else
-						div.append('<p><em>'+APP.i18n.translate("no_content")+'</em></p>');
 					return;
-					break;
-				case "video":
-					if (APP.utils.isset(that.myData[section][id].data[voice]) && !APP.utils.isEmptyString(that.myData[section][id].data[voice]))
-						div.append(that.myData[section][id].data[voice]);
+				case "paths":
+					if (that.myData[section][id].data[voice].length === 0)
+						bInsert = false;
 					else
-						div.append('<p><em>'+APP.i18n.translate("no_content")+'</em></p>');
+					{
+						$.each(that.myData[section][id].data[voice], function(i,v)
+						{
+							var btn = $('<button type="button" class="btn btn-link">'+that.myData.path[v].data.title+'</button>');
+							btn.click(function(){
+								that.highlightLayer(section, id);
+								that.zoomAt(section, id);
+								myModal.fadeOut(1500, function(){
+									myModal.modal("hide");
+									that.showInformation('path', v);
+								});
+							});
+							div.append($('<p></p>').append(btn));
+						});
+					}
+					break;
+				case "pois":
+					if (that.myData[section][id].data[voice].length === 0)
+						bInsert = false;
+					else
+					{
+						$.each(that.myData[section][id].data[voice], function(i,v){
+							var btn = $('<button type="button" class="btn btn-link">'+that.myData.poi[v].data.title+'</button>');
+							btn.data(v).click(function(){
+								var myV = $(this).data();
+								that.highlightLayer('poi', myV.id);
+								that.zoomAt('poi', myV.id);
+								myModal.fadeOut(1500, function(){
+									myModal.modal("hide");
+									that.showInformation('poi', myV);
+								});
+							});
+							div.append($('<p></p>').append(btn));
+						});
+					}
+					break;					
+				case "video":
+					if (APP.utils.isset(that.myData[section][id].media.videos) && (that.myData[section][id].media.videos.length > 0))
+					{
+						var galleryId = 'bvg_'+section+'_'+id;
+						
+						that.setBlueimpGalleryDiv({
+							container: div,
+							id: galleryId,
+							classes: 'blueimp-gallery blueimp-gallery-controls blueimp-gallery-carousel',
+							closeBtn: false,
+						});
+						
+						videosContainer = div.find('#'+galleryId);
+						
+						$.each(that.myData[section][id].media.videos, function(i, v)
+						{
+							var vo = that.checkVideoUrl($(v.video_embed).attr("src"));
+							if (vo)
+							{
+								vo.title = v.title;
+								videos.push(vo);
+							}
+						});						
+					}
+					else
+						bInsert = false;
 					break;
 				default:
 					break;
 			}
-			parToAppend.push(div);
+			if (bInsert)
+				parToAppend.push(div);
 		};
 		
 		switch(section)
@@ -265,6 +376,7 @@ $.extend(APP.interactiveMap,
 				checkVoice('period_schedule', 'text');
 				checkVoice('accessibility', 'text');
 				checkVoice('information_url', 'text');
+				checkVoice('video_poi', 'video');
 				break;
 			case "path":
 				checkVoice('typology_id', 'ov-img', {values: APP.config.localConfig.typology, label: 'name', icon: "icon"});
@@ -282,40 +394,52 @@ $.extend(APP.interactiveMap,
 				checkVoice('typology_id', 'ov-img', {values: APP.config.localConfig.typology, label: 'name', icon: "icon"});
 				checkVoice('typologies', 'ov-img', {values: APP.config.localConfig.typology, label: 'name', icon: "icon"});
 				checkVoice('description', 'text');
+				checkVoice('pois', 'pois');
+				checkVoice('paths', 'paths');
 				break;
 			default:
 				break;
 		}
-		$.each(parToAppend, function(){
-			myModal.find(".modal-body .paragraphes").append(this);
-		});
+		if (parToAppend.length>0)
+		{
+			$.each(parToAppend, function(){
+				myModal.find(".modal-body .paragraphes").append(this);
+			});
+		}
+		/*else
+			myModal.find(".modal-body .paragraphes").append('<p>'+APP.i18n.translate("no_content")+'</p>');*/
 		$.each(overviewToAppend, function(key, value){
 			var l = value.length;
 			if (l === 0)
 				return true;
 			var size = parseInt(12/l);
-			myModal.find(".modal-body .overview").append('<p style="margin-top: 5px"><b>'+APP.i18n.translate(key)+':</b></p>');
-			var row = $('<div class="row"></div>');
+			var row = $('<div><b>'+APP.i18n.translate(key)+':</b></div>');
 			$.each(value, function(k1,v1){
-				var col = $('<div class="col-md-'+size+'"></div>');
-				col.append(v1);
-				row.append(col);
+				row.append(v1);
 			});
 			myModal.find(".modal-body .overview").append(row);
 		});
 		//myModal.find(".modal-body .overview").append(overview);
-				
 		
 		myModal.on('shown.bs.modal', function(){
 			myModal.find(".centerImage").centerImage();
+			
+			blueimp.Gallery(videos, {
+				container: videosContainer,
+				carousel: false,
+			});
 		});
 		
-		if (APP.utils.isset(onCloseCallback) && $.isFunction(onCloseCallback))
-			myModal.on('hidden.bs.modal', function(){ onCloseCallback(); });
+		myModal.on('hidden.bs.modal', function()
+		{ 
+			//that.body.find('.blueimp-gallery').remove();
+			that.resetHighlightLayer();
+			if (APP.utils.isset(onCloseCallback) && $.isFunction(onCloseCallback))
+				onCloseCallback(); 
+		});
 		
 		that.body.append(myModal);
 		myModal.modal();
-		
 	},
 	
 	zoomAt: function(section, id)
@@ -325,7 +449,6 @@ $.extend(APP.interactiveMap,
 		
 		switch(section)
 		{
-			
 			case "poi":
 				var maxZoom = APP.map.globalData[APP.map.currentMapId].map.getMaxZoom();
 				var latLng = [that.myData[section][id].geo.geoJSON.coordinates[1], that.myData[section][id].geo.geoJSON.coordinates[0]];
@@ -479,11 +602,12 @@ $.extend(APP.interactiveMap,
 					var row = $('<a href="#" class="list-group-item"></a>');
 					row.click(function(){
 						that.mySidebar.control.hide();
+						that.highlightLayer(section, v.data.id);
 						that.zoomAt(section, v.data.id);
 						var timeout = setTimeout(function(){
 							clearTimeout(timeout);
 							that.showInformation(section, v.data.id, function(){ 
-								//that.mySidebar.control.show();
+								that.mySidebar.control.show();
 								that.navbars.top.find("#"+section+"Button").parents("li:first").addClass("active");
 							});
 						}, that.infoDelay);
@@ -660,10 +784,11 @@ $.extend(APP.interactiveMap,
 					var row = $('<a href="#" class="list-group-item"</a>');
 					row.click(function(){
 						myModal.modal("hide");
+						that.highlightLayer(section, v.data.id);
 						that.zoomAt(section, v.data.id);
 						var timeout = setTimeout(function(){
 							clearTimeout(timeout);
-							that.showInformation(section, v.data.id, function(){ /*myModal.modal("show");*/ });
+							that.showInformation(section, v.data.id, function(){ myModal.modal("show"); });
 						},that.infoDelay);
 					});
 					
@@ -850,8 +975,13 @@ $.extend(APP.interactiveMap,
 			if (myIcon)
 				myObj.icon = myIcon;
 			
-			var layer = new L.Marker(coords,myObj).on("click", function(){ 
-				that.showInformation(section, v.id); 
+			var layer = new L.Marker(coords,myObj).on("click", function(){
+				that.highlightLayer(section, v.id);
+				that.zoomAt(section, v.id);
+				var timeout = setTimeout(function(){
+					clearTimeout(timeout);
+					that.showInformation(section, v.id);
+				}, that.infoDelay);
 			});
 			if (!APP.map.globalData[APP.map.currentMapId].map.hasLayer(layer))
 				APP.map.addLayer(layer, section+"_"+v.id);
@@ -868,7 +998,15 @@ $.extend(APP.interactiveMap,
 					return oo;
 				},
 				onEachFeature: function (feature, layer) {
-					layer.on("click", function(){ that.showInformation(section, v.id); });
+					layer.on("click", function()
+					{
+						that.highlightLayer(section, v.id);
+						that.zoomAt(section, v.id);
+						var timeout = setTimeout(function(){
+							clearTimeout(timeout);
+							that.showInformation(section, v.id);
+						}, that.infoDelay);
+					});
 				}
 			});
 			if (!APP.map.globalData[APP.map.currentMapId].map.hasLayer(layer))
@@ -884,6 +1022,29 @@ $.extend(APP.interactiveMap,
 			return false;
 		}
 		return true;
+	},
+	
+	setBlueimpGalleryDiv: function(params)
+	{
+		var that = this;
+		
+		if (params.container.find("#"+params.id).length > 0)
+			params.container.find("#"+params.id).remove();
+		
+		var div = $('<div id="'+params.id+'" class="'+params.classes+'">\
+						<div class="slides"></div>\
+						<h3 class="title"></h3>\
+						<a class="prev"><i class="icon icon-chevron-sign-left"></i></a>\
+						<a class="next"><i class="icon icon-chevron-sign-right"></i></a>\
+						<a class="close"><i class="icon icon-remove"></i></a>\
+						<a class="play-pause"></a>\
+						<ol class="indicator"></ol>\
+					</div>');
+		
+		if (!params.closeBtn)
+			div.find(".close").remove();
+			
+		params.container.append(div);
 	},
 	
 	start: function()

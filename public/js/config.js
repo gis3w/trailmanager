@@ -5,6 +5,7 @@ $.extend(APP.config,{
 	breadCrumb: [],
 	fadeInDelay: 400,
 	fadeOutDelay: 100,
+	maxStringsLength: 128,
 	periodicRequestsIds: [],
 	serverSide: false,
 	

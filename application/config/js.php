@@ -18,6 +18,13 @@ return array(
 		//'../modules/bootstrap3/js/bootstrap.min.js',
 		//'../modules/bootstrap-3.1.1/js/bootstrap.min.js',
 		'../modules/bootstrap-3.2.0/js/bootstrap.min.js',
+		'../modules/Gallery-2.15.1/js/blueimp-helper.js',
+		'../modules/Gallery-2.15.1/js/jquery.blueimp-gallery.min.js',
+		/*'../modules/Gallery-2.15.1/js/blueimp-gallery-fullscreen.js',
+		'../modules/Gallery-2.15.1/js/blueimp-gallery-indicator.js',
+		'../modules/Gallery-2.15.1/js/blueimp-gallery-video.js',
+		'../modules/Gallery-2.15.1/js/blueimp-gallery-vimeo.js',
+		'../modules/Gallery-2.15.1/js/blueimp-gallery-youtube.js',*/
 		//'../modules/bootstrap-modal/js/bootstrap-modalmanager.js',
 		//'../modules/bootstrap-modal/js/bootstrap-modal.js',
 		//'../modules/pikachoose/lib/jquery.jcarousel.min.js',
