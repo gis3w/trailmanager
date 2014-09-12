@@ -295,6 +295,45 @@
       </Fk>
       <SchTrHis/>
     </Tbl>
+    <Tbl UsSo="1" nm="path_modes">
+      <Cm>Different throw type run the path </Cm>
+      <TblOpts>WITHOUT OIDS</TblOpts>
+      <Pk ClNs="id" nm="pkpath_modes"/>
+      <Cl au="1" df="nextval('path_modes_id_seq'::regclass)" nm="id" nu="0">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="mode" nu="0">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="description" nu="1">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <SchTrHis/>
+    </Tbl>
+    <Tbl UsSo="1" nm="path_modes_paths">
+      <TblOpts/>
+      <Pk ClNs="id" nm="pkpath_modes_paths"/>
+      <Cl au="1" df="" nm="id" nu="0">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="1"/>
+      </Cl>
+      <Cl au="0" df="" nm="path_id" nu="0">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="path_mode_id" nu="0">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Fk deAc="0" nm="fk_path_modes_paths_path_modes" prLkCl="id" upAc="3">
+        <PrTb mn="0" nm="path_modes" oe="1" sch="public" zr="0"/>
+        <CdTb mn="1" nm="path_modes_paths" oe="1" sch="public" zr="1"/>
+        <ClPr cdCl="path_mode_id" prCl="id"/>
+      </Fk>
+      <Fk deAc="0" nm="fk_path_modes_paths_paths" prLkCl="id" upAc="3">
+        <PrTb mn="0" nm="paths" oe="1" sch="public" zr="0"/>
+        <CdTb mn="1" nm="path_modes_paths" oe="1" sch="public" zr="1"/>
+        <ClPr cdCl="path_id" prCl="id"/>
+      </Fk>
+      <SchTrHis/>
+    </Tbl>
     <Tbl UsSo="1" nm="paths">
       <Cm>Tabella dei percorsi</Cm>
       <TblOpts>WITHOUT OIDS</TblOpts>
@@ -8045,6 +8084,7 @@ FROM itineraries</Sql>
     <Seq incr="1" nm="itineraries_id_seq"/>
     <Seq incr="1" nm="itineraries_paths_id_seq"/>
     <Seq incr="1" nm="itineraries_pois_id_seq"/>
+    <Seq incr="1" nm="path_modes_id_seq"/>
     <Seq incr="1" nm="paths_gid_seq"/>
     <Seq incr="1" nm="pois_gid_seq"/>
     <Seq incr="1" nm="roles_id_seq"/>
@@ -8108,6 +8148,8 @@ FROM itineraries</Sql>
     <TbGl bkCl="ff003333" sch="public" tbl="sections" x="532" y="444"/>
     <TbGl bkCl="ff003333" sch="public" tbl="sections_background_layers" x="498" y="367"/>
     <TbGl bkCl="ff003333" sch="public" tbl="global_configs" x="306" y="424"/>
+    <TbGl bkCl="ffff6666" sch="public" tbl="path_modes" x="1021" y="636"/>
+    <TbGl bkCl="ffff6666" sch="public" tbl="path_modes_paths" x="1028" y="558"/>
     <FkGl bkCl="ff000000" nm="public.capabilities_roles.fk_capabilities_roles_capabilities"/>
     <FkGl bkCl="ff000000" nm="public.capabilities_roles.fk_capabilities_roles_roles"/>
     <FkGl bkCl="ff000000" nm="public.image_itineraries.fk_image_itineraries_itineraries"/>
@@ -8117,6 +8159,8 @@ FROM itineraries</Sql>
     <FkGl bkCl="ff000000" nm="public.itineraries_paths.fk_itineraries_paths_paths"/>
     <FkGl bkCl="ff000000" nm="public.itineraries_pois.fk_itineraries_pois_itineraries"/>
     <FkGl bkCl="ff000000" nm="public.itineraries_pois.fk_itineraries_pois_pois"/>
+    <FkGl bkCl="ff000000" nm="public.path_modes_paths.fk_path_modes_paths_path_modes"/>
+    <FkGl bkCl="ff000000" nm="public.path_modes_paths.fk_path_modes_paths_paths"/>
     <FkGl bkCl="ff000000" nm="public.paths.fk_paths_typologies"/>
     <FkGl bkCl="ff000000" nm="public.pois.fk_pois_typologies"/>
     <FkGl bkCl="ff000000" nm="public.roles_users.fk_roles_users_roles"/>
@@ -8206,7 +8250,7 @@ FROM itineraries</Sql>
     </BasicOptionMgr>
   </DbDocOptionMgr>
   <OpenEditors>
-    <OpenEditor ClsNm="Diagram" fqn="null.diagramA" selected="0"/>
+    <OpenEditor ClsNm="Diagram" fqn="null.diagramA" selected="1"/>
   </OpenEditors>
   <TreePaths>
     <TreePath/>

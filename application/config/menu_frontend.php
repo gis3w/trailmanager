@@ -12,30 +12,30 @@ return array(
             'icon' => 'globe',
         )
 		*/
-		'info' => array(
+        'info' => array(
             'id' =>'info',
             'name' => __('Info'),
             'url' => NULL,
             'capability' => NULL,
             'icon' => NULL,
         ),
-		'itinerary' => array(
+        'itinerary' => array(
             'id' =>'itinerary',
-            'name' => __('Itinerary'),
+            'name' => __('Itineraries'),
             'url' => NULL,
             'capability' => NULL,
             'icon' => NULL,
         ),
-		'path' => array(
+        'path' => array(
             'id' =>'path',
-            'name' => __('Path'),
+            'name' => __('Paths'),
             'url' => NULL,
             'capability' => NULL,
             'icon' => NULL,
         ),
-		'poi' => array(
+        'poi' => array(
             'id' =>'poi',
-            'name' => __('Poi'),
+            'name' => __('Pois'),
             'url' => NULL,
             'capability' => NULL,
             'icon' => NULL,

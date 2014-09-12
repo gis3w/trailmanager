@@ -17,7 +17,7 @@ class Datastruct_Path extends Datastruct {
        array(
             'name' => 'path-foreign-data',
             'position' => 'right',
-            'fields' => array('typology_id','typologies','the_geom','color','width','image_path','video_path'),
+            'fields' => array('typology_id','typologies','path_modes','the_geom','color','width','image_path','video_path'),
         ),
     );
     
@@ -158,6 +158,20 @@ class Datastruct_Path extends Datastruct {
             'url_values' => '/jx/typology',
             'label' => __('Typologies'),
              'description' => __('Select one or more typology  for this point of interest'),
+             "table_show" => FALSE,
+        ));
+        
+        $fct['path_modes']  = array_replace($this->_columnStruct,array(
+            'data_type' => 'integer',
+            'form_input_type' => self::SELECT,
+            'foreign_mode' => self::MULTISELECT,
+            'foreign_key' => 'path_modes',
+            'foreign_toshow' => '$1',
+            'foreign_toshow_params' => array(
+                '$1' => 'mode',
+            ),
+            'label' => __('Modes'),
+             'description' => __('Select one or more modes for  this path'),
              "table_show" => FALSE,
         ));
         
