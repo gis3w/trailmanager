@@ -159,12 +159,12 @@ class Controller_Ajax_Search extends Controller_Ajax_Base_Crud_NoStrict_GET{
 
     public function _single_request_row($row) {
 
-        return [
+        return array(
               'type' => $row['type'],
               'id' => $row['id'],
               'title' => $row['title'], 
               'teaser' => $this->_search_excerpt($this->_toFind, $row['description'])
-          ];
+          );
 
     }
 
