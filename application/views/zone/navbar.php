@@ -30,9 +30,13 @@
         <?php if(isset($search) AND $search): ?>
 		<div class="navbar-form navbar-right" role="search">
 			<div class="form-group">
-			  <input type="text" class="form-control" placeholder="Search">
+				<div class="input-group">
+					<input type="text" class="form-control" placeholder="Search">
+					<span class="input-group-btn">
+						<button type="submit" class="btn btn-default"><i class="icon icon-search"></i></button>
+					</span>
+				</div>
 			</div>
-			<button type="submit" class="btn btn-default">Submit</button>
 		</div>
             <?php endif; ?>
         <ul class="nav navbar-nav navbar-right">

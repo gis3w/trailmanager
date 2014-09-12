@@ -1475,6 +1475,7 @@ $.extend(APP.utils,{
 		
 		var preff = (APP.utils.isset(t.prefix))? t.prefix+" " : "";
 		var suff = (APP.utils.isset(t.suffix))? " "+t.suffix : "";
+		data = (data.length > APP.config.maxStringsLength)? data.substr(0,APP.config.maxStringsLength-1)+"... " : data;
 		return preff+data+suff;
 	},
 	

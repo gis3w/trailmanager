@@ -175,6 +175,31 @@ $.extend(APP.map,
 		}
 	},
 	
+	highlightLayer: function(id)
+	{
+		var that = this;
+		var selectedOpacity = 1;
+		var unselectedOpacity = 0.4;
+		var defaultPathOpacity = 0.5;
+		var defaultMarkerOpacity = 1;
+		
+		var setOpacity = function(layer, op)
+		{
+			if (layer.setOpacity && $.isFunction(layer.setOpacity))
+				(op !== null)? layer.setOpacity(op) : layer.setOpacity(defaultMarkerOpacity);
+			else
+				(op !== null)? layer.setStyle({opacity: op}) : layer.setStyle({opacity: defaultPathOpacity});
+		};
+		
+		$.each(that.globalData[this.currentMapId].addedLayers, function(i,v)
+		{
+			if (id === null)
+				setOpacity(v.layer, null);
+			else
+				(i === id)? setOpacity(v.layer, selectedOpacity) : setOpacity(v.layer, unselectedOpacity);
+		});
+	},
+	
 	preserialize: function(name)
 	{
 		var value = "";
@@ -203,6 +228,8 @@ $.extend(APP.map,
 			[parseFloat(extent.miny), parseFloat(extent.minx)],
 			[parseFloat(extent.maxy), parseFloat(extent.maxx)]
 		]);
+		
+		this.globalData[this.currentMapId].map.invalidateSize(true);
 	},
 	
 	addLayer: function(layer, id)
@@ -460,10 +487,11 @@ $.extend(APP.map,
 		{
 			L.control.locate({
 				position: 'bottomright',  // set the location of the control
-				icon: "icon-direction",
+				icon: "icon-location-arrow",
+				locateOptions: {
+					enableHighAccuracy: true,
+				},
 			}).addTo(that.globalData[id].map);
-			
-			$('.leaflet-control-locate').find("a").append('<i class="icon icon-location-arrow"></i>')
 		}
 		
 		// sidebar
