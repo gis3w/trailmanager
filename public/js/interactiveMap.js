@@ -616,7 +616,9 @@ $.extend(APP.interactiveMap,
 		that.mySidebar.div.empty();	
 		
 		that.mySidebar.control = APP.map.sidebar.control;
-		
+		that.mySidebar.control.on('shown', function (e) {
+			that.navbars.top.find("#"+that.currentSection+"Button").parent().addClass("active");
+		});
 		that.mySidebar.control.show();
 		
 		that.mySidebar.control.on('hidden', function (e) {
