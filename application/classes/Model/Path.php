@@ -27,7 +27,7 @@ class Model_Path extends ORMGIS {
             'through' => 'path_modes_paths',
             'far_key' => 'path_mode_id'
         ),
-          'urls' => array(
+         'urls' => array(
             'model'   => 'Url_Path',
         ),
     );

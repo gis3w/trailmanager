@@ -717,31 +717,6 @@
       </Fk>
       <SchTrHis/>
     </Tbl>
-    <Tbl UsSo="1" nm="ulr_paths">
-      <TblOpts>WITHOUT OIDS</TblOpts>
-      <Pk ClNs="id" nm="pkulr_paths"/>
-      <Cl au="1" df="nextval('ulr_paths_id_seq'::regclass)" nm="id" nu="0">
-        <DT ds="BigInt" en="" id="-5" ln="null" sc="null" sg="1" un="0"/>
-      </Cl>
-      <Cl au="0" df="" nm="path_id" nu="0">
-        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
-      </Cl>
-      <Cl au="0" df="" nm="url" nu="0">
-        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
-      </Cl>
-      <Cl au="0" df="" nm="alias" nu="1">
-        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
-      </Cl>
-      <Cl au="0" df="" nm="description" nu="1">
-        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
-      </Cl>
-      <Fk deAc="0" nm="fk_ulr_paths_paths" prLkCl="id" upAc="3">
-        <PrTb mn="0" nm="paths" oe="1" sch="public" zr="0"/>
-        <CdTb mn="1" nm="ulr_paths" oe="1" sch="public" zr="1"/>
-        <ClPr cdCl="path_id" prCl="id"/>
-      </Fk>
-      <SchTrHis/>
-    </Tbl>
     <Tbl UsSo="1" nm="url_areas">
       <TblOpts>WITHOUT OIDS</TblOpts>
       <Pk ClNs="id" nm="pkurl_areas"/>
@@ -757,13 +732,38 @@
       <Cl au="0" df="" nm="alias" nu="1">
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
-      <Cl au="0" df="" nm="description" nu="1">
+      <Cl au="0" df="" nm="description_url" nu="1">
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
       <Fk deAc="0" nm="fk_url_areas_areas" prLkCl="id" upAc="3">
         <PrTb mn="0" nm="areas" oe="1" sch="public" zr="0"/>
         <CdTb mn="1" nm="url_areas" oe="1" sch="public" zr="1"/>
         <ClPr cdCl="area_id" prCl="id"/>
+      </Fk>
+      <SchTrHis/>
+    </Tbl>
+    <Tbl UsSo="1" nm="url_paths">
+      <TblOpts>WITHOUT OIDS</TblOpts>
+      <Pk ClNs="id" nm="pkurl_paths"/>
+      <Cl au="1" df="nextval('ulr_paths_id_seq'::regclass)" nm="id" nu="0">
+        <DT ds="BigInt" en="" id="-5" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="path_id" nu="0">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="url" nu="0">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="alias" nu="1">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="description_url" nu="1">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Fk deAc="0" nm="fk_ulr_paths_paths" prLkCl="id" upAc="3">
+        <PrTb mn="0" nm="paths" oe="1" sch="public" zr="0"/>
+        <CdTb mn="1" nm="url_paths" oe="1" sch="public" zr="1"/>
+        <ClPr cdCl="path_id" prCl="id"/>
       </Fk>
       <SchTrHis/>
     </Tbl>
@@ -782,7 +782,7 @@
       <Cl au="0" df="" nm="alias" nu="1">
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
-      <Cl au="0" df="" nm="description" nu="0">
+      <Cl au="0" df="" nm="description_url" nu="0">
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
       <Fk deAc="0" nm="fk_url_pois_pois" prLkCl="id" upAc="3">
@@ -8389,7 +8389,7 @@ FROM itineraries</Sql>
     <TbGl bkCl="ffff6666" sch="public" tbl="video_areas" x="1387" y="949"/>
     <TbGl bkCl="ff3399ff" sch="public" tbl="itineraries_areas" x="966" y="607"/>
     <TbGl bkCl="ffff6666" sch="public" tbl="url_pois" x="1547" y="21"/>
-    <TbGl bkCl="ffff6666" sch="public" tbl="ulr_paths" x="1568" y="575"/>
+    <TbGl bkCl="ffff6666" sch="public" tbl="url_paths" x="1568" y="575"/>
     <TbGl bkCl="ffff6666" sch="public" tbl="url_areas" x="1556" y="805"/>
     <FkGl bkCl="ff000000" nm="public.areas.fk_areas_typologies"/>
     <FkGl bkCl="ff000000" nm="public.capabilities_roles.fk_capabilities_roles_capabilities"/>
@@ -8418,8 +8418,8 @@ FROM itineraries</Sql>
     <FkGl bkCl="ff000000" nm="public.typologies_paths.fk_typologies_paths_typolgies"/>
     <FkGl bkCl="ff000000" nm="public.typologies_pois.fk_typologies_pois_pois"/>
     <FkGl bkCl="ff000000" nm="public.typologies_pois.fk_typologies_pois_typologies"/>
-    <FkGl bkCl="ff000000" nm="public.ulr_paths.fk_ulr_paths_paths"/>
     <FkGl bkCl="ff000000" nm="public.url_areas.fk_url_areas_areas"/>
+    <FkGl bkCl="ff000000" nm="public.url_paths.fk_ulr_paths_paths"/>
     <FkGl bkCl="ff000000" nm="public.url_pois.fk_url_pois_pois"/>
     <FkGl bkCl="ff000000" nm="public.user_datas.fk_user_datas_users"/>
     <FkGl bkCl="ff000000" nm="public.video_areas.fk_video_areas_areas"/>
@@ -8428,7 +8428,7 @@ FROM itineraries</Sql>
     <Notes/>
     <Zones/>
   </Dgm>
-  <RnmMgr NxRnmId="25">
+  <RnmMgr NxRnmId="29">
     <RnmCh ObjCls="Table" ParCls="Schema" ParNme="public" SupCls="" SupNme="">
       <Rnm id="2" nNm="itineraries" oNm="itinerari"/>
       <Rnm id="1" nNm="itinerari" oNm="itineraries"/>
@@ -8490,6 +8490,18 @@ FROM itineraries</Sql>
     </RnmCh>
     <RnmCh ObjCls="Column" ParCls="Table" ParNme="video_areas" SupCls="Schema" SupNme="public">
       <Rnm id="24" nNm="embed" oNm="file"/>
+    </RnmCh>
+    <RnmCh ObjCls="Column" ParCls="Table" ParNme="url_pois" SupCls="Schema" SupNme="public">
+      <Rnm id="25" nNm="description_url" oNm="description"/>
+    </RnmCh>
+    <RnmCh ObjCls="Column" ParCls="Table" ParNme="url_paths" SupCls="Schema" SupNme="public">
+      <Rnm id="26" nNm="description_url" oNm="description"/>
+    </RnmCh>
+    <RnmCh ObjCls="Column" ParCls="Table" ParNme="url_areas" SupCls="Schema" SupNme="public">
+      <Rnm id="27" nNm="description_url" oNm="description"/>
+    </RnmCh>
+    <RnmCh ObjCls="Table" ParCls="Schema" ParNme="public" SupCls="" SupNme="">
+      <Rnm id="28" nNm="url_paths" oNm="ulr_paths"/>
     </RnmCh>
   </RnmMgr>
   <DbDocOptionMgr>

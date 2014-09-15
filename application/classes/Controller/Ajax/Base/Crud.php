@@ -328,6 +328,29 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
         return $res;
     }
     
+    /**
+     * Get data from a serialized multifield datastruct field
+     * @param type $field
+     * @return array
+     */
+    protected function _get_subform_multifield_data($field)
+    {        
+        $res = array();
+       $rows = preg_split("/;/",$_POST[$field]);
+       foreach($rows as $row)
+       {
+           $rowArr = array();
+           if(!$row)
+               continue;
+           
+           parse_str($row,$rowArr);           
+           $res[]= $rowArr;           
+           
+       }
+
+        return $res;
+    }
+    
 //    /**
 //     * Metodo per l'aggiunta delle regole di validazione dei sub form
 //     * @param array $data

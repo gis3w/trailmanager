@@ -7,6 +7,10 @@ class Controller_Ajax_Admin_Path extends Controller_Ajax_Admin_Sheet_Base{
     
     protected $_datastruct = "Path";
     
+    protected $_url_multifield_postname = 'url_path';
+    protected $_url_multifield_nameORM = 'Url_Path';
+    protected $_url_multifield_foreignkey = 'path_id';
+    
   
     protected function _data_edit() {
         parent::_data_edit();
