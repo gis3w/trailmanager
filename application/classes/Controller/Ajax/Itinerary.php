@@ -16,7 +16,7 @@ class Controller_Ajax_Itinerary extends Controller_Ajax_Base_Crud_GET{
         $toRes = parent::_single_request_row($orm);
         
         // si aggiungo i codici ateco
-        foreach(array('pois','paths') as $alias)
+        foreach(array('pois','paths','areas') as $alias)
         {
             $datas = $orm->$alias->find_all();
             foreach($datas as $data)

@@ -14,6 +14,7 @@ class Datastruct_Url_Poi extends Datastruct {
                 ),
                  "poi_id" => array(
                     'unset' => TRUE,
+                     'subform_show' => FALSE,
                 ),
             );
       }

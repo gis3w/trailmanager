@@ -18,7 +18,7 @@ class Datastruct_Poi extends Datastruct {
        array(
             'name' => 'poi-foreign-data',
             'position' => 'right',
-            'fields' => array('typology_id','typologies','the_geom','image_poi','video_poi','url_pois'),
+            'fields' => array('typology_id','typologies','the_geom','image_poi','video_poi','url_poi'),
         ),
     );
     
@@ -141,7 +141,7 @@ class Datastruct_Poi extends Datastruct {
              "table_show" => FALSE,
         ));
         
-        $fct['url_pois'] = array_replace($this->_columnStruct,array(
+        $fct['url_poi'] = array_replace($this->_columnStruct,array(
              
             'data_type' => 'multifield',
             'label' => __('Urls pois'),

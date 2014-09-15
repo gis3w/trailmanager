@@ -65,6 +65,7 @@ class Controller_Ajax_Data_Base extends Controller_Ajax_Base_Crud_NoStrict_GET{
                // si aggiungon gli id dei paths e dei pois
                 $toRes['paths'] = array_keys($orm->paths->where('publish','IS',DB::expr('true'))->find_all()->as_array('id'));
                 $toRes['pois'] = array_keys($orm->pois->where('publish','IS',DB::expr('true'))->find_all()->as_array('id'));
+                $toRes['areas'] = array_keys($orm->areas->where('publish','IS',DB::expr('true'))->find_all()->as_array('id'));
              break;
          
             default:
