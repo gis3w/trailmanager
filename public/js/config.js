@@ -586,7 +586,7 @@ $.extend(APP.config,{
 		this.setFilterDialogsDiv();
 		this.setMenu();
 				
-		$(".navbar-nav:first").find("a:first").click();
+		//$(".navbar-nav:first").find("a:first").click();
 		return;
 	}
 });

@@ -2,7 +2,7 @@ $.extend(APP.interactiveMap,
 {
 	previousSection: null,
 	currentSection: null,
-	selectedElement: null,
+	currentItinerary: null,
 	myData: {},
 	body: null,
 	navbars: {
@@ -17,6 +17,7 @@ $.extend(APP.interactiveMap,
 	},
 	firstExtent: {},
 	bouncingMarkers: false,
+	searchUrl: '/jx/search?tofind=',
 	
 	getObjectTitle: function(section, id)
 	{
@@ -82,20 +83,17 @@ $.extend(APP.interactiveMap,
 	onElementClick: function(element, section, id)
 	{
 		var that = this;
-		that.selectedElementId = "item_"+section+"_"+id;
-		that.highlightLayer(section, id);
+		if (that.currentSection != "itinerary")
+			that.highlightLayer(section, id);
 		that.zoomAt(section, id);
-		if (that.itemsOnSidebar && L.control.sidebar)
+		if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
 		{
-			that.mySidebar.div.find(".active").removeClass("active");
-			that.mySidebar.div.find("#"+that.selectedElementId).addClass("active");
 			that.mySidebar.control.hide();
 		}
 		
 		/*
 		that.showBottomBar(section, id, function()
 		{
-			that.selectedElementId = null;
 			that.hideBottomBar();
 			that.resetHighlightLayer();
 			APP.map.showAllLayers();
@@ -133,11 +131,20 @@ $.extend(APP.interactiveMap,
 								</a>\
 								<div class="media-body">\
 									<h4 class="media-heading">'+that.getObjectTitle(section, id)+'</h4>\
-									<button type="button" class="btn btn-link">'+APP.i18n.translate('details')+'</button>\
+									<button type="button" class="btn btn-link popupDetailsBtn">'+APP.i18n.translate('details')+'</button>\
 								</div>\
 							</div>';
 							
 				element.bindPopup(media, po);
+				
+				element.on('popupopen', function(a){
+					var myBtn = $(a.popup._container).find(".popupDetailsBtn");
+					myBtn.off("click").click(function(){
+						//a.layer.closePopup();
+						that.showInformation(section, id);
+					});
+				});
+				
 				element.openPopup();
 			}
 		}
@@ -166,56 +173,62 @@ $.extend(APP.interactiveMap,
 		
 		var myTitle = that.getObjectTitle(section, id);
 		
-		var botNav = that.body.find(".navbar-fixed-bottom");
-		if (botNav.length > 0)
+		that.navbars.bottom = that.body.find(".navbar-fixed-bottom");
+		if (that.navbars.bottom.length > 0)
 		{
 			that.body.find("#mainContent").height(that.body.find("#mainContent").height()+botNav.height());
-			botNav.remove();
+			that.navbars.bottom.remove();
 		}
 		
-		botNav = $(	'<nav class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">\
-						<div class="container-fluid">\
-							<div class="navbar-header">\
-								<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bottomNavbarCollapse">\
-									<span class="sr-only">Toggle navigation</span>\
-									<span class="icon-bar"></span>\
-									<span class="icon-bar"></span>\
-									<span class="icon-bar"></span>\
-								</button>\
-								<a class="navbar-brand" href="#" style="display:none; color:white">\
-									<span class="hidden-sm hidden-xs">'+APP.i18n.translate(section)+': </span> '+myTitle+'\
-								</a>\
-							</div>\
-							<div id="bottomNavbarCollapse" class="navbar-collapse collapse">\
-								<ul class="nav navbar-nav navbar-right">\
-									<li><a href="#" class="detailsButton"><i class="icon icon-search"></i> '+APP.i18n.translate("details")+'</a></li>\
-									<li><a href="#" class="closeButton"><i class="icon icon-remove"></i> '+APP.i18n.translate("close")+'</a></li>\
-								</ul>\
-							</div>\
-						</div>\
-					</nav>');
+		that.navbars.bottom = $('<nav class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">\
+									<div class="container-fluid">\
+										<div class="navbar-header">\
+											<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bottomNavbarCollapse">\
+												<span class="sr-only">Toggle navigation</span>\
+												<span class="icon-bar"></span>\
+												<span class="icon-bar"></span>\
+												<span class="icon-bar"></span>\
+											</button>\
+											<a class="navbar-brand" href="#" style="display:none; color:white">\
+												<span class="hidden-sm hidden-xs">'+APP.i18n.translate(section)+': </span> '+myTitle+'\
+											</a>\
+										</div>\
+										<div id="bottomNavbarCollapse" class="navbar-collapse collapse">\
+											<ul class="nav navbar-nav navbar-right">\
+												<li><a href="#" class="detailsButton"><i class="icon icon-search"></i> '+APP.i18n.translate("details")+'</a></li>\
+												<li><a href="#" class="closeButton"><i class="icon icon-remove"></i> '+APP.i18n.translate("close")+'</a></li>\
+											</ul>\
+										</div>\
+									</div>\
+								</nav>');
 		
 		/*<li><a href="#"><button type="button" class="btn btn-success detailsButton"><i class="icon icon-search"></i> '+APP.i18n.translate("details")+'</button></a></li>\
 		<li><a href="#"><button type="button" class="btn btn-default closeButton"><i class="icon icon-remove"></i> '+APP.i18n.translate("close")+'</button></a></li>\*/
 					
-		botNav.find(".detailsButton").click(function(){
+		that.navbars.bottom.find(".detailsButton").click(function(){
+			var c = that.navbars.bottom.find('#bottomNavbarCollapse');
+			c.collapse('hide');
 			that.showInformation(section, id, function()
 			{
 				
 			});
 		});
 		
-		botNav.find(".closeButton").click(function(){
+		that.navbars.bottom.find(".closeButton").click(function(){
+			that.currentItinerary = null;
 			that.hideBottomBar();
+			APP.map.showAllLayers();
+			that.resetHighlightLayer();
+			APP.map.setExtent(that.firstExtent);
 			if (APP.utils.isset(onCloseCallback) && $.isFunction(onCloseCallback))
 				onCloseCallback();
 		});
 		
-		that.body.append(botNav);
+		that.body.append(that.navbars.bottom);
 		var h = that.body.find("#mainContent").height();
-		that.body.find("#mainContent").height(h-botNav.height());
+		that.body.find("#mainContent").height(h-that.navbars.bottom.height());
 		
-		botNav.find(".navbar-brand").click(function(){
+		that.navbars.bottom.find(".navbar-brand").click(function(){
 			that.body.find("#bottomNavbarCollapse").collapse("toggle");
 		}).fadeIn(1500);
 	},
@@ -231,6 +244,7 @@ $.extend(APP.interactiveMap,
 			that.body.find("#mainContent").height(h+botNav.height());
 			botNav.remove();
 		}
+		that.navbars.bottom = null;
 	},
 	
 	openInfo: function(section, id, onCloseCallback)
@@ -552,10 +566,12 @@ $.extend(APP.interactiveMap,
 		{
 			case "poi":
 				var maxZoom = APP.map.globalData[APP.map.currentMapId].map.getMaxZoom();
+				//var currentZoom = APP.map.globalData[APP.map.currentMapId].map.getZoom();
 				var latLng = [that.myData[section][id].geo.geoJSON.coordinates[1], that.myData[section][id].geo.geoJSON.coordinates[0]];
-				APP.map.setGlobalExtent(that.myData[section][id].geo.extent);
-				APP.map.setExtent(APP.map.globalData[APP.map.currentMapId].globalExtent);
-				APP.map.globalData[APP.map.currentMapId].map.setView(latLng, maxZoom, {animate: true});
+				//APP.map.setGlobalExtent(that.myData[section][id].geo.extent);
+				//APP.map.setExtent(APP.map.globalData[APP.map.currentMapId].globalExtent);
+				//APP.map.globalData[APP.map.currentMapId].map.setView(latLng, maxZoom, {animate: true});
+				APP.map.globalData[APP.map.currentMapId].map.panTo(latLng);
 				return;
 			case "path":
 				APP.map.setGlobalExtent(that.myData[section][id].geo.extent);
@@ -585,12 +601,6 @@ $.extend(APP.interactiveMap,
 		}
 		else
 		{
-			/*
-			that.hideBottomBar();
-			APP.map.showAllLayers();
-			APP.map.setExtent(that.firstExtent);
-			*/
-			
 			if (that.itemsOnSidebar  && L.control.sidebar)
 				that.showItemsOnSidebar(section, callback);
 			else
@@ -606,6 +616,7 @@ $.extend(APP.interactiveMap,
 		that.mySidebar.div.empty();	
 		
 		that.mySidebar.control = APP.map.sidebar.control;
+		
 		that.mySidebar.control.show();
 		
 		that.mySidebar.control.on('hidden', function (e) {
@@ -627,10 +638,11 @@ $.extend(APP.interactiveMap,
 									  </div>\
 									</div>');
 					
-					var a = $('<a id="item_'+section+'_'+v.data.id+'" href="#" class="list-group-item '+((that.selectedElementId === "item_"+section+"_"+v.data.id)? "active" : "")+'"></a>');
+					var a = $('<a id="item_'+section+'_'+v.data.id+'" href="#" class="list-group-item '+((that.currentItinerary === v.data.id)? "active" : "")+'"></a>');
 					a.data(v).append(media);
 					a.click(function(){
 						var params = $(this).data();
+						that.currentItinerary = params.data.id;
 						APP.config.removeActiveClasses($(this).parents(".list-group:first"), "a");
 						$(this).addClass("active");
 						that.mySidebar.control.hide();
@@ -646,11 +658,11 @@ $.extend(APP.interactiveMap,
 						});
 						
 						that.showBottomBar(section, params.data.id, function(){
-							that.hideBottomBar();
-							APP.map.showAllLayers();
-							APP.map.setExtent(that.firstExtent);
 							that.mySidebar.div.find(".active").removeClass("active");
-							that.mySidebar.control.show();
+							that.mySidebar.control.hide();
+							that.showItems(that.currentSection)
+							/*that.navbars.top.find("li").removeClass("active");
+							that.navbars.top.find("#"+that.currentSection+"Button").parent().addClass("active");*/
 						});
 						
 						that.zoomAt(section, params.data.id);
@@ -685,7 +697,9 @@ $.extend(APP.interactiveMap,
 					accordion.append(header).append(content);
 				});
 				$.each(that.myData[section], function(i, v)
-				{				
+				{
+					if (that.currentItinerary &&  $.inArray(that.currentItinerary, that.myData[section][i].data.itineraries) === -1)
+						return true;
 					var container = accordion.find("#collapse_"+section+"_"+v.data.typology_id);
 					if (container.find(".no_result").length>0)
 						container.find(".no_result").remove();
@@ -702,7 +716,7 @@ $.extend(APP.interactiveMap,
 									  </div>\
 									</div>');					
 					
-					var row = $('<a id="item_'+section+'_'+v.data.id+'" href="#" class="list-group-item '+((that.selectedElementId === "item_"+section+"_"+v.data.id)? "active" : "")+'"></a>');
+					var row = $('<a id="item_'+section+'_'+v.data.id+'" href="#" class="list-group-item"></a>');
 					row.data(v).click(function(){
 						that.onElementClick($(this), section, v.data.id);
 					});
@@ -791,7 +805,7 @@ $.extend(APP.interactiveMap,
 									  </div>\
 									</div>');
 					
-					var a = $('<a item_'+section+'_'+v.data.id+' href="#" class="list-group-item '+((that.selectedElementId === "item_"+section+"_"+v.data.id)? "active" : "")+'"></a>');
+					var a = $('<a item_'+section+'_'+v.data.id+' href="#" class="list-group-item '+((that.currentItinerary === v.data.id)? "active" : "")+'"></a>');
 					a.data(v).append(media);
 					a.click(function(){
 						var params = $(this).data();
@@ -810,11 +824,9 @@ $.extend(APP.interactiveMap,
 						});
 						
 						that.showBottomBar(section, params.data.id, function(){
-							that.hideBottomBar();
-							APP.map.showAllLayers();
-							APP.map.setExtent(that.firstExtent);
 							that.body.find("#modal-"+section).find(".active").removeClass("active");
-							that.body.find("#modal-"+section).modal('show');
+							that.body.find("#modal-"+section).modal('hide');
+							that.showItems(that.currentSection);
 						});
 						
 						that.zoomAt(section, params.data.id);
@@ -875,7 +887,7 @@ $.extend(APP.interactiveMap,
 									  </div>\
 									</div>');
 										
-					var row = $('<a id="item_'+section+'_'+v.data.id+'" href="#" class="list-group-item '+((that.selectedElementId === "item_"+section+"_"+v.data.id)? "active" : "")+'"</a>');
+					var row = $('<a id="item_'+section+'_'+v.data.id+'" href="#" class="list-group-item"</a>');
 					row.data(v).click(function(){
 						that.onElementClick($(this), section, v.data.id);
 					});
@@ -1189,7 +1201,8 @@ $.extend(APP.interactiveMap,
 		that.navbars.top = that.body.find(".navbar-nav:first"); // navbar-nav
 		that.navbars.top.find("a").click(function()
 		{
-			that.navbars.top.find(".navbar-collapse").collapse('hide');
+			var c = that.navbars.top.parents(".navbar-collapse:first");
+			c.collapse('hide');
 			
 			if ($(this).parents("li:first").hasClass("disabled"))
 				return false;
@@ -1202,6 +1215,30 @@ $.extend(APP.interactiveMap,
 			that.previousSection = that.currentSection;
 			that.currentSection = section;
 			that.showItems(section);
+		});
+		var bt = that.body.find('#topNavbarSearch button');		
+		bt.click(function(){
+			var inp = that.body.find('#topNavbarSearch input');
+			$.ajax({
+				type: 'GET',
+				url: that.searchUrl+inp.val(),
+				dataType: 'json',
+				success: function(data)
+				{
+					if (!APP.utils.checkError(data.error, null))
+					{
+						
+					}
+					else
+					{
+						APP.utils.showErrMsg(data);
+					}
+				},
+				error: function(result)
+				{
+					APP.utils.showErrMsg(result);
+				}
+			});
 		});
 		
 		$("#mainContent").css({"height":"100%","width":"100%","margin-bottom":"0px"});		
