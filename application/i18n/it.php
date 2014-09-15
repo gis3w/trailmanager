@@ -37,11 +37,13 @@ return array(
     'Name' => 'Nome',
     'Surname' => 'Cognome',
     'Description' => 'Descrizione',
+    'description' => 'descrizione',
     'Itineraries' => 'Itinerari',
     'Published' => 'Pubblicato',
    
  
     'Close' => 'Chiudi',    
+    'close' => 'Chiudi',
     'Tasks' => 'Mansioni',
    
     'first' => 'primo',
@@ -57,6 +59,8 @@ return array(
     
     'Color' => 'Colore',
     'Width' => 'Larghezza',
+    
+    
     
     //TRADUZIONI DELLE VALIDAZIONI
     ':field must not be empty' => ':field non deve essere vuoto',
@@ -87,15 +91,20 @@ return array(
     
     'Title' => 'Titolo',
     'Length' => 'Lunghezza',
+    'length' => 'Lunghezza',
     'Altitude gap' => 'Dislivello',
+    'altitude_gap' => 'Dislivello',
     'General features' => 'Caratteristiche generali',
     'Information url' => 'URL info',
     'Typologies' => 'Tipologie',
+    'typologies' => 'tipologie',
     'Geodata' => 'Dato spaziale',
     'Accessibility' => 'Accessibilità',
     'Reasons' => 'Motivi di interesse',
     'Main typology' => 'Tipologia principale',
+    'typology_id' => 'Tipologia principale',
     'Period schedule' => 'Periodi e orari',
+    'general_informations' => 'Informazioni generali', 
     
     'actions' => 'Azioni',
     

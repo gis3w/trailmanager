@@ -9,5 +9,6 @@ class Controller_Ajax_Base_Crud_Directory extends Controller_Ajax_Base_Crud{
         
         parent::_ACL();
     }
+    
 
 }

@@ -131,10 +131,11 @@ Kohana::modules(array(
                 'geo'        => MODPATH.'geo',        // Geo funaction helper
 	// 'unittest'   => MODPATH.'unittest',   // Unit testing
 	'userguide'  => MODPATH.'userguide',  // User guide and API documentation
-            'formo'  => MODPATH.'formo',  
-            'gis3w' => MODPATH.'gis3w',
-            'restapi'  => MODPATH.'restapi',  // REST api systems
-            'tree'  => MODPATH.'tree',  // tree data sctructure
+                'formo'  => MODPATH.'formo',  
+                'gis3w' => MODPATH.'gis3w',
+                'restapi'  => MODPATH.'restapi',  // REST api systems
+                'tree'  => MODPATH.'tree',  // tree data sctructure
+                'pagination' => MODPATH.'pagination',
 	));
 
 /**

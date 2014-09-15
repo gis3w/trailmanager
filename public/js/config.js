@@ -5,6 +5,7 @@ $.extend(APP.config,{
 	breadCrumb: [],
 	fadeInDelay: 400,
 	fadeOutDelay: 100,
+	maxStringsLength: 128,
 	periodicRequestsIds: [],
 	serverSide: false,
 	
@@ -459,7 +460,6 @@ $.extend(APP.config,{
 		if (!that.localConfig.menu)
 		{
 			APP.interactiveMap.start();
-			APP.map.setGeolocation($("body").find('#main_navbar_admin #locateButtonButton'));
 			return;
 		}
 		$.each(that.localConfig.menu, function(i, v){

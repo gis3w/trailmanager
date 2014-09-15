@@ -22,6 +22,11 @@ class Model_Path extends ORMGIS {
           'videos' => array(
             'model'   => 'Video_Path',
         ),
+         'modes' => array(
+            'model'   => 'Path_Mode',
+            'through' => 'path_modes_paths',
+            'far_key' => 'path_mode_id'
+        ),
     );
     
     public function labels() {
