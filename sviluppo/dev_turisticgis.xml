@@ -4,6 +4,24 @@
   <DefTblOpts/>
   <DocFolder>/home/www/turisticgis/sviluppo</DocFolder>
   <Sch Cm="standard public schema" nm="public">
+    <Tbl UsSo="1" nm="areas">
+      <Cm>Polygon area entries</Cm>
+      <TblOpts/>
+      <Pk ClNs="id" nm="pkareas"/>
+      <Cl au="1" df="" nm="id" nu="0">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="1"/>
+      </Cl>
+      <Cl au="0" df="" nm="title" nu="0">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="description" nu="1">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="publish" nu="0">
+        <DT ds="Boolean" en="" id="16" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <SchTrHis/>
+    </Tbl>
     <Tbl UsSo="1" nm="background_layers">
       <TblOpts>WITHOUT OIDS</TblOpts>
       <Pk ClNs="id" nm="pkbackground_layers"/>
@@ -308,13 +326,16 @@
       <Cl au="0" df="" nm="description" nu="1">
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
+      <Cl au="0" df="" nm="icon" nu="1">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
       <SchTrHis/>
     </Tbl>
     <Tbl UsSo="1" nm="path_modes_paths">
-      <TblOpts/>
+      <TblOpts>WITHOUT OIDS</TblOpts>
       <Pk ClNs="id" nm="pkpath_modes_paths"/>
-      <Cl au="1" df="" nm="id" nu="0">
-        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="1"/>
+      <Cl au="1" df="nextval('path_modes_paths_id_seq'::regclass)" nm="id" nu="0">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
       <Cl au="0" df="" nm="path_id" nu="0">
         <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
@@ -549,6 +570,20 @@
       </Cl>
       <Cl au="0" df="" nm="marker" nu="1">
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <SchTrHis/>
+    </Tbl>
+    <Tbl UsSo="1" nm="typologies_areas">
+      <TblOpts/>
+      <Pk ClNs="id" nm="pktypologies_areas"/>
+      <Cl au="1" df="" nm="id" nu="0">
+        <DT ds="BigInt" en="" id="-5" ln="null" sc="null" sg="1" un="1"/>
+      </Cl>
+      <Cl au="0" df="" nm="area_id" nu="0">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="typology_id" nu="0">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
       <SchTrHis/>
     </Tbl>
@@ -8085,6 +8120,7 @@ FROM itineraries</Sql>
     <Seq incr="1" nm="itineraries_paths_id_seq"/>
     <Seq incr="1" nm="itineraries_pois_id_seq"/>
     <Seq incr="1" nm="path_modes_id_seq"/>
+    <Seq incr="1" nm="path_modes_paths_id_seq"/>
     <Seq incr="1" nm="paths_gid_seq"/>
     <Seq incr="1" nm="pois_gid_seq"/>
     <Seq incr="1" nm="roles_id_seq"/>
@@ -8124,32 +8160,34 @@ FROM itineraries</Sql>
     </DiaProps>
     <TbGl bkCl="ffccccff" sch="public" tbl="capabilities" x="354" y="147"/>
     <TbGl bkCl="ffccccff" sch="public" tbl="capabilities_roles" x="98" y="145"/>
-    <TbGl bkCl="ffccccff" sch="public" tbl="geometry_columns" x="1743" y="149"/>
+    <TbGl bkCl="ffccccff" sch="public" tbl="geometry_columns" x="1952" y="138"/>
     <TbGl bkCl="ffccccff" sch="public" tbl="roles" x="360" y="215"/>
     <TbGl bkCl="ffccccff" sch="public" tbl="roles_users" x="371" y="308"/>
-    <TbGl bkCl="ffccccff" sch="public" tbl="spatial_ref_sys" x="1758" y="57"/>
+    <TbGl bkCl="ffccccff" sch="public" tbl="spatial_ref_sys" x="1942" y="49"/>
     <TbGl bkCl="ffccccff" sch="public" tbl="user_datas" x="93" y="399"/>
     <TbGl bkCl="ffccccff" sch="public" tbl="users" x="92" y="230"/>
     <TbGl bkCl="ffff6666" sch="public" tbl="itineraries" x="670" y="119"/>
-    <TbGl bkCl="ffff6666" sch="public" tbl="pois" x="1044" y="114"/>
-    <TbGl bkCl="ffff6666" sch="public" tbl="paths" x="1015" y="356"/>
+    <TbGl bkCl="ffff6666" sch="public" tbl="pois" x="1057" y="41"/>
+    <TbGl bkCl="ffff6666" sch="public" tbl="paths" x="987" y="249"/>
     <TbGl bkCl="ffff6666" sch="public" tbl="itineraries_pois" x="867" y="121"/>
-    <TbGl bkCl="ffff6666" sch="public" tbl="itineraries_paths" x="832" y="311"/>
-    <TbGl bkCl="ffcccccc" sch="public" tbl="typologies" x="1549" y="212"/>
-    <TbGl bkCl="ffcccccc" sch="public" tbl="typologies_paths" x="1294" y="390"/>
-    <TbGl bkCl="ffcccccc" sch="public" tbl="typologies_pois" x="1279" y="294"/>
+    <TbGl bkCl="ffff6666" sch="public" tbl="itineraries_paths" x="818" y="284"/>
+    <TbGl bkCl="ffcccccc" sch="public" tbl="typologies" x="1849" y="376"/>
+    <TbGl bkCl="ffcccccc" sch="public" tbl="typologies_paths" x="1654" y="337"/>
+    <TbGl bkCl="ffcccccc" sch="public" tbl="typologies_pois" x="1656" y="235"/>
     <TbGl bkCl="ff3399ff" sch="public" tbl="i18n" x="699" y="333"/>
     <TbGl bkCl="ff003333" sch="public" tbl="background_layers" x="544" y="241"/>
     <TbGl bkCl="ffff6666" sch="public" tbl="image_pois" x="1283" y="26"/>
-    <TbGl bkCl="ffff6666" sch="public" tbl="image_paths" x="1286" y="627"/>
+    <TbGl bkCl="ffff6666" sch="public" tbl="image_paths" x="1341" y="380"/>
     <TbGl bkCl="ffff6666" sch="public" tbl="video_pois" x="1291" y="133"/>
-    <TbGl bkCl="ffff6666" sch="public" tbl="video_paths" x="1290" y="494"/>
+    <TbGl bkCl="ffff6666" sch="public" tbl="video_paths" x="1287" y="253"/>
     <TbGl bkCl="ffff6666" sch="public" tbl="image_itineraries" x="862" y="11"/>
     <TbGl bkCl="ff003333" sch="public" tbl="sections" x="532" y="444"/>
     <TbGl bkCl="ff003333" sch="public" tbl="sections_background_layers" x="498" y="367"/>
     <TbGl bkCl="ff003333" sch="public" tbl="global_configs" x="306" y="424"/>
-    <TbGl bkCl="ffff6666" sch="public" tbl="path_modes" x="1021" y="636"/>
-    <TbGl bkCl="ffff6666" sch="public" tbl="path_modes_paths" x="1028" y="558"/>
+    <TbGl bkCl="ffff6666" sch="public" tbl="path_modes" x="1172" y="470"/>
+    <TbGl bkCl="ffff6666" sch="public" tbl="path_modes_paths" x="980" y="460"/>
+    <TbGl bkCl="ffff6666" sch="public" tbl="areas" x="991" y="589"/>
+    <TbGl bkCl="ffccccff" sch="public" tbl="typologies_areas" x="1443" y="537"/>
     <FkGl bkCl="ff000000" nm="public.capabilities_roles.fk_capabilities_roles_capabilities"/>
     <FkGl bkCl="ff000000" nm="public.capabilities_roles.fk_capabilities_roles_roles"/>
     <FkGl bkCl="ff000000" nm="public.image_itineraries.fk_image_itineraries_itineraries"/>
@@ -8177,7 +8215,7 @@ FROM itineraries</Sql>
     <Notes/>
     <Zones/>
   </Dgm>
-  <RnmMgr NxRnmId="22">
+  <RnmMgr NxRnmId="24">
     <RnmCh ObjCls="Table" ParCls="Schema" ParNme="public" SupCls="" SupNme="">
       <Rnm id="2" nNm="itineraries" oNm="itinerari"/>
       <Rnm id="1" nNm="itinerari" oNm="itineraries"/>
@@ -8233,6 +8271,10 @@ FROM itineraries</Sql>
       <Rnm id="21" nNm="global_configs" oNm="global_config"/>
       <Rnm id="20" nNm="global_config" oNm="globals"/>
     </RnmCh>
+    <RnmCh ObjCls="Column" ParCls="Table" ParNme="path_modes_paths" SupCls="Schema" SupNme="public">
+      <Rnm id="23" nNm="path_id" oNm="mode_id"/>
+      <Rnm id="22" nNm="mode_id" oNm="path_id"/>
+    </RnmCh>
   </RnmMgr>
   <DbDocOptionMgr>
     <BasicOptionMgr>
@@ -8256,6 +8298,7 @@ FROM itineraries</Sql>
     <TreePath/>
     <TreePath>/Schemas (1)</TreePath>
     <TreePath>/Schemas (1)/public</TreePath>
+    <TreePath>/Schemas (1)/public/Tables (30)</TreePath>
     <TreePath>/Schemas (1)/public/Views (2)</TreePath>
   </TreePaths>
 </Db>
