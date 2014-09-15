@@ -168,12 +168,6 @@ Route::set('jx/upload', 'jx/upload(/<controller>(/<id>))')
                     'action'     => 'index',
 	));
 
-Route::set('download', 'download(/<controller>(/<obj_id>(/<file>)))',array('file' => '.*'))
-	->defaults(array(
-                        'directory' => 'Download',
-                        'controller' => 'home',
-                        'action'     => 'index',
-	));
 
 Route::set('jx/document', 'jx/document(/<controller>(/<id>(/<filtro>)))')
 	->defaults(array(
