@@ -15,7 +15,7 @@ class Datastruct_Itinerary extends Datastruct {
         array(
             'name' => 'itinerary-foreign-data',
             'position' => 'right',
-            'fields' => array('pois','paths','the_geom','image_itinerary'),
+            'fields' => array('pois','paths','areas','the_geom','image_itinerary'),
         ),
        
     );
@@ -60,6 +60,13 @@ class Datastruct_Itinerary extends Datastruct {
             'label' => __('Paths'),
             'change' => '/jx/admin/change/itinerarymap?path_id=',
              'description' => __('Select one or more paths  for this itinerary'),
+        ));
+        
+         $fct['areas']  = array_replace($fct['pois'],array(
+            'url_values' => '/jx/admin/area',
+            'label' => __('Areas'),
+            'change' => '/jx/admin/change/itinerarymap?area_id=',
+             'description' => __('Select one or more areas  for this itinerary'),
         ));
         
         $fct['image_itinerary'] = array_replace($this->_columnStruct, array(

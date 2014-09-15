@@ -1,24 +1,23 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Datastruct_Poi extends Datastruct {
+class Datastruct_Area extends Datastruct {
     
-    protected $_nameORM = "Poi";
+    protected $_nameORM = "Area";
     protected $_typeORM = "ORMGIS";
-
-
-    public $icon = 'suitcase';
+    
+    public $icon = 'location-arrow';
     public $filter = TRUE;
 
     public $groups = array(
         array(
-            'name' => 'poi-data',
+            'name' => 'area-data',
             'position' => 'left',
-            'fields' => array('id','publish','title','description','reason','period_schedule','accessibility','information_url'),
+            'fields' => array('id','title','publish','description','plus_information'),
         ),
        array(
-            'name' => 'poi-foreign-data',
+            'name' => 'area-foreign-data',
             'position' => 'right',
-            'fields' => array('typology_id','typologies','the_geom','image_poi','video_poi','url_pois'),
+            'fields' => array('typology_id','typologies','the_geom','color','image_area','video_area'),
         ),
     );
     
@@ -36,23 +35,22 @@ class Datastruct_Poi extends Datastruct {
                     'form_input_type' => self::TEXTAREA,
                     'editor' => TRUE,
                 ),
-                 "reason" => array(
+                "plus_information" => array(
                     'form_input_type' => self::TEXTAREA,
                     'editor' => TRUE,
                 ),
-                 "accessibility" => array(
-                    'form_input_type' => self::TEXTAREA,
-                    'editor' => TRUE,
+                "color" => array(
+                    "form_input_type" => self::MAPBOX_COLOR,
+                    "class" => "color-path",
                 ),
-                "period_schedule" => array(
-                    'form_input_type' => self::TEXTAREA,
-                    'editor' => TRUE,
+                 "width" => array(
+                    "default_value" => 3,
                 ),
-                "the_geom" => array(
+                 "the_geom" => array(
                     'form_input_type' => self::MAPBOX,
                     'map_box_editing' => TRUE,
                     'map_box_editing_geotype' => array(
-                        self::GEOTYPE_MARKER
+                        self::GEOTYPE_POLYGON
                     ),
                     'map_box_fileloading' => TRUE,
                     'label' =>__('Geodata'),
@@ -66,13 +64,14 @@ class Datastruct_Poi extends Datastruct {
                         '$1' => 'name',
                     ),
                     'url_values' => '/jx/typology',
+                    'label' => __('Main typology'),
                      'description' => __('Select the main typology  for this point of interest'),
                      "table_show" => TRUE,
                 )
             );
       }
       
-       protected function _extra_columns_type()
+        protected function _extra_columns_type()
     {
         $fct = array();
 
@@ -92,30 +91,30 @@ class Datastruct_Poi extends Datastruct {
                     ),
                     'download' => 'admin/download/image/$1/$2',
                     'download_options' => array(
-                        '$1' => 'poi_id',
+                        '$1' => 'area_id',
                         '$2' => 'nome',
                         ),
                 ),
              )
         );
          
-         $fct['image_poi'] = array_replace($this->_columnStruct, array(
+         $fct['image_area'] = array_replace($this->_columnStruct, array(
                 "data_type" => self::SUBFORM,
                 "table_show" => FALSE,
                 'foreign_mode' => self::MULTISELECT,
-                'foreign_key' => 'poi_id',
-                'validation_url' => 'jx/admin/imagepoi',
+                'foreign_key' => 'area_id',
+                'validation_url' => 'jx/admin/imagearea',
                 'label' => __('Images to upload'),
              )
         );
          
-         
-        $fct['video_poi'] = array_replace($this->_columnStruct, array(
+        $fct['video_area'] = array_replace($this->_columnStruct, array(
                 "data_type" => self::SUBFORM,
+                 'form_name' => 'video_area',
                 "table_show" => FALSE,
                 'foreign_mode' => self::MULTISELECT,
-                'foreign_key' => 'poi_id',
-                'validation_url' => 'jx/admin/videopoi',
+                'foreign_key' => 'area_id',
+                'validation_url' => 'jx/admin/videoarea',
                 'label' => __('Videos to embed'),
              )
         );
@@ -126,7 +125,7 @@ class Datastruct_Poi extends Datastruct {
 
 
       protected function _foreign_column_type() {
-                
+          
         $fct['typologies']  = array_replace($this->_columnStruct,array(
             'data_type' => 'integer',
             'form_input_type' => self::SELECT,
@@ -141,18 +140,11 @@ class Datastruct_Poi extends Datastruct {
              "table_show" => FALSE,
         ));
         
-        $fct['url_pois'] = array_replace($this->_columnStruct,array(
-             
-            'data_type' => 'multifield',
-            'label' => __('Urls pois'),
-            "table_show" => FALSE,
-            
-        ));
-        
       
         return $fct;
         
     }
+ 
      
     
 }

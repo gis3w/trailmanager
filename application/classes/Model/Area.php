@@ -1,30 +1,29 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-class Model_Poi extends ORMGIS {
+class Model_Area extends ORMGIS {
     
-    public $geotype = ORMGIS::TP_POINT;
+    public $geotype = ORMGIS::TP_MULTIPOLYGON;
     
     public $epsg_db = 4326;
     public $epsg_out = 4326;
     
-    
-    protected $_has_many = array(
+     protected $_has_many = array(
         'itineraries' => array(
             'model'   => 'Itinerary',
-            'through' => 'itineraries_pois',
+            'through' => 'itineraries_areas',
         ),
         'typologies' => array(
             'model'   => 'Typology',
-            'through' => 'typologies_pois',
+            'through' => 'typologies_areas',
         ),
-        'images' => array(
-            'model'   => 'Image_Poi',
+         'images' => array(
+            'model'   => 'Image_Area',
         ),
-         'videos' => array(
-            'model'   => 'Video_Poi',
+          'videos' => array(
+            'model'   => 'Video_Area',
         ),
-        'urls' => array(
-            'model'   => 'Url_Poi',
+          'urls' => array(
+            'model'   => 'Url_Area',
         ),
     );
     
@@ -32,12 +31,11 @@ class Model_Poi extends ORMGIS {
         return array(
             "title" => __("Title"),
             "description" => __("Description"),
-            "reason" => __("Reasons"),
-            "accessibility" => __("Accessibility"),
-            "information_url" => __("Information url"),
+            "plus_information" => __("More informations"),
             "publish" => __("Published"),
             "typology_id" => __("Main typology"),
-            "period_schedule" => __("Period schedule"),
+            "color" => __("Color"),
+            "width" => __("Width"),
         );
     }
     
@@ -54,6 +52,7 @@ class Model_Poi extends ORMGIS {
             'typology_id' =>array(
                     array('not_empty'),
             ),
+            
         );
     }
 

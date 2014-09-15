@@ -8,13 +8,16 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
      protected $_upload_path = array(
          'image_poi' => 'image',
          'image_path' => 'image',
+         'image_area' => 'image',
      );
      
      protected  $_subformToSave = array(
                 'video_poi' => 'Video_Poi' ,
                 'video_path' => 'Video_Path',
+                'video_area' => 'Video_Area',
                 'image_poi' => 'Image_Poi',
-                'image_path' => 'Image_Path'
+                'image_path' => 'Image_Path',
+                'image_area' => 'Image_Area'
     );
      
 
@@ -38,6 +41,7 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
             switch($this->_orm->geotype)
             {
                 case "MULTILINESTRING":
+                case "MULTIPOLYGON":
                     $parFrom = "(";
                     $parTo = ")";
                 break;

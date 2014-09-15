@@ -27,7 +27,7 @@ class Controller_Ajax_Admin_Itinerary extends Controller_Ajax_Base_Crud{
             $this->_orm->values($_POST)->save();
             
             //si eseguono le associazioni con i mezzi
-            foreach(array('pois','paths') as $alias)
+            foreach(array('pois','paths','areas') as $alias)
             {
                 $var = "_".$alias;
                 if(isset($_POST[$alias]))
@@ -64,7 +64,7 @@ class Controller_Ajax_Admin_Itinerary extends Controller_Ajax_Base_Crud{
         $toRes = parent::_single_request_row($orm);
         
         // si aggiungo i codici ateco
-        foreach(array('pois','paths') as $alias)
+        foreach(array('pois','paths','areas') as $alias)
         {
             $datas = $orm->$alias->find_all();
             foreach($datas as $data)

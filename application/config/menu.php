@@ -42,8 +42,16 @@ return array(
             'name' => __('Paths'),
             'url' => '/jx/admin/path',
             'url_mobile' => 'user',
-             'capability' => 'access-admin-poi',
+             'capability' => 'access-admin-path',
             'icon' => 'location-arrow',
+        ),
+        'area' => array(
+            'id' =>'area',
+            'name' => __('Areas'),
+            'url' => '/jx/admin/area',
+            'url_mobile' => 'user',
+             'capability' => 'access-admin-area',
+            'icon' => 'crop',
         ),
         'user' => array(
             'id' =>'user',

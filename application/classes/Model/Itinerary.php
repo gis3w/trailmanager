@@ -14,6 +14,11 @@ class Model_Itinerary extends ORM {
             'through' => 'itineraries_paths',
             'orm_type' => 'GIS',
         ),
+        'areas' => array(
+            'model'   => 'Area',
+            'through' => 'itineraries_areas',
+            'orm_type' => 'GIS',
+        ),
          'images' => array(
             'model'   => 'Image_Itinerary',
         ),

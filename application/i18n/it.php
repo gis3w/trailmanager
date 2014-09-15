@@ -89,6 +89,8 @@ return array(
   
     'Roles' => 'Ruoli',
     
+    'Areas' => 'Aree',
+    
     'Title' => 'Titolo',
     'Length' => 'Lunghezza',
     'length' => 'Lunghezza',
@@ -105,6 +107,7 @@ return array(
     'typology_id' => 'Tipologia principale',
     'Period schedule' => 'Periodi e orari',
     'general_informations' => 'Informazioni generali', 
+    'More informations' => 'Ulteriori informazioni',
     
     'actions' => 'Azioni',
     
@@ -135,6 +138,8 @@ return array(
     
     'poi-data' => 'Dati generali del punto',
     'poi-foreign-data' =>'Dati accessori',
+    'area-data' => 'Dati generali dell\'area',
+    'area-foreign-data' =>'Collegamenti',
     
     
     'for'=> 'per',
