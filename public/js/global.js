@@ -6,6 +6,7 @@ var APP = {
 	interactiveMap: {},
 	filter: {},
 	fileuploader: {},
+	multifields: {},
 	subforms: {},
 	anagrafica: {},
 	anagrafica_ss: {},

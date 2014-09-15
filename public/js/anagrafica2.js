@@ -1475,7 +1475,7 @@ $.extend(APP.anagrafica,
 		});
 		*/
 		form.find(':input:disabled ').each( function() {
-			if ($(this).hasClass("fileupload") || $(this).hasClass("subform") || !APP.utils.isset($(this).attr('name')) || $(this).hasClass("mapbox"))
+			if ($(this).hasClass("fileupload") || $(this).hasClass("subform") || $(this).hasClass("multifield")  || !APP.utils.isset($(this).attr('name')) || $(this).hasClass("mapbox"))
 				return true;
 			var o = {};
 			o.name = $(this).attr('name');
@@ -1501,6 +1501,34 @@ $.extend(APP.anagrafica,
 			{
 				var sfn = $(this).attr("name");
 				d.push(APP.subforms.preserialize(sfn));
+			});
+		}
+		if (form.find(".multifieldTable").length>0)
+		{
+			$.each(form.find(".multifieldTable"), function()
+			{
+				var sfn = $(this).attr("name");
+				d.push(APP.multifields.preserialize(sfn));
+				
+				var items = d[d.length-1].value.split(';');
+				var uguaglianze = items[0].split('&');
+				var namesArray = [];
+				$.each(uguaglianze, function(i, v){
+					var voce = v.split('=')[0];
+					namesArray.push(voce);
+				});
+				
+				var elemsToDelete = [];
+				
+				$.each(d, function(i,v){
+					if ($.inArray(v.name, namesArray) > -1)
+						elemsToDelete.push(parseInt(i));
+				});
+				
+				elemsToDelete.sort(function(a, b){return b-a});
+				$.each(elemsToDelete, function(i,number){
+					d.splice(number,1);
+				});
 			});
 		}
 		if (form.find(":input.mapbox").length>0)

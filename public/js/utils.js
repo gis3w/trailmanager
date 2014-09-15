@@ -311,10 +311,22 @@ $.extend(APP.utils,{
 			case 0:
 				return false;
 			case 10000: // errore di validazione
-				
+				/*
 				$.each(error.errdata, function(i, v)
 				{
 					APP.utils.renderError(param.find("#APP-"+i), v);
+				});
+				*/
+				$.each(error.errdata, function(i, v)
+				{
+					var el = param.find("#APP-"+i);
+					if (el.length > 0)
+						APP.utils.renderError(el, v);
+					else
+					{
+						// potrebbe essere un multifield
+						APP.multifields.validation(param, i, v);
+					}
 				});
 				break;
 			default:
@@ -440,7 +452,7 @@ $.extend(APP.utils,{
 					{
 						$.each(data.data, function(fieldName, fieldObj)
 						{
-							var fieldToChange = form.find("#APP-"+fieldName);
+							var fieldToChange = (elem.hasClass("multifield"))? elem.parents("tr:first").find("#APP-"+fieldName) : form.find("#APP-"+fieldName); //form.find("#APP-"+fieldName);
 							
 							$.each(fieldObj, function(action, actionObj)
 							{
@@ -826,6 +838,50 @@ $.extend(APP.utils,{
 										$.extend(oggetto, {"subformName": v.name, "sectionTarget": sectionTarget, "ctx": context, "res": obj, "idl": APP.config.default_iDisplayLength});
 										APP.subforms.showSubformTable(oggetto); 
 									});
+								}
+								else
+									APP.utils.showErrMsg(data);
+							},
+							error: function(result)
+							{ 
+								APP.utils.showErrMsg(result); 
+							}
+						});
+						break;
+					case "multifield":
+						if (!this.isset(sectionTarget.multifields))
+							sectionTarget.multifields = {};
+						if (!this.isset(sectionTarget.multifields[v.name]))
+							sectionTarget.multifields[v.name] = {};
+							
+						inp = "<div id='APP-"+v.name+"'></div>";
+						
+						var uri = APP.config.localConfig.urls['dStruct']+"?tb="+v.name;
+						
+						$.ajax({
+							type: 'GET',
+							url: uri,
+							dataType: 'json',
+							success: function(data)
+							{
+								if (!APP.utils.checkError(data.error, null))
+								{
+									sectionTarget.multifields[v.name] = APP.utils.setBaseStructure(v.name, sectionLabel);
+									context.loadStructure(data, sectionTarget.multifields[v.name]);
+									sectionTarget.multifields[v.name].multifieldValidationUrl = (that.isset(v.validation_url))? v.validation_url : null;
+									sectionTarget.multifields[v.name].token = 0;
+									
+									var index = APP.utils.getIndexFromField(sectionTarget.values, "id", identifier);
+									var obj = null;
+									if (index > -1)
+									{
+										obj = sectionTarget.values[index][v.name];
+										sectionTarget.multifields[v.name].values = sectionTarget.values[index][v.name];
+									}
+									
+									var oggetto = {};
+									$.extend(oggetto, {"multifieldName": v.name, "sectionTarget": sectionTarget, "ctx": context, "res": obj, "idl": APP.config.default_iDisplayLength, "div": inp});
+									APP.multifields.showMultifieldTable(oggetto);
 								}
 								else
 									APP.utils.showErrMsg(data);

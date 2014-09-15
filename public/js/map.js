@@ -119,6 +119,12 @@ $.extend(APP.map,
 		return this.globalData[this.currentMapId].map;
 	},
 	
+	getLayer: function(id)
+	{
+		var that = this;
+		return that.globalData[that.currentMapId].addedLayers[id].layer;
+	},
+	
 	resizeMap: function()
 	{
 		if (!this.isset(this.currentMapId) || ( this.currentMapId.indexOf("mapboxDiv") === 0))
@@ -490,7 +496,11 @@ $.extend(APP.map,
 				icon: "icon-location-arrow",
 				locateOptions: {
 					enableHighAccuracy: true,
+					timeout: 60000,
 				},
+				onLocationError: function(err) {
+					console.log(err.message);
+				}
 			}).addTo(that.globalData[id].map);
 		}
 		

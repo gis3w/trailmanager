@@ -24,6 +24,15 @@ $.extend(APP.interactiveMap,
 		return (section === "itinerary")? that.myData[section][id].data.name : that.myData[section][id].data.title;
 	},
 	
+	getOverviewImage: function(section, id, thumbnail)
+	{
+		var that = this;
+		if ($.isArray(that.myData[section][id].media.images) &&  that.myData[section][id].media.images.length > 0)
+			return (thumbnail)? that.myData[section][id].media.images[0].image_thumb_url : that.myData[section][id].media.images[0].image_url;
+		else
+			return (thumbnail && APP.config.localConfig.default_overview_thumbnail)? APP.config.localConfig.default_overview_thumbnail : APP.config.localConfig.default_overview_image;
+	},
+	
 	resize: function()
 	{
 		if (!APP.utils.isset(this.body))
@@ -74,12 +83,16 @@ $.extend(APP.interactiveMap,
 	{
 		var that = this;
 		that.selectedElementId = "item_"+section+"_"+id;
+		that.highlightLayer(section, id);
+		that.zoomAt(section, id);
 		if (that.itemsOnSidebar && L.control.sidebar)
 		{
 			that.mySidebar.div.find(".active").removeClass("active");
 			that.mySidebar.div.find("#"+that.selectedElementId).addClass("active");
+			that.mySidebar.control.hide();
 		}
 		
+		/*
 		that.showBottomBar(section, id, function()
 		{
 			that.selectedElementId = null;
@@ -94,11 +107,40 @@ $.extend(APP.interactiveMap,
 				
 			}
 			that.navbars.top.find("#"+that.currentSection+"Button").parents("li:first").addClass("active");
-		});						
-		that.highlightLayer(section, id);
-		that.zoomAt(section, id);
-		if (that.itemsOnSidebar && L.control.sidebar)
-			that.mySidebar.control.hide();
+		});
+		*/
+		
+		if (element)
+		{
+			if (!element.unbindPopup)
+				element = APP.map.getLayer(section+"_"+id);
+			if (element.unbindPopup && $.isFunction(element.unbindPopup))
+				element.unbindPopup();
+			if (element.bindPopup && $.isFunction(element.bindPopup))
+			{
+				po = {
+					closeOnClick: true,
+					maxWidth: 300,
+					maxHeight: 300,
+					minWidth: 300
+				};
+				if (section == "poi")
+					po.offset = L.point(0, -25);
+				
+				var media = '<div class="media">\
+								<a class="pull-left" href="#">\
+									<img class="media-object thumbnail" style="width: 75px" src="'+that.getOverviewImage(section, id, true)+'" alt="">\
+								</a>\
+								<div class="media-body">\
+									<h4 class="media-heading">'+that.getObjectTitle(section, id)+'</h4>\
+									<button type="button" class="btn btn-link">'+APP.i18n.translate('details')+'</button>\
+								</div>\
+							</div>';
+							
+				element.bindPopup(media, po);
+				element.openPopup();
+			}
+		}
 	},
 	
 	showInformation: function(section, id, onCloseCallback)
@@ -1022,9 +1064,8 @@ $.extend(APP.interactiveMap,
 				myObj.icon = myIcon;
 			
 			var layer = new L.Marker(coords,myObj);
-			//layer.bindPopup('<p>'+v.title+'</p>');
 			layer.on("click", function(){
-				that.onElementClick($(this), section, v.id);
+				that.onElementClick(layer, section, v.id);
 			});
 			if (!APP.map.globalData[APP.map.currentMapId].map.hasLayer(layer))
 				APP.map.addLayer(layer, section+"_"+v.id);
@@ -1041,10 +1082,9 @@ $.extend(APP.interactiveMap,
 					return oo;
 				},
 				onEachFeature: function (feature, layer) {
-					//layer.bindPopup('<p>'+v.title+'</p>');
 					layer.on("click", function()
 					{
-						that.onElementClick($(this), section, v.id);
+						that.onElementClick(layer, section, v.id);
 					});
 				}
 			});
@@ -1149,8 +1189,7 @@ $.extend(APP.interactiveMap,
 		that.navbars.top = that.body.find(".navbar-nav:first"); // navbar-nav
 		that.navbars.top.find("a").click(function()
 		{
-			var nbc = $(this).parents(".navbar-collapse:first");
-			nbc.collapse('hide');
+			that.navbars.top.find(".navbar-collapse").collapse('hide');
 			
 			if ($(this).parents("li:first").hasClass("disabled"))
 				return false;

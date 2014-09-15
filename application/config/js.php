@@ -79,6 +79,7 @@ return array(
 		'fileuploader3.js',
 		'subforms.js',
 		'anagrafica2.js',
+		'multifields.js',
 		'map.js',
 		'interactiveMap.js',
 		//'home.js',

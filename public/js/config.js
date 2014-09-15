@@ -464,7 +464,10 @@ $.extend(APP.config,{
 		}
 		$.each(that.localConfig.menu, function(i, v){
 			var button = $("#"+v.id+"Button");
-			var callBack = (i === "logout")? function(){ location.href = v.url; } : function(){ that.insertContent($(this), v.id); }
+			var callBack = (i === "logout")? function(){ location.href = v.url; } : function(){ 
+				$(".navbar-collapse").collapse('hide');
+				that.insertContent($(this), v.id); 
+			}
 			button.click(callBack);
 		});
 	},
