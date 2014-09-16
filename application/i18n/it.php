@@ -111,7 +111,8 @@ return array(
     'typology_id' => 'Tipologia principale',
     'Period schedule' => 'Periodi e orari',
     'general_informations' => 'Informazioni generali', 
-    'More informations' => 'Ulteriori informazioni',
+    'More informations' => 'Motivi di interesse',
+    'Request informations' => 'Richiesta informazioni',
     
     'actions' => 'Azioni',
     

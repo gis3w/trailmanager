@@ -12,7 +12,7 @@ class Datastruct_Path extends Datastruct {
         array(
             'name' => 'path-data',
             'position' => 'left',
-            'fields' => array('id','title','publish','description','length','altitude_gap','reason','period_schedule','general_features','accessibility','information_url'),
+            'fields' => array('id','title','publish','description','length','altitude_gap','reason','period_schedule','general_features','accessibility','inquiry'),
         ),
        array(
             'name' => 'path-foreign-data',
@@ -93,7 +93,11 @@ class Datastruct_Path extends Datastruct {
                     'label' => __('Main typology'),
                      'description' => __('Select the main typology  for this point of interest'),
                      "table_show" => TRUE,
-                )
+                ),
+                 "inquiry" => array(
+                    'form_input_type' => self::TEXTAREA,
+                    'editor' => TRUE,
+                ),
             );
       }
       

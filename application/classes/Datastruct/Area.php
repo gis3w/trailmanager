@@ -12,7 +12,7 @@ class Datastruct_Area extends Datastruct {
         array(
             'name' => 'area-data',
             'position' => 'left',
-            'fields' => array('id','title','publish','description','plus_information'),
+            'fields' => array('id','title','publish','description','plus_information','period_schedule','accessibility','inquiry'),
         ),
        array(
             'name' => 'area-foreign-data',
@@ -44,6 +44,14 @@ class Datastruct_Area extends Datastruct {
                     'form_input_type' => self::TEXTAREA,
                     'editor' => TRUE,
                 ),
+                 "accessibility" => array(
+                    'form_input_type' => self::TEXTAREA,
+                     'editor' => TRUE,
+                ),
+                "period_schedule" => array(
+                    'form_input_type' => self::TEXTAREA,
+                    'editor' => TRUE,
+                ),
                 "color" => array(
                     "form_input_type" => self::MAPBOX_COLOR,
                     "class" => "color-path",
@@ -72,7 +80,11 @@ class Datastruct_Area extends Datastruct {
                     'label' => __('Main typology'),
                      'description' => __('Select the main typology  for this point of interest'),
                      "table_show" => TRUE,
-                )
+                ),
+                 "inquiry" => array(
+                    'form_input_type' => self::TEXTAREA,
+                    'editor' => TRUE,
+                ),
             );
       }
       

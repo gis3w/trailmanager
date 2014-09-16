@@ -48,6 +48,7 @@ class Model_Path extends ORMGIS {
             "period_schedule" => __("Period schedule"),
             "color" => __("Color"),
             "width" => __("Width"),
+            "inquiry" => __('Request informations'),
         );
     }
     

@@ -13,7 +13,7 @@ class Datastruct_Poi extends Datastruct {
         array(
             'name' => 'poi-data',
             'position' => 'left',
-            'fields' => array('id','publish','title','description','reason','period_schedule','accessibility','information_url'),
+            'fields' => array('id','publish','title','description','reason','period_schedule','accessibility','inquiry'),
         ),
        array(
             'name' => 'poi-foreign-data',
@@ -73,7 +73,11 @@ class Datastruct_Poi extends Datastruct {
                     'url_values' => '/jx/typology',
                      'description' => __('Select the main typology  for this point of interest'),
                      "table_show" => TRUE,
-                )
+                ),
+                "inquiry" => array(
+                    'form_input_type' => self::TEXTAREA,
+                    'editor' => TRUE,
+                ),
             );
       }
       

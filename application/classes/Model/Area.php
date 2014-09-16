@@ -36,6 +36,9 @@ class Model_Area extends ORMGIS {
             "typology_id" => __("Main typology"),
             "color" => __("Color"),
             "width" => __("Width"),
+            "inquiry" => __('Request informations'),
+            "accessibility" => __("Accessibility"),
+            "period_schedule" => __("Period schedule"),
         );
     }
     

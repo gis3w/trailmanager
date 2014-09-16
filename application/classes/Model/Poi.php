@@ -38,6 +38,7 @@ class Model_Poi extends ORMGIS {
             "publish" => __("Published"),
             "typology_id" => __("Main typology"),
             "period_schedule" => __("Period schedule"),
+            "inquiry" => __('Request informations'),
         );
     }
     
