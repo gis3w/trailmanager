@@ -10,14 +10,18 @@ class Datastruct_Itinerary extends Datastruct {
         array(
             'name' => 'itinerary-data',
             'position' => 'left',
-            'fields' => array('id','name','description','url_itinerary'),
+            'fields' => array('id','name','description'),
         ),
         array(
             'name' => 'itinerary-foreign-data',
             'position' => 'right',
             'fields' => array('pois','paths','areas','the_geom','image_itinerary'),
         ),
-       
+       array(
+            'name' => 'itinerary-block-data',
+            'position' => 'block',
+            'fields' => array('url_itinerary'),
+        ),
     );
     
     public $title = array(

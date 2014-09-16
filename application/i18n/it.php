@@ -136,14 +136,21 @@ return array(
     
     'itinerary-data' => 'Dati generali dell\'itinerario',
     'itinerary-foreign-data' => 'Percorsi e punti di interesse associati',
+    'Itinerary-block-data' => 'Altri dati accessori',
     
     'path-data' => 'Dati generali del percorso',
     'path-foreign-data' =>'Dati accessori',
+    'path-block-data' => 'Altri dati accessori',
     
     'poi-data' => 'Dati generali del punto',
     'poi-foreign-data' =>'Dati accessori',
+    'poi-block-data' => 'Altri dati accessori',
+    
     'area-data' => 'Dati generali dell\'area',
     'area-foreign-data' =>'Collegamenti',
+    'area-block-data' => 'Altri dati accessori',
+    
+    
     
     
     'for'=> 'per',

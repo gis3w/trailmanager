@@ -15,6 +15,7 @@ class Model_Url_Poi extends ORM {
         return array(
             'url' => array(
                     array('not_empty'),
+                    
             ),
         );
     }

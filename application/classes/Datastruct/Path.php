@@ -17,7 +17,12 @@ class Datastruct_Path extends Datastruct {
        array(
             'name' => 'path-foreign-data',
             'position' => 'right',
-            'fields' => array('typology_id','typologies','path_modes','the_geom','color','width','image_path','video_path','url_path'),
+            'fields' => array('typology_id','typologies','path_modes','the_geom','color','width','image_path','video_path'),
+        ),
+        array(
+            'name' => 'path-block-data',
+            'position' => 'block',
+            'fields' => array('url_path'),
         ),
     );
     
