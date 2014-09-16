@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 
-class Controller_Ajax_Admin_Itinerary extends Controller_Ajax_Base_Crud{
+class Controller_Ajax_Admin_Itinerary extends Controller_Ajax_Admin_Sheet_Base{
     
     protected $_pagination = FALSE;
     
@@ -17,6 +17,10 @@ class Controller_Ajax_Admin_Itinerary extends Controller_Ajax_Base_Crud{
     protected $_subformToSave = array(
          'image_itinerary' => 'Image_Itinerary' ,
     );
+    
+    protected $_url_multifield_postname = 'url_itinerary';
+    protected $_url_multifield_nameORM = 'Url_Itinerary';
+    protected $_url_multifield_foreignkey = 'itinerary_id';
 
     protected function _edit()
     {
@@ -37,7 +41,8 @@ class Controller_Ajax_Admin_Itinerary extends Controller_Ajax_Base_Crud{
             
             $this->_save_subforms_1XN();
             
-                
+            $this->_save_url_multifiled();
+            
             Database::instance()->commit();
         }
          catch (Database_Exception $e)

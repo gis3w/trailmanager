@@ -12,11 +12,19 @@ class Controller_Ajax_Geo_Base extends Controller_Ajax_Data_Base{
         $toRes['id'] = (int)$orm->id;
         $toRes['title'] = $orm->title;
         $toRes['typology_id'] = (int)$orm->typology_id;
-        if($this->request->controller() == 'Path')
+        if($this->request->controller() == 'Path' OR $this->request->controller() == 'Area')
         {
             $toRes['color'] = $orm->color;
-            $toRes['width'] = $orm->width;
+            if(isset($orm->width))
+                $toRes['width'] = $orm->width;
         }
+        
+        //adding centroids
+        $toRes['centroids'] = array();
+        $nGeometries = $orm->geo->numGeometries();
+        $geoJsonAdapter = new GeoJSON();
+        for($i = 1; $i <= $nGeometries; $i++)
+            $toRes['centroids'][] = json_decode ($geoJsonAdapter->write($orm->geo->geometryN($i)->getCentroid()));
             
         $toRes['geoJSON'] = json_decode($orm->asgeojson);
         

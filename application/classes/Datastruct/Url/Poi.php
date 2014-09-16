@@ -16,6 +16,9 @@ class Datastruct_Url_Poi extends Datastruct {
                     'unset' => TRUE,
                      'subform_table_show' => FALSE,
                 ),
+                "url" => array(
+                    'prefix' => 'http://'
+                ),
             );
       }
 

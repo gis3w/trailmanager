@@ -17,7 +17,7 @@ class Datastruct_Area extends Datastruct {
        array(
             'name' => 'area-foreign-data',
             'position' => 'right',
-            'fields' => array('typology_id','typologies','the_geom','color','image_area','video_area'),
+            'fields' => array('typology_id','typologies','the_geom','color','image_area','video_area','url_area'),
         ),
     );
     
@@ -138,6 +138,14 @@ class Datastruct_Area extends Datastruct {
             'label' => __('Typologies'),
              'description' => __('Select one or more typology  for this point of interest'),
              "table_show" => FALSE,
+        ));
+        
+         $fct['url_area'] = array_replace($this->_columnStruct,array(
+             
+            'data_type' => 'multifield',
+            'label' => __('Urls area'),
+            "table_show" => FALSE,
+            
         ));
         
       

@@ -245,6 +245,8 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
     {
         foreach(array('typologies') as $alias)
         {
+            if(!isset($orm->$alias))
+                continue;
             $datas = $orm->$alias->find_all();
             foreach($datas as $data)
            {
@@ -257,14 +259,15 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
     
     protected function _set_the_geom(&$toRes, $orm)
     {
-        $toRes['the_geom'] = $orm->asgeojson_php;
+        if($orm instanceof ORMGIS)
+            $toRes['the_geom'] = $orm->asgeojson_php;
     }
     
      protected function _set_urls(&$toRes,$orm)
     {
         $urls = $orm->urls->find_all();
-//        foreach($urls as $url)
-//            $toRes[$this->_url_multifield_postname][] = $url->as_array();
+        foreach($urls as $url)
+            $toRes[$this->_url_multifield_postname][] = $url->as_array();
             
     }
 }

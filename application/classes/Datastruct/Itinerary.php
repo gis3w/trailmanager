@@ -10,7 +10,7 @@ class Datastruct_Itinerary extends Datastruct {
         array(
             'name' => 'itinerary-data',
             'position' => 'left',
-            'fields' => array('id','name','description'),
+            'fields' => array('id','name','description','url_itinerary'),
         ),
         array(
             'name' => 'itinerary-foreign-data',
@@ -79,9 +79,14 @@ class Datastruct_Itinerary extends Datastruct {
              )
         );
         
-      
+       $fct['url_itinerary'] = array_replace($this->_columnStruct,array(
+             
+            'data_type' => 'multifield',
+            'label' => __('Urls itineraries'),
+            "table_show" => FALSE,
+            
+        ));
        
-
         return $fct;
         
     }

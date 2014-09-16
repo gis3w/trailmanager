@@ -17,7 +17,7 @@ class Datastruct_Path extends Datastruct {
        array(
             'name' => 'path-foreign-data',
             'position' => 'right',
-            'fields' => array('typology_id','typologies','path_modes','the_geom','color','width','image_path','video_path'),
+            'fields' => array('typology_id','typologies','path_modes','the_geom','color','width','image_path','video_path','url_path'),
         ),
     );
     
@@ -173,6 +173,14 @@ class Datastruct_Path extends Datastruct {
             'label' => __('Modes'),
              'description' => __('Select one or more modes for  this path'),
              "table_show" => FALSE,
+        ));
+        
+        $fct['url_path'] = array_replace($this->_columnStruct,array(
+             
+            'data_type' => 'multifield',
+            'label' => __('Urls path'),
+            "table_show" => FALSE,
+            
         ));
         
       

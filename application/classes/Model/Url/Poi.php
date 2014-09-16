@@ -6,7 +6,7 @@ class Model_Url_Poi extends ORM {
         return array(
             "url" => __("Url"),
             "alias" => __("Alias"),
-            "description" => __("Description")
+            "description_url" => __("Description url")
         );
     }
     

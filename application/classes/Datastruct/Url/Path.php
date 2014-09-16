@@ -7,11 +7,12 @@ class Datastruct_Url_Path extends Datastruct_Url_Poi {
     
     protected function _columns_type() {
         
-            return array(
+            return array_replace(parent::_columns_type(),array(
                  "path_id" => array(
                     'unset' => TRUE,
+                    'subform_table_show' => FALSE,
                 ),
-            );
+            ));
       }
 
    

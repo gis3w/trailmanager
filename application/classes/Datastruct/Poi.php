@@ -144,7 +144,7 @@ class Datastruct_Poi extends Datastruct {
         $fct['url_poi'] = array_replace($this->_columnStruct,array(
              
             'data_type' => 'multifield',
-            'label' => __('Urls pois'),
+            'label' => __('Urls poi'),
             "table_show" => FALSE,
             
         ));

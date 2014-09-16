@@ -29,6 +29,7 @@ class Controller_Ajax_Admin_Path extends Controller_Ajax_Admin_Sheet_Base{
 
     protected function _set_modes_edit()
     {
-        $this->_orm->setManyToMany('modes',$_POST['path_modes']);
+        if(isset($_POST['path_modes']))
+            $this->_orm->setManyToMany('modes',$_POST['path_modes']);
     }
 }

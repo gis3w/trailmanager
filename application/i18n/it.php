@@ -79,7 +79,11 @@ return array(
     'success' => 'Successo',
     'select_file' => 'Seleziona un file',
    
-    
+    'Urls poi' => 'Collegameti',
+    'Urls path' => 'Collegameti',
+    'Urls area' => 'Collegameti',
+    'Urls itineraries' => 'Collegameti',
+    'Description url' => 'Descrizione',
 
     'Document' => 'Documento',
   

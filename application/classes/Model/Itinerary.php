@@ -22,6 +22,9 @@ class Model_Itinerary extends ORM {
          'images' => array(
             'model'   => 'Image_Itinerary',
         ),
+         'urls' => array(
+            'model'   => 'Url_Itinerary',
+        ),
     );
     
     public function labels() {
