@@ -6,6 +6,7 @@ class Controller_Ajax_Config extends Controller_Ajax_Main{
     public $config;
     
     protected $_icon_uri ="/download/typologyicon/index/";
+    protected $_icon_pathmode_uri ="/download/pathmodeicon/index/";
     protected $_marker_uri ="/download/typologymarker/index/";
 
     public function before()
@@ -25,6 +26,7 @@ class Controller_Ajax_Config extends Controller_Ajax_Main{
 //        $this->_set_authuser();
         $this->_set_i18n();
         $this->_set_typologies();
+        $this->_set_path_modes();
 //        $this->_set_timezone();
 //        $this->_set_menu();
         $this->_set_url();
@@ -84,6 +86,14 @@ class Controller_Ajax_Config extends Controller_Ajax_Main{
     protected function _set_i18n()
     {
         $this->config->i18n = I18n::lang();
+    }
+    
+    protected function _set_path_modes()
+    {
+        $this->_get_table('Path_Mode');
+        foreach($this->config->path_mode as &$modes)
+            $modes['icon'] =(isset($modes['icon']) AND $modes['icon'] != '') ? $this->_icon_pathmode_uri.$modes['icon'] : NULL;
+        
     }
     
     protected function _set_typologies()
