@@ -40,6 +40,13 @@ return array(
             'capability' => NULL,
             'icon' => 'map-marker',
         ),
+         'area' => array(
+            'id' =>'area',
+            'name' => __('Areas'),
+            'url' => NULL,
+            'capability' => NULL,
+            'icon' => 'crop',
+        ),
     ),
     
 );
