@@ -38,9 +38,19 @@ return array(
     'Surname' => 'Cognome',
     'Description' => 'Descrizione',
     'description' => 'descrizione',
+	'Data sheet' => 'Scheda',
+	'Itinerary' => 'Itinerario',
     'Itineraries' => 'Itinerari',
     'Published' => 'Pubblicato',
-   
+	'Information' => 'Informazione',
+	'Exit from itinerary' => 'Esci dall\'itinerario',
+	'You are currently viewing the elements of the following itinerary' => 'Stai visualizzando gli elementi del seguente itinerario',
+	'To view all the elements again, exit from itinerary' => 'Per visualizzare nuovamente tutti gli elementi esci dall\'itinerario',
+	'Info section' => 'Informazioni',
+	'Poi section' => 'Punti di interesse',
+	'Path section' => 'Percorsi',
+	'Itinerary section' => 'Itinerari',
+	'Area section' => 'Aree',
  
     'Close' => 'Chiudi',    
     'close' => 'Chiudi',
@@ -48,6 +58,7 @@ return array(
    
     'first' => 'primo',
     'last' => 'ultimo',
+	'View data sheet' => 'Vedi scheda',
     'click_to_select' => 'Click con il mouse per selezionare',
    
     'Province' => 'Provincia',
@@ -107,6 +118,7 @@ return array(
     'Geodata' => 'Dato spaziale',
     'Accessibility' => 'Accessibilità',
     'Reasons' => 'Motivi di interesse',
+	'Reason' => 'Motivo di interesse',
     'Main typology' => 'Tipologia principale',
     'typology_id' => 'Tipologia principale',
     'Period schedule' => 'Periodi e orari',

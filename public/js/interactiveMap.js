@@ -28,7 +28,7 @@ $.extend(APP.interactiveMap,
 	getOverviewImage: function(section, id, thumbnail)
 	{
 		var that = this;
-		if ($.isArray(that.myData[section][id].media.images) &&  that.myData[section][id].media.images.length > 0)
+		if (that.myData[section][id].media && that.myData[section][id].media.images && $.isArray(that.myData[section][id].media.images) && that.myData[section][id].media.images.length > 0)
 			return (thumbnail)? that.myData[section][id].media.images[0].image_thumb_url : that.myData[section][id].media.images[0].image_url;
 		else
 			return (thumbnail && APP.config.localConfig.default_overview_thumbnail)? APP.config.localConfig.default_overview_thumbnail : APP.config.localConfig.default_overview_image;
@@ -70,7 +70,7 @@ $.extend(APP.interactiveMap,
 	
 	highlightLayer: function(section, id)
 	{
-		if (section == "path" || section == "poi")
+		if (section !== "itinerary")
 			if (APP.map.globalData.mainContent.addedLayers[section+"_"+id].layer)
 				APP.map.highlightLayer(section+"_"+id);
 	},
@@ -80,9 +80,14 @@ $.extend(APP.interactiveMap,
 		APP.map.highlightLayer(null);
 	},
 	
-	onElementClick: function(element, section, id)
+	onElementClick: function(o)
 	{
 		var that = this;
+		element = o.element;
+		section = o.section;
+		id = o.id;
+		latlng = o.latlng;
+		
 		if (that.currentSection != "itinerary")
 			that.highlightLayer(section, id);
 		that.zoomAt(section, id);
@@ -90,23 +95,6 @@ $.extend(APP.interactiveMap,
 		{
 			that.mySidebar.control.hide();
 		}
-		
-		/*
-		that.showBottomBar(section, id, function()
-		{
-			that.hideBottomBar();
-			that.resetHighlightLayer();
-			APP.map.showAllLayers();
-			APP.map.setExtent(that.firstExtent);
-			if (that.itemsOnSidebar && L.control.sidebar)
-			{
-				that.mySidebar.div.find(".active").removeClass("active");
-				that.mySidebar.control.show();
-				
-			}
-			that.navbars.top.find("#"+that.currentSection+"Button").parents("li:first").addClass("active");
-		});
-		*/
 		
 		if (element)
 		{
@@ -118,9 +106,9 @@ $.extend(APP.interactiveMap,
 			{
 				po = {
 					closeOnClick: true,
-					maxWidth: 300,
-					maxHeight: 300,
-					minWidth: 300
+					maxWidth: that.body.width()-(that.body.width()*0.2),
+					//maxHeight: that.body.height()-((that.body.height()*20/)100),
+					minWidth: (that.body.width() > 320)? 280 : (that.body.width()-(that.body.width()*0.2)),
 				};
 				if (section == "poi")
 					po.offset = L.point(0, -25);
@@ -131,7 +119,7 @@ $.extend(APP.interactiveMap,
 								</a>\
 								<div class="media-body">\
 									<h4 class="media-heading">'+that.getObjectTitle(section, id)+'</h4>\
-									<button type="button" class="btn btn-link popupDetailsBtn">'+APP.i18n.translate('details')+'</button>\
+									<button type="button" class="btn btn-link popupDetailsBtn">'+APP.i18n.translate('View data sheet')+'</button>\
 								</div>\
 							</div>';
 							
@@ -139,13 +127,14 @@ $.extend(APP.interactiveMap,
 				
 				element.on('popupopen', function(a){
 					var myBtn = $(a.popup._container).find(".popupDetailsBtn");
+					
 					myBtn.off("click").click(function(){
 						//a.layer.closePopup();
 						that.showInformation(section, id);
 					});
 				});
 				
-				element.openPopup();
+				element.openPopup(latlng);
 			}
 		}
 	},
@@ -190,19 +179,19 @@ $.extend(APP.interactiveMap,
 												<span class="icon-bar"></span>\
 											</button>\
 											<a class="navbar-brand" href="#" style="display:none; color:white">\
-												<span class="hidden-sm hidden-xs">'+APP.i18n.translate(section)+': </span> '+myTitle+'\
+												<span class="hidden-sm hidden-xs">'+APP.i18n.translate(APP.utils.capitalize(section))+': </span> '+myTitle+'\
 											</a>\
 										</div>\
 										<div id="bottomNavbarCollapse" class="navbar-collapse collapse">\
 											<ul class="nav navbar-nav navbar-right">\
-												<li><a href="#" class="detailsButton"><i class="icon icon-search"></i> '+APP.i18n.translate("details")+'</a></li>\
-												<li><a href="#" class="closeButton"><i class="icon icon-remove"></i> '+APP.i18n.translate("close")+'</a></li>\
+												<li><a href="#" class="detailsButton"><i class="icon icon-search"></i> '+APP.i18n.translate("Data sheet")+'</a></li>\
+												<li><a href="#" class="closeButton"><i class="icon icon-remove"></i> '+APP.i18n.translate("Exit from itinerary")+'</a></li>\
 											</ul>\
 										</div>\
 									</div>\
 								</nav>');
 		
-		/*<li><a href="#"><button type="button" class="btn btn-success detailsButton"><i class="icon icon-search"></i> '+APP.i18n.translate("details")+'</button></a></li>\
+		/*<li><a href="#"><button type="button" class="btn btn-success detailsButton"><i class="icon icon-search"></i> '+APP.i18n.translate("Data sheet")+'</button></a></li>\
 		<li><a href="#"><button type="button" class="btn btn-default closeButton"><i class="icon icon-remove"></i> '+APP.i18n.translate("close")+'</button></a></li>\*/
 					
 		that.navbars.bottom.find(".detailsButton").click(function(){
@@ -306,7 +295,7 @@ $.extend(APP.interactiveMap,
 						</div>\
 					</div>');
 				
-		if (that.myData[section][id].media.images.length === 0)
+		if (!APP.utils.isset(that.myData[section][id].media) || !APP.utils.isset(that.myData[section][id].media.images) || !$.isArray(that.myData[section][id].media.images) || that.myData[section][id].media.images.length === 0)
 		{
 			var img = $('<img alt="" class="img-responsive centerImage" style="width: 100%; height:100%;">');
 			img.attr('src', APP.config.localConfig.default_overview_image);			
@@ -356,7 +345,7 @@ $.extend(APP.interactiveMap,
 		var overviewToAppend = {};
 		var checkVoice = function(voice, type, moreParams)
 		{
-			var div = $('<div class="'+voice+'"><h2>'+APP.i18n.translate(voice)+'</h2></div>');
+			var div = $('<div class="'+voice+'"><h2>'+APP.i18n.translate(APP.utils.capitalize(voice))+'</h2></div>');
 			var bInsert = true;
 			switch(type)
 			{
@@ -405,50 +394,61 @@ $.extend(APP.interactiveMap,
 						overviewToAppend[moreParams.voiceResult].push(span);
 					}
 					return;
-				case "paths":
+				case "ov-icage": //mixed
+					if (APP.utils.isset(that.myData[section][id].data[voice]) && !APP.utils.isEmptyString(that.myData[section][id].data[voice]))
+					{
+						if (!APP.utils.isset(overviewToAppend[moreParams.voiceResult]))
+							overviewToAppend[moreParams.voiceResult] = [];
+						
+						var span = $('<p> <b>'+APP.i18n.translate(voice)+'</b>: '+that.myData[section][id].data[voice]+'m </p>');
+						if (moreParams.image && moreParams.image !== "")
+							span.prepend('<img class="pull-left" src="'+moreParams.image+'">');
+						overviewToAppend[moreParams.voiceResult].push(span);
+					}
+					return;
+				case "paths": case "pois": case "areas":
 					if (that.myData[section][id].data[voice].length === 0)
 						bInsert = false;
 					else
 					{
+						var s = null;
+						switch(type)
+						{
+							case "paths": 
+								s = "path";
+								break;
+							case "pois":
+								s = "poi";
+								break;
+							case "areas":
+								s = "area";
+								break;
+						}
+						
 						$.each(that.myData[section][id].data[voice], function(i,v)
 						{
-							var btn = $('<button type="button" class="btn btn-link">'+that.myData.path[v].data.title+'</button>');
+							var btn = $('<button type="button" class="btn btn-link">'+that.getObjectTitle(s, id)+'</button>');
 							btn.data("id", v).click(function(){
 								var myId = $(this).data("id");
-								that.highlightLayer('path', myId);
-								that.zoomAt('path', myId);
+								that.highlightLayer(s, myId);
+								that.zoomAt(s, myId);
 								myModal.fadeOut(1500, function(){
 									myModal.modal("hide");
-									that.showInformation('path', myId);
+									that.showInformation(s, myId);
 								});
 							});
 							div.append($('<p></p>').append(btn));
 						});
 					}
 					break;
-				case "pois":
-					if (that.myData[section][id].data[voice].length === 0)
-						bInsert = false;
+				case "url":
+					if (APP.utils.isset(that.myData[section][id].data[voice]) && !APP.utils.isEmptyString(that.myData[section][id].data[voice]))
+						div.append(that.myData[section][id].data[voice]);
 					else
-					{
-						$.each(that.myData[section][id].data[voice], function(i,v)
-						{
-							var btn = $('<button type="button" class="btn btn-link">'+that.myData.poi[v].data.title+'</button>');
-							btn.data("id", v).click(function(){
-								var myId = $(this).data("id");
-								that.highlightLayer('poi', myId);
-								that.zoomAt('poi', myId);
-								myModal.fadeOut(1500, function(){
-									myModal.modal("hide");
-									that.showInformation('poi', myId);
-								});
-							});
-							div.append($('<p></p>').append(btn));
-						});
-					}
-					break;					
+						bInsert = false;
+					break;
 				case "video":
-					if (APP.utils.isset(that.myData[section][id].media.videos) && (that.myData[section][id].media.videos.length > 0))
+					if (APP.utils.isset(that.myData[section][id].media) && APP.utils.isset(that.myData[section][id].media.videos) && $.isArray(that.myData[section][id].media.videos) && (that.myData[section][id].media.videos.length > 0))
 					{
 						var galleryId = 'bvg_'+section+'_'+id;
 						
@@ -475,6 +475,7 @@ $.extend(APP.interactiveMap,
 						bInsert = false;
 					break;
 				default:
+					bInsert = false;
 					break;
 			}
 			if (bInsert)
@@ -490,21 +491,29 @@ $.extend(APP.interactiveMap,
 				checkVoice('reason', 'text');
 				checkVoice('period_schedule', 'text');
 				checkVoice('accessibility', 'text');
-				checkVoice('information_url', 'text');
+				checkVoice('url_poi', 'url');
 				checkVoice('video_poi', 'video');
 				break;
 			case "path":
 				checkVoice('typology_id', 'ov-img', {values: APP.config.localConfig.typology, label: 'name', icon: "icon", voiceResult: "categories"});
 				checkVoice('typologies', 'ov-img', {values: APP.config.localConfig.typology, label: 'name', icon: "icon", voiceResult: "categories"});
 				checkVoice('description', 'text');
-				checkVoice('length', 'ov-icon', {icon: "resize-horizontal", voiceResult: "measures"});
-				checkVoice('altitude_gap', 'ov-icon', {icon: "resize-vertical", voiceResult: "measures"});
-				checkVoice('path_modes', 'ov-img', {values: APP.config.localConfig.path_modes, label: 'name', icon: "icon", voiceResult: "transportationTypes"});
+				checkVoice('length', 'ov-icage', {image: ((APP.config.localConfig.icons && APP.config.localConfig.icons['length'])? APP.config.localConfig.icons['length'] : null), voiceResult: "measures"});
+				checkVoice('altitude_gap', 'ov-icage', {image: ((APP.config.localConfig.icons && APP.config.localConfig.icons.altitude_gap)? APP.config.localConfig.icons.altitude_gap : null), voiceResult: "measures"});
+				checkVoice('path_modes', 'ov-img', {values: APP.config.localConfig.path_mode, label: 'mode', icon: "icon", voiceResult: "transportationTypes"});
 				checkVoice('reason', 'text');
 				checkVoice('period_schedule', 'text');
 				checkVoice('accessibility', 'text');
-				checkVoice('information_url', 'text');
+				checkVoice('url_path', 'url');
 				checkVoice('video_path', 'video');
+				break;
+			case "area":
+				checkVoice('typology_id', 'ov-img', {values: APP.config.localConfig.typology, label: 'name', icon: "icon", voiceResult: "categories"});
+				checkVoice('typologies', 'ov-img', {values: APP.config.localConfig.typology, label: 'name', icon: "icon", voiceResult: "categories"});
+				checkVoice('description', 'text');
+				checkVoice('reason', 'text');
+				checkVoice('url_area', 'url');
+				checkVoice('video_area', 'video');
 				break;
 			case "itinerary":
 				checkVoice('typology_id', 'ov-img', {values: APP.config.localConfig.typology, label: 'name', icon: "icon", voiceResult: "categories"});
@@ -573,7 +582,7 @@ $.extend(APP.interactiveMap,
 				//APP.map.globalData[APP.map.currentMapId].map.setView(latLng, maxZoom, {animate: true});
 				APP.map.globalData[APP.map.currentMapId].map.panTo(latLng);
 				return;
-			case "path":
+			case "path": case "area":
 				APP.map.setGlobalExtent(that.myData[section][id].geo.extent);
 				break;
 			case "itinerary":
@@ -650,6 +659,10 @@ $.extend(APP.interactiveMap,
 						that.mySidebar.control.hide();
 						APP.map.hideAllLayers();
 						
+						$.each(params.data.areas,function(j,k){
+							//APP.map.addLayer(that.myData.area[v.data.id].geo.geoJSON);
+							that.sendGeojsonLayerToMap(that.myData.area[k].geo, "area");
+						});
 						$.each(params.data.paths,function(j,k){
 							//APP.map.addLayer(that.myData.path[v.data.id].geo.geoJSON);
 							that.sendGeojsonLayerToMap(that.myData.path[k].geo, "path");
@@ -668,12 +681,13 @@ $.extend(APP.interactiveMap,
 						});
 						
 						that.zoomAt(section, params.data.id);
+						that.showNoty({content: '<p>'+APP.i18n.translate("You are currently viewing the elements of the following itinerary")+': <span class="lead">'+that.getObjectTitle(section, params.data.id)+'</span></p><p>'+APP.i18n.translate('To view all the elements again, exit from itinerary')+'.</p>', title: APP.i18n.translate("Information"), type: "information", timeout: 5000});
 					});
 					listGroup.append(a);
 				});
 				that.mySidebar.div.html(listGroup);
 				break;
-			case "poi": case "path":
+			case "poi": case "path": case "area":
 				var accordion = $('<div id="accordion-'+section+'" style="margin: 0px -23px 0px -23.5px; padding: -10px"></div>');
 				
 				$.each(APP.config.localConfig.typology, function()
@@ -720,7 +734,7 @@ $.extend(APP.interactiveMap,
 					
 					var row = $('<a id="item_'+section+'_'+v.data.id+'" href="#" class="list-group-item"></a>');
 					row.data(v).click(function(){
-						that.onElementClick($(this), section, v.data.id);
+						that.onElementClick({ element: $(this), section: section, id: v.data.id, latlng: null});
 					});
 					
 					if (v.typologies)
@@ -751,7 +765,7 @@ $.extend(APP.interactiveMap,
 				break;						
 		}
 		
-		that.mySidebar.div.prepend('<h3>'+APP.i18n.translate(section)+'</h3>');
+		that.mySidebar.div.prepend('<h3>'+APP.i18n.translate(APP.utils.capitalize(section)+" section")+'</h3>');
 		
 		that.mySidebar.div.find("#accordion-"+section).accordion({
 			heightStyle: "content",
@@ -816,6 +830,10 @@ $.extend(APP.interactiveMap,
 						that.body.find("#modal-"+section).modal("hide");
 						APP.map.hideAllLayers();
 						
+						$.each(params.data.areas,function(j,k){
+							//APP.map.addLayer(that.myData.path[v.data.id].geo.geoJSON);
+							that.sendGeojsonLayerToMap(that.myData.area[k].geo, "area");
+						});
 						$.each(params.data.paths,function(j,k){
 							//APP.map.addLayer(that.myData.path[v.data.id].geo.geoJSON);
 							that.sendGeojsonLayerToMap(that.myData.path[k].geo, "path");
@@ -837,7 +855,7 @@ $.extend(APP.interactiveMap,
 				});
 				myModal.find(".modal-body").html(listGroup);
 				break;
-			case "poi": case "path":
+			case "poi": case "path": case "area":
 				if (that.body.find('#accordion-'+section).length > 0)
 					that.body.find('#accordion-'+section).remove();
 				var accordion = $('<div class="panel-group" id="accordion-'+section+'"></div>');
@@ -891,7 +909,7 @@ $.extend(APP.interactiveMap,
 										
 					var row = $('<a id="item_'+section+'_'+v.data.id+'" href="#" class="list-group-item"</a>');
 					row.data(v).click(function(){
-						that.onElementClick($(this), section, v.data.id);
+						that.onElementClick({ element: $(this), section: section, id: v.data.id, latlng: null});
 					});
 					
 					if (v.typologies)
@@ -1025,7 +1043,7 @@ $.extend(APP.interactiveMap,
 						
 						APP.map.setGlobalExtent(that.myData[section][v.id].geo.extent);
 						APP.map.setExtent(APP.map.globalData[APP.map.currentMapId].globalExtent);
-						that.firstExtent = APP.map.globalData[APP.map.currentMapId].globalExtent;
+						//that.firstExtent = APP.map.globalData[APP.map.currentMapId].globalExtent;
 					});
 					
 					if (APP.utils.isset(callback) && $.isFunction(callback))
@@ -1078,8 +1096,8 @@ $.extend(APP.interactiveMap,
 				myObj.icon = myIcon;
 			
 			var layer = new L.Marker(coords,myObj);
-			layer.on("click", function(){
-				that.onElementClick(layer, section, v.id);
+			layer.on("click", function(args){
+				that.onElementClick({ element: layer, section: section, id: v.id, latlng: null});
 			});
 			if (!APP.map.globalData[APP.map.currentMapId].map.hasLayer(layer))
 				APP.map.addLayer(layer, section+"_"+v.id);
@@ -1096,9 +1114,9 @@ $.extend(APP.interactiveMap,
 					return oo;
 				},
 				onEachFeature: function (feature, layer) {
-					layer.on("click", function()
+					layer.on("click", function(args)
 					{
-						that.onElementClick(layer, section, v.id);
+						that.onElementClick({ element: args.layer, section: section, id: v.id, latlng: args.latlng});
 					});
 				}
 			});
@@ -1251,9 +1269,11 @@ $.extend(APP.interactiveMap,
 		
 		$("#mainContent").height($("#mainContent").height());
 				
-		that.getData("itinerary", function(){
-			that.navbars.top.find('#itineraryButton').parents("li:first").removeClass("disabled");
-			that.getMedia("itinerary"); 
+		that.getGeo("area", function(){
+			that.getData("area", function(){
+				that.navbars.top.find('#areaButton').parents("li:first").removeClass("disabled");
+			});
+			that.getMedia("area");
 		});
 		that.getGeo("path", function(){
 			that.getData("path", function(){
@@ -1266,6 +1286,10 @@ $.extend(APP.interactiveMap,
 				that.navbars.top.find('#poiButton').parents("li:first").removeClass("disabled");
 			}); 
 			that.getMedia("poi");
+		});
+		that.getData("itinerary", function(){
+			that.navbars.top.find('#itineraryButton').parents("li:first").removeClass("disabled");
+			that.getMedia("itinerary"); 
 		});
 	}
 });

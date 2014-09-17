@@ -26,6 +26,11 @@ $.extend(APP.utils,{
 		return str;
 	},
 	
+	capitalize: function (string)
+	{
+		return string.charAt(0).toUpperCase() + string.slice(1);
+	},
+	
 	isEmptyString: function (elemento)
 	{
 		elemento = elemento.toString();
