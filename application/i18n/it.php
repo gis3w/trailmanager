@@ -51,6 +51,11 @@ return array(
 	'Path section' => 'Percorsi',
 	'Itinerary section' => 'Itinerari',
 	'Area section' => 'Aree',
+	'Period_schedule' => 'Periodi e orari',
+	'transportation_types' => 'Percorribilità',
+	'categories' => 'Categorie',
+	'measures' => 'Misure',
+	'Urls' => 'Collegamenti',
  
     'Close' => 'Chiudi',    
     'close' => 'Chiudi',
@@ -131,7 +136,9 @@ return array(
     'Image' => 'Immagine',
     
     'Points of interest' => 'Punti di interesse',
+	'Pois' => 'Punti di interesse',
     'Paths' => 'Percorsi',
+	'Areas' => 'Aree',
     
     'Images to upload' => 'Immagini da caricare',
     'Videos to embed' => 'Video da incorporare',
