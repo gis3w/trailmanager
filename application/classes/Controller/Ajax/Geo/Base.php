@@ -15,8 +15,7 @@ class Controller_Ajax_Geo_Base extends Controller_Ajax_Data_Base{
         if($this->request->controller() == 'Path' OR $this->request->controller() == 'Area')
         {
             $toRes['color'] = $orm->color;
-            if(isset($orm->width))
-                $toRes['width'] = $orm->width;
+            $toRes['width'] = $orm->width;
         }
         
         //adding centroids

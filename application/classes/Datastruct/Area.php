@@ -17,7 +17,7 @@ class Datastruct_Area extends Datastruct {
        array(
             'name' => 'area-foreign-data',
             'position' => 'right',
-            'fields' => array('typology_id','typologies','the_geom','color','image_area','video_area'),
+            'fields' => array('typology_id','typologies','the_geom','color','width','image_area','video_area'),
         ),
         array(
             'name' => 'area-block-data',
