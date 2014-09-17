@@ -9,7 +9,9 @@ class Controller_Ajax_Admin_Itinerary extends Controller_Ajax_Admin_Sheet_Base{
     
     protected $_pois = array();
     protected $_paths = array();
-    
+    protected $_areas = array();
+
+
     protected $_upload_path = array(
          'image_itinerary' => 'image',
      );
