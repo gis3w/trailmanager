@@ -13,7 +13,7 @@
 class Kohana_SAFE extends Kohana_Core
 {
     
-    const VERSION = '0.1.19';
+    const VERSION = '0.1.20';
     
     /**
      * Overload del metodo per avere anche la traduzione compresa
