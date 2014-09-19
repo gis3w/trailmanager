@@ -13,6 +13,9 @@ class Controller_Ajax_Data_Path extends Controller_Ajax_Data_Base{
         
         $toRes['modes'] = array_keys($orm->modes->find_all()->as_array('id'));
         
+        $toRes['altitude_gap'] = $toRes['altitude_gap'].' km';
+        $toRes['length'] = $toRes['length'].' km';
+        
         return $toRes;
         
     }

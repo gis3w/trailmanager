@@ -45,7 +45,8 @@ class Controller_Ajax_Data_Base extends Controller_Ajax_Base_Crud_NoStrict_GET{
                 $toRes['x'],
                 $toRes['y'],
                 $toRes['centroid'],
-                $toRes['publish']
+                $toRes['publish'],
+                $toRes['max_scale']
                 );
         
         // si aggiunge anche la foto principale

@@ -63,6 +63,11 @@ return array(
                 'path_id',
             )
         ),
+        'pages' => array(
+            'columns_to_exlude' => array(
+                'alpha_id',
+            )
+        ),
     ),
     
 );

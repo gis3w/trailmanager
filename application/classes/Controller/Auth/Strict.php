@@ -14,8 +14,8 @@ abstract class  Controller_Auth_Strict extends Controller_Base_Main {
 
     public function before()
     {
-           parent::before();
 
+           parent::before();
 
            // parte con la autenticazione
            // si avvia la sessione per registrare la chiamata

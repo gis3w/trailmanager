@@ -77,6 +77,10 @@ return array(
     'Color' => 'Colore',
     'Width' => 'Larghezza',
     
+    'Pages' => 'Pagine',
+    'Alphanumeric ID' => 'Identificativo alfanumerico',
+    'Body' => 'Corpo pagina',
+    
     
     
     //TRADUZIONI DELLE VALIDAZIONI
@@ -95,6 +99,8 @@ return array(
     'error' => 'Errore',
     'success' => 'Successo',
     'select_file' => 'Seleziona un file',
+    
+    'Max scale' => 'Scala massima',
    
     'Urls poi' => 'Collegameti',
     'Urls path' => 'Collegameti',
@@ -111,6 +117,7 @@ return array(
     'Roles' => 'Ruoli',
     
     'Areas' => 'Aree',
+    'Areas of interest' => 'Aree di interesse',
     
     'Title' => 'Titolo',
     'Length' => 'Lunghezza',
@@ -145,6 +152,7 @@ return array(
     'Videos to embed' => 'Video da incorporare',
    
     'global-typology-data' => 'Tipologia',
+    'global-page-data' => 'Pagina da inserire/modificare',
     
     'capabilitties-data' => 'Capability',
     'foreign-capabilities-data' => 'Ruoli',

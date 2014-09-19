@@ -27,6 +27,8 @@ class Controller_Ajax_Geo_Base extends Controller_Ajax_Data_Base{
             
         $toRes['geoJSON'] = json_decode($orm->asgeojson);
         
+        if(isset($orm->max_scale))
+            $toRes['max_scale'] = $orm->max_scale;
         // si aggiunge l'ensensione
         $toRes['extent'] = $orm->bbox;
         

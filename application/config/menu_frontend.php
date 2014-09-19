@@ -26,13 +26,6 @@ return array(
             'capability' => NULL,
             'icon' => 'code-fork',
         ),
-        'path' => array(
-            'id' =>'path',
-            'name' => __('Paths'),
-            'url' => NULL,
-            'capability' => NULL,
-            'icon' => 'location-arrow',
-        ),
         'poi' => array(
             'id' =>'poi',
             'name' => __('Points of interest'),
@@ -40,9 +33,16 @@ return array(
             'capability' => NULL,
             'icon' => 'map-marker',
         ),
+        'path' => array(
+            'id' =>'path',
+            'name' => __('Paths'),
+            'url' => NULL,
+            'capability' => NULL,
+            'icon' => 'location-arrow',
+        ),
          'area' => array(
             'id' =>'area',
-            'name' => __('Areas'),
+            'name' => __('Areas of interest'),
             'url' => NULL,
             'capability' => NULL,
             'icon' => 'crop',

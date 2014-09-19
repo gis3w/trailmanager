@@ -18,7 +18,7 @@ class Datastruct_Poi extends Datastruct {
        array(
             'name' => 'poi-foreign-data',
             'position' => 'right',
-            'fields' => array('typology_id','typologies','the_geom','image_poi','video_poi'),
+            'fields' => array('typology_id','typologies','the_geom','max_scale','image_poi','video_poi'),
         ),
         array(
             'name' => 'poi-block-data',
@@ -77,6 +77,10 @@ class Datastruct_Poi extends Datastruct {
                 "inquiry" => array(
                     'form_input_type' => self::TEXTAREA,
                     'editor' => TRUE,
+                ),
+                "max_scale" => array(
+                    'prefix' => '1:',
+                    'table_show' => FALSE,
                 ),
             );
       }

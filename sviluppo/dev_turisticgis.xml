@@ -397,6 +397,25 @@
       </Fk>
       <SchTrHis/>
     </Tbl>
+    <Tbl UsSo="1" nm="pages">
+      <Cm>General pages</Cm>
+      <TblOpts/>
+      <Pk ClNs="id" nm="pkpages"/>
+      <Cl au="1" df="" nm="id" nu="0">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="1"/>
+      </Cl>
+      <Cl au="0" df="" nm="alpha_id" nu="0">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+        <Cm>Alphanumeric identification key</Cm>
+      </Cl>
+      <Cl au="0" df="" nm="title" nu="0">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="body" nu="0">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <SchTrHis/>
+    </Tbl>
     <Tbl UsSo="1" nm="path_modes">
       <Cm>Different throw type run the path </Cm>
       <TblOpts>WITHOUT OIDS</TblOpts>
@@ -485,6 +504,9 @@
       <Cl au="0" df="" nm="inquiry" nu="1">
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
+      <Cl au="0" df="" nm="information_url" nu="1">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
       <Fk deAc="3" nm="fk_paths_typologies" prLkCl="id" upAc="3">
         <PrTb mn="0" nm="typologies" oe="1" sch="public" zr="0"/>
         <CdTb mn="1" nm="paths" oe="1" sch="public" zr="1"/>
@@ -524,6 +546,9 @@
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
       <Cl au="0" df="" nm="inquiry" nu="1">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="information_url" nu="1">
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
       <Fk deAc="3" nm="fk_pois_typologies" prLkCl="id" upAc="3">
@@ -8424,6 +8449,7 @@ FROM itineraries</Sql>
     <TbGl bkCl="ffff6666" sch="public" tbl="url_paths" x="1568" y="575"/>
     <TbGl bkCl="ffff6666" sch="public" tbl="url_areas" x="1556" y="805"/>
     <TbGl bkCl="ff3399ff" sch="public" tbl="url_itineraries" x="743" y="305"/>
+    <TbGl bkCl="ffccccff" sch="public" tbl="pages" x="824" y="739"/>
     <FkGl bkCl="ff000000" nm="public.areas.fk_areas_typologies"/>
     <FkGl bkCl="ff000000" nm="public.capabilities_roles.fk_capabilities_roles_capabilities"/>
     <FkGl bkCl="ff000000" nm="public.capabilities_roles.fk_capabilities_roles_roles"/>
@@ -8560,7 +8586,7 @@ FROM itineraries</Sql>
     <TreePath/>
     <TreePath>/Schemas (1)</TreePath>
     <TreePath>/Schemas (1)/public</TreePath>
-    <TreePath>/Schemas (1)/public/Tables (37)</TreePath>
+    <TreePath>/Schemas (1)/public/Tables (38)</TreePath>
     <TreePath>/Schemas (1)/public/Views (2)</TreePath>
   </TreePaths>
 </Db>
