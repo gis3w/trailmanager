@@ -56,6 +56,9 @@ class Model_Poi extends ORMGIS {
             'typology_id' =>array(
                     array('not_empty'),
             ),
+             'max_scale' =>array(
+                    array('numeric'),
+            ),
         );
     }
 
