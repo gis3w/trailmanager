@@ -27,20 +27,13 @@
 				<?php endif; ?>
             <?php endforeach; ?>
         </ul>
-        <?php if(isset($search) AND $search): ?>
-		<div class="navbar-form navbar-right" role="search">
-			<div class="form-group">
-				<div id="topNavbarSearch" class="input-group">
-					<input type="text" class="form-control" placeholder="Search">
-					<span class="input-group-btn">
-						<button type="submit" class="btn btn-default"><i class="icon icon-search"></i></button>
-					</span>
-				</div>
-			</div>
-		</div>
-            <?php endif; ?>
+       
         <ul class="nav navbar-nav navbar-right">
-            <?php 
+			<?php if(isset($search) AND $search): ?>
+				<li><a id="searchButton" href="#" data-toggle="modal"><i class="icon icon-search"></i> Search</a></li>
+			<?php endif; ?>
+            
+			<?php 
                                                                 foreach ($langs as $I18n => $lang):
 			?>
                     <li><a href="?lang=<?php echo $I18n ?>"><i class="icon icon-flag"></i> <?php echo $lang ?></a></li>
@@ -49,6 +42,7 @@
 			?>
              <li>
             <?php if(isset($user)): ?>
+			
             <span class=""><?php echo $user->user_data->nome. " ".$user->user_data->cognome."(".$user->username.")";?></span><br />
             <?php endif; ?>
             <span><?php echo __('Version: '.SAFE::VERSION) ?></span>

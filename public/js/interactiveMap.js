@@ -3,6 +3,7 @@ $.extend(APP.interactiveMap,
 	previousSection: null,
 	currentSection: null,
 	currentItinerary: null,
+	selectedElement: null,
 	myData: {},
 	body: null,
 	navbars: {
@@ -10,6 +11,7 @@ $.extend(APP.interactiveMap,
 		bottom: null,
 	},
 	infoDelay: 1000,
+	searchModal: null,
 	itemsOnSidebar: true,
 	mySidebar: {
 		control: null,
@@ -20,9 +22,27 @@ $.extend(APP.interactiveMap,
 		'length': '/public/img/lunghezza.png',
 		'time': '/public/img/durata.png',
 	},
-	//firstExtent: {},
 	bouncingMarkers: false,
 	searchUrl: '/jx/search?tofind=',
+	
+	insertRowAlphabetically: function(container, row, selector, offset)
+	{
+		var that = this;
+		offset = (offset)? offset : 0;
+		var cs = container.children();
+		if (offset === cs.length)
+		{
+			container.append(row);
+			return false;
+		}
+		var node = $(cs[offset]);
+		var nodeTitle = node.find(selector).text();
+		var rowTitle = row.find(selector).text();
+		if (nodeTitle > rowTitle)
+			row.insertBefore(node);
+		else
+			that.insertRowAlphabetically(container, row, selector, offset+1);
+	},
 	
 	getObjectTitle: function(section, id)
 	{
@@ -84,87 +104,164 @@ $.extend(APP.interactiveMap,
 	highlightLayer: function(section, id)
 	{
 		if (section !== "itinerary")
+		{
 			if (APP.map.globalData.mainContent.addedLayers[section+"_"+id].layer)
 				APP.map.highlightLayer(section+"_"+id);
+			this.selectedElement = id;
+		}
 	},
 	
 	resetHighlightLayer: function()
 	{
-		APP.map.highlightLayer(null);
+		APP.map.highlightLayer(null, null);
+	},
+	
+	onItineraryClick: function(o)
+	{
+		var that = this;
+		
+		var element = o.element;
+		var section = o.section;
+		var id = o.id;
+		
+		that.currentItinerary = id;
+		APP.map.hideAllLayers();
+		
+		$.each(that.myData[section][id].data.areas,function(j,k){
+			//APP.map.addLayer(that.myData.path[v.data.id].geo.geoJSON);
+			that.sendGeojsonLayerToMap(that.myData.area[k].geo, "area");
+		});
+		$.each(that.myData[section][id].data.paths,function(j,k){
+			//APP.map.addLayer(that.myData.path[v.data.id].geo.geoJSON);
+			that.sendGeojsonLayerToMap(that.myData.path[k].geo, "path");
+		});
+		$.each(that.myData[section][id].data.pois,function(j,k){
+			//APP.map.addLayer(that.myData.poi[v.data.id].geo.geoJSON);
+			that.sendGeojsonLayerToMap(that.myData.poi[k].geo, "poi");
+		});
+		
+		that.showBottomBar(section, id, function()
+		{
+			if (that.itemsOnSidebar && L.control.sidebar)
+			{
+				that.mySidebar.div.find(".active").removeClass("active");
+				that.mySidebar.control.hide();
+			}
+			else
+			{
+				that.body.find("#modal-"+section).find(".active").removeClass("active");
+				that.body.find("#modal-"+section).modal('hide');
+			}
+			
+			that.showItems(that.currentSection);
+		});
+		
+		APP.utils.showNoty({content: '<p>'+APP.i18n.translate("You are currently viewing the elements of the following itinerary")+': <strong class="text-danger">'+that.getObjectTitle(section, id)+'</strong>.<br>'+APP.i18n.translate('To view all the elements again, exit from itinerary')+'.</p>', title: APP.i18n.translate("Information"), type: "alert", timeout: 3000});
+		that.zoomAt(section, id);
+	},
+	
+	closeItinerary: function(onCloseCallback)
+	{
+		var that = this;
+		that.currentItinerary = null;
+		that.selectedElement = null;
+		that.hideBottomBar();
+		APP.map.showAllLayers();
+		that.resetHighlightLayer();
+		APP.map.setExtent(APP.map.globalData[APP.map.currentMapId].globalExtent);
+		if (APP.utils.isset(onCloseCallback) && $.isFunction(onCloseCallback))
+			onCloseCallback();
+	},
+	
+	bindPopup: function(section, id, latlng)
+	{
+		var that = this;
+		
+		var element = APP.map.getLayer(section+"_"+id);
+		if (element.unbindPopup && $.isFunction(element.unbindPopup))
+			element.unbindPopup();
+			
+		var po = {
+			//closeButton: false,
+			closeOnClick: true,
+			maxWidth: (that.body.width() > 320)? 300 : that.body.width()-(that.body.width()*0.3),
+			//maxHeight: that.body.height()-((that.body.height()*20/)100),
+			minWidth: (that.body.width() > 320)? 280 : (that.body.width()-(that.body.width()*0.4)),
+		};
+		if (section == "poi")
+			po.offset = L.point(0, -25);
+		
+		var media = '<div class="media">\
+						<a class="pull-left" href="#">\
+							<img class="media-object thumbnail" style="width: 75px" src="'+that.getOverviewImage(section, id, true)+'" alt="">\
+						</a>\
+						<div class="media-body">\
+							<h4 class="media-heading">'+that.getObjectTitle(section, id)+'</h4>\
+							<div>\
+								<button type="button" class="btn btn-default btn-sm popupDetailsBtn" style="margin-top: 10px"><i class="icon icon-search"></i> '+APP.i18n.translate('View data sheet')+'</button>\
+							</div>\
+						</div>\
+					</div>';
+					
+		element.bindPopup(media, po);
+		
+		element.off('popupopen').on('popupopen', function(a){
+			var myBtn = $(a.popup._container).find(".popupDetailsBtn");
+			var closeBtn = $(a.popup._container).find(".leaflet-popup-close-button");
+			closeBtn.off("click").click(function(){
+				that.resetHighlightLayer();
+			});			
+			myBtn.off("click").click(function(){
+				that.showInformation(section, id);
+			});
+		});
+		
+		element.off('popupclose').on('popupclose', function(a){
+			if (a.layer)
+				a.layer.unbindPopup();
+			else
+				if (a.target)
+					a.target.unbindPopup();
+		});
+		
+		element.openPopup(latlng);
 	},
 	
 	onElementClick: function(o)
 	{
 		var that = this;
-		element = o.element;
-		section = o.section;
-		id = o.id;
-		latlng = o.latlng;
 		
-		if (that.currentSection != "itinerary")
+		var element = o.element;
+		var section = o.section;
+		var id = o.id;
+		var latlng = o.latlng;
+		
+		if (!APP.utils.isset(that.currentItinerary))
+		{
 			that.highlightLayer(section, id);
+		}
 		
-		if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
+		var afterHidden = function()
+		{
+			that.zoomAt(section, id);
+			if (section === "itinerary")
+				return false;
+			
+			that.bindPopup(section, id, latlng);
+		};
+		
+		if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control && that.navbars.top.parents(".navbar").find(".navbar-toggle").is(":visible"))
 		{
 			that.mySidebar.control.hide();
+			setTimeout(function(){ afterHidden(); }, 500);
 		}
-		that.zoomAt(section, id);
-		
-		if (element)
-		{
-			if (!element.unbindPopup)
-				element = APP.map.getLayer(section+"_"+id);
-			if (element.unbindPopup && $.isFunction(element.unbindPopup))
-				element.unbindPopup();
-			if (element.bindPopup && $.isFunction(element.bindPopup))
-			{
-				po = {
-					closeOnClick: true,
-					maxWidth: that.body.width()-(that.body.width()*0.2),
-					//maxHeight: that.body.height()-((that.body.height()*20/)100),
-					minWidth: (that.body.width() > 320)? 280 : (that.body.width()-(that.body.width()*0.2)),
-				};
-				if (section == "poi")
-					po.offset = L.point(0, -25);
-				
-				var media = '<div class="media">\
-								<a class="pull-left" href="#">\
-									<img class="media-object thumbnail" style="width: 75px" src="'+that.getOverviewImage(section, id, true)+'" alt="">\
-								</a>\
-								<div class="media-body">\
-									<h4 class="media-heading">'+that.getObjectTitle(section, id)+'</h4>\
-									<div>\
-										<button type="button" class="btn btn-default btn-sm popupDetailsBtn" style="margin-top: 10px"><i class="icon icon-search"></i> '+APP.i18n.translate('View data sheet')+'</button>\
-									</div>\
-								</div>\
-							</div>';
-							
-				element.bindPopup(media, po);
-				
-				element.on('popupopen', function(a){
-					var myBtn = $(a.popup._container).find(".popupDetailsBtn");
-					
-					myBtn.off("click").click(function(){
-						//a.layer.closePopup();
-						that.showInformation(section, id);
-					});
-				});
-				
-				element.openPopup(latlng);
-			}
-		}
+		else
+			afterHidden();
 	},
 	
 	showInformation: function(section, id, onCloseCallback)
 	{
 		var that = this;
-		/*
-		that.getData(section, function(){
-			that.getMedia(section, id, function(){
-				that.openInfo(section, id); 
-			});
-		});
-		*/
 		
 		if (that.itemsOnSidebar && L.control.sidebar)
 			APP.map.sidebar.control.hide();
@@ -181,7 +278,7 @@ $.extend(APP.interactiveMap,
 		that.navbars.bottom = that.body.find(".navbar-fixed-bottom");
 		if (that.navbars.bottom.length > 0)
 		{
-			that.body.find("#mainContent").height(that.body.find("#mainContent").height()+botNav.height());
+			that.body.find("#mainContent").height(that.body.find("#mainContent").height()+that.navbars.bottom.height());
 			that.navbars.bottom.remove();
 		}
 		
@@ -211,8 +308,8 @@ $.extend(APP.interactiveMap,
 		<li><a href="#"><button type="button" class="btn btn-default closeButton"><i class="icon icon-remove"></i> '+APP.i18n.translate("close")+'</button></a></li>\*/
 					
 		that.navbars.bottom.find(".detailsButton").click(function(){
-			var c = that.navbars.bottom.find('#bottomNavbarCollapse');
-			c.collapse('hide');
+			if (that.navbars.bottom.find(".navbar-collapse").hasClass("in"))
+				that.navbars.bottom.find('.navbar-collapse').collapse('hide');
 			that.showInformation(section, id, function()
 			{
 				
@@ -220,13 +317,7 @@ $.extend(APP.interactiveMap,
 		});
 		
 		that.navbars.bottom.find(".closeButton").click(function(){
-			that.currentItinerary = null;
-			that.hideBottomBar();
-			APP.map.showAllLayers();
-			that.resetHighlightLayer();
-			APP.map.setExtent(APP.map.globalData[APP.map.currentMapId].globalExtent);
-			if (APP.utils.isset(onCloseCallback) && $.isFunction(onCloseCallback))
-				onCloseCallback();
+			that.closeItinerary(onCloseCallback);
 		});
 		
 		that.body.append(that.navbars.bottom);
@@ -283,19 +374,10 @@ $.extend(APP.interactiveMap,
 											</div>\
 										</div>\
 									</div>\
-									<div class="col-md-4">\
-										<div class="panel panel-default transportationTypes" style="display: none">\
+									<div class="col-md-8">\
+										<div class="panel panel-default features" style="display: none">\
 											<div class="panel-heading">\
-												<h3 class="panel-title">'+APP.i18n.translate('transportation_types')+'</h3>\
-											</div>\
-											<div class="panel-body">\
-											</div>\
-										</div>\
-									</div>\
-									<div class="col-md-4">\
-										<div class="panel panel-default measures" style="display: none">\
-											<div class="panel-heading">\
-												<h3 class="panel-title">'+APP.i18n.translate('measures')+'</h3>\
+												<h3 class="panel-title">'+APP.i18n.translate('features')+'</h3>\
 											</div>\
 											<div class="panel-body">\
 											</div>\
@@ -389,7 +471,7 @@ $.extend(APP.interactiveMap,
 							{
 								var img  = $('<div class="media">\
 												<a class="pull-left" href="#">\
-													<img src="'+moreParams.values[ii][moreParams.icon]+'" class="img-responsive" style="margin-top: -3px" alt="'+moreParams.values[ii][moreParams.label]+'">\
+													<img src="'+moreParams.values[ii][moreParams.icon]+'" class="img-responsive" style="margin-top: -3px; max-width: 32px" alt="'+moreParams.values[ii][moreParams.label]+'">\
 												</a>\
 												<div class="media-body">\
 													<h5 class="media-heading"><span class="label label-'+((voice === "typology_id")? 'danger' : 'default')+'">'+moreParams.values[ii][moreParams.label]+'</span></h5>\
@@ -406,7 +488,7 @@ $.extend(APP.interactiveMap,
 						if (!APP.utils.isset(overviewToAppend[moreParams.voiceResult]))
 							overviewToAppend[moreParams.voiceResult] = [];
 						
-						var span = $('<p><i class="icon icon-'+moreParams.icon+'"></i> <b>'+APP.i18n.translate(voice)+'</b>: '+that.myData[section][id].data[voice]+'m </p>');
+						var span = $('<p><i class="icon icon-'+moreParams.icon+'"></i> <b>'+APP.i18n.translate(voice)+'</b>: '+that.myData[section][id].data[voice]+'</p>');
 						overviewToAppend[moreParams.voiceResult].push(span);
 					}
 					return;
@@ -419,6 +501,31 @@ $.extend(APP.interactiveMap,
 						var span = $('<p><b>'+APP.i18n.translate(voice)+'</b>: '+that.myData[section][id].data[voice]+'m </p>');
 						if (moreParams.image && moreParams.image !== "")
 							span.prepend('<img class="pull-left" src="'+moreParams.image+'" style="margin-right: 5px">');
+						overviewToAppend[moreParams.voiceResult].push(span);
+					}
+					return;
+				case "ov-descriptionWithInlineImages":
+					if (APP.utils.isset(that.myData[section][id].data[voice]) && APP.utils.isset(moreParams) && $.isArray(moreParams.values))
+					{
+						if (!APP.utils.isset(overviewToAppend[moreParams.voiceResult]))
+							overviewToAppend[moreParams.voiceResult] = [];
+						var arr = [];
+						if (!$.isArray(that.myData[section][id].data[voice]))
+							arr[0] = that.myData[section][id].data[voice];
+						else
+							arr = that.myData[section][id].data[voice];
+						
+						var span = $('<p class="pull-left"><b>'+APP.i18n.translate(moreParams.description)+'</b>: </p>');
+							
+						$.each(arr, function(i, v)
+						{
+							var ii = APP.utils.getIndexFromField(moreParams.values, "id", v);
+							if (ii > -1)
+							{
+								var img  = $('<img src="'+moreParams.values[ii][moreParams.icon]+'" class="img-responsive pull-right" style="margin-right: 3px; max-width: 30px" title="'+moreParams.values[ii][moreParams.label]+'">');
+								span.append(img);
+							}
+						});
 						overviewToAppend[moreParams.voiceResult].push(span);
 					}
 					return;
@@ -465,7 +572,7 @@ $.extend(APP.interactiveMap,
 							li.find(".media-heading").append(btn);
 							
 							if (typology)
-								li.find("a").append('<img class="media-object" src="'+typology.icon+'" alt="'+typology.name+'">');
+								li.find("a").append('<img class="media-object" src="'+typology.icon+'" title="'+typology.name+'" alt="'+typology.name+'">');
 								
 							ul.append(li);
 						});
@@ -476,11 +583,14 @@ $.extend(APP.interactiveMap,
 				case "url":
 					if (APP.utils.isset(that.myData[section][id].data[voice]) && !APP.utils.isEmptyString(that.myData[section][id].data[voice]))
 					{
-						var dl = $('<dl class=""></dl>');
-						$.each(that.myData[section][id].data[voice], function(ii,vv){
+						var dl = $('<ul></ul>');
+						$.each(that.myData[section][id].data[voice], function(ii,vv)
+						{
+							var li = $("<li></li>");
 							var myUrl = (vv.url.indexOf('http://') === -1)? "http://"+vv.url : vv.url;
-							dl.append('<dt><a class="btn btn-link" href="'+myUrl+'" target="_blank">'+vv.alias+'</a></dt>');
-							dl.append('<dd style="margin-bottom: 10px">'+vv.description_url+'</dd>');
+							li.append('<a class="btn-link" href="'+myUrl+'" target="_blank">'+vv.alias+'</a>');
+							li.append('<span style="margin-left: 10px"><small><i>'+vv.description_url+'</i></small></span>');
+							dl.append(li);							
 						});
 						div.append(dl);
 					}
@@ -538,9 +648,9 @@ $.extend(APP.interactiveMap,
 				checkVoice('typology_id', 'ov-img', {values: APP.config.localConfig.typology, label: 'name', icon: "icon", voiceResult: "categories"});
 				checkVoice('typologies', 'ov-img', {values: APP.config.localConfig.typology, label: 'name', icon: "icon", voiceResult: "categories"});
 				checkVoice('description', 'text');
-				checkVoice('length', 'ov-icage', {image: that.icons['length'], voiceResult: "measures"});
-				checkVoice('altitude_gap', 'ov-icage', {image: that.icons.altitude_gap, voiceResult: "measures"});
-				checkVoice('path_modes', 'ov-img', {values: APP.config.localConfig.path_mode, label: 'mode', icon: "icon", voiceResult: "transportationTypes"});
+				checkVoice('length', 'ov-icage', {image: that.icons['length'], voiceResult: "features"});
+				checkVoice('altitude_gap', 'ov-icage', {image: that.icons.altitude_gap, voiceResult: "features"});
+				checkVoice('modes', 'ov-descriptionWithInlineImages', {values: APP.config.localConfig.path_mode, label: 'mode', icon: "icon", voiceResult: "features", description: APP.i18n.translate('transportation_types')});
 				checkVoice('reason', 'text');
 				checkVoice('period_schedule', 'text');
 				checkVoice('accessibility', 'text');
@@ -597,8 +707,6 @@ $.extend(APP.interactiveMap,
 		
 		myModal.on('hidden.bs.modal', function()
 		{ 
-			//that.body.find('.blueimp-gallery').remove();
-			//that.resetHighlightLayer();
 			if (APP.utils.isset(onCloseCallback) && $.isFunction(onCloseCallback))
 				onCloseCallback(); 
 		});
@@ -610,7 +718,7 @@ $.extend(APP.interactiveMap,
 	zoomAt: function(section, id)
 	{
 		var that = this;		
-		APP.map.globalData[APP.map.currentMapId].globalExtent = null;
+		APP.map.globalData[APP.map.currentMapId].globalExtent = {};
 		
 		switch(section)
 		{
@@ -633,6 +741,7 @@ $.extend(APP.interactiveMap,
 				$.each(that.myData[section][id].data.pois, function(i,v){
 					APP.map.setGlobalExtent(that.myData["poi"][v].geo.extent);
 				});
+				break;
 			default:
 				break;
 		}
@@ -679,11 +788,12 @@ $.extend(APP.interactiveMap,
 		{
 			case "itinerary":
 				var listGroup = $('<div class="list-group list-group-wo-radius" style="margin: 0px -23px 0px -23.5px; padding: -10px"></div>');
+				
 				$.each(that.myData[section], function(i,v)
 				{					
 					var media = $(	'<div class="media">\
 									  <a class="pull-left" href="#">\
-										<img class="media-object img-rounded" src="'+this.data.thumb_main_image+'" alt="'+APP.i18n.translate('no_image')+'" style="max-width: 60px; max-height: 60px">\
+										<img class="media-object img-rounded" src="'+that.getOverviewImage(section, v.data.id, true)+'" alt="'+APP.i18n.translate('no_image')+'" style="max-width: 60px; max-height: 60px">\
 									  </a>\
 									  <div class="media-body">\
 										<h4 class="media-heading">'+this.data.name+'</h4>\
@@ -693,38 +803,12 @@ $.extend(APP.interactiveMap,
 					var a = $('<a id="item_'+section+'_'+v.data.id+'" href="#" class="list-group-item '+((that.currentItinerary === v.data.id)? "active" : "")+'"></a>');
 					a.data(v).append(media);
 					a.click(function(){
-						var params = $(this).data();
-						that.currentItinerary = params.data.id;
 						APP.config.removeActiveClasses($(this).parents(".list-group:first"), "a");
 						$(this).addClass("active");
 						that.mySidebar.control.hide();
-						APP.map.hideAllLayers();
-						
-						$.each(params.data.areas,function(j,k){
-							//APP.map.addLayer(that.myData.area[v.data.id].geo.geoJSON);
-							that.sendGeojsonLayerToMap(that.myData.area[k].geo, "area");
-						});
-						$.each(params.data.paths,function(j,k){
-							//APP.map.addLayer(that.myData.path[v.data.id].geo.geoJSON);
-							that.sendGeojsonLayerToMap(that.myData.path[k].geo, "path");
-						});
-						$.each(params.data.pois,function(j,k){
-							//APP.map.addLayer(that.myData.poi[v.data.id].geo.geoJSON);
-							that.sendGeojsonLayerToMap(that.myData.poi[k].geo, "poi");
-						});
-						
-						that.showBottomBar(section, params.data.id, function(){
-							that.mySidebar.div.find(".active").removeClass("active");
-							that.mySidebar.control.hide();
-							that.showItems(that.currentSection)
-							/*that.navbars.top.find("li").removeClass("active");
-							that.navbars.top.find("#"+that.currentSection+"Button").parent().addClass("active");*/
-						});
-						
-						that.zoomAt(section, params.data.id);
-						APP.utils.showNoty({content: '<p>'+APP.i18n.translate("You are currently viewing the elements of the following itinerary")+': <strong class="text-danger">'+that.getObjectTitle(section, params.data.id)+'</strong>.<br>'+APP.i18n.translate('To view all the elements again, exit from itinerary')+'.</p>', title: APP.i18n.translate("Information"), type: "alert", timeout: 5000});
+						that.onItineraryClick({element: $(this), section: section, id: $(this).data().data.id});
 					});
-					listGroup.append(a);
+					that.insertRowAlphabetically(listGroup, a, ".media-heading")
 				});
 				that.mySidebar.div.html(listGroup);
 				break;
@@ -752,7 +836,7 @@ $.extend(APP.interactiveMap,
 					//panel.find('.collapse').collapse({toggle: false});
 					
 					accordion.append(header).append(content);
-				});
+				});				
 				$.each(that.myData[section], function(i, v)
 				{
 					if (that.currentItinerary &&  $.inArray(that.currentItinerary, that.myData[section][i].data.itineraries) === -1)
@@ -766,18 +850,15 @@ $.extend(APP.interactiveMap,
 										<img class="media-object img-responsive img-rounded" src="'+(APP.utils.isset(v.data.thumb_main_image)? v.data.thumb_main_image : APP.config.localConfig.default_overview_image)+'" alt="'+APP.i18n.translate('no_image')+'" style="width: 60px; height: 60px">\
 									  </a>\
 									  <div class="media-body">\
-										<h4 class="media-heading">\
-											'+v.data.title+'\
-											<span class="subtypologies pull-right"></span>\
-										</h4>\
+										<h4 class="media-heading">'+v.data.title+'</h4>\
 									  </div>\
 									</div>');					
 					
-					var row = $('<a id="item_'+section+'_'+v.data.id+'" href="#" class="list-group-item"></a>');
+					var row = $('<a id="item_'+section+'_'+v.data.id+'" href="#" class="list-group-item '+((that.selectedElement === v.data.id)? "active" : "")+'"></a>');
 					row.data(v).click(function(){
 						that.onElementClick({ element: $(this), section: section, id: v.data.id, latlng: null});
 					});
-					
+					/*
 					if (v.typologies)
 					{
 						$.each(v.typologies, function(ii,vv)
@@ -794,11 +875,11 @@ $.extend(APP.interactiveMap,
 							}
 						});
 					}
-					
+					*/
 					row.append(media);
-					container.append(row);
+					that.insertRowAlphabetically(container, row, ".media-heading");
 					var counter = parseInt(container.prev().find(".badge").text());
-					container.prev().find(".badge").text(counter+1)
+					container.prev().find(".badge").text(counter+1);
 				});
 				that.mySidebar.div.html(accordion);
 				break;
@@ -851,11 +932,12 @@ $.extend(APP.interactiveMap,
 		{
 			case "itinerary":					
 				var listGroup = $('<div class="list-group list-group-wo-radius" style="margin: -15px"></div>');
+				
 				$.each(that.myData[section], function(i,v)
 				{					
 					var media = $(	'<div class="media">\
 									  <a class="pull-left" href="#">\
-										<img class="media-object img-rounded" src="'+this.data.thumb_main_image+'" alt="'+APP.i18n.translate('no_image')+'" style="max-width: 60px; max-height: 60px">\
+										<img class="media-object img-rounded" src="'+that.getOverviewImage(section, v.data.id, true)+'" alt="'+APP.i18n.translate('no_image')+'" style="max-width: 60px; max-height: 60px">\
 									  </a>\
 									  <div class="media-body">\
 										<h4 class="media-heading">'+this.data.name+'</h4>\
@@ -865,34 +947,12 @@ $.extend(APP.interactiveMap,
 					var a = $('<a item_'+section+'_'+v.data.id+' href="#" class="list-group-item '+((that.currentItinerary === v.data.id)? "active" : "")+'"></a>');
 					a.data(v).append(media);
 					a.click(function(){
-						var params = $(this).data();
 						APP.config.removeActiveClasses($(this).parents(".list-group:first"), "a");
 						$(this).addClass("active");
 						that.body.find("#modal-"+section).modal("hide");
-						APP.map.hideAllLayers();
-						
-						$.each(params.data.areas,function(j,k){
-							//APP.map.addLayer(that.myData.path[v.data.id].geo.geoJSON);
-							that.sendGeojsonLayerToMap(that.myData.area[k].geo, "area");
-						});
-						$.each(params.data.paths,function(j,k){
-							//APP.map.addLayer(that.myData.path[v.data.id].geo.geoJSON);
-							that.sendGeojsonLayerToMap(that.myData.path[k].geo, "path");
-						});
-						$.each(params.data.pois,function(j,k){
-							//APP.map.addLayer(that.myData.poi[v.data.id].geo.geoJSON);
-							that.sendGeojsonLayerToMap(that.myData.poi[k].geo, "poi");
-						});
-						
-						that.showBottomBar(section, params.data.id, function(){
-							that.body.find("#modal-"+section).find(".active").removeClass("active");
-							that.body.find("#modal-"+section).modal('hide');
-							that.showItems(that.currentSection);
-						});
-						
-						that.zoomAt(section, params.data.id);
+						that.onItineraryClick({element: $(this), section: section, id: $(this).data().data.id});
 					});
-					listGroup.append(a);
+					that.insertRowAlphabetically(listGroup, a, ".media-heading");
 				});
 				myModal.find(".modal-body").html(listGroup);
 				break;
@@ -931,7 +991,10 @@ $.extend(APP.interactiveMap,
 					accordion.append(panel);
 				});
 				$.each(that.myData[section], function(i, v)
-				{				
+				{
+					if (that.currentItinerary &&  $.inArray(that.currentItinerary, that.myData[section][i].data.itineraries) === -1)
+						return true;
+					
 					var container = accordion.find("#collapse_"+section+"_"+v.data.typology_id+" .panel-body");
 					if (container.find(".no_result").length>0)
 						container.find(".no_result").remove();
@@ -948,11 +1011,12 @@ $.extend(APP.interactiveMap,
 									  </div>\
 									</div>');
 										
-					var row = $('<a id="item_'+section+'_'+v.data.id+'" href="#" class="list-group-item"</a>');
+					var row = $('<a id="item_'+section+'_'+v.data.id+'" href="#" class="list-group-item '+((that.selectedElement === v.data.id)? "active" : "")+'"</a>');
 					row.data(v).click(function(){
 						that.onElementClick({ element: $(this), section: section, id: v.data.id, latlng: null});
 					});
 					
+					/*
 					if (v.typologies)
 					{
 						$.each(v.typologies, function(ii,vv)
@@ -969,9 +1033,10 @@ $.extend(APP.interactiveMap,
 							}
 						});
 					}
+					*/
 					
 					row.append(media);
-					container.append(row);
+					that.insertRowAlphabetically(container, row, ".media-heading");
 					var counter = parseInt(container.parents(".panel:first").find(".badge").text());
 					container.parents(".panel:first").find(".badge").text(counter+1)
 				});
@@ -1083,9 +1148,8 @@ $.extend(APP.interactiveMap,
 						that.sendGeojsonLayerToMap(v, section);
 						
 						APP.map.setGlobalExtent(that.myData[section][v.id].geo.extent);
-						APP.map.setExtent(APP.map.globalData[APP.map.currentMapId].globalExtent);
-						//that.firstExtent = APP.map.globalData[APP.map.currentMapId].globalExtent;
 					});
+					APP.map.setExtent(APP.map.globalData[APP.map.currentMapId].globalExtent);
 					
 					if (APP.utils.isset(callback) && $.isFunction(callback))
 						callback();
@@ -1199,6 +1263,158 @@ $.extend(APP.interactiveMap,
 		params.container.append(div);
 	},
 	
+	setSearchModal: function()
+	{
+		var that = this;
+		var modalId = "searchModal";
+		
+		that.searchModal = $('<div class="modal fade" id="'+modalId+'" tabindex="-1" role="dialog" aria-labelledby="'+modalId+'Label" aria-hidden="true">\
+								<div class="modal-dialog modal-lg">\
+									<div class="modal-content">\
+										<div class="modal-header">\
+											<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">'+APP.i18n.translate("Close")+'</span></button>\
+											<h4 class="modal-title" id="'+modalId+'Label">'+APP.i18n.translate("Search Panel")+'</h4>\
+										</div>\
+										<div class="modal-body">\
+											<form role="form">\
+												<div class="form-group">\
+													<label for="searchInput">'+APP.i18n.translate("Search")+'</label>\
+													<div class="input-group">\
+														<input type="text" class="form-control" id="searchInput" placeholder="'+APP.i18n.translate("What are you looking for?")+'">\
+														<span class="input-group-btn">\
+															<button class="btn btn-default submitBtn" type="button"><i class="icon icon-search"></i> '+APP.i18n.translate('OK')+'</button>\
+														</span>\
+													</div>\
+												</div>\
+											</form>\
+											<div class="table-responsive" style="">\
+												<table class="table table-striped table-hover">\
+													<thead>\
+														<tr><th>'+APP.i18n.translate("Type")+'</th><th>'+APP.i18n.translate("Title")+'</th><th>'+APP.i18n.translate("Category")+'</th><th class="hidden-xs hidden-sm">'+APP.i18n.translate("Teaser")+'</th></tr>\
+													</thead>\
+													<tbody>\
+													</tbody>\
+												</table>\
+											</div>\
+										</div>\
+										<div class="modal-footer">\
+											<button type="button" class="btn btn-primary" data-dismiss="modal">'+APP.i18n.translate("Close")+'</button>\
+										</div>\
+									</div>\
+								</div>\
+							</div>');
+		
+		that.searchModal.find(".submitBtn").click(function()
+		{
+			var inp = that.searchModal.find('#searchInput');
+			$.ajax({
+				type: 'GET',
+				url: that.searchUrl+inp.val(),
+				dataType: 'json',
+				success: function(data)
+				{
+					if (!APP.utils.checkError(data.error, null))
+					{
+						var table = that.searchModal.find("table");
+						var tbody = that.searchModal.find("table tbody");
+						
+						if ($.fn.DataTable.fnIsDataTable( table[0] ))
+						{
+							table.dataTable().fnDestroy();
+							tbody.empty();
+						}
+						
+						var createDataTable = function()
+						{
+							that.searchModal.find("table").dataTable({
+								"bSort": true,
+								"bRetrieve": true,
+								"bPaginate": true,
+								"sPaginationType": "full_numbers",
+								"aLengthMenu": [10, 20, 30, 50, 100],
+								"iDisplayLength" : (data.items_per_page)? data.items_per_page : 10,
+								"aaSorting": [[0,'asc'],[1,'asc']],
+								"bJQueryUI": false,
+								"oLanguage": APP.utils.getDataTableLanguage(),
+								"fnDrawCallback": function( oSettings ) {
+									
+								},
+								"fnInitComplete": function(oSettings, json) {
+								
+								}
+							});
+						};
+						
+						if (!data.data || !data.data.items || !$.isArray(data.data.items) || data.data.items.length === 0)
+						{
+							createDataTable();
+							return false;
+						}
+						
+						$.each(data.data.items, function(i,v)
+						{
+							var row = $('<tr style="cursor: pointer"><td>'+APP.i18n.translate(v.type.toLowerCase())+'</td><td>'+v.title+'</td><td class="categoryTd"></td><td class="hidden-xs hidden-sm">'+v.teaser+'</td></tr>');
+							var typology = that.getTypology(that.myData[v.type.toLowerCase()][v.id].data.typology_id);
+							if (typology)
+								row.find(".categoryTd").append('<span style="display:none">'+typology.name+'</span><img class="img-responsive" src="'+typology.icon+'" title="'+typology.name+'" alt="'+typology.name+'" style="max-width: 32px">');
+							
+							row.data({section: v.type.toLowerCase(), id: v.id});
+							row.click(function()
+							{
+								var myData = $(this).data();
+								that.searchModal.modal("hide");
+								
+								var openItem = function()
+								{
+									if (myData.section === "itinerary")
+										that.onItineraryClick({ element: $(this), section: myData.section, id: myData.id});
+									else
+										that.onElementClick({ element: $(this), section: myData.section, id: myData.id, latlng: null});
+								};
+								
+								if (that.currentItinerary)
+								{
+									that.closeItinerary(function(){
+										openItem();
+									});
+								}
+								else
+									openItem();
+							});
+							tbody.append(row);
+						});
+						
+						createDataTable();
+					}
+					else
+					{
+						APP.utils.showErrMsg(data);
+					}
+				},
+				error: function(result)
+				{
+					APP.utils.showErrMsg(result);
+				}
+			});
+		});		
+		that.searchModal.on('show.bs.modal', function(){
+			var n = that.navbars.top.parents(".navbar:first");
+			if (n.find(".navbar-collapse").hasClass("in"))
+				n.find('.navbar-collapse').collapse('hide');
+			that.body.find('#searchButton').parent().addClass("active");
+		});
+		that.searchModal.on('shown.bs.modal', function(){
+			that.searchModal.find('#searchInput').focus();
+		});		
+		that.searchModal.on('hide.bs.modal', function(){
+			that.body.find('#searchButton').parent().removeClass("active");
+		});
+		that.body.append(that.searchModal);
+		
+		var bt = that.body.find('#searchButton');
+		bt.attr("data-target","#"+modalId);
+	},
+	
 	start: function()
 	{
 		var that = this;		
@@ -1262,8 +1478,9 @@ $.extend(APP.interactiveMap,
 		that.navbars.top = that.body.find(".navbar-nav:first"); // navbar-nav
 		that.navbars.top.find("a").click(function()
 		{
-			var c = that.navbars.top.parents(".navbar-collapse:first");
-			c.collapse('hide');
+			var n = that.navbars.top.parents(".navbar:first");
+			if (n.find(".navbar-collapse").hasClass("in"))
+				n.find('.navbar-collapse').collapse('hide');
 			
 			if ($(this).parents("li:first").hasClass("disabled"))
 				return false;
@@ -1277,37 +1494,16 @@ $.extend(APP.interactiveMap,
 			that.currentSection = section;
 			that.showItems(section);
 		});
-		var bt = that.body.find('#topNavbarSearch button');		
-		bt.click(function(){
-			var inp = that.body.find('#topNavbarSearch input');
-			$.ajax({
-				type: 'GET',
-				url: that.searchUrl+inp.val(),
-				dataType: 'json',
-				success: function(data)
-				{
-					if (!APP.utils.checkError(data.error, null))
-					{
-						
-					}
-					else
-					{
-						APP.utils.showErrMsg(data);
-					}
-				},
-				error: function(result)
-				{
-					APP.utils.showErrMsg(result);
-				}
-			});
-		});
+		
+		that.setSearchModal();
 		
 		$("#mainContent").css({"height":"100%","width":"100%","margin-bottom":"0px"});		
 		
 		APP.map.sidebar.div = $('<div id="leafletSidebar" style="margin-top: -60px"></div>');
 		that.body.append(APP.map.sidebar.div);
 		APP.map.setMap($("#mainContent"));
-		APP.map.getMap().on('click',function(){
+		APP.map.getMap().on('click',function(){			
+			that.selectedElement = null;
 			that.resetHighlightLayer();
 		});
 		

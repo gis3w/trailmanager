@@ -364,7 +364,7 @@ $.extend(APP.utils,{
 		var that = this;
 		var confirm = $("body").find("#confirmModal");
 		if (confirm.length > 0)
-			$("body").remove("#confirmModal");
+			confirm.remove();
 			
 		confirm = $('<div id="confirmModal" class="modal fade" role="dialog">\
 							<div class="modal-dialog">\

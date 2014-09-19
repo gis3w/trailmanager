@@ -188,6 +188,8 @@ $.extend(APP.map,
 		var unselectedOpacity = 0.4;
 		var defaultPathOpacity = 0.5;
 		var defaultMarkerOpacity = 1;
+		var selectedZIndex = 1000;
+		var unselectedZIndex = 0;
 		
 		var setOpacity = function(layer, op)
 		{
@@ -197,12 +199,32 @@ $.extend(APP.map,
 				(op !== null)? layer.setStyle({opacity: op}) : layer.setStyle({opacity: defaultPathOpacity});
 		};
 		
+		var setZIndex = function(layer, z)
+		{
+			if (layer.setZIndexOffset && $.isFunction(layer.setZIndexOffset))
+				(z !== null)? layer.setZIndexOffset(z) : layer.setOpacity(unselectedZIndex);
+		};
+		
 		$.each(that.globalData[this.currentMapId].addedLayers, function(i,v)
 		{
 			if (id === null)
+			{
 				setOpacity(v.layer, null);
+				setZIndex(v.layer, unselectedZIndex);
+			}
 			else
-				(i === id)? setOpacity(v.layer, selectedOpacity) : setOpacity(v.layer, unselectedOpacity);
+			{
+				if (i === id)
+				{
+					setOpacity(v.layer, selectedOpacity);
+					setZIndex(v.layer, selectedZIndex);
+				}
+				else
+				{
+					setOpacity(v.layer, unselectedOpacity);
+					setZIndex(v.layer, unselectedZIndex);
+				}
+			}
 		});
 	},
 	
@@ -227,10 +249,11 @@ $.extend(APP.map,
 	
 	setExtent: function(extent)
 	{
+		var that = this;
 		if (!this.isset(extent) || $.isEmptyObject(extent) || !this.isset(this.currentMapId))
 			return;
 			
-		this.globalData[this.currentMapId].map.fitBounds([
+		that.globalData[that.currentMapId].map.fitBounds([
 			[parseFloat(extent.miny), parseFloat(extent.minx)],
 			[parseFloat(extent.maxy), parseFloat(extent.maxx)]
 		]);
