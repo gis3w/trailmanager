@@ -125,7 +125,13 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
         $bkls = ORM::factory('Background_Layer')->getLayersBySection('BACKEND');
         $this->config->background_layer = array();
         foreach($bkls as $bkl)
-            $this->config->background_layer[] = $bkl->as_array();
+        {
+            $arr = $bkl->as_array();
+            unset($arr['layer_type_id']);
+            $arr['layer_type'] = $bkl->layer_type->type;
+            $this->config->background_layer[] = $arr;
+        }
+            
     }
 
     

@@ -16,7 +16,7 @@ class Datastruct_Administration_Backgroundlayers extends Datastruct {
         array(
             'name' => 'backgroundlayers-data',
             'position' => 'left',
-            'fields' => array('id','sections','name','description','url','def','source'),
+            'fields' => array('id','sections','layer_type_id','name','description','url','layers','styles','version','transparent','crs','def','source'),
         ),
     );
     
@@ -26,6 +26,17 @@ class Datastruct_Administration_Backgroundlayers extends Datastruct {
             "description" => array(
                 "form_input_type" => self::TEXTAREA
             ),
+             "layer_type_id" => array(
+                    'form_input_type' => self::SELECT,
+                    'foreign_mode' => self::SINGLESELECT,
+                    'foreign_toshow' => '$1',
+                    'foreign_toshow_params' => array(
+                        '$1' => 'type',
+                    ),
+                    'url_values' => '/jx/admin/layer_type',
+                     'description' => __('Select the main typology '),
+                     "table_show" => TRUE,
+                ),
         );
     }
     

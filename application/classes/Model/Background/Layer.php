@@ -15,6 +15,17 @@ class Model_Background_Layer extends ORM {
         ),
     );
     
+     protected $_belongs_to = array(
+            'layer_type' => array( ),
+        );
+     
+     public function labels() {
+         
+         return array(
+             'layer_type_id' => 'Layer Type',
+         );
+     }
+    
     public function rules()
     {
         return array(

@@ -72,6 +72,29 @@
       <Cl au="0" df="" nm="source" nu="0">
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
+      <Cl au="0" df="" nm="layer_type_id" nu="1">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="layers" nu="1">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="styles" nu="1">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="false" nm="transparent" nu="0">
+        <DT ds="Boolean" en="" id="16" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="version" nu="1">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="crs" nu="1">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Fk deAc="3" nm="fk_background_layers_layer_types" prLkCl="id" upAc="3">
+        <PrTb mn="0" nm="layer_types" oe="1" sch="public" zr="0"/>
+        <CdTb mn="1" nm="background_layers" oe="1" sch="public" zr="1"/>
+        <ClPr cdCl="layer_type_id" prCl="id"/>
+      </Fk>
       <SchTrHis/>
     </Tbl>
     <Tbl UsSo="1" nm="capabilities">
@@ -397,12 +420,27 @@
       </Fk>
       <SchTrHis/>
     </Tbl>
-    <Tbl UsSo="1" nm="pages">
-      <Cm>General pages</Cm>
+    <Tbl UsSo="1" nm="layer_types">
+      <Cm>Layer types for leaflet js</Cm>
       <TblOpts/>
-      <Pk ClNs="id" nm="pkpages"/>
+      <Pk ClNs="id" nm="pklayer_types"/>
       <Cl au="1" df="" nm="id" nu="0">
         <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="1"/>
+      </Cl>
+      <Cl au="0" df="" nm="type" nu="0">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="description" nu="1">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <SchTrHis/>
+    </Tbl>
+    <Tbl UsSo="1" nm="pages">
+      <Cm>General pages</Cm>
+      <TblOpts>WITHOUT OIDS</TblOpts>
+      <Pk ClNs="id" nm="pkpages"/>
+      <Cl au="1" df="nextval('pages_id_seq'::regclass)" nm="id" nu="0">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
       <Cl au="0" df="" nm="alpha_id" nu="0">
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
@@ -550,6 +588,9 @@
       </Cl>
       <Cl au="0" df="" nm="information_url" nu="1">
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
+      <Cl au="0" df="" nm="max_scale" nu="1">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
       <Fk deAc="3" nm="fk_pois_typologies" prLkCl="id" upAc="3">
         <PrTb mn="0" nm="typologies" oe="1" sch="public" zr="0"/>
@@ -8369,6 +8410,7 @@ FROM itineraries</Sql>
     <Seq incr="1" nm="itineraries_id_seq"/>
     <Seq incr="1" nm="itineraries_paths_id_seq"/>
     <Seq incr="1" nm="itineraries_pois_id_seq"/>
+    <Seq incr="1" nm="pages_id_seq"/>
     <Seq incr="1" nm="path_modes_id_seq"/>
     <Seq incr="1" nm="path_modes_paths_id_seq"/>
     <Seq incr="1" nm="paths_gid_seq"/>
@@ -8429,7 +8471,7 @@ FROM itineraries</Sql>
     <TbGl bkCl="ffcccccc" sch="public" tbl="typologies_paths" x="1772" y="397"/>
     <TbGl bkCl="ffcccccc" sch="public" tbl="typologies_pois" x="1775" y="234"/>
     <TbGl bkCl="ff3399ff" sch="public" tbl="i18n" x="235" y="530"/>
-    <TbGl bkCl="ff003333" sch="public" tbl="background_layers" x="544" y="241"/>
+    <TbGl bkCl="ff003333" sch="public" tbl="background_layers" x="535" y="187"/>
     <TbGl bkCl="ffff6666" sch="public" tbl="image_pois" x="1219" y="196"/>
     <TbGl bkCl="ffff6666" sch="public" tbl="image_paths" x="1188" y="598"/>
     <TbGl bkCl="ffff6666" sch="public" tbl="video_pois" x="1420" y="196"/>
@@ -8450,7 +8492,9 @@ FROM itineraries</Sql>
     <TbGl bkCl="ffff6666" sch="public" tbl="url_areas" x="1556" y="805"/>
     <TbGl bkCl="ff3399ff" sch="public" tbl="url_itineraries" x="743" y="305"/>
     <TbGl bkCl="ffccccff" sch="public" tbl="pages" x="824" y="739"/>
+    <TbGl bkCl="ff003333" sch="public" tbl="layer_types" x="735" y="180"/>
     <FkGl bkCl="ff000000" nm="public.areas.fk_areas_typologies"/>
+    <FkGl bkCl="ff000000" nm="public.background_layers.fk_background_layers_layer_types"/>
     <FkGl bkCl="ff000000" nm="public.capabilities_roles.fk_capabilities_roles_capabilities"/>
     <FkGl bkCl="ff000000" nm="public.capabilities_roles.fk_capabilities_roles_roles"/>
     <FkGl bkCl="ff000000" nm="public.image_areas.fk_image_areas_areas"/>
@@ -8586,7 +8630,7 @@ FROM itineraries</Sql>
     <TreePath/>
     <TreePath>/Schemas (1)</TreePath>
     <TreePath>/Schemas (1)/public</TreePath>
-    <TreePath>/Schemas (1)/public/Tables (38)</TreePath>
+    <TreePath>/Schemas (1)/public/Tables (39)</TreePath>
     <TreePath>/Schemas (1)/public/Views (2)</TreePath>
   </TreePaths>
 </Db>
