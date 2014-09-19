@@ -464,7 +464,8 @@ $.extend(APP.config,{
 		}
 		$.each(that.localConfig.menu, function(i, v){
 			var button = $("#"+v.id+"Button");
-			var callBack = (i === "logout")? function(){ location.href = v.url; } : function(){ 
+			var callBack = (i === "logout")? function(){ location.href = v.url; } : function(){
+				tinymce.remove(".textEditor");
 				that.insertContent($(this), v.id);
 			}
 			button.click(callBack);
@@ -584,6 +585,8 @@ $.extend(APP.config,{
 		this.setMainContent();
 		this.setFilterDialogsDiv();
 		this.setMenu();
+		
+		
 				
 		//$(".navbar-nav:first").find("a:first").click();
 		return;

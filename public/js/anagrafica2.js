@@ -2,6 +2,7 @@ $.extend(APP.anagrafica,
 {
 	finish: function()
 	{
+		tinymce.remove(".textEditor");
 		$("body").off("table_shown");
 		APP.map.finish();
 		APP.subforms.finish();
@@ -183,7 +184,9 @@ $.extend(APP.anagrafica,
 	
 	destroyWindow: function()
 	{
+		tinymce.remove(".textEditor");
 		var l = this.windows.length;
+		
 		if (l > 1)
 			this.toggleWindow(this.windows[l-2], this.windows[l-1]);
 		if (l > 0)

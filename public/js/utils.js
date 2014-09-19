@@ -207,18 +207,37 @@ $.extend(APP.utils,{
 		elem.chosen(defaultObj);
 	},
 	
+	y: 0,
+	
 	setLookForm: function(form, id)
 	{
 		var that = this;
 	
 		if (form.find(".textEditor"))
 		{
-			$.each(form.find(".textEditor"), function(){
-				var el = tinymce.get($(this).attr("id"));
-				if (el)
-					el.remove();
-				$(this).tinymce({menubar: false});
-			});
+			$.each(form.find(".textEditor"), function()
+			{
+				var myId = $(this).attr("id");
+				var g = tinymce.get(myId);
+				if (g)
+					tinymce.remove("#"+myId);
+				tinymce.init({
+					selector: '#'+myId,
+					inline: false,
+					menubar: false,
+				});
+			});		
+			
+			//tinymce.render();
+			/*
+			else
+			tinymce.EditorManager.execCommand('mceRemoveEditor', true, ".textEditor");
+			tinymce.EditorManager.execCommand('mceAddEditor', true, ".textEditor");
+			tinyMCE.execCommand("mceAddControl", true, ".textEditor");
+			
+			/*
+			
+			*/
 		}
 		
 		if (form.find(".mapBoxColor").length > 0 && form.find(".mapboxDiv").length>0)
