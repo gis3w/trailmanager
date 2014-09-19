@@ -27,26 +27,30 @@
 				<?php endif; ?>
             <?php endforeach; ?>
         </ul>
-       
+        
         <ul class="nav navbar-nav navbar-right">
 			<?php if(isset($search) AND $search): ?>
 				<li><a id="searchButton" href="#" data-toggle="modal"><i class="icon icon-search"></i> Search</a></li>
 			<?php endif; ?>
-            
-			<?php 
+            <?php 
                                                                 foreach ($langs as $I18n => $lang):
 			?>
                     <li><a href="?lang=<?php echo $I18n ?>"><i class="icon icon-flag"></i> <?php echo $lang ?></a></li>
             <?php
 				endforeach;
 			?>
+            <?php if($frontend):?>
+                <li><a href="#"><i class="icon icon-flag"></i> <?php echo __('Help') ?></li>
+             <?php endif; ?>
+                <?php if(isset($user) AND !$frontend): ?>
              <li>
-            <?php if(isset($user)): ?>
-			
+            
             <span class=""><?php echo $user->user_data->nome. " ".$user->user_data->cognome."(".$user->username.")";?></span><br />
-            <?php endif; ?>
+            
             <span><?php echo __('Version: '.SAFE::VERSION) ?></span>
+            
              </li>
+             <?php endif; ?>
         </ul>
     </div>
     </div>
