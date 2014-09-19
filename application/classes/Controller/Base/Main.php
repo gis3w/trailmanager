@@ -36,6 +36,7 @@ abstract class Controller_Base_Main extends Controller_Template {
     public $tcontent;
     public $tlogin; // elemento dedicato alla div di login
     public $tnavbar = 'zone/navbar'; // template per la nav bar
+    public $frontend = TRUE;
     
 
 
@@ -64,7 +65,7 @@ abstract class Controller_Base_Main extends Controller_Template {
     public function  before() {
       // si richiama prima per istanziare la vista globale
         parent::before();
-         
+
          // controllo del browser
          $this->data_browser = $this->request->user_agent(array('browser','version'));
          
@@ -92,9 +93,10 @@ abstract class Controller_Base_Main extends Controller_Template {
         {
             $this->tnavbar = View::factory($this->tnavbar);
             $this->tpl->tnavbar = $this->tnavbar;
-        }
+        }        
         // si settano nelle viste i menu
         View::bind_global('main_menu', $this->main_menu);
+        View::bind_global('frontend', $this->frontend);
 
         // si settano i parametri globali per le views
         $this->img_path = Kohana::$config->load('layout.img_path');

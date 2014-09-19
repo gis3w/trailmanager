@@ -47,12 +47,18 @@
             <?php
 				endforeach;
 			?>
+            <?php if($frontend):?>
+                <li><a href="#"><i class="icon icon-flag"></i> <?php echo __('Help') ?></li>
+             <?php endif; ?>
+                <?php if(isset($user) AND !$frontend): ?>
              <li>
-            <?php if(isset($user)): ?>
+            
             <span class=""><?php echo $user->user_data->nome. " ".$user->user_data->cognome."(".$user->username.")";?></span><br />
-            <?php endif; ?>
+            
             <span><?php echo __('Version: '.SAFE::VERSION) ?></span>
+            
              </li>
+             <?php endif; ?>
         </ul>
     </div>
     </div>

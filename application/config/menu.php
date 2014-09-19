@@ -85,7 +85,23 @@ return array(
                                ),
                             )
                          )
-                      )
+                      ),
+                     'pages' => array(
+                         'name' => __('Pages'),
+                         'icon' =>'suitcase',
+                         'menu' => array(
+                             'type' => 'affix',
+                             'items' => array(
+                                'global_page' => array(
+                                                'id' =>'page',
+                                                'name' => __('Pages'),
+                                                'url' => '/jx/admin/global/page',
+                                                'capability' => 'access-global-page',
+                                                'icon' => 'fa-file-text',
+                                         ),
+                                 )
+                             )
+                         )
                  )
             )
         ),

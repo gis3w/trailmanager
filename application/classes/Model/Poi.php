@@ -39,6 +39,7 @@ class Model_Poi extends ORMGIS {
             "typology_id" => __("Main typology"),
             "period_schedule" => __("Period schedule"),
             "inquiry" => __('Request informations'),
+            "max_scale" => __('Max scale'),
         );
     }
     
