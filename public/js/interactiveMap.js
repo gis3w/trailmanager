@@ -1412,7 +1412,10 @@ $.extend(APP.interactiveMap,
 		that.body.append(that.searchModal);
 		
 		var bt = that.body.find('#searchButton');
-		bt.attr("data-target","#"+modalId);
+		bt.attr("data-target","#"+modalId).click(function(){
+			if (that.itemsOnSidebar && L.control.sidebar)
+				that.mySidebar.control.hide();
+		});
 	},
 	
 	start: function()
