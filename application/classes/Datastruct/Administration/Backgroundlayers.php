@@ -16,7 +16,7 @@ class Datastruct_Administration_Backgroundlayers extends Datastruct {
         array(
             'name' => 'backgroundlayers-data',
             'position' => 'left',
-            'fields' => array('id','sections','layer_type_id','name','description','url','layers','styles','version','transparent','crs','def','source'),
+            'fields' => array('id','sections','layer_type_id','name','description','url','layers','styles','version','format','transparent','crs','def','source'),
         ),
     );
     

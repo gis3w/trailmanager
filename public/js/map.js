@@ -473,7 +473,25 @@ $.extend(APP.map,
 						l = new L.BingLayer();
 						break;					
 					default:
-						l = new L.tileLayer(v.url, {/*minZoom: 5, maxZoom: 19,*/ attribution: v.description});
+                                                                                    switch(v.layer_type)
+                                                                                    {
+                                                                                        case "tilelayer":
+                                                                                            l = new L.tileLayer(v.url, {/*minZoom: 5, maxZoom: 19,*/ attribution: v.description});
+                                                                                            break;
+                                                                                        
+                                                                                        case "tilelayer.wms":
+                                                                                            l = new L.tileLayer(v.url, {/*minZoom: 5, maxZoom: 19,*/ attribution: v.description});
+                                                                                            l = L.tileLayer.wms(v.url, {
+                                                                                                    layers: v.layers,
+                                                                                                    version: v.version,
+                                                                                                    styles: v.styles,
+                                                                                                    format: v.format,
+                                                                                                    transparent:  v.trasparent,
+                                                                                                    attribution: v.description
+                                                                                                });
+                                                                                            break;
+                                                                                    }
+						
 				}
 				if (v.def)
 				{
