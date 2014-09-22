@@ -30,7 +30,7 @@
         
         <ul class="nav navbar-nav navbar-right">
 			<?php if(isset($search) AND $search): ?>
-				<li><a id="searchButton" href="#" data-toggle="modal"><i class="icon icon-search"></i> Search</a></li>
+				<li><a id="searchButton" href="#" data-toggle="modal"><i class="icon icon-search"></i> <?php echo __('Search') ?></a></li>
 			<?php endif; ?>
             <?php 
                                                                 foreach ($langs as $I18n => $lang):

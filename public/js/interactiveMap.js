@@ -113,6 +113,7 @@ $.extend(APP.interactiveMap,
 	
 	resetHighlightLayer: function()
 	{
+		this.unselectItem();
 		APP.map.highlightLayer(null, null);
 	},
 	
@@ -142,7 +143,7 @@ $.extend(APP.interactiveMap,
 		
 		that.showBottomBar(section, id, function()
 		{
-			if (that.itemsOnSidebar && L.control.sidebar)
+			if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
 			{
 				that.mySidebar.div.find(".active").removeClass("active");
 				that.mySidebar.control.hide();
@@ -196,7 +197,8 @@ $.extend(APP.interactiveMap,
 							<img class="media-object thumbnail" style="width: 75px" src="'+that.getOverviewImage(section, id, true)+'" alt="">\
 						</a>\
 						<div class="media-body">\
-							<h4 class="media-heading">'+that.getObjectTitle(section, id)+'</h4>\
+							<h4 class="media-heading hidden-xs hidden-sm">'+that.getObjectTitle(section, id)+'</h4>\
+							<h5 class="media-heading hidden-md hidden-lg">'+that.getObjectTitle(section, id)+'</h5>\
 							<div>\
 								<button type="button" class="btn btn-default btn-sm popupDetailsBtn" style="margin-top: 10px"><i class="icon icon-search"></i> '+APP.i18n.translate('View data sheet')+'</button>\
 							</div>\
@@ -227,6 +229,27 @@ $.extend(APP.interactiveMap,
 		element.openPopup(latlng);
 	},
 	
+	unselectItem: function(element)
+	{
+		var that = this;
+		var lg = null;
+		if (element)
+			lg = element.parents(".accordion-list:first");
+		else
+		{
+			if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
+			{
+				that.mySidebar.div.removeClass("active");
+			}
+			else
+			{
+				//that.mySidebar.div.
+			}
+		}
+		if (lg)
+			lg.find("a.active").removeClass("active");
+	},
+	
 	onElementClick: function(o)
 	{
 		var that = this;
@@ -235,6 +258,12 @@ $.extend(APP.interactiveMap,
 		var section = o.section;
 		var id = o.id;
 		var latlng = o.latlng;
+		
+		if (element.hasClass && element.hasClass("list-group-item"))
+		{
+			that.unselectItem(element);
+			element.addClass("active");
+		}
 		
 		if (!APP.utils.isset(that.currentItinerary))
 		{
@@ -263,7 +292,7 @@ $.extend(APP.interactiveMap,
 	{
 		var that = this;
 		
-		if (that.itemsOnSidebar && L.control.sidebar)
+		if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
 			APP.map.sidebar.control.hide();
 			
 		that.openInfo(section, id, onCloseCallback);
@@ -443,7 +472,7 @@ $.extend(APP.interactiveMap,
 		var overviewToAppend = {};
 		var checkVoice = function(voice, type, moreParams)
 		{
-			var div = $('<div class="'+voice+'"><h2>'+APP.i18n.translate(APP.utils.capitalize(voice))+'</h2></div>');
+			var div = $('<div class="'+voice+'"><h3>'+APP.i18n.translate(APP.utils.capitalize(voice))+'</h3></div>');
 			var bInsert = true;
 			switch(type)
 			{
@@ -498,7 +527,7 @@ $.extend(APP.interactiveMap,
 						if (!APP.utils.isset(overviewToAppend[moreParams.voiceResult]))
 							overviewToAppend[moreParams.voiceResult] = [];
 						
-						var span = $('<p><b>'+APP.i18n.translate(voice)+'</b>: '+that.myData[section][id].data[voice]+'m </p>');
+						var span = $('<p><b>'+APP.i18n.translate(voice)+'</b>: '+that.myData[section][id].data[voice]+'</p>');
 						if (moreParams.image && moreParams.image !== "")
 							span.prepend('<img class="pull-left" src="'+moreParams.image+'" style="margin-right: 5px">');
 						overviewToAppend[moreParams.voiceResult].push(span);
@@ -522,7 +551,8 @@ $.extend(APP.interactiveMap,
 							var ii = APP.utils.getIndexFromField(moreParams.values, "id", v);
 							if (ii > -1)
 							{
-								var img  = $('<img src="'+moreParams.values[ii][moreParams.icon]+'" class="img-responsive pull-right" style="margin-right: 3px; max-width: 30px" title="'+moreParams.values[ii][moreParams.label]+'">');
+								var img  = $('<img src="'+moreParams.values[ii][moreParams.icon]+'" class="img-responsive pull-right" style="margin-right: 3px; max-width: 30px" >');
+								img.tooltip({title: moreParams.values[ii][moreParams.label]});
 								span.append(img);
 							}
 						});
@@ -552,7 +582,7 @@ $.extend(APP.interactiveMap,
 						
 						$.each(that.myData[section][id].data[voice], function(i,v)
 						{
-							var btn = $('<button type="button" class="btn btn-link">'+that.getObjectTitle(s, v)+'</button>');
+							var btn = $('<a href="#" class="btn-link">'+that.getObjectTitle(s, v)+'</a>');
 							btn.data("id", v).click(function(){
 								var myId = $(this).data("id");
 								myModal.modal("hide");
@@ -565,14 +595,18 @@ $.extend(APP.interactiveMap,
 											<a class="pull-left" href="#">\
 											</a>\
 											<div class="media-body">\
-												<h4 class="media-heading"></h4>\
+												<h5 class="media-heading"></h5>\
 											</div>\
 										</li>');
 							
 							li.find(".media-heading").append(btn);
 							
 							if (typology)
-								li.find("a").append('<img class="media-object" src="'+typology.icon+'" title="'+typology.name+'" alt="'+typology.name+'">');
+							{
+								var iimmgg = $('<img class="media-object" src="'+typology.icon+'" alt="'+typology.name+'">');
+								iimmgg.tooltip({title: APP.i18n.translate(typology.name)});
+								li.find("a:first").append(iimmgg);
+							}
 								
 							ul.append(li);
 						});
@@ -753,14 +787,14 @@ $.extend(APP.interactiveMap,
 		var that = this;
 		if (that.previousSection === that.currentSection)
 		{
-			if (that.itemsOnSidebar && L.control.sidebar)
+			if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
 				that.mySidebar.control.toggle();
 			else
 				that.body.find("#modal-"+section).modal("toggle");
 		}
 		else
 		{
-			if (that.itemsOnSidebar  && L.control.sidebar)
+			if (that.itemsOnSidebar && L.control.sidebar)
 				that.showItemsOnSidebar(section, callback);
 			else
 				that.showItemsOnModal(section, callback);
@@ -803,7 +837,8 @@ $.extend(APP.interactiveMap,
 					var a = $('<a id="item_'+section+'_'+v.data.id+'" href="#" class="list-group-item '+((that.currentItinerary === v.data.id)? "active" : "")+'"></a>');
 					a.data(v).append(media);
 					a.click(function(){
-						APP.config.removeActiveClasses($(this).parents(".list-group:first"), "a");
+						var lg = $(this).parents(".list-group:first");
+						lg.find("a.active").removeClass("active");
 						$(this).addClass("active");
 						that.mySidebar.control.hide();
 						that.onItineraryClick({element: $(this), section: section, id: $(this).data().data.id});
@@ -813,7 +848,7 @@ $.extend(APP.interactiveMap,
 				that.mySidebar.div.html(listGroup);
 				break;
 			case "poi": case "path": case "area":
-				var accordion = $('<div id="accordion-'+section+'" style="margin: 0px -23px 0px -23.5px; padding: -10px"></div>');
+				var accordion = $('<div id="accordion-'+section+'" class="accordion-list" style="margin: 0px -23px 0px -23.5px; padding: -10px"></div>');
 				
 				$.each(APP.config.localConfig.typology, function()
 				{
@@ -823,9 +858,7 @@ $.extend(APP.interactiveMap,
 										<span class="badge pull-right">0</span>\
 									</h4>');
 									
-					var content = $('<div id="collapse_'+section+"_"+this.id+'" class="list-group list-group-wo-radius" style="padding: 0px; margin-bottom: 0px; border-radius:0px">\
-										<a href="#" class="list-group-item disabled no_result">'+APP.i18n.translate("no_result")+'</a>\
-									</div>');
+					var content = $('<div id="collapse_'+section+"_"+this.id+'" class="list-group list-group-wo-radius" style="padding: 0px; margin-bottom: 0px; border-radius:0px"></div>');
 					
 					var iconImage = $('<span class="glyphicon glyphicon-chevron-right"></span>');
 					if (APP.utils.isset(this.icon) && this.icon !== "")
@@ -842,8 +875,6 @@ $.extend(APP.interactiveMap,
 					if (that.currentItinerary &&  $.inArray(that.currentItinerary, that.myData[section][i].data.itineraries) === -1)
 						return true;
 					var container = accordion.find("#collapse_"+section+"_"+v.data.typology_id);
-					if (container.find(".no_result").length>0)
-						container.find(".no_result").remove();
 					
 					var media = $(	'<div class="media">\
 									  <a class="pull-left" href="#" >\
@@ -888,6 +919,14 @@ $.extend(APP.interactiveMap,
 		}
 		
 		that.mySidebar.div.prepend('<h3>'+APP.i18n.translate(APP.utils.capitalize(section)+" section")+'</h3>');
+		
+		$.each(that.mySidebar.div.find("#accordion-"+section+" .list-group"), function(){
+			if ($(this).children().length === 0)
+			{
+				$(this).prev().remove();
+				$(this).remove();
+			}				
+		});
 		
 		that.mySidebar.div.find("#accordion-"+section).accordion({
 			heightStyle: "content",
@@ -959,7 +998,7 @@ $.extend(APP.interactiveMap,
 			case "poi": case "path": case "area":
 				if (that.body.find('#accordion-'+section).length > 0)
 					that.body.find('#accordion-'+section).remove();
-				var accordion = $('<div class="panel-group" id="accordion-'+section+'"></div>');
+				var accordion = $('<div class="panel-group accordion-list" id="accordion-'+section+'"></div>');
 				
 				$.each(APP.config.localConfig.typology, function()
 				{
@@ -974,9 +1013,7 @@ $.extend(APP.interactiveMap,
 											</h4>\
 										</div>\
 										<div id="collapse_'+section+"_"+this.id+'" class="panel-collapse collapse">\
-											<div class="panel-body list-group list-group-wo-radius" style="padding: 0px; margin-bottom: 0px">\
-												<a href="#" class="list-group-item disabled no_result">'+APP.i18n.translate("no_result")+'</a>\
-											</div>\
+											<div class="panel-body list-group list-group-wo-radius" style="padding: 0px; margin-bottom: 0px"></div>\
 										</div>\
 									</div>');
 					
@@ -996,8 +1033,6 @@ $.extend(APP.interactiveMap,
 						return true;
 					
 					var container = accordion.find("#collapse_"+section+"_"+v.data.typology_id+" .panel-body");
-					if (container.find(".no_result").length>0)
-						container.find(".no_result").remove();
 					
 					var media = $(	'<div class="media">\
 									  <a class="pull-left" href="#" >\
@@ -1014,6 +1049,7 @@ $.extend(APP.interactiveMap,
 					var row = $('<a id="item_'+section+'_'+v.data.id+'" href="#" class="list-group-item '+((that.selectedElement === v.data.id)? "active" : "")+'"</a>');
 					row.data(v).click(function(){
 						that.onElementClick({ element: $(this), section: section, id: v.data.id, latlng: null});
+						myModal.modal("hide");
 					});
 					
 					/*
@@ -1040,6 +1076,14 @@ $.extend(APP.interactiveMap,
 					var counter = parseInt(container.parents(".panel:first").find(".badge").text());
 					container.parents(".panel:first").find(".badge").text(counter+1)
 				});
+				
+				$.each(accordion.find(".panel-body"), function(){
+					if ($(this).children().length === 0)
+					{
+						$(this).parents(".panel:first").remove();
+					}				
+				});
+				
 				that.body.find('.modal-body').html(accordion);
 				break;
 			default:
@@ -1353,10 +1397,19 @@ $.extend(APP.interactiveMap,
 						
 						$.each(data.data.items, function(i,v)
 						{
-							var row = $('<tr style="cursor: pointer"><td>'+APP.i18n.translate(v.type.toLowerCase())+'</td><td>'+v.title+'</td><td class="categoryTd"></td><td class="hidden-xs hidden-sm">'+v.teaser+'</td></tr>');
+							var sectionIcon = that.body.find("#"+v.type.toLowerCase()+"Button .icon").clone().addClass("icon-2x").tooltip({title: APP.i18n.translate(v.type.toLowerCase())});
+							var row = $('<tr style="cursor: pointer"><td class="sectionIcon"><span style="display:none">'+v.type.toLowerCase()+'</span></td><td>'+v.title+'</td><td class="categoryTd"></td><td class="hidden-xs hidden-sm">'+v.teaser+'</td></tr>');
+							row.find(".sectionIcon").append(sectionIcon);
 							var typology = that.getTypology(that.myData[v.type.toLowerCase()][v.id].data.typology_id);
 							if (typology)
-								row.find(".categoryTd").append('<span style="display:none">'+typology.name+'</span><img class="img-responsive" src="'+typology.icon+'" title="'+typology.name+'" alt="'+typology.name+'" style="max-width: 32px">');
+							{
+								var span = $('<span style="display:none">'+typology.name+'</span>');
+								var img = $('<img class="img-responsive" src="'+typology.icon+'"  alt="'+typology.name+'" style="max-width: 32px">');
+								img.tooltip({
+									title: APP.i18n.translate(typology.name),
+								});
+								row.find(".categoryTd").append(span).append(img);
+							}
 							
 							row.data({section: v.type.toLowerCase(), id: v.id});
 							row.click(function()
@@ -1413,7 +1466,7 @@ $.extend(APP.interactiveMap,
 		
 		var bt = that.body.find('#searchButton');
 		bt.attr("data-target","#"+modalId).click(function(){
-			if (that.itemsOnSidebar && L.control.sidebar)
+			if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
 				that.mySidebar.control.hide();
 		});
 	},
@@ -1478,6 +1531,7 @@ $.extend(APP.interactiveMap,
 		
 		that.body = $("body");
 		that.body.css({"height":"100%","width":"100%","padding-top":"50px"});
+		that.body.find(".navbar-nav:first li").addClass("disabled");
 		that.navbars.top = that.body.find(".navbar-nav:first"); // navbar-nav
 		that.navbars.top.find("a").click(function()
 		{
@@ -1509,6 +1563,25 @@ $.extend(APP.interactiveMap,
 			that.selectedElement = null;
 			that.resetHighlightLayer();
 		});
+		APP.map.getMap().on('zoomend', function(){
+			/*
+			var map = APP.map.getMap();
+			if( map.getZoom() >= 4 ) 
+			{
+				map.removeLayer(marker_before_zoom);
+				map.addLayer(marker_after_zoom)};
+
+				if( map.getZoom()<4 )
+				{
+					map.removeLayer(marker_after_zoom);
+					map.addLayer(marker_before_zoom);
+				}
+			}
+			*/
+		});
+			function onZoomend(){
+				
+			 };
 		
 		$("#mainContent").height($("#mainContent").height());
 		

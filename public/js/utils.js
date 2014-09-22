@@ -207,8 +207,6 @@ $.extend(APP.utils,{
 		elem.chosen(defaultObj);
 	},
 	
-	y: 0,
-	
 	setLookForm: function(form, id)
 	{
 		var that = this;
@@ -221,11 +219,34 @@ $.extend(APP.utils,{
 				var g = tinymce.get(myId);
 				if (g)
 					tinymce.remove("#"+myId);
-				tinymce.init({
+				var oo = {
 					selector: '#'+myId,
 					inline: false,
 					menubar: false,
-				});
+				};
+				var myToolbar = $(this).data().toolbar;
+				if (myToolbar && $.isArray(myToolbar) && myToolbar.length > 0)
+				{
+					oo.toolbar = "";
+					$.each(myToolbar, function(x,y)
+					{
+						oo.toolbar += y;
+						if (x < myToolbar.length-1)
+							oo.toolbar += " | ";
+					});
+				}
+				var myPlugins = $(this).data().plugins;
+				if (myPlugins && $.isArray(myPlugins) && myPlugins.length > 0)
+				{
+					oo.plugins = "";
+					$.each(myPlugins, function(x,y)
+					{
+						oo.plugins += y;
+						if (x < myPlugins.length-1)
+							oo.plugins += " ";
+					});
+				}
+				tinymce.init(oo);
 			});		
 			
 			//tinymce.render();
@@ -1119,7 +1140,10 @@ $.extend(APP.utils,{
 				inp = $("<textarea id='APP-"+v.name+"' name='"+v.name+"' rows='9' class='form-control' "+required+"></textarea>");
 				inp.text(valore);
 				if (APP.utils.isset(v.editor) && v.editor === true)
+				{
 					inp.addClass("textEditor");
+					inp.data({toolbar: v.editor_buttons, plugins: v.editor_plugins});
+				}
 				break;
 			case "combobox":
 				inp = $("<select id='APP-"+v.name+"' class='form-control chosen' data-placeholder='"+APP.i18n.translate("click_to_select")+"' "+required+"></select>");
