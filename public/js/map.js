@@ -480,14 +480,14 @@ $.extend(APP.map,
                                                                                             break;
                                                                                         
                                                                                         case "tilelayer.wms":
-                                                                                            l = new L.tileLayer(v.url, {/*minZoom: 5, maxZoom: 19,*/ attribution: v.description});
-                                                                                            l = L.tileLayer.wms(v.url, {
+                                                                                            l = new L.tileLayer.wms(v.url, {
                                                                                                     layers: v.layers,
                                                                                                     version: v.version,
                                                                                                     styles: v.styles,
                                                                                                     format: v.format,
                                                                                                     transparent:  v.trasparent,
-                                                                                                    attribution: v.description
+                                                                                                    attribution: v.description,
+                                                                                                    tileSize:1024
                                                                                                 });
                                                                                             break;
                                                                                     }

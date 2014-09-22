@@ -11,8 +11,20 @@ class Controller_Ajax_Admin_Path extends Controller_Ajax_Admin_Sheet_Base{
     protected $_url_multifield_nameORM = 'Url_Path';
     protected $_url_multifield_foreignkey = 'path_id';
     
-  
+    
+    protected function _validation_url_multifiled() {
+        
+          // apply filter for numeric data
+        // because validation is indipendent from ORM
+        foreach(array('length','altitude_gap') as $field)
+                if(isset($_POST[$field]))
+                    $_POST[$field] = Filter::comma2point ($_POST[$field]);
+        
+        parent::_validation_url_multifiled();
+    }
+
     protected function _data_edit() {
+        
         parent::_data_edit();
         
         $this->_set_modes_edit();
