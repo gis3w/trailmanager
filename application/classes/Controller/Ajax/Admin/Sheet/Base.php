@@ -80,6 +80,8 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
     
     protected function _data_edit()
     {
+        Filter::emptyPostDataToNULL();
+        
         $this->_set_the_geom_edit();
          $this->_orm->values($_POST);
          $this->_orm->save();
@@ -89,8 +91,7 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
          $this->_save_subforms_1XN();
          
          $this->_save_url_multifiled();
-         
-         
+                  
     }
     
     /**
