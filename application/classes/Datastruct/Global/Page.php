@@ -29,15 +29,18 @@ class Datastruct_Global_Page extends Datastruct {
                 "body" => array(
                     'form_input_type' => self::TEXTAREA,
                     'editor' => TRUE,
+                    'editor_plugins' => array(
+                        'image',
+                        'link',
+                        'code'
+                    ),
                     'editor_buttons' =>array(
                         'undo redo',
                         'styleselect',
                         'bold italic',
                         'alignleft aligncenter alignright alignjustify',
-                        'bullist numlist outdent indent',
-                        'link unlink',
-                        'image',
-                        'code'),
+                        'bullist numlist outdent indent'
+                    ),
                 ),
             );
       }
