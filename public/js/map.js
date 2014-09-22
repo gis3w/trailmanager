@@ -245,6 +245,8 @@ $.extend(APP.map,
 	{
 		if (APP.config.localConfig.menu)
 			this.addFullScreenControl();
+		
+		L.control.scale().addTo(this.globalData[this.currentMapId].map);
 	},
 	
 	setExtent: function(extent)
@@ -261,19 +263,19 @@ $.extend(APP.map,
 		this.globalData[this.currentMapId].map.invalidateSize(true);
 	},
 	
-	addLayer: function(layer, id)
+	addLayer: function(obj)
 	{
 		var that = this;
 		var foundLayer = false;
 		
-		var myId = APP.utils.getIndexFromField(that.globalData[that.currentMapId].addedLayers, "id", id);
+		var myId = APP.utils.getIndexFromField(that.globalData[that.currentMapId].addedLayers, "id", obj.id);
 		if (myId > -1)
 			that.globalData[that.currentMapId].addedLayers[myId].visible = true;
 		else
-			that.globalData[that.currentMapId].addedLayers[id] = { id: id, layer: layer, visible: true};
+			that.globalData[that.currentMapId].addedLayers[obj.id] = { id: obj.id, layer: obj.layer, visible: true, max_scale: obj.max_scale};
 			
-		if (!that.globalData[that.currentMapId].map.hasLayer(that.globalData[that.currentMapId].addedLayers[id].layer))
-				that.globalData[that.currentMapId].addedLayers[id].layer.addTo(that.globalData[that.currentMapId].map);
+		if (!that.globalData[that.currentMapId].map.hasLayer(that.globalData[that.currentMapId].addedLayers[obj.id].layer))
+				that.globalData[that.currentMapId].addedLayers[obj.id].layer.addTo(that.globalData[that.currentMapId].map);
 	},
 	
 	showLayer: function(layer, id)
@@ -281,7 +283,7 @@ $.extend(APP.map,
 		var that = this;
 		var index = APP.utils.getIndexFromField(that.globalData[that.currentMapId].addedLayers, "id", id);
 		if (index === -1)
-			that.addLayer(layer, id);
+			that.addLayer({layer: layer, id: id, max_scale: null});
 		else
 		{
 			that.globalData[that.currentMapId].addedLayers[index].visible = true;

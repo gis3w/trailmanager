@@ -29,7 +29,7 @@ return array(
 		//'../modules/bootstrap-modal/js/bootstrap-modal.js',
 		//'../modules/pikachoose/lib/jquery.jcarousel.min.js',
 		//'../modules/pikachoose/lib/jquery.pikachoose.min.js',
-		'../modules/leaflet-0.7.3/leaflet.js',
+		'../modules/leaflet-0.7.3/leaflet-src.js',
 		'../modules/leaflet-locatecontrol/src/L.Control.Locate.js',
 		'../modules/leaflet-sidebar/L.Control.Sidebar.js',
 		'../modules/Leaflet.draw/dist/leaflet.draw.js',

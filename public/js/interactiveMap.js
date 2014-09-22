@@ -1249,7 +1249,7 @@ $.extend(APP.interactiveMap,
 				that.onElementClick({ element: layer, section: section, id: v.id, latlng: null});
 			});
 			if (!APP.map.globalData[APP.map.currentMapId].map.hasLayer(layer))
-				APP.map.addLayer(layer, section+"_"+v.id);
+				APP.map.addLayer({layer: layer, id: section+"_"+v.id, max_scale: v.max_scale});
 		}
 		else
 		{
@@ -1270,7 +1270,7 @@ $.extend(APP.interactiveMap,
 				}
 			});
 			if (!APP.map.globalData[APP.map.currentMapId].map.hasLayer(layer))
-				APP.map.addLayer(layer, section+"_"+v.id);
+				APP.map.addLayer({layer: layer, id: section+"_"+v.id, max_scale: v.max_scale});
 		}
 	},
 	
@@ -1471,6 +1471,37 @@ $.extend(APP.interactiveMap,
 		});
 	},
 	
+	getScale: function(map)
+	{
+		var that = this;
+		var maxWidth = 100;
+		var bounds = map.getBounds(),
+		    centerLat = bounds.getCenter().lat,
+		    halfWorldMeters = 6378137 * Math.PI * Math.cos(centerLat * Math.PI / 180),
+		    dist = halfWorldMeters * (bounds.getNorthEast().lng - bounds.getSouthWest().lng) / 180,
+
+		    size = map.getSize(),
+		    options = this.options,
+		    maxMeters = 0;
+
+		if (size.x > 0) {
+			maxMeters = dist * (maxWidth / size.x);
+		}
+		
+		var getRoundNum = function(num)
+		{
+			var pow10 = Math.pow(10, (Math.floor(num) + '').length - 1),
+		    d = num / pow10;
+
+			d = d >= 10 ? 10 : d >= 5 ? 5 : d >= 3 ? 3 : d >= 2 ? 2 : 1;
+
+			return pow10 * d;
+		};
+
+		if (maxMeters)
+			return getRoundNum(maxMeters);
+	},
+	
 	start: function()
 	{
 		var that = this;		
@@ -1563,25 +1594,21 @@ $.extend(APP.interactiveMap,
 			that.selectedElement = null;
 			that.resetHighlightLayer();
 		});
-		APP.map.getMap().on('zoomend', function(){
-			/*
+		APP.map.getMap().on('zoomend', function()
+		{			
 			var map = APP.map.getMap();
-			if( map.getZoom() >= 4 ) 
+			var scale = that.getScale(APP.map.globalData[APP.map.currentMapId].map);
+			$.each(APP.map.globalData[APP.map.currentMapId].addedLayers, function(i,v)
 			{
-				map.removeLayer(marker_before_zoom);
-				map.addLayer(marker_after_zoom)};
-
-				if( map.getZoom()<4 )
-				{
-					map.removeLayer(marker_after_zoom);
-					map.addLayer(marker_before_zoom);
-				}
-			}
-			*/
-		});
-			function onZoomend(){
+				if (i.indexOf("poi") === -1)
+					return true;
 				
-			 };
+				if (scale <= v.max_scale)
+					APP.map.showLayer(v, i);
+				else
+					APP.map.hideLayer(i);
+			});
+		});
 		
 		$("#mainContent").height($("#mainContent").height());
 		
@@ -1605,6 +1632,8 @@ $.extend(APP.interactiveMap,
 			that.getData("poi", function(){
 				that.navbars.top.find('#poiButton').parents("li:first").removeClass("disabled");
 			}); 
+			var map = APP.map.getMap();
+			map.fire("zoomend");
 			that.getMedia("poi");
 		});
 		
