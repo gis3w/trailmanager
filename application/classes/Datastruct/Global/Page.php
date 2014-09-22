@@ -39,7 +39,10 @@ class Datastruct_Global_Page extends Datastruct {
                         'styleselect',
                         'bold italic',
                         'alignleft aligncenter alignright alignjustify',
-                        'bullist numlist outdent indent'
+                        'bullist numlist outdent indent',
+                        'link unlink',
+                        'image',
+                        'code'
                     ),
                 ),
             );
