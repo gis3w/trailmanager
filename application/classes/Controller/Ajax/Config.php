@@ -30,6 +30,7 @@ class Controller_Ajax_Config extends Controller_Ajax_Main{
 //        $this->_set_timezone();
 //        $this->_set_menu();
         $this->_set_url();
+        $this->_set_page_urls();
         $this->_set_background_layer();
         $this->_set_global_configs();
         
@@ -173,6 +174,18 @@ class Controller_Ajax_Config extends Controller_Ajax_Main{
             'filter'=> '/jx/filterdata?f=',
             
         );
+          
+    }
+    
+    /**
+     * Set pulrs to call for pages
+     */
+    protected function _set_page_urls()
+    {
+        $pages = ORM::factory('Page')->find_all();
+        $this->config->page_urls = array();
+        foreach($pages as $page)
+            $this->config->page_urls[$page->alpha_id] = '/jx/page/'.$page->id;
           
     }
     
