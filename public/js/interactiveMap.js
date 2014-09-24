@@ -1532,7 +1532,7 @@ $.extend(APP.interactiveMap,
 		var htmlPage = that.pages[section].content;
 		if (that.pages[section].type === "sidebar" && that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
 		{
-			that.mySidebar.div.html(htmlPage);
+			that.mySidebar.div.append(htmlPage);
 			that.mySidebar.control.show();
 		}
 		else
@@ -1711,6 +1711,7 @@ $.extend(APP.interactiveMap,
 		APP.map.setMap($("#mainContent"));
 		that.mySidebar.div = APP.map.sidebar.div;
 		that.mySidebar.control = APP.map.sidebar.control;
+		that.getPage("info", false);
 		APP.map.getMap().on('click',function(){			
 			that.selectedElement = null;
 			that.resetHighlightLayer();
@@ -1730,7 +1731,7 @@ $.extend(APP.interactiveMap,
 					APP.map.hideLayer(i);
 			});
 		});
-		that.getPage("info", false);
+		
 		$("#mainContent").height($("#mainContent").height());
 		
 		that.getData("itinerary", function(){
@@ -1762,5 +1763,9 @@ $.extend(APP.interactiveMap,
 			that.currentSection = "help";
 			that.getPage('help', true);
 		});
+		
+		setTimeout(function(){
+			that.navbars.top.find("#infoButton").click();
+		},2000);
 	}
 });
