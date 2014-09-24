@@ -31,12 +31,15 @@ class Kohana_GEO extends geoPHP{
         
     }
     
-    public function asGEOSMS()
+    public static function PostgisGentroid($geometry)
     {
-        
+        $res = DB::query(Database::SELECT, "Select astext(ST_Centroid(ST_GeomFromText('".$geometry->asText()."')))")
+                ->execute();
+        return self::load($res['0']['astext'],'wkt');
     }
+
+
     
-   
     
     public static function featurecollection2format ($featurecollection,$format = 'wkt'){
         
