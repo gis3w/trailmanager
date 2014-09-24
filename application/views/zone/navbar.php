@@ -40,7 +40,7 @@
 				endforeach;
 			?>
             <?php if($frontend):?>
-                <li><a href="#"><i class="icon icon-flag"></i> <?php echo __('Help') ?></li>
+                <li><a id="helpButton" href="#"><i class="icon icon-flag"></i> <?php echo __('Help') ?></li>
              <?php endif; ?>
                 <?php if(isset($user) AND !$frontend): ?>
              <li>

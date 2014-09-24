@@ -121,6 +121,56 @@ $.extend(APP.utils,{
 		});
 	},
 	
+	createModal: function(o)
+	{
+		var myModal = null;
+		if (o.container && o.id)
+			myModal = o.container.find("#"+o.id);
+		if (myModal.length > 0)
+			myModal.remove();
+			
+		myModal = $('<div class="modal fade">\
+						<div class="modal-dialog">\
+							<div class="modal-content">\
+								<div class="modal-header">\
+									<button type="button" class="btn-lg close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove"></span></button>\
+									<h3 class="lead"></h3>\
+								</div>\
+								<div class="modal-body">\
+								</div>\
+								<div class="modal-footer">\
+									<button type="button" class="btn btn-default" data-dismiss="modal">'+APP.i18n.translate('close')+'</button>\
+								</div>\
+							</div>\
+						</div>\
+					</div>');
+			
+		if (o.id)
+			myModal.attr("id", o.id);
+		if (o.size)
+			myModal.find(".modal-dialog").removeClass().addClass("modal-dialog modal-"+o.size);
+		if (o.header)
+			myModal.find(".modal-header h3").html(o.header);
+		if (o.body)
+			myModal.find(".modal-body").html(o.body);
+		if (o.onShown && $.isFunction(o.onShown))
+		{
+			myModal.on('shown.bs.modal', function(){
+				o.onShown();
+			});
+		}
+		if (o.onHidden && $.isFunction(o.onHidden))
+		{
+			myModal.on('hidden.bs.modal', function(){
+				o.onHidden();
+			});
+		}
+		if (o.container)
+			o.container.append(myModal);
+		
+		return myModal;
+	},
+	
 	getThumbnailUrl: function(urls, v)
 	{
 		if (urls.thumbnail)

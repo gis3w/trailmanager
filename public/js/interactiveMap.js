@@ -24,6 +24,7 @@ $.extend(APP.interactiveMap,
 	},
 	bouncingMarkers: false,
 	searchUrl: '/jx/search?tofind=',
+	pages: {},
 	
 	insertRowAlphabetically: function(container, row, selector, offset)
 	{
@@ -188,6 +189,7 @@ $.extend(APP.interactiveMap,
 			maxWidth: (that.body.width() > 320)? 300 : that.body.width()-(that.body.width()*0.3),
 			//maxHeight: that.body.height()-((that.body.height()*20/)100),
 			minWidth: (that.body.width() > 320)? 280 : (that.body.width()-(that.body.width()*0.4)),
+			autoPan: false,
 		};
 		if (section == "poi")
 			po.offset = L.point(0, -25);
@@ -227,7 +229,7 @@ $.extend(APP.interactiveMap,
 		});
 		
 		if (section === 'area' && !APP.utils.isset(latlng))
-			latlng = [that.myData[section][id].geo.centroids[0].coordinates[1], that.myData[section][id].geo.centroids[0].coordinates[0]];
+			latlng = L.latLng(that.myData[section][id].geo.centroids[0].coordinates[1], that.myData[section][id].geo.centroids[0].coordinates[0]);
 		element.openPopup(latlng);
 	},
 	
@@ -285,7 +287,7 @@ $.extend(APP.interactiveMap,
 		if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control && that.navbars.top.parents(".navbar").find(".navbar-toggle").is(":visible"))
 		{
 			that.mySidebar.control.hide();
-			setTimeout(function(){ afterHidden(); }, 500);
+			setTimeout(function(){ afterHidden(); }, 600);
 		}
 		else
 			afterHidden();
@@ -786,6 +788,15 @@ $.extend(APP.interactiveMap,
 		APP.map.setExtent(APP.map.globalData[APP.map.currentMapId].globalExtent);
 	},
 	
+	closeItems: function(section, callback)
+	{
+		var that = this;
+		if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
+			that.mySidebar.control.hide();
+		else
+			that.body.find("#modal-"+section).modal("hide");
+	},
+	
 	showItems: function(section, callback)
 	{
 		var that = this;
@@ -809,10 +820,8 @@ $.extend(APP.interactiveMap,
 	{
 		var that = this;
 		
-		that.mySidebar.div = APP.map.sidebar.div;
-		that.mySidebar.div.empty();	
+		that.mySidebar.div.empty();
 		
-		that.mySidebar.control = APP.map.sidebar.control;
 		that.mySidebar.control.on('shown', function (e) {
 			that.navbars.top.find("#"+that.currentSection+"Button").parent().addClass("active");
 		});
@@ -917,6 +926,9 @@ $.extend(APP.interactiveMap,
 					container.prev().find(".badge").text(counter+1);
 				});
 				that.mySidebar.div.html(accordion);
+				break;
+			case "info":
+				that.getPage(section, true);
 				break;
 			default:
 				break;						
@@ -1514,6 +1526,88 @@ $.extend(APP.interactiveMap,
 			return getRoundNum(maxMeters);
 	},
 	
+	showPage: function(section)
+	{
+		var that = this;
+		var htmlPage = that.pages[section].content;
+		if (that.pages[section].type === "sidebar" && that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
+		{
+			that.mySidebar.div.html(htmlPage);
+			that.mySidebar.control.show();
+		}
+		else
+		{
+			var modalId = "modal-"+section;
+			var myModal = that.body.find("#"+modalId);
+			if (myModal.length === 0)
+			{
+				myModal = APP.utils.createModal({
+					container: that.body,
+					id: modalId,
+					size: "lg",
+					header: APP.utils.capitalize(APP.i18n.translate(section)),
+					body: htmlPage,
+					shown: function(){
+						
+					},
+					hidden: function(){ 
+						
+					}
+				});
+			}
+			var n = that.navbars.top.parents(".navbar:first");
+			if (n.find(".navbar-collapse").hasClass("in"))
+				n.find('.navbar-collapse').collapse('hide');
+			myModal.modal('show');
+		}
+	},
+	
+	getPage: function(section, bShow)
+	{
+		var that = this;
+		
+		if (!APP.utils.isset(that.pages[section].content))
+		{
+			$.ajax({
+				type: 'GET',
+				url: that.pages[section].url,
+				dataType: 'json',
+				success: function(data)
+				{
+					if (!APP.utils.checkError(data.error, null))
+					{
+						that.pages[section].content = data.data.items[0].body;
+						that.body.find("#"+section+"Button").parent().removeClass("disabled");
+						if (bShow)
+							that.showPage(section);
+					}
+					else
+					{
+						APP.utils.showErrMsg(data);
+					}
+				},
+				error: function(result)
+				{
+					APP.utils.showErrMsg(result);
+				}
+			});
+		}
+		else
+			if (bShow)
+				that.showPage(section);
+	},
+	
+	setPages: function()
+	{
+		var that = this;
+		
+		$.each(APP.config.localConfig.page_urls, function(i,v)
+		{
+			var t = (i === "help")? "modal" : "sidebar";
+			that.pages[i] = {url: v, content: null, type: t};
+		});
+	},
+	
 	start: function()
 	{
 		var that = this;		
@@ -1523,16 +1617,28 @@ $.extend(APP.interactiveMap,
 				label: 'config',
 			},
 			{
-				obj: APP.config.localConfig.default_overview_image,
-				label: 'default_overview_image',
+				obj: APP.config.localConfig.background_layer,
+				label: 'background_layer',
 			},
 			{
 				obj: APP.config.localConfig.default_extent,
 				label: 'default_extent',
 			},
 			{
-				obj: APP.config.localConfig.background_layer,
-				label: 'background_layer',
+				obj: APP.config.localConfig.default_overview_image,
+				label: 'default_overview_image',
+			},
+			{
+				obj: APP.config.localConfig.i18n,
+				label: 'i18n',
+			},
+			{
+				obj: APP.config.localConfig.page_urls,
+				label: 'page_urls',
+			},
+			{
+				obj: APP.config.localConfig.path_mode,
+				label: 'path_mode',
 			},
 			{
 				obj: APP.config.localConfig.typology,
@@ -1569,7 +1675,8 @@ $.extend(APP.interactiveMap,
 			APP.utils.showNoty({title: APP.i18n.translate("error"), type: "error", content: APP.i18n.translate("typology_icon_marker_requested")});
 			return;
 		}
-			
+		
+		that.setPages();
 		$("html").css({"height":"100%","width":"100%"});
 		
 		that.body = $("body");
@@ -1602,6 +1709,8 @@ $.extend(APP.interactiveMap,
 		APP.map.sidebar.div = $('<div id="leafletSidebar" style="margin-top: -60px"></div>');
 		that.body.append(APP.map.sidebar.div);
 		APP.map.setMap($("#mainContent"));
+		that.mySidebar.div = APP.map.sidebar.div;
+		that.mySidebar.control = APP.map.sidebar.control;
 		APP.map.getMap().on('click',function(){			
 			that.selectedElement = null;
 			that.resetHighlightLayer();
@@ -1621,7 +1730,7 @@ $.extend(APP.interactiveMap,
 					APP.map.hideLayer(i);
 			});
 		});
-		
+		that.getPage("info", false);
 		$("#mainContent").height($("#mainContent").height());
 		
 		that.getData("itinerary", function(){
@@ -1648,6 +1757,10 @@ $.extend(APP.interactiveMap,
 			map.fire("zoomend");
 			that.getMedia("poi");
 		});
-		
+		that.body.find("#helpButton").click(function(){
+			that.closeItems();
+			that.currentSection = "help";
+			that.getPage('help', true);
+		});
 	}
 });
