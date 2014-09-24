@@ -226,6 +226,8 @@ $.extend(APP.interactiveMap,
 					a.target.unbindPopup();
 		});
 		
+		if (section === 'area' && !APP.utils.isset(latlng))
+			latlng = [that.myData[section][id].geo.centroids[0].coordinates[1], that.myData[section][id].geo.centroids[0].coordinates[0]];
 		element.openPopup(latlng);
 	},
 	
@@ -272,6 +274,7 @@ $.extend(APP.interactiveMap,
 		
 		var afterHidden = function()
 		{
+			APP.map.showLayer(section+"_"+id);
 			that.zoomAt(section, id);
 			if (section === "itinerary")
 				return false;
@@ -695,7 +698,8 @@ $.extend(APP.interactiveMap,
 				checkVoice('typology_id', 'ov-img', {values: APP.config.localConfig.typology, label: 'name', icon: "icon", voiceResult: "categories"});
 				checkVoice('typologies', 'ov-img', {values: APP.config.localConfig.typology, label: 'name', icon: "icon", voiceResult: "categories"});
 				checkVoice('description', 'text');
-				checkVoice('reason', 'text');
+				checkVoice('plus_information', 'text');
+				checkVoice('inquiry', 'text');
 				checkVoice('urls', 'url');
 				checkVoice('video_area', 'video');
 				break;
@@ -762,8 +766,8 @@ $.extend(APP.interactiveMap,
 				var latLng = [that.myData[section][id].geo.geoJSON.coordinates[1], that.myData[section][id].geo.geoJSON.coordinates[0]];
 				//APP.map.setGlobalExtent(that.myData[section][id].geo.extent);
 				//APP.map.setExtent(APP.map.globalData[APP.map.currentMapId].globalExtent);
-				//APP.map.globalData[APP.map.currentMapId].map.setView(latLng, maxZoom, {animate: true});
-				APP.map.globalData[APP.map.currentMapId].map.panTo(latLng);
+				APP.map.globalData[APP.map.currentMapId].map.setView(latLng, maxZoom-3, {animate: true});
+				//APP.map.globalData[APP.map.currentMapId].map.panTo(latLng);
 				return;
 			case "path": case "area":
 				APP.map.setGlobalExtent(that.myData[section][id].geo.extent);
@@ -1450,6 +1454,14 @@ $.extend(APP.interactiveMap,
 				}
 			});
 		});		
+		that.searchModal.find("#searchInput").on('keypress', function(e){
+			var code = e.keyCode || e.which;
+			if (code == 13)
+			{
+				that.searchModal.find(".submitBtn").click();
+				e.preventDefault();
+			}
+		});
 		that.searchModal.on('show.bs.modal', function(){
 			var n = that.navbars.top.parents(".navbar:first");
 			if (n.find(".navbar-collapse").hasClass("in"))
@@ -1603,8 +1615,8 @@ $.extend(APP.interactiveMap,
 				if (i.indexOf("poi") === -1)
 					return true;
 				
-				if (scale <= v.max_scale)
-					APP.map.showLayer(v, i);
+				if (!APP.utils.isset(v.max_scale) || scale <= v.max_scale)
+					APP.map.showLayer(i);
 				else
 					APP.map.hideLayer(i);
 			});

@@ -143,6 +143,8 @@ return array(
     'Accessibility' => 'Accessibilità',
     'Reasons' => 'Motivi di interesse',
 	'Reason' => 'Motivi di interesse',
+	'Plus_information' => 'Informazioni aggiuntive',
+	'Inquiry' => 'Contatti',
     'Main typology' => 'Tipologia principale',
     'typology_id' => 'Tipologia principale',
     'Period schedule' => 'Periodi e orari',

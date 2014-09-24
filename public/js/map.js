@@ -278,25 +278,23 @@ $.extend(APP.map,
 				that.globalData[that.currentMapId].addedLayers[obj.id].layer.addTo(that.globalData[that.currentMapId].map);
 	},
 	
-	showLayer: function(layer, id)
+	showLayer: function(id)
 	{
 		var that = this;
 		var index = APP.utils.getIndexFromField(that.globalData[that.currentMapId].addedLayers, "id", id);
 		if (index === -1)
-			that.addLayer({layer: layer, id: id, max_scale: null});
-		else
-		{
-			that.globalData[that.currentMapId].addedLayers[index].visible = true;
-			if (!that.globalData[that.currentMapId].map.hasLayer(that.globalData[that.currentMapId].addedLayers[index].layer))
-				that.globalData[that.currentMapId].addedLayers[index].layer.addTo(that.globalData[that.currentMapId].map);
-		}
+			return false;
+		
+		that.globalData[that.currentMapId].addedLayers[index].visible = true;
+		if (!that.globalData[that.currentMapId].map.hasLayer(that.globalData[that.currentMapId].addedLayers[index].layer))
+			that.globalData[that.currentMapId].addedLayers[index].layer.addTo(that.globalData[that.currentMapId].map);
 	},
 	
 	showAllLayers: function()
 	{
 		var that = this;
 		$.each(that.globalData[that.currentMapId].addedLayers, function(i, v){
-			that.showLayer(v.layer, i);
+			that.showLayer(i);
 		});
 	},
 	

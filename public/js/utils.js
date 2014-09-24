@@ -372,6 +372,7 @@ $.extend(APP.utils,{
 						// potrebbe essere un multifield
 						APP.multifields.validation(param, i, v);
 					}
+					
 				});
 				break;
 			default:
