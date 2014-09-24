@@ -134,6 +134,33 @@ class Kohana_Filter
             unset($_POST[$key]);
     }
     
+    /**
+     * To empty string array POST dtat empty
+     */
+    public static function emptyArrayPostDataToStringEmpty($keys = NULL)
+    {
+        // ne caso di chiavi da acìzzerare
+        
+        if(isset($keys))
+        {
+            $toReset = array_intersect_key($_POST, array_flip($keys));
+        }
+        else
+        {
+            $toReset = $_POST;
+        }
+        
+        $toempty = array();
+        foreach($toReset as $key =>$value)
+        {
+            if($value === '[]')
+                $toempty[] = $key;
+        }
+           
+        foreach($toempty as $key)
+            $_POST[$key] = '';
+    }
+    
     
     static function comma2point($number)
     {

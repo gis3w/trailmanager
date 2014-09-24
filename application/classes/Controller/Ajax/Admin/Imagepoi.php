@@ -15,7 +15,9 @@ class Controller_Ajax_Admin_Imagepoi extends Controller_Ajax_Base_Crud{
 
 
     protected function _edit() {
-        
+        $datastruct = $this->_datastruct;
+        Filter::emptyArrayPostDataToStringEmpty(array($datastruct::$preKeyField.'-file'));
+       
         $this->_validation_orm();
     }
     
