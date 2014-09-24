@@ -170,6 +170,11 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
                 }
 
             $this->_vorm->label($_POST[$this->_url_multifield_postname],__('Urls'));
+            
+            //adding empty image validation
+            $imageField = 'image_'.strtolower($this->_datastruct->get_nameOrm());
+            $this->_vorm->rule($imageField, 'not_empty');
+            $this->_vorm->label($imageField,__('Images to upload'));
        
         
         
@@ -181,12 +186,12 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
         
     }
     
-     
+
+
     protected function _edit()
     {
          try
-        {
-             
+        {             
              //test per geo             
             Database::instance()->begin();
             
