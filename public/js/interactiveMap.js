@@ -1,5 +1,6 @@
 $.extend(APP.interactiveMap, 
 {
+	leafletHash: null,
 	previousSection: null,
 	currentSection: null,
 	currentItinerary: null,
@@ -764,12 +765,12 @@ $.extend(APP.interactiveMap,
 		{
 			case "poi":
 				var maxZoom = APP.map.globalData[APP.map.currentMapId].map.getMaxZoom();
-				//var currentZoom = APP.map.globalData[APP.map.currentMapId].map.getZoom();
-				var latLng = [that.myData[section][id].geo.geoJSON.coordinates[1], that.myData[section][id].geo.geoJSON.coordinates[0]];
-				//APP.map.setGlobalExtent(that.myData[section][id].geo.extent);
-				//APP.map.setExtent(APP.map.globalData[APP.map.currentMapId].globalExtent);
-				APP.map.globalData[APP.map.currentMapId].map.setView(latLng, maxZoom-3, {animate: true});
-				//APP.map.globalData[APP.map.currentMapId].map.panTo(latLng);
+				var currentZoom = APP.map.globalData[APP.map.currentMapId].map.getZoom();
+				var latLng = L.latLng(that.myData[section][id].geo.geoJSON.coordinates[1], that.myData[section][id].geo.geoJSON.coordinates[0]);
+				nextZoom = (currentZoom >= maxZoom-3)? currentZoom : maxZoom-3;
+				APP.map.globalData[APP.map.currentMapId].map.setView(latLng, nextZoom, {animate: true});
+				/*APP.map.globalData[APP.map.currentMapId].map.panTo(latLng, {animate: true});
+				APP.map.globalData[APP.map.currentMapId].map.setZoom(nextZoom, {animate: true});*/
 				return;
 			case "path": case "area":
 				APP.map.setGlobalExtent(that.myData[section][id].geo.extent);
@@ -894,7 +895,7 @@ $.extend(APP.interactiveMap,
 										<img class="media-object img-responsive img-rounded" src="'+(APP.utils.isset(v.data.thumb_main_image)? v.data.thumb_main_image : APP.config.localConfig.default_overview_image)+'" alt="'+APP.i18n.translate('no_image')+'" style="width: 60px; height: 60px">\
 									  </a>\
 									  <div class="media-body">\
-										<h4 class="media-heading">'+v.data.title+'</h4>\
+										<h5 class="media-heading">'+v.data.title+'</h5>\
 									  </div>\
 									</div>');					
 					
@@ -1055,10 +1056,9 @@ $.extend(APP.interactiveMap,
 										<img class="media-object img-responsive img-rounded" src="'+(APP.utils.isset(v.data.thumb_main_image)? v.data.thumb_main_image : APP.config.localConfig.default_overview_image)+'" alt="'+APP.i18n.translate('no_image')+'" style="width: 60px; height: 60px">\
 									  </a>\
 									  <div class="media-body">\
-										<h3 class="media-heading lead">\
+										<h5 class="media-heading">\
 											'+v.data.title+'\
-											<span class="subtypologies pull-right row"></span>\
-										</h3>\
+										</h5>\
 									  </div>\
 									</div>');
 										
@@ -1209,7 +1209,8 @@ $.extend(APP.interactiveMap,
 						
 						APP.map.setGlobalExtent(that.myData[section][v.id].geo.extent);
 					});
-					APP.map.setExtent(APP.map.globalData[APP.map.currentMapId].globalExtent);
+					if (!APP.utils.isset(that.leafletHash))
+						APP.map.setExtent(APP.map.globalData[APP.map.currentMapId].globalExtent);
 					
 					if (APP.utils.isset(callback) && $.isFunction(callback))
 						callback();
@@ -1608,9 +1609,26 @@ $.extend(APP.interactiveMap,
 		});
 	},
 	
+	checkUrlCoords: function()
+	{
+		var that = this;
+		var uc = window.location.href;
+		uc = uc.split("#");
+		if (uc.length === 1)
+			return;
+		uc = uc[1].split("/");
+		if (uc.length === 3)
+			that.leafletHash = {
+				zoom: uc[0],
+				lat: uc[1],
+				lng: uc[2]
+			};
+	},
+	
 	start: function()
 	{
-		var that = this;		
+		var that = this;
+		
 		var arr = [
 			{
 				obj: APP.config.localConfig,
@@ -1676,6 +1694,7 @@ $.extend(APP.interactiveMap,
 			return;
 		}
 		
+		that.checkUrlCoords();
 		that.setPages();
 		$("html").css({"height":"100%","width":"100%"});
 		
@@ -1708,7 +1727,13 @@ $.extend(APP.interactiveMap,
 		
 		APP.map.sidebar.div = $('<div id="leafletSidebar" style="margin-top: -60px"></div>');
 		that.body.append(APP.map.sidebar.div);
-		APP.map.setMap($("#mainContent"));
+		var params = {container: $("#mainContent")};
+		if (that.leafletHash)
+		{
+			params.center = new L.LatLng(that.leafletHash.lat, that.leafletHash.lng);
+			params.zoom = that.leafletHash.zoom;
+		}
+		APP.map.setMap(params);
 		that.mySidebar.div = APP.map.sidebar.div;
 		that.mySidebar.control = APP.map.sidebar.control;
 		that.getPage("info", false);
@@ -1722,7 +1747,7 @@ $.extend(APP.interactiveMap,
 			var scale = that.getScale(APP.map.globalData[APP.map.currentMapId].map);
 			$.each(APP.map.globalData[APP.map.currentMapId].addedLayers, function(i,v)
 			{
-				if (i.indexOf("poi") === -1)
+				if (i.indexOf("poi") === -1 || that.currentItinerary)
 					return true;
 				
 				if (!APP.utils.isset(v.max_scale) || scale <= v.max_scale)
@@ -1760,12 +1785,14 @@ $.extend(APP.interactiveMap,
 		});
 		that.body.find("#helpButton").click(function(){
 			that.closeItems();
-			that.currentSection = "help";
 			that.getPage('help', true);
 		});
 		
-		setTimeout(function(){
-			that.navbars.top.find("#infoButton").click();
-		},2000);
+		if (!that.leafletHash && !that.navbars.top.parents(".navbar").find(".navbar-toggle").is(":visible"))
+		{
+			setTimeout(function(){
+				that.navbars.top.find("#infoButton").click();
+			},2000);
+		}
 	}
 });

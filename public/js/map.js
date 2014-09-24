@@ -434,9 +434,10 @@ $.extend(APP.map,
 		});
 	},
 	
-	setMap: function(div)
+	setMap: function(O)
 	{	
 		var that = this;
+		var div = O.container;
 		var id = div.attr('id');
 		
 		if (this.isset(this.currentMapId) && (this.currentMapId == id))
@@ -473,25 +474,23 @@ $.extend(APP.map,
 						l = new L.BingLayer();
 						break;					
 					default:
-                                                                                    switch(v.layer_type)
-                                                                                    {
-                                                                                        case "tilelayer":
-                                                                                            l = new L.tileLayer(v.url, {/*minZoom: 5, maxZoom: 19,*/ attribution: v.description});
-                                                                                            break;
-                                                                                        
-                                                                                        case "tilelayer.wms":
-                                                                                            l = new L.tileLayer.wms(v.url, {
-                                                                                                    layers: v.layers,
-                                                                                                    version: v.version,
-                                                                                                    styles: v.styles,
-                                                                                                    format: v.format,
-                                                                                                    transparent:  v.trasparent,
-                                                                                                    attribution: v.description,
-                                                                                                    tileSize:1024
-                                                                                                });
-                                                                                            break;
-                                                                                    }
-						
+						switch(v.layer_type)
+						{
+							case "tilelayer":
+								l = new L.tileLayer(v.url, {/*minZoom: 5, maxZoom: 19,*/ attribution: v.description});
+								break;
+							case "tilelayer.wms":
+								l = new L.tileLayer.wms(v.url, {
+										layers: v.layers,
+										version: v.version,
+										styles: v.styles,
+										format: v.format,
+										transparent:  v.trasparent,
+										attribution: v.description,
+										tileSize:1024
+									});
+								break;
+						}
 				}
 				if (v.def)
 				{
@@ -516,18 +515,21 @@ $.extend(APP.map,
 		layers.push(defaultLayer);
 		
 		that.globalData[id].map = new L.map(id, {
-			'center': new L.LatLng(44.160534,11.04126),
-			'zoom': 9,
+			'center': (O.center)? O.center : new L.LatLng(44.160534,11.04126),
+			'zoom': (O.zoom)? O.zoom : 9,
 			'layers': [defaultLayer],
-		});
-			
+		});			
 		that.setGlobalExtent(APP.config.localConfig.default_extent);
-		that.setExtent(that.globalData[id].globalExtent);
+		if (!O.center)
+			that.setExtent(that.globalData[id].globalExtent);
 		
 		baseLayers[defLayName] = defaultLayer;
 		L.control.layers(baseLayers).addTo(that.globalData[id].map);	
 
 		that.setMapControls();
+		
+		if (APP.utils.isset(L.Hash))
+			var hash = new L.Hash(that.globalData[id].map);
 		
 		// locate control
 		if (APP.utils.isset(L.control.locate))

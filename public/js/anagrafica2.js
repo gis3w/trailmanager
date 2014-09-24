@@ -984,7 +984,7 @@ $.extend(APP.anagrafica,
 		if (form.find("div.mapbox").length > 0)
 		{
 			var ddd = form.find("div.mapbox");
-			APP.map.setMap(ddd);
+			APP.map.setMap({container: ddd});
 			
 			var index = APP.utils.getIndexFromField(this.sections[this.currentSection].columns, "form_input_type", "mapbox");
 			if (index > -1)

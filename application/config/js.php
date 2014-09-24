@@ -30,6 +30,7 @@ return array(
 		//'../modules/pikachoose/lib/jquery.jcarousel.min.js',
 		//'../modules/pikachoose/lib/jquery.pikachoose.min.js',
 		'../modules/leaflet-0.7.3/leaflet.js',
+		'../modules/leaflet-hash/leaflet-hash.js',
 		'../modules/leaflet-locatecontrol/src/L.Control.Locate.js',
 		'../modules/leaflet-sidebar/L.Control.Sidebar.js',
 		'../modules/Leaflet.draw/dist/leaflet.draw.js',
