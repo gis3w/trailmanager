@@ -90,6 +90,9 @@
       <Cl au="0" df="" nm="crs" nu="1">
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
+      <Cl au="0" df="" nm="format" nu="1">
+        <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
+      </Cl>
       <Fk deAc="3" nm="fk_background_layers_layer_types" prLkCl="id" upAc="3">
         <PrTb mn="0" nm="layer_types" oe="1" sch="public" zr="0"/>
         <CdTb mn="1" nm="background_layers" oe="1" sch="public" zr="1"/>
@@ -422,10 +425,10 @@
     </Tbl>
     <Tbl UsSo="1" nm="layer_types">
       <Cm>Layer types for leaflet js</Cm>
-      <TblOpts/>
+      <TblOpts>WITHOUT OIDS</TblOpts>
       <Pk ClNs="id" nm="pklayer_types"/>
-      <Cl au="1" df="" nm="id" nu="0">
-        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="1"/>
+      <Cl au="1" df="nextval('layer_types_id_seq'::regclass)" nm="id" nu="0">
+        <DT ds="Integer" en="" id="4" ln="null" sc="null" sg="1" un="0"/>
       </Cl>
       <Cl au="0" df="" nm="type" nu="0">
         <DT ds="VarChar" en="" id="12" ln="null" sc="null" sg="1" un="0"/>
@@ -8372,7 +8375,7 @@ WHERE t.typname = 'geography'::name
         AND NOT pg_is_other_temp_schema(c.relnamespace)</Sql>
     </View>
     <View nm="search_datas">
-      <Sql>( SELECT
+      <Sql>( ( SELECT
     pois.id,
     pois.title,
     pois.description,
@@ -8380,14 +8383,24 @@ WHERE t.typname = 'geography'::name
     pois.accessibility,
     'Poi'::text AS type,
     0 AS order_show_search
-FROM pois UNION SELECT paths.id,
+FROM pois
+WHERE pois.publish IS TRUE UNION SELECT paths.id,
     paths.title,
     paths.description,
     paths.reason,
     paths.accessibility,
     'Path'::text AS type,
     0 AS order_show_search
-FROM paths) UNION SELECT itineraries.id,
+FROM paths
+WHERE paths.publish IS TRUE) UNION SELECT areas.id,
+    areas.title,
+    areas.description,
+    areas.plus_information AS reason,
+    areas.accessibility,
+    'Area'::text AS type,
+    0 AS order_show_search
+FROM areas
+WHERE areas.publish IS TRUE) UNION SELECT itineraries.id,
     itineraries.name AS title,
     itineraries.description,
     NULL::character varying AS reason,
@@ -8410,6 +8423,7 @@ FROM itineraries</Sql>
     <Seq incr="1" nm="itineraries_id_seq"/>
     <Seq incr="1" nm="itineraries_paths_id_seq"/>
     <Seq incr="1" nm="itineraries_pois_id_seq"/>
+    <Seq incr="1" nm="layer_types_id_seq"/>
     <Seq incr="1" nm="pages_id_seq"/>
     <Seq incr="1" nm="path_modes_id_seq"/>
     <Seq incr="1" nm="path_modes_paths_id_seq"/>
