@@ -1567,6 +1567,12 @@ $.extend(APP.interactiveMap,
 	{
 		var that = this;
 		
+		if (!APP.utils.isset(that.pages[section]))
+		{
+			APP.utils.showNoty({title: APP.i18n.translate("error"), type: "error", content: APP.i18n.translate("page_not_found")});
+			return false;
+		}
+		
 		if (!APP.utils.isset(that.pages[section].content))
 		{
 			$.ajax({
