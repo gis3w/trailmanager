@@ -600,8 +600,10 @@ $.extend(APP.anagrafica,
 					
 					$.each(data, function(x, y)
 					{
-						y = (!$.isPlainObject(y))? y : y[k.primary_key];
-						var oi = APP.utils.getIndexFromField(fValues, k.primary_key, y);
+						var primary_key = (APP.utils.isset(k.primary_key))? k.primary_key : "id";
+						
+						y = (!$.isPlainObject(y))? y : y[primary_key];
+						var oi = APP.utils.getIndexFromField(fValues, primary_key, y);
 						if (oi > -1)
 							str += APP.config.getValue(fValues[oi], k.foreign_toshow, k.foreign_toshow_params)+", ";//str += APP.config.getValue(k.name, fValues[oi])+", "; 
 					});
@@ -622,8 +624,9 @@ $.extend(APP.anagrafica,
 					
 					$.each(data, function(x, y)
 					{
-						y = (!$.isPlainObject(y))? y : y[k.primary_key];
-						var oi = APP.utils.getIndexFromField(fValues, k.primary_key, y);
+						var primary_key = (APP.utils.isset(k.primary_key))? k.primary_key : "id";
+						y = (!$.isPlainObject(y))? y : y[primary_key];
+						var oi = APP.utils.getIndexFromField(fValues, primary_key, y);
 						if (oi > -1)
 							str += APP.config.getValue(fValues[oi], k.foreign_toshow, k.foreign_toshow_params)+", ";//str += APP.config.getValue(k.name, fValues[oi])+", "; 
 					});

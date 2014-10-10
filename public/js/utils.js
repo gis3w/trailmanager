@@ -273,6 +273,7 @@ $.extend(APP.utils,{
 					selector: '#'+myId,
 					inline: false,
 					menubar: false,
+					readonly : $(this).attr("disabled"),
 				};
 				var myToolbar = $(this).data().toolbar;
 				if (myToolbar && $.isArray(myToolbar) && myToolbar.length > 0)
@@ -1195,6 +1196,14 @@ $.extend(APP.utils,{
 					inp.addClass("textEditor");
 					inp.data({toolbar: v.editor_buttons, plugins: v.editor_plugins});
 				}
+				break;
+			case "cleartext":
+				inp = $('<p id="APP-'+v.name+'" name="'+v.name+'"></p>');
+				inp.text(valore);
+				break;
+			case "htmltext":
+				inp = $('<p id="APP-'+v.name+'" name="'+v.name+'"></p>');
+				inp.html(valore);
 				break;
 			case "combobox":
 				inp = $("<select id='APP-"+v.name+"' class='form-control chosen' data-placeholder='"+APP.i18n.translate("click_to_select")+"' "+required+"></select>");

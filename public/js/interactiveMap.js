@@ -127,6 +127,13 @@ $.extend(APP.interactiveMap,
 		var section = o.section;
 		var id = o.id;
 		
+		if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.div)
+		{
+			var it = that.mySidebar.div.find("#item_"+section+"_"+id);
+			if (it.length>0)
+				it.addClass("active");
+		}
+		
 		that.currentItinerary = id;
 		APP.map.hideAllLayers();
 		
@@ -244,7 +251,7 @@ $.extend(APP.interactiveMap,
 		{
 			if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
 			{
-				that.mySidebar.div.removeClass("active");
+				that.mySidebar.div.find(".list-group-item.active").removeClass("active");
 			}
 			else
 			{
@@ -273,6 +280,13 @@ $.extend(APP.interactiveMap,
 		if (!APP.utils.isset(that.currentItinerary))
 		{
 			that.highlightLayer(section, id);
+			if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.div)
+			{
+				that.mySidebar.div.find(".list-group-item.active").removeClass("active");
+				var it = that.mySidebar.div.find("#item_"+section+"_"+id);
+				if (it.length>0)
+					it.addClass("active");
+			}
 		}
 		
 		var afterHidden = function()
