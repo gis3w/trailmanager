@@ -26,6 +26,7 @@ $.extend(APP.interactiveMap,
 	bouncingMarkers: false,
 	searchUrl: '/jx/search?tofind=',
 	pages: {},
+	qrCodeEventObj: $(document),
 	
 	insertRowAlphabetically: function(container, row, selector, offset)
 	{
@@ -126,6 +127,9 @@ $.extend(APP.interactiveMap,
 		var element = o.element;
 		var section = o.section;
 		var id = o.id;
+		
+		if (!that.checkIfMyDataExists(section, id))
+			return;
 		
 		if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.div)
 		{
@@ -262,6 +266,20 @@ $.extend(APP.interactiveMap,
 			lg.find("a.active").removeClass("active");
 	},
 	
+	checkIfMyDataExists: function(section, id)
+	{
+		var that = this;
+		var r = (APP.utils.isset(that.myData[section]) && APP.utils.isset(that.myData[section][id]));
+		
+		if (r)
+			return true;
+		else
+		{
+			APP.utils.showNoty({title: APP.i18n.translate("error"), type: "error", content: APP.i18n.translate("not_found")+": "+section+"/"+id});
+			return false;
+		}
+	},
+	
 	onElementClick: function(o)
 	{
 		var that = this;
@@ -271,7 +289,10 @@ $.extend(APP.interactiveMap,
 		var id = o.id;
 		var latlng = o.latlng;
 		
-		if (element.hasClass && element.hasClass("list-group-item"))
+		if (!that.checkIfMyDataExists(section, id))
+			return;
+		
+		if (element && element.hasClass && element.hasClass("list-group-item"))
 		{
 			that.unselectItem(element);
 			element.addClass("active");
@@ -944,7 +965,9 @@ $.extend(APP.interactiveMap,
 				break;
 			case "info":
 				that.getPage(section, true);
-				break;
+				if (APP.utils.isset(callback) && $.isFunction(callback))
+					callback();
+				return;
 			default:
 				break;						
 		}
@@ -1126,7 +1149,7 @@ $.extend(APP.interactiveMap,
 			callback();
 	},
 	
-	getMedia: function(section, id, callback)
+	getMedia: function(section, callback, id)
 	{
 		var that = this;
 		
@@ -1638,11 +1661,33 @@ $.extend(APP.interactiveMap,
 			return;
 		uc = uc[1].split("/");
 		if (uc.length === 3)
+		{
 			that.leafletHash = {
 				zoom: uc[0],
 				lat: uc[1],
 				lng: uc[2]
 			};
+		}
+		if (uc.length === 2)
+		{
+			var section = uc[0];
+			var id = parseInt(uc[1]);
+			if (section == "itinerary")
+			{
+				if (!isNaN(id))
+					that.qrCodeEventObj.on(section+"_completed", function(){
+						that.onItineraryClick({element: null, section: section, id: id});
+					});
+					
+			}
+			if (section == "poi" || section == "path" || section == "area")
+			{
+				if (!isNaN(id))
+					that.qrCodeEventObj.on(section+"_completed", function(){
+						that.onElementClick({element: null, section: section, id: id});
+					});
+			}
+		}
 	},
 	
 	start: function()
@@ -1738,7 +1783,17 @@ $.extend(APP.interactiveMap,
 			section = section.split("Button")[0];
 			that.previousSection = that.currentSection;
 			that.currentSection = section;
-			that.showItems(section);
+			switch(section)
+			{
+				case "to_default_extent":
+					if (!APP.utils.isset(APP.config.localConfig.default_extent))
+						APP.utils.showNoty({title: APP.i18n.translate("error"), type: "error", content: APP.i18n.translate("Default extent not found")});
+					APP.map.setGlobalExtent(APP.config.localConfig.default_extent);
+					APP.map.setExtent(APP.config.localConfig.default_extent);
+					break;
+				default:
+					that.showItems(section);
+			}
 		});
 		
 		that.setSearchModal();
@@ -1781,28 +1836,38 @@ $.extend(APP.interactiveMap,
 		
 		that.getData("itinerary", function(){
 			that.navbars.top.find('#itineraryButton').parents("li:first").removeClass("disabled");
-			that.getMedia("itinerary"); 
+			that.getMedia("itinerary", function(){
+				that.qrCodeEventObj.trigger('itinerary_completed');
+			}); 
 		});
 		that.getGeo("area", function(){
 			that.getData("area", function(){
 				that.navbars.top.find('#areaButton').parents("li:first").removeClass("disabled");
+				that.getMedia("area", function(){
+					that.qrCodeEventObj.trigger('area_completed');
+				});
 			});
-			that.getMedia("area");
 		});
 		that.getGeo("path", function(){
 			that.getData("path", function(){
 				that.navbars.top.find('#pathButton').parents("li:first").removeClass("disabled");
+				that.getMedia("path", function(){
+					that.qrCodeEventObj.trigger('path_completed');
+				});
 			});
-			that.getMedia("path");
+			
 		});
 		that.getGeo("poi", function(){
 			that.getData("poi", function(){
 				that.navbars.top.find('#poiButton').parents("li:first").removeClass("disabled");
+				that.getMedia("poi", function(){
+					that.qrCodeEventObj.trigger('poi_completed');
+				});
 			}); 
 			var map = APP.map.getMap();
 			map.fire("zoomend");
-			that.getMedia("poi");
 		});
+		
 		that.body.find("#helpButton").click(function(){
 			that.closeItems();
 			that.getPage('help', true);

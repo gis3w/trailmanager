@@ -69,6 +69,7 @@ return array(
 	'Search Panel' => 'Pannello di ricerca',
 	'What are you looking for?' => 'Cosa stai cercando?',
 	'page_not_found' => 'Pagina non trovata',
+	'not_found' => 'Non trovato',
  
     'Close' => 'Chiudi',    
     'close' => 'Chiudi',
