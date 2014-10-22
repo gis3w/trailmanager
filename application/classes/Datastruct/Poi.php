@@ -13,7 +13,7 @@ class Datastruct_Poi extends Datastruct {
         array(
             'name' => 'poi-data',
             'position' => 'left',
-            'fields' => array('id','publish','title','description','reason','period_schedule','accessibility','inquiry'),
+            'fields' => array('id','publish','title','description','reason','period_schedule','accessibility','inquiry','pdf_print_qrcode'),
         ),
        array(
             'name' => 'poi-foreign-data',
@@ -131,6 +131,25 @@ class Datastruct_Poi extends Datastruct {
                 'validation_url' => 'jx/admin/videopoi',
                 'label' => __('Videos to embed'),
              )
+        );
+        
+        $fct['pdf_print_qrcode']  = array_replace($this->_columnStruct,array(
+                    'form_input_type' => self::BUTTON,
+                    'input_class' => 'default',
+                    'data_type' => 'pdf_print',
+                    'url_values' => '/print/report/company/global/$1',
+                    'url_values_params' => array(
+                        '$1' => 'id',
+                    ),
+                    'description' => __('Download qrcode position'),
+                    'table_show' => FALSE,
+                    'label' => __('Download qrcode'),
+                    'icon' => 'download-alt',
+                    'form_show' => array(
+                        self::STATE_INSERT => FALSE,
+                        self::STATE_UPDATE =>TRUE
+                    ),
+                )
         );
         
         return $fct;

@@ -26,6 +26,12 @@ class Kohana_Formstruct{
     const GEOTYPE_POLYGON = 'polygon';
     const GEOTYPE_MARKER = 'marker';
     
+    const STATE_INSERT = 'insert';
+    const STATE_UPDATE = 'update';
+    const STATE_DELETE = 'delete';
+    const STATE_GET = 'get';
+    const STATE_LIST = 'list';
+    
     
 
     /**
