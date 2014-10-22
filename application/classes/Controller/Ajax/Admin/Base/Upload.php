@@ -58,8 +58,8 @@ abstract class Controller_Ajax_Admin_Base_Upload extends Controller_Ajax_Auth_St
             'max_file_size' => 10000000,
         ));
 
-        error_log(print_r($this->uplload_options,true));
-         error_log(print_r($this->_download_url,true));
+//        error_log(print_r($this->uplload_options,true));
+//         error_log(print_r($this->_download_url,true));
          
 //         exit;
         $this->UploadHandler = new UploadHandler($this->uplload_options,FALSE);

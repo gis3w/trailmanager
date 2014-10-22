@@ -137,7 +137,7 @@ class Datastruct_Poi extends Datastruct {
                     'form_input_type' => self::BUTTON,
                     'input_class' => 'default',
                     'data_type' => 'pdf_print',
-                    'url_values' => '/print/report/company/global/$1',
+                    'url_values' => '/admin/download/qrcode/poi/$1',
                     'url_values_params' => array(
                         '$1' => 'id',
                     ),

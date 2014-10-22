@@ -234,6 +234,13 @@ Route::set('jx/media', 'jx/media/(<controller>(/<id>(/<filtro>)))')
                     'action'     => 'index',
 	));
 
+Route::set('admin/download/qrcode', 'admin/download/qrcode(/<controller>(/<id>))')
+	->defaults(array(   
+                                'directory' => 'Admin/Download/Qrcode',
+		'action'     => 'index',
+	));
+
+
 Route::set('admin/download', 'admin/download(/<controller>(/<action>(/<file>)))',array('file' => '.*'))
 	->defaults(array(   
                                 'directory' => 'Admin/Download',
