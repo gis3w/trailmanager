@@ -17,7 +17,14 @@ return array(
             'name' => __('Info'),
             'url' => NULL,
             'capability' => NULL,
-            'icon' => NULL,
+            'icon' => 'info-sign',
+        ),
+        'to_default_extent' => array(
+            'id' =>'to_default_extent',
+            'name' => __('Start extent'),
+            'url' => NULL,
+            'capability' => NULL,
+            'icon' => 'fullscreen',
         ),
         'itinerary' => array(
             'id' =>'itinerary',

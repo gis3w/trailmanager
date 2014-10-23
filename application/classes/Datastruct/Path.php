@@ -6,13 +6,13 @@ class Datastruct_Path extends Datastruct {
     protected $_typeORM = "ORMGIS";
     
     public $icon = 'location-arrow';
-    public $filter = TRUE;
+    public $filter = FALSE;
 
     public $groups = array(
         array(
             'name' => 'path-data',
             'position' => 'left',
-            'fields' => array('id','title','publish','description','length','altitude_gap','reason','period_schedule','general_features','accessibility','inquiry'),
+            'fields' => array('id','title','publish','description','length','altitude_gap','reason','period_schedule','general_features','accessibility','inquiry','pdf_print_qrcode'),
         ),
        array(
             'name' => 'path-foreign-data',
@@ -147,6 +147,25 @@ class Datastruct_Path extends Datastruct {
                 'validation_url' => 'jx/admin/videopath',
                 'label' => __('Videos to embed'),
              )
+        );
+        
+        $fct['pdf_print_qrcode']  = array_replace($this->_columnStruct,array(
+                    'form_input_type' => self::BUTTON,
+                    'input_class' => 'default',
+                    'data_type' => 'pdf_print',
+                    'url_values' => '/admin/download/qrcode/path/$1',
+                    'url_values_params' => array(
+                        '$1' => 'id',
+                    ),
+                    'description' => __('Download qrcode position'),
+                    'table_show' => FALSE,
+                    'label' => __(''),
+                    'icon' => 'qrcode',
+                    'form_show' => array(
+                        self::STATE_INSERT => FALSE,
+                        self::STATE_UPDATE =>TRUE
+                    ),
+                )
         );
         
         return $fct;

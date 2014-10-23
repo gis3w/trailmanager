@@ -290,3 +290,10 @@ foreach($parms as $parametro => $valore)
     {
         define(strtoupper($parametro), $valore); 
     }
+
+    /**
+     * Adding $_SERVER paramenters 
+     */
+    
+    define('HTTP_HOST',$_SERVER['HTTP_HOST']);
+    

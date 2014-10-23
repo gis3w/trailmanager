@@ -19,16 +19,22 @@ class Controller_Admin_Download_Qrcode_Base extends Controller_Auth_Strict{
             mkdir ($this->_pathToSave);
         
         
-        $this->_pathToSave = $this->_pathToSave.'qrecode_'.$this->nameORM.'_'.$this->_orm->id.'.png';
+        $this->_pathToSave = $this->_pathToSave.'qrcode_'.$this->nameORM.'_'.$this->_orm->id.'_'.Inflector::underscore($this->_orm->title).'.png';
         
     }
     
     
     public function action_index(){
+        
+        $url = HTTP_HOST.'/#'.strtolower($this->nameORM).'/'.$this->_orm->id;
+        
+        $qrCodeWidth = defined('QRCODE_WIDTH') ? QRCODE_WIDTH : 300;
+        $qrCodePadding = defined('QRCODE_PADDING') ? QRCODE_PADDING : 10;
+        
         $qrCode = new QrCode();
-        $qrCode->setText("http://lturisticgis.gis3w.it");
-        $qrCode->setSize(300);
-        $qrCode->setPadding(10);
+        $qrCode->setText($url);
+        $qrCode->setSize($qrCodeWidth);
+        $qrCode->setPadding($qrCodePadding);
         $qrCode->render($this->_pathToSave);
     }
 

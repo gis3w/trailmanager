@@ -7,7 +7,7 @@ class Datastruct_Poi extends Datastruct {
 
 
     public $icon = 'suitcase';
-    public $filter = TRUE;
+    public $filter = FALSE;
 
     public $groups = array(
         array(
@@ -143,8 +143,8 @@ class Datastruct_Poi extends Datastruct {
                     ),
                     'description' => __('Download qrcode position'),
                     'table_show' => FALSE,
-                    'label' => __('Download qrcode'),
-                    'icon' => 'download-alt',
+                    'label' => __(''),
+                    'icon' => 'qrcode',
                     'form_show' => array(
                         self::STATE_INSERT => FALSE,
                         self::STATE_UPDATE =>TRUE

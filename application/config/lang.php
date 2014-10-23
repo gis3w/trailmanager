@@ -19,6 +19,15 @@ return array(
                 'typology_id',
                 'publish',
                 'the_geom',
+                'width',
+            )
+        ),
+         'areas' => array(
+            'columns_to_exlude' => array(
+                'typology_id',
+                'publish',
+                'the_geom',
+                'width'
             )
         ),
         'itineraries' => array(),
@@ -39,6 +48,14 @@ return array(
                 'path_id',
             )
         ),
+        'image_areas' => array(
+            'columns_to_exlude' => array(
+                'file',
+                'data_ins',
+                'data_mod',
+                'area_id',
+            )
+        ),
         'video_pois' => array(
             'columns_to_exlude' => array(
                 'embed',
@@ -55,12 +72,20 @@ return array(
                 'poi_id',
             )
         ),
+        'video_areas' => array(
+            'columns_to_exlude' => array(
+                'embed',
+                'data_ins',
+                'data_mod',
+                'area_id',
+            )
+        ),
         'image_itineraries' => array(
             'columns_to_exlude' => array(
                 'file',
                 'data_ins',
                 'data_mod',
-                'path_id',
+                'itinerary_id',
             )
         ),
         'pages' => array(

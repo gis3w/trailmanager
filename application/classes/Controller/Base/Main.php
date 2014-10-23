@@ -126,27 +126,37 @@ abstract class Controller_Base_Main extends Controller_Template {
                 $this->tpl->tcontent = View::factory ($this->tcontent); 
 
             // Settiamo i file Js da caricare
-            $this->tpl->jss = Arr::push(Kohana::$config->load($this->base_js_config),$this->jss);
-
-            //jscompile
-            if(Kohana::$config->load('js.js_compile')){
-                $js_cache_arr = array();
-                $js_no_cache_arr = array();
-                $js_to_exlude = Kohana::$config->load('js.js_exlude_to_compile');
-                foreach($this->tpl->jss as $js){
-                    if(in_array($js,$js_to_exlude))
-                    {
-                        $js_no_cache_arr[] = $js;
-                    }
-                    else
-                    {
-                        $js_cache_arr[] = APPPATH."../".Kohana::$config->load('js.js_path').$js;
-                    }
-                    
-                }
-                $this->tpl->jss = $js_no_cache_arr;
-                $this->tpl->js_cache = CoffeeScript::compile($js_cache_arr);
-            }
+//            $this->tpl->jss = Arr::push(Kohana::$config->load($this->base_js_config),$this->jss);
+//
+//            //jscompile
+//            if(Kohana::$config->load('js.js_compile')){
+//                $js_cache_arr = array();
+//                $js_no_cache_arr = array();
+//                $js_to_exlude = Kohana::$config->load('js.js_exlude_to_compile');
+//                foreach($this->tpl->jss as $js){
+//                    if(in_array($js,$js_to_exlude))
+//                    {
+//                        $js_no_cache_arr[] = $js;
+//                    }
+//                    else
+//                    {
+//                        $js_cache_arr[] = APPPATH."../".Kohana::$config->load('js.js_path').$js;
+//                    }
+//                    
+//                }
+//                $this->tpl->jss = $js_no_cache_arr;
+//                $this->tpl->js_cache = CoffeeScript::compile($js_cache_arr);
+//            }
+            
+             if(Kohana::$config->load('js.js_compile'))
+            {
+                 $this->tpl->jss = Arr::push(Kohana::$config->load('js.js_compiled'),$this->jss);
+             }
+             else
+             {
+                 $this->tpl->jss = Arr::push(Kohana::$config->load($this->base_js_config),$this->jss);
+             }
+            
             
              
             // per eventuali moduli che devonoi aggiungere durante eventi... forse :)
@@ -157,15 +167,24 @@ abstract class Controller_Base_Main extends Controller_Template {
 
 
             // Settiamo i file Css da caricare
-            $this->tpl->csss = Arr::push(Kohana::$config->load($this->base_css_config),$this->csss);
+//            $this->tpl->csss = Arr::push(Kohana::$config->load($this->base_css_config),$this->csss);
+//            
+//            
+//            if(Kohana::$config->load('layout.css_compile')){
+//                $css_cache_arr = array();
+//                foreach($this->tpl->csss as $css_file => $css_type){
+//                    $css_cache_arr[] = APPPATH."../".Kohana::$config->load('layout.css_path').$css_file;
+//                }
+//                $this->tpl->css_cache = CoffeeScript::compile($css_cache_arr,  CoffeeScript::FORMAT_TYPE_CSS);
+//            }
             
-            
-            if(Kohana::$config->load('layout.css_compile')){
-                $css_cache_arr = array();
-                foreach($this->tpl->csss as $css_file => $css_type){
-                    $css_cache_arr[] = APPPATH."../".Kohana::$config->load('layout.css_path').$css_file;
-                }
-                $this->tpl->css_cache = CoffeeScript::compile($css_cache_arr,  CoffeeScript::FORMAT_TYPE_CSS);
+            if(Kohana::$config->load('layout.css_compile'))
+            {
+                $this->tpl->csss = Arr::push(Kohana::$config->load('layout.css_compiled'),$this->csss);
+            }
+            else
+            {
+                $this->tpl->csss = Arr::push(Kohana::$config->load($this->base_css_config),$this->csss);
             }
             
         }

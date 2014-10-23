@@ -4,7 +4,7 @@ class Datastruct_Itinerary extends Datastruct {
     
     protected $_nameORM = "Itinerary";
 
-    public $filter = TRUE;
+    public $filter = FALSE;
 
     public $groups = array(
         array(
