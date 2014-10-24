@@ -27,7 +27,7 @@ $.extend(APP.interactiveMap,
 	bouncingMarkers: false,
 	searchUrl: '/jx/search?tofind=',
 	pages: {},
-	qrCodeEventObj: $(document),
+	eventObj: $(document),
 	
 	insertRowAlphabetically: function(container, row, selector, offset)
 	{
@@ -1150,24 +1150,67 @@ $.extend(APP.interactiveMap,
 			callback();
 	},
 	
-	sectionCompleted: function(section)
+	secs: {
+		"poi": false,
+		"path": false,
+		"area": false,
+		"itinerary": false
+	},
+	
+	checkIfsectionCompleted: function(section)
 	{
 		var that = this;
-		if (APP.utils.isset(that.myData[section]))
+		var b = false;
+		var howManyReqs = 3; // 3 sta per data, media e geo
+		
+		if (APP.utils.isset(section) && APP.utils.isset(that.myData[section]))
 		{
-			$.each(that.myData[section], function(i,v){
-				if ($.isPlainObject(v.data) && $.isPlainObject(v.media))
+			if ($.isEmptyObject(that.myData[section]))
+			{
+				if ($.type(that.secs[section]) === "boolean")
+					that.secs[section]=0;
+				that.secs[section]++;
+				if ((section == "itinerary" && that.secs[section] < howManyReqs-1) || (section != "itinerary" && that.secs[section] < howManyReqs))
+					b = false;
+				else
 				{
-					if (section == "itinerary" || $.isPlainObject(v.geo))
-					{
-						that.navbars.top.find('#'+section+'Button').parents("li:first").removeClass("disabled");
-						that.qrCodeEventObj.trigger(section+'_completed');
-					}
+					b = true;
+					that.secs[section] = true;
 				}
-				return false;
-			});
+			}
+			else
+			{
+				$.each(that.myData[section], function(i,v)
+				{
+					if ($.isPlainObject(v.data) && $.isPlainObject(v.media))
+					{
+						if (section == "itinerary" || $.isPlainObject(v.geo))
+							b = true;
+					}
+					return false;
+				});
+			}
 		}
-		return false;
+		if (b)
+		{
+			that.eventObj.trigger(section+'_completed');
+			that.navbars.top.find('#'+section+'Button').parents("li:first").removeClass("disabled");
+			that.secs[section] = true;
+			var sectionsCompleted = 0;
+			$.each(that.secs, function(i,v)
+			{
+				if ($.type(v) == "boolean" && v === true)
+					sectionsCompleted++;
+			});
+			if (sectionsCompleted === Object.keys(that.secs).length)
+			{
+				that.navbars.top.find('#everytypeButton').parents("li:first").removeClass("disabled");
+				that.eventObj.trigger('all_sections_completed');
+				$.each(that.secs, function(i,v){
+					that.secs[i] = false;
+				});
+			}
+		}
 	},
 	
 	getMedia: function(o)
@@ -1180,6 +1223,7 @@ $.extend(APP.interactiveMap,
 		var url = (APP.utils.isset(o.url))? o.url : (APP.utils.isset(section))? '/jx/media/'+section+'/' : '/jx/media/';
 		var callback = (APP.utils.isset(o.callback))? o.callback : null;
 		var bAsync = (APP.utils.isset(o.bAsync))? o.bAsync : true;
+		var bSectionCompleted = true;
 		
 		$.ajax({
 			type: 'GET',
@@ -1211,10 +1255,13 @@ $.extend(APP.interactiveMap,
 										destination[cs][k.id] = {};
 									destination[cs][k.id].media = k;
 								});
+								that.checkIfsectionCompleted(cs);
+								bSectionCompleted = false;
 							}
 						});
 					}
-					that.sectionCompleted(section);
+					if (bSectionCompleted)
+						that.checkIfsectionCompleted(section);
 					if (APP.utils.isset(callback) && $.isFunction(callback))
 						callback();
 				}
@@ -1237,6 +1284,7 @@ $.extend(APP.interactiveMap,
 		var url = (APP.utils.isset(o.url))? o.url : (APP.utils.isset(section))? '/jx/data/'+section+'/' : '/jx/data/';
 		var callback = (APP.utils.isset(o.callback))? o.callback : null;
 		var bAsync = (APP.utils.isset(o.bAsync))? o.bAsync : true;
+		var bSectionCompleted = true;
 		
 		$.ajax({
 			type: 'GET',
@@ -1268,10 +1316,13 @@ $.extend(APP.interactiveMap,
 										destination[cs][k.id] = {};
 									destination[cs][k.id].data = k;
 								});
+								that.checkIfsectionCompleted(cs);
+								bSectionCompleted = false;
 							}
 						});
 					}
-					that.sectionCompleted(section);
+					if (bSectionCompleted)
+						that.checkIfsectionCompleted(section);
 					if (APP.utils.isset(callback) && $.isFunction(callback))
 						callback();
 				}
@@ -1293,6 +1344,7 @@ $.extend(APP.interactiveMap,
 		var url = (APP.utils.isset(o.url))? o.url : APP.utils.isset(section)? '/jx/geo/'+section+'/' : '/jx/geo/';
 		var callback = (APP.utils.isset(o.callback))? o.callback : null;
 		var bAsync = (APP.utils.isset(o.bAsync))? o.bAsync : true;
+		var bSectionCompleted = true;
 		
 		$.ajax({
 			type: 'GET',
@@ -1328,10 +1380,13 @@ $.extend(APP.interactiveMap,
 									that.sendGeojsonLayerToMap(k, cs);
 									APP.map.setGlobalExtent(destination[cs][k.id].geo.extent);
 								});
+								that.checkIfsectionCompleted(cs);
+								bSectionCompleted = false;
 							}
 						});
 					}
-					that.sectionCompleted(section);
+					if (bSectionCompleted)
+						that.checkIfsectionCompleted(section);
 					if (!APP.utils.isset(that.leafletHash) && !that.bQrCode)
 						APP.map.setExtent(APP.map.globalData[APP.map.currentMapId].globalExtent);
 					
@@ -1770,7 +1825,7 @@ $.extend(APP.interactiveMap,
 			if (!isNaN(id))
 			{
 				that.bQrCode = true;
-				that.qrCodeEventObj.on(section+"_completed", function(){
+				that.eventObj.on(section+"_completed", function(){
 					callback();
 				});
 			}
