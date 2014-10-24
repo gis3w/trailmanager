@@ -1,6 +1,7 @@
 $.extend(APP.interactiveMap, 
 {
 	leafletHash: null,
+	bQrCode: false,
 	previousSection: null,
 	currentSection: null,
 	currentItinerary: null,
@@ -1149,18 +1150,42 @@ $.extend(APP.interactiveMap,
 			callback();
 	},
 	
-	getMedia: function(section, callback, id)
+	sectionCompleted: function(section)
+	{
+		var that = this;
+		if (APP.utils.isset(that.myData[section]))
+		{
+			$.each(that.myData[section], function(i,v){
+				if ($.isPlainObject(v.data) && $.isPlainObject(v.media))
+				{
+					if (section == "itinerary" || $.isPlainObject(v.geo))
+					{
+						that.navbars.top.find('#'+section+'Button').parents("li:first").removeClass("disabled");
+						that.qrCodeEventObj.trigger(section+'_completed');
+					}
+				}
+				return false;
+			});
+		}
+		return false;
+	},
+	
+	getMedia: function(o)
 	{
 		var that = this;
 		
-		if (!APP.utils.isset(that.myData[section]))
-			that.myData[section] = {};
+		var section = (APP.utils.isset(o.section))? o.section : null;
+		var id = (APP.utils.isset(o.id))? o.id : null;
+		var destination = (APP.utils.isset(o.destination))? o.destination : that.myData;
+		var url = (APP.utils.isset(o.url))? o.url : (APP.utils.isset(section))? '/jx/media/'+section+'/' : '/jx/media/';
+		var callback = (APP.utils.isset(o.callback))? o.callback : null;
+		var bAsync = (APP.utils.isset(o.bAsync))? o.bAsync : true;
 		
-		var myUrl = (APP.utils.isset(id))? '/jx/media/'+section+'/'+id : '/jx/media/'+section;
 		$.ajax({
 			type: 'GET',
-			url: myUrl,
+			url: url+(APP.utils.isset(id)? "/"+id : ""),
 			dataType: 'json',
+			async: bAsync,
 			success: function(data)
 			{
 				if (!APP.utils.checkError(data.error, null))
@@ -1169,11 +1194,27 @@ $.extend(APP.interactiveMap,
 					{
 						$.each(data.data.items, function(i, v)
 						{
-							if (!APP.utils.isset(that.myData[section][v.id]))
-								that.myData[section][v.id] = {};
-							that.myData[section][v.id].media = v;
+							var cs = (APP.utils.isset(section))? section : i.toLowerCase();
+							if (!APP.utils.isset(destination[cs]))
+								destination[cs] = {};
+							if (!$.isArray(v) && $.isPlainObject(v))
+							{
+								if (!APP.utils.isset(destination[cs][v.id]))
+									destination[cs][v.id] = {};
+								destination[cs][v.id].media = v;
+							}
+							else
+							{
+								$.each(v, function(j,k)
+								{
+									if (!APP.utils.isset(destination[cs][k.id]))
+										destination[cs][k.id] = {};
+									destination[cs][k.id].media = k;
+								});
+							}
 						});
 					}
+					that.sectionCompleted(section);
 					if (APP.utils.isset(callback) && $.isFunction(callback))
 						callback();
 				}
@@ -1187,17 +1228,21 @@ $.extend(APP.interactiveMap,
 		});
 	},
 	
-	getData: function(section, callback)
+	getData: function(o)
 	{
 		var that = this;
 		
-		if (!APP.utils.isset(that.myData[section]))
-			that.myData[section] = {};
+		var section = (APP.utils.isset(o.section))? o.section : null;
+		var destination = (APP.utils.isset(o.destination))? o.destination : that.myData;
+		var url = (APP.utils.isset(o.url))? o.url : (APP.utils.isset(section))? '/jx/data/'+section+'/' : '/jx/data/';
+		var callback = (APP.utils.isset(o.callback))? o.callback : null;
+		var bAsync = (APP.utils.isset(o.bAsync))? o.bAsync : true;
 		
 		$.ajax({
 			type: 'GET',
-			url: '/jx/data/'+section+'/',
+			url: url,
 			dataType: 'json',
+			async: bAsync,
 			success: function(data)
 			{
 				if (!APP.utils.checkError(data.error, null))
@@ -1206,11 +1251,27 @@ $.extend(APP.interactiveMap,
 					{
 						$.each(data.data.items, function(i, v)
 						{
-							if (!APP.utils.isset(that.myData[section][v.id]))
-								that.myData[section][v.id] = {};
-							that.myData[section][v.id].data = v;
+							var cs = (APP.utils.isset(section))? section : i.toLowerCase();
+							if (!APP.utils.isset(destination[cs]))
+								destination[cs] = {};
+							if (!$.isArray(v) && $.isPlainObject(v))
+							{
+								if (!APP.utils.isset(destination[cs][v.id]))
+									destination[cs][v.id] = {};
+								destination[cs][v.id].data = v;
+							}
+							else
+							{
+								$.each(v, function(j,k)
+								{
+									if (!APP.utils.isset(destination[cs][k.id]))
+										destination[cs][k.id] = {};
+									destination[cs][k.id].data = k;
+								});
+							}
 						});
 					}
+					that.sectionCompleted(section);
 					if (APP.utils.isset(callback) && $.isFunction(callback))
 						callback();
 				}
@@ -1224,29 +1285,54 @@ $.extend(APP.interactiveMap,
 		});
 	},
 	
-	getGeo: function(section, callback)
+	getGeo: function(o)
 	{
 		var that = this;
+		var section = (APP.utils.isset(o.section))? o.section : null;
+		var destination = (APP.utils.isset(o.destination))? o.destination : that.myData;
+		var url = (APP.utils.isset(o.url))? o.url : APP.utils.isset(section)? '/jx/geo/'+section+'/' : '/jx/geo/';
+		var callback = (APP.utils.isset(o.callback))? o.callback : null;
+		var bAsync = (APP.utils.isset(o.bAsync))? o.bAsync : true;
+		
 		$.ajax({
 			type: 'GET',
-			url: '/jx/geo/'+section+'/',
+			url: url,
 			dataType: 'json',
+			async: bAsync,
 			success: function(data)
 			{
 				if (!APP.utils.checkError(data.error, null))
 				{
-					that.myData[section] = {};
-					
-					$.each(data.data.items, function(i,v)
+					if (data.data && data.data.items)
 					{
-						that.myData[section][v.id] = {};
-						that.myData[section][v.id].geo = v;
-						
-						that.sendGeojsonLayerToMap(v, section);
-						
-						APP.map.setGlobalExtent(that.myData[section][v.id].geo.extent);
-					});
-					if (!APP.utils.isset(that.leafletHash))
+						$.each(data.data.items, function(i,v)
+						{
+							var cs = (APP.utils.isset(section))? section : i.toLowerCase();
+							if (!APP.utils.isset(destination[cs]))
+								destination[cs] = {};
+							if (!$.isArray(v) && $.isPlainObject(v))
+							{
+								if (!APP.utils.isset(destination[cs][v.id]))
+									destination[cs][v.id] = {};
+								destination[cs][v.id].geo = v;
+								that.sendGeojsonLayerToMap(v, cs);
+								APP.map.setGlobalExtent(destination[cs][v.id].geo.extent);
+							}
+							else
+							{
+								$.each(v, function(j,k)
+								{
+									if (!APP.utils.isset(destination[cs][k.id]))
+										destination[cs][k.id] = {};
+									destination[cs][k.id].geo = k;
+									that.sendGeojsonLayerToMap(k, cs);
+									APP.map.setGlobalExtent(destination[cs][k.id].geo.extent);
+								});
+							}
+						});
+					}
+					that.sectionCompleted(section);
+					if (!APP.utils.isset(that.leafletHash) && !that.bQrCode)
 						APP.map.setExtent(APP.map.globalData[APP.map.currentMapId].globalExtent);
 					
 					if (APP.utils.isset(callback) && $.isFunction(callback))
@@ -1672,20 +1758,21 @@ $.extend(APP.interactiveMap,
 		{
 			var section = uc[0];
 			var id = parseInt(uc[1]);
+			var callback = function(){
+				that.onElementClick({element: null, section: section, id: id});
+			};
 			if (section == "itinerary")
 			{
-				if (!isNaN(id))
-					that.qrCodeEventObj.on(section+"_completed", function(){
-						that.onItineraryClick({element: null, section: section, id: id});
-					});
-					
+				callback = function(){
+					that.onItineraryClick({element: null, section: section, id: id});
+				};
 			}
-			if (section == "poi" || section == "path" || section == "area")
+			if (!isNaN(id))
 			{
-				if (!isNaN(id))
-					that.qrCodeEventObj.on(section+"_completed", function(){
-						that.onElementClick({element: null, section: section, id: id});
-					});
+				that.bQrCode = true;
+				that.qrCodeEventObj.on(section+"_completed", function(){
+					callback();
+				});
 			}
 		}
 	},
@@ -1786,6 +1873,7 @@ $.extend(APP.interactiveMap,
 			switch(section)
 			{
 				case "to_default_extent":
+					$(this).parents("li:first").removeClass("active");
 					if (!APP.utils.isset(APP.config.localConfig.default_extent))
 						APP.utils.showNoty({title: APP.i18n.translate("error"), type: "error", content: APP.i18n.translate("Default extent not found")});
 					APP.map.setGlobalExtent(APP.config.localConfig.default_extent);
@@ -1795,7 +1883,7 @@ $.extend(APP.interactiveMap,
 					that.showItems(section);
 			}
 		});
-		
+		that.navbars.top.find("#to_default_extentButton").parent().removeClass("disabled");
 		that.setSearchModal();
 		
 		$("#mainContent").css({"height":"100%","width":"100%","margin-bottom":"0px"});		
@@ -1832,41 +1920,22 @@ $.extend(APP.interactiveMap,
 			});
 		});
 		
-		$("#mainContent").height($("#mainContent").height());
+		$("#mainContent").height($("#mainContent").height());		
 		
-		that.getData("itinerary", function(){
-			that.navbars.top.find('#itineraryButton').parents("li:first").removeClass("disabled");
-			that.getMedia("itinerary", function(){
-				that.qrCodeEventObj.trigger('itinerary_completed');
-			}); 
-		});
-		that.getGeo("area", function(){
-			that.getData("area", function(){
-				that.navbars.top.find('#areaButton').parents("li:first").removeClass("disabled");
-				that.getMedia("area", function(){
-					that.qrCodeEventObj.trigger('area_completed');
-				});
-			});
-		});
-		that.getGeo("path", function(){
-			that.getData("path", function(){
-				that.navbars.top.find('#pathButton').parents("li:first").removeClass("disabled");
-				that.getMedia("path", function(){
-					that.qrCodeEventObj.trigger('path_completed');
-				});
-			});
-			
-		});
-		that.getGeo("poi", function(){
-			that.getData("poi", function(){
-				that.navbars.top.find('#poiButton').parents("li:first").removeClass("disabled");
-				that.getMedia("poi", function(){
-					that.qrCodeEventObj.trigger('poi_completed');
-				});
-			}); 
+		that.getGeo({section: "poi", callback: function(){
 			var map = APP.map.getMap();
 			map.fire("zoomend");
-		});
+		}});
+		that.getData({section: "poi"});
+		that.getMedia({section: "poi"});
+		that.getGeo({section: "path"});
+		that.getData({section: "path"});
+		that.getMedia({section: "path"});
+		that.getGeo({section: "area"});
+		that.getData({section: "area"});
+		that.getMedia({section: "area"});
+		that.getData({section: "itinerary"});
+		that.getMedia({section: "itinerary"}); 
 		
 		that.body.find("#helpButton").click(function(){
 			that.closeItems();
