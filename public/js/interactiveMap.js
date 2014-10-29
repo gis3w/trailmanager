@@ -5,7 +5,7 @@ $.extend(APP.interactiveMap,
 	previousSection: null,
 	currentSection: null,
 	currentItinerary: null,
-	selectedElement: null,
+	selectedElement: { identifier: null, section: null},
 	myData: {},
 	body: null,
 	navbars: {
@@ -111,7 +111,8 @@ $.extend(APP.interactiveMap,
 		{
 			if (APP.map.globalData.mainContent.addedLayers[section+"_"+id].layer)
 				APP.map.highlightLayer(section+"_"+id);
-			this.selectedElement = id;
+			this.selectedElement.identifier = id;
+			this.selectedElement.section = section;
 		}
 	},
 	
@@ -168,7 +169,7 @@ $.extend(APP.interactiveMap,
 				that.body.find("#modal-"+section).modal('hide');
 			}
 			
-			that.showItems(that.currentSection);
+			that.showItems(that.currentSection, ['poi', 'path', 'area']);
 		});
 		
 		APP.utils.showNoty({content: '<p>'+APP.i18n.translate("You are currently viewing the elements of the following itinerary")+': <strong class="text-danger">'+that.getObjectTitle(section, id)+'</strong>.<br>'+APP.i18n.translate('To view all the elements again, exit from itinerary')+'.</p>', title: APP.i18n.translate("Information"), type: "alert", timeout: 3000});
@@ -179,7 +180,7 @@ $.extend(APP.interactiveMap,
 	{
 		var that = this;
 		that.currentItinerary = null;
-		that.selectedElement = null;
+		that.selectedElement = {identifier: null, section: null};
 		that.hideBottomBar();
 		APP.map.showAllLayers();
 		that.resetHighlightLayer();
@@ -265,6 +266,7 @@ $.extend(APP.interactiveMap,
 		}
 		if (lg)
 			lg.find("a.active").removeClass("active");
+		that.selectedElement = { identifier: null, section: null};
 	},
 	
 	checkIfMyDataExists: function(section, id)
@@ -833,8 +835,8 @@ $.extend(APP.interactiveMap,
 		else
 			that.body.find("#modal-"+section).modal("hide");
 	},
-	
-	showItems: function(section, callback)
+		
+	showItems: function(section, elements, callback)
 	{
 		var that = this;
 		if (that.previousSection === that.currentSection)
@@ -847,13 +849,13 @@ $.extend(APP.interactiveMap,
 		else
 		{
 			if (that.itemsOnSidebar && L.control.sidebar)
-				that.showItemsOnSidebar(section, callback);
+				that.showItemsOnSidebar(section, elements, callback);
 			else
-				that.showItemsOnModal(section, callback);
+				that.showItemsOnModal(section, elements, callback);
 		}
 	},
 	
-	showItemsOnSidebar: function(section, callback)
+	showItemsOnSidebar: function(section, elements, callback)
 	{
 		var that = this;
 		
@@ -867,9 +869,14 @@ $.extend(APP.interactiveMap,
 		that.mySidebar.control.on('hidden', function (e) {
 			APP.config.removeActiveClasses(that.navbars.top, "li");
 		});
-			
+		
 		switch(section)
 		{
+			case "info":
+				that.getPage(section, true);
+				if (APP.utils.isset(callback) && $.isFunction(callback))
+					callback();
+				return;
 			case "itinerary":
 				var listGroup = $('<div class="list-group list-group-wo-radius" style="margin: 0px -23px 0px -23.5px; padding: -10px"></div>');
 				
@@ -897,7 +904,62 @@ $.extend(APP.interactiveMap,
 				});
 				that.mySidebar.div.html(listGroup);
 				break;
+			default: //case "everytype": case "highlightingsdata": case "poi": case "path": case "area":
+				var accordion = $('<div id="accordion-'+section+'" class="accordion-list" style="margin: 0px -23px 0px -23.5px; padding: -10px"></div>');
+				
+				$.each(APP.config.localConfig.typology, function()
+				{
+					var header = $('<h4 style="vertical-align: middle; border-radius:0px">\
+										<span class="pull-left iconImage" style="margin-right: 5px"></span>\
+										'+this.name+'\
+										<span class="badge pull-right">0</span>\
+									</h4>');
+									
+					var content = $('<div id="collapse_'+section+"_"+this.id+'" class="list-group list-group-wo-radius" style="padding: 0px; margin-bottom: 0px; border-radius:0px"></div>');
+					
+					var iconImage = $('<span class="glyphicon glyphicon-chevron-right"></span>');
+					if (APP.utils.isset(this.icon) && this.icon !== "")
+						var iconImage = $('<img src="'+this.icon+'" class="img-responsive" alt="" style="margin-top: -5px; max-height: 30px; max-width: 35px;">');
+					
+					header.find(".iconImage").html(iconImage);
+					
+					//panel.find('.collapse').collapse({toggle: false});
+					
+					accordion.append(header).append(content);
+				});
+				$.each(elements, function(j,k)
+				{
+					$.each(that.myData[k], function(i, v)
+					{
+						if (that.currentItinerary && $.inArray(that.currentItinerary, that.myData[k][i].data.itineraries) === -1)
+							return true;
+						var container = accordion.find("#collapse_"+section+"_"+v.data.typology_id);
+						
+						var media = $(	'<div class="media">\
+										  <a class="pull-left" href="#" >\
+											<img class="media-object img-responsive img-rounded" src="'+(APP.utils.isset(v.data.thumb_main_image)? v.data.thumb_main_image : APP.config.localConfig.default_overview_image)+'" alt="'+APP.i18n.translate('no_image')+'" style="width: 60px; height: 60px">\
+										  </a>\
+										  <div class="media-body">\
+											<h5 class="media-heading">'+that.getObjectTitle(k, v.data.id)+'</h5>\
+										  </div>\
+										</div>');					
+						
+						var row = $('<a id="item_'+k+'_'+v.data.id+'" href="#" class="list-group-item '+((that.selectedElement.section === section && that.selectedElement.identifier === v.data.id)? "active" : "")+'"></a>');
+						row.data(v).click(function(){
+							that.onElementClick({ element: $(this), section: k, id: v.data.id, latlng: null});
+						});
+						row.append(media);
+						that.insertRowAlphabetically(container, row, ".media-heading");
+						var counter = parseInt(container.prev().find(".badge").text());
+						container.prev().find(".badge").text(counter+1);
+					});
+				});
+				
+				that.mySidebar.div.html(accordion);
+				break;
+			/*
 			case "poi": case "path": case "area":
+				
 				var accordion = $('<div id="accordion-'+section+'" class="accordion-list" style="margin: 0px -23px 0px -23.5px; padding: -10px"></div>');
 				
 				$.each(APP.config.localConfig.typology, function()
@@ -935,42 +997,19 @@ $.extend(APP.interactiveMap,
 									  </div>\
 									</div>');					
 					
-					var row = $('<a id="item_'+section+'_'+v.data.id+'" href="#" class="list-group-item '+((that.selectedElement === v.data.id)? "active" : "")+'"></a>');
+					var row = $('<a id="item_'+section+'_'+v.data.id+'" href="#" class="list-group-item '+((that.selectedElement.section === section && that.selectedElement.identifier === v.data.id)? "active" : "")+'"></a>');
 					row.data(v).click(function(){
 						that.onElementClick({ element: $(this), section: section, id: v.data.id, latlng: null});
 					});
-					/*
-					if (v.typologies)
-					{
-						$.each(v.typologies, function(ii,vv)
-						{
-							var index = APP.utils.getIndexFromField(APP.config.localConfig.typology, "id", vv);
-							if (index > -1 && APP.utils.isset(APP.config.localConfig.typology[index].icon))
-							{
-								var thumb =	$('<span class="col-md-1"><img src="'+APP.config.localConfig.typology[index].icon+'" alt="" class="img-responsive img-thumbnail" style="max-width: 25px; max-height: 20px; padding:0px"></span>');
-								thumb.find("img").tooltip({
-									title: APP.config.localConfig.typology[index].name,
-									container: "body",
-								});
-								media.find(".subtypologies").append(thumb);
-							}
-						});
-					}
-					*/
 					row.append(media);
 					that.insertRowAlphabetically(container, row, ".media-heading");
 					var counter = parseInt(container.prev().find(".badge").text());
 					container.prev().find(".badge").text(counter+1);
 				});
 				that.mySidebar.div.html(accordion);
+				
 				break;
-			case "info":
-				that.getPage(section, true);
-				if (APP.utils.isset(callback) && $.isFunction(callback))
-					callback();
-				return;
-			default:
-				break;						
+			*/				
 		}
 		
 		that.mySidebar.div.prepend('<h3>'+APP.i18n.translate(APP.utils.capitalize(section)+" section")+'</h3>');
@@ -993,7 +1032,7 @@ $.extend(APP.interactiveMap,
 			callback();
 	},
 	
-	showItemsOnModal: function(section, callback)
+	showItemsOnModal: function(section, elements, callback)
 	{
 		var that = this;
 		var myModal = that.body.find("#modal-"+section);
@@ -1100,7 +1139,7 @@ $.extend(APP.interactiveMap,
 									  </div>\
 									</div>');
 										
-					var row = $('<a id="item_'+section+'_'+v.data.id+'" href="#" class="list-group-item '+((that.selectedElement === v.data.id)? "active" : "")+'"</a>');
+					var row = $('<a id="item_'+section+'_'+v.data.id+'" href="#" class="list-group-item '+((that.selectedElement.section === section && that.selectedElement.identifier === v.data.id)? "active" : "")+'"</a>');
 					row.data(v).click(function(){
 						that.onElementClick({ element: $(this), section: section, id: v.data.id, latlng: null});
 						myModal.modal("hide");
@@ -1911,31 +1950,36 @@ $.extend(APP.interactiveMap,
 		that.navbars.top = that.body.find(".navbar-nav:first"); // navbar-nav
 		that.navbars.top.find("a").click(function()
 		{
+			var btn = $(this);
 			var n = that.navbars.top.parents(".navbar:first");
-			if (n.find(".navbar-collapse").hasClass("in"))
+			if (n.find(".navbar-collapse").hasClass("in") && btn.parents(".dropdown").length == 0)
 				n.find('.navbar-collapse').collapse('hide');
 			
-			if ($(this).parents("li:first").hasClass("disabled"))
+			if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control && btn.parent().hasClass("dropdown-toggle"))
+				that.mySidebar.control.hide();
+			
+			if (btn.parents("li:first").hasClass("disabled"))
 				return false;
 				
 			that.navbars.top.find("li").removeClass("active");
-			$(this).parents("li:first").addClass("active");
+			btn.parents("li:first").addClass("active");
 			
-			var section = $(this).attr("id");
+			var section = btn.attr("id");
 			section = section.split("Button")[0];
 			that.previousSection = that.currentSection;
 			that.currentSection = section;
 			switch(section)
 			{
 				case "to_default_extent":
-					$(this).parents("li:first").removeClass("active");
+					btn.parents("li:first").removeClass("active");
 					if (!APP.utils.isset(APP.config.localConfig.default_extent))
 						APP.utils.showNoty({title: APP.i18n.translate("error"), type: "error", content: APP.i18n.translate("Default extent not found")});
 					APP.map.setGlobalExtent(APP.config.localConfig.default_extent);
 					APP.map.setExtent(APP.config.localConfig.default_extent);
 					break;
 				default:
-					that.showItems(section);
+					var arr = (section == "everytype")? ["poi","path","area"] : [section];
+					that.showItems(section, arr);
 			}
 		});
 		that.navbars.top.find("#to_default_extentButton").parent().removeClass("disabled");
@@ -1956,7 +2000,7 @@ $.extend(APP.interactiveMap,
 		that.mySidebar.control = APP.map.sidebar.control;
 		that.getPage("info", false);
 		APP.map.getMap().on('click',function(){			
-			that.selectedElement = null;
+			that.selectedElement = {identifier: null, section: null};
 			that.resetHighlightLayer();
 		});
 		APP.map.getMap().on('zoomend', function()
