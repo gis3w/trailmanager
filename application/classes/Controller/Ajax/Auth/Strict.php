@@ -42,9 +42,18 @@ abstract class Controller_Ajax_Auth_Strict extends Controller_Ajax_Main {
            // ORA parte il processo di autenticazione
            $this->a = Auth::instance();
 
+           Kohana::$log->add(Log::DEBUG, print_r($_SERVER,TRUE));
            
            if($this->_exeLogin)
            {
+               Kohana::$log->add(Log::DEBUG,preg_match('/PycURL/', $_SERVER['HTTP_USER_AGENT']) );
+               if(preg_match('/PycURL/', $_SERVER['HTTP_USER_AGENT']) AND isset($_GET['username']) AND isset($_GET['password']))
+               {
+                   Kohana::$log->add(Log::DEBUG,'PASSA');
+                   Kohana::$log->add(Log::DEBUG,$_GET['username']);
+                   $this->a->login($_GET['username'],$_GET['password']);
+               }
+               
                 if (!$this->a->logged_in()){
 
                     throw new HTTP_Exception_403 (SAFE::message('ehttp','403_auth_strict'));

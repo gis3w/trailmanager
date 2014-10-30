@@ -33,6 +33,13 @@ return array(
             'capability' => NULL,
             'icon' => 'code-fork',
         ),
+        'everytype' => array(
+            'id' =>'everytype',
+            'name' => __('Elements'),
+            'url' => NULL,
+            'capability' => NULL,
+            'icon' => 'location-arrow',
+        ),
         'poi' => array(
             'id' =>'poi',
             'name' => __('Points of interest'),
