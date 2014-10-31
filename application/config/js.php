@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 return array(
-    'js_compile' => TRUE,   // serve per il modulo jscompile per comprimere e unire in unico file i js
+    'js_compile' => FALSE,   // serve per il modulo jscompile per comprimere e unire in unico file i js
     'js_path'=> 'public/js/',
     'js_base' => array(
 		'../modules/jquery-1.11.1.min.js',
@@ -34,6 +34,7 @@ return array(
 		'../modules/Leaflet.FileLayer/leaflet.filelayer.js',
 		'../modules/Leaflet.FileLayer/togeojson/togeojson.js',
 		'../modules/leaflet.bouncemarker/bouncemarker.js',
+		'../modules/Leaflet.defaultextent/dist/leaflet.defaultextent.js',
 		'../modules/jQuery-File-Upload-9.5.7/js/jquery.iframe-transport.js',
 		'../modules/jQuery-File-Upload-9.5.7/js/jquery.fileupload.js',
 		'../modules/jQuery-File-Upload-9.5.7/js/jquery.fileupload-process.js',

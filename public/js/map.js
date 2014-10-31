@@ -515,7 +515,7 @@ $.extend(APP.map,
 		layers.push(defaultLayer);
 		
 		that.globalData[id].map = new L.map(id, {
-			'center': (O.center)? O.center : new L.LatLng(44.160534,11.04126),
+			'center': (O.center)? O.center : new L.LatLng(0,0),//new L.LatLng(44.160534,11.04126),
 			'zoom': (O.zoom)? O.zoom : 9,
 			'layers': [defaultLayer],
 		});			
@@ -530,6 +530,13 @@ $.extend(APP.map,
 		
 		if (APP.utils.isset(L.Hash))
 			var hash = new L.Hash(that.globalData[id].map);
+		
+		if (APP.utils.isset(L.Control.DefaultExtent))
+		{
+			L.control.defaultExtent({
+				title: APP.i18n.translate('Zoom to default extent'),
+			}).setCenter(that.globalData[id].map.getCenter()).setZoom(that.globalData[id].map.getZoom()).addTo(that.globalData[id].map);
+		}
 		
 		// locate control
 		if (APP.utils.isset(L.control.locate))

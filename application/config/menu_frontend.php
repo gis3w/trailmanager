@@ -19,6 +19,7 @@ return array(
             'capability' => NULL,
             'icon' => 'info-sign',
         ),
+		/*
         'to_default_extent' => array(
             'id' =>'to_default_extent',
             'name' => __('Start extent'),
@@ -26,6 +27,7 @@ return array(
             'capability' => NULL,
             'icon' => 'fullscreen',
         ),
+		*/
         'itinerary' => array(
             'id' =>'itinerary',
             'name' => __('Itineraries'),
