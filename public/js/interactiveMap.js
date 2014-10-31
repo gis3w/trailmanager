@@ -267,6 +267,16 @@ $.extend(APP.interactiveMap,
 		}
 		if (lg)
 			lg.find("a.active").removeClass("active");
+		
+		if (that.selectedElement.section == "poi")
+		{
+			var obj = that.myData.poi[that.selectedElement.identifier];
+			var id = that.selectedElement.section+"_"+that.selectedElement.identifier;
+			var scale = that.getScale(APP.map.globalData[APP.map.currentMapId].map);
+			if (APP.utils.isset(obj.geo.max_scale) && scale > obj.geo.max_scale)
+				APP.map.hideLayer(id);
+		}
+			
 		that.selectedElement = { identifier: null, section: null};
 	},
 	
@@ -2001,7 +2011,6 @@ $.extend(APP.interactiveMap,
 		that.mySidebar.control = APP.map.sidebar.control;
 		that.getPage("info", false);
 		APP.map.getMap().on('click',function(){			
-			that.selectedElement = {identifier: null, section: null};
 			that.resetHighlightLayer();
 		});
 		APP.map.getMap().on('zoomend', function()
@@ -2013,7 +2022,7 @@ $.extend(APP.interactiveMap,
 				if (i.indexOf("poi") === -1 || that.currentItinerary)
 					return true;
 				
-				if (!APP.utils.isset(v.max_scale) || scale <= v.max_scale)
+				if (!APP.utils.isset(v.max_scale) || scale <= v.max_scale || (that.selectedElement.section === "poi" && that.selectedElement.identifier ===  parseInt(i.split("_")[1])))
 					APP.map.showLayer(i);
 				else
 					APP.map.hideLayer(i);
