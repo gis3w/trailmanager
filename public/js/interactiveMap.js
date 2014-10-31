@@ -2,6 +2,7 @@ $.extend(APP.interactiveMap,
 {
 	leafletHash: null,
 	bQrCode: false,
+	bEverytypeGeometries: true,
 	previousSection: null,
 	currentSection: null,
 	currentItinerary: null,
@@ -1259,7 +1260,7 @@ $.extend(APP.interactiveMap,
 		var section = (APP.utils.isset(o.section))? o.section : null;
 		var id = (APP.utils.isset(o.id))? o.id : null;
 		var destination = (APP.utils.isset(o.destination))? o.destination : that.myData;
-		var url = (APP.utils.isset(o.url))? o.url : (APP.utils.isset(section))? '/jx/media/'+section+'/' : '/jx/media/';
+		var url = (APP.utils.isset(o.url))? o.url : (APP.utils.isset(section))? '/jx/media/'+section+'/' : '/jx/media/everytype/';
 		var callback = (APP.utils.isset(o.callback))? o.callback : null;
 		var bAsync = (APP.utils.isset(o.bAsync))? o.bAsync : true;
 		var bSectionCompleted = true;
@@ -1320,7 +1321,7 @@ $.extend(APP.interactiveMap,
 		
 		var section = (APP.utils.isset(o.section))? o.section : null;
 		var destination = (APP.utils.isset(o.destination))? o.destination : that.myData;
-		var url = (APP.utils.isset(o.url))? o.url : (APP.utils.isset(section))? '/jx/data/'+section+'/' : '/jx/data/';
+		var url = (APP.utils.isset(o.url))? o.url : (APP.utils.isset(section))? '/jx/data/'+section+'/' : '/jx/data/everytype/';
 		var callback = (APP.utils.isset(o.callback))? o.callback : null;
 		var bAsync = (APP.utils.isset(o.bAsync))? o.bAsync : true;
 		var bSectionCompleted = true;
@@ -1380,7 +1381,7 @@ $.extend(APP.interactiveMap,
 		var that = this;
 		var section = (APP.utils.isset(o.section))? o.section : null;
 		var destination = (APP.utils.isset(o.destination))? o.destination : that.myData;
-		var url = (APP.utils.isset(o.url))? o.url : APP.utils.isset(section)? '/jx/geo/'+section+'/' : '/jx/geo/';
+		var url = (APP.utils.isset(o.url))? o.url : APP.utils.isset(section)? '/jx/geo/'+section+'/' : '/jx/geo/everytype/';
 		var callback = (APP.utils.isset(o.callback))? o.callback : null;
 		var bAsync = (APP.utils.isset(o.bAsync))? o.bAsync : true;
 		var bSectionCompleted = true;
@@ -1978,7 +1979,7 @@ $.extend(APP.interactiveMap,
 					APP.map.setExtent(APP.config.localConfig.default_extent);
 					break;
 				default:
-					var arr = (section == "everytype")? ["poi","path","area"] : [section];
+					var arr = (that.bEverytypeGeometries && section == "everytype")? ["poi","path","area"] : [section];
 					that.showItems(section, arr);
 			}
 		});
@@ -2021,20 +2022,40 @@ $.extend(APP.interactiveMap,
 		
 		$("#mainContent").height($("#mainContent").height());		
 		
-		that.getGeo({section: "poi", callback: function(){
-			var map = APP.map.getMap();
-			map.fire("zoomend");
-		}});
-		that.getData({section: "poi"});
-		that.getMedia({section: "poi"});
-		that.getGeo({section: "path"});
-		that.getData({section: "path"});
-		that.getMedia({section: "path"});
-		that.getGeo({section: "area"});
-		that.getData({section: "area"});
-		that.getMedia({section: "area"});
+		if (that.bEverytypeGeometries)
+		{
+			that.getGeo({callback: function(){
+				var map = APP.map.getMap();
+				map.fire("zoomend");
+			}});
+			that.getData({});
+			that.getMedia({});
+			$.each(["poi","path","area"], function(i,v)
+			{
+				var btn = that.body.find("#"+v+"Button");
+				if (btn.length>0)
+					btn.parent().hide();
+			});
+		}
+		else
+		{
+			that.body.find("#everytypeButton").parent().hide();
+			that.getGeo({section: "poi", callback: function(){
+				var map = APP.map.getMap();
+				map.fire("zoomend");
+			}});
+			that.getData({section: "poi"});
+			that.getMedia({section: "poi"});
+			that.getGeo({section: "path"});
+			that.getData({section: "path"});
+			that.getMedia({section: "path"});
+			that.getGeo({section: "area"});
+			that.getData({section: "area"});
+			that.getMedia({section: "area"});
+		}
+		
 		that.getData({section: "itinerary"});
-		that.getMedia({section: "itinerary"}); 
+		that.getMedia({section: "itinerary"});
 		
 		that.body.find("#helpButton").click(function(){
 			that.closeItems();

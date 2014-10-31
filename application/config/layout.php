@@ -33,6 +33,7 @@ return array(
         '../modules/leaflet-locatecontrol/src/L.Control.Locate.css' => 'screen',		
         '../modules/leaflet-sidebar/L.Control.Sidebar.css' => 'screen',
         '../modules/Leaflet.draw/dist/leaflet.draw.css' => 'screen',
+		'../modules/Leaflet.defaultextent/dist/leaflet.defaultextent.css' => 'screen',
         //'../modules/pixelmatrix-uniform-3e9cd85/themes/default/css/uniform.default.css' => 'screen',
         '../modules/jQuery-File-Upload-9.5.7/css/jquery.fileupload.css' => 'screen',
         '../modules/jQuery-File-Upload-9.5.7/css/jquery.fileupload-ui.css' => 'screen',

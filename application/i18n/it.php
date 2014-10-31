@@ -55,6 +55,7 @@ return array(
 	'Path section' => 'Percorsi',
 	'Itinerary section' => 'Itinerari',
 	'Area section' => 'Aree',
+	'Everytype section' => 'Luoghi da visitare',
 	'Period_schedule' => 'Periodi e orari',
 	'transportation_types' => 'Percorribilità',
 	'features' => 'Caratteristiche',
@@ -70,6 +71,8 @@ return array(
 	'What are you looking for?' => 'Cosa stai cercando?',
 	'page_not_found' => 'Pagina non trovata',
 	'not_found' => 'Non trovato',
+	'Elements' => 'Luoghi da visitare',
+	'Zoom to default extent' => 'Ritorna all\'estensione iniziale della mappa',
  
     'Close' => 'Chiudi',    
     'close' => 'Chiudi',

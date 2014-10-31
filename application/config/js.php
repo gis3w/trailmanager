@@ -34,6 +34,7 @@ return array(
 		'../modules/Leaflet.FileLayer/leaflet.filelayer.js',
 		'../modules/Leaflet.FileLayer/togeojson/togeojson.js',
 		'../modules/leaflet.bouncemarker/bouncemarker.js',
+		'../modules/Leaflet.defaultextent/dist/leaflet.defaultextent.js',
 		'../modules/jQuery-File-Upload-9.5.7/js/jquery.iframe-transport.js',
 		'../modules/jQuery-File-Upload-9.5.7/js/jquery.fileupload.js',
 		'../modules/jQuery-File-Upload-9.5.7/js/jquery.fileupload-process.js',
