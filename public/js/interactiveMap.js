@@ -3,6 +3,7 @@ $.extend(APP.interactiveMap,
 	leafletHash: null,
 	bQrCode: false,
 	bEverytypeGeometries: true,
+	arrEverytypeGeometries: ["poi","area"],
 	previousSection: null,
 	currentSection: null,
 	currentItinerary: null,
@@ -1989,7 +1990,7 @@ $.extend(APP.interactiveMap,
 					APP.map.setExtent(APP.config.localConfig.default_extent);
 					break;
 				default:
-					var arr = (that.bEverytypeGeometries && section == "everytype")? ["poi","path","area"] : [section];
+					var arr = (that.bEverytypeGeometries && section == "everytype")? that.arrEverytypeGeometries : [section];
 					that.showItems(section, arr);
 			}
 		});
@@ -2039,7 +2040,7 @@ $.extend(APP.interactiveMap,
 			}});
 			that.getData({});
 			that.getMedia({});
-			$.each(["poi","path","area"], function(i,v)
+			$.each(that.arrEverytypeGeometries, function(i,v)
 			{
 				var btn = that.body.find("#"+v+"Button");
 				if (btn.length>0)
