@@ -566,6 +566,49 @@ $.extend(APP.config,{
 			APP.interactiveMap.resize();
 		});
 	},
+	
+	setCreditsButton: function()
+	{
+		var that = this;
+		
+		var cb = $("#creditsButton");
+		if (cb.length==0)
+			return false;
+		
+		cb.css({
+			padding: 0,
+			margin: 0
+		});
+		
+		that.creditsModal = APP.utils.createModal({
+			id: 'creditsModal',
+			container: $("body"),
+			size: "sm",
+			header: 'Credits',
+			body: 	'<div>\
+						<p class="text-center">Progettato e realizzato da</p>\
+						<p class="text-center"><img src="public/img/logo_gis3w_h60.png" alt="GIS3W Sas"></p>\
+						<p style="margin-top: 30px">\
+							<address>\
+							  <strong>GIS3W</strong><br>\
+								<em>di Lorenzetti Walter e C. S.a.S.</em><br>\
+								Viale Verdi, 24<br>\
+								51016 - Montecatini Terme (PT)<br>\
+								Fax 0572 901639<br>\
+								P. IVA 01782000473<br>\
+							  	Tel. +39 347-6597931<br>\
+								Email info@gis3w.it<br>\
+								Web <a href="http://www.gis3w.it" target="_blank" class="btn btn-link">www.gis3w.it</a>\
+							</address>\
+						</p>\
+					</div>'
+		});
+		
+		var img = $('<img src="public/img/logo_gis3w_h60.png" alt="Credits" data-toggle="modal" data-toggle="tooltip" data-target="#creditsModal" data-placement="auto" title="Credits" style="max-height: 50px">');
+		img.tooltip();
+		
+		cb.html(img);
+	},
 		
 	init: function()
 	{	
@@ -584,6 +627,7 @@ $.extend(APP.config,{
 		this.loadConfig(); // synchronous
 		this.setMainContent();
 		this.setFilterDialogsDiv();
+		this.setCreditsButton();
 		this.setMenu();
 				
 		//$(".navbar-nav:first").find("a:first").click();
