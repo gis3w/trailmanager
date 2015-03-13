@@ -1408,7 +1408,21 @@ $.extend(APP.interactiveMap,
 				{
 					if (data.data && data.data.items)
 					{
+						var ddi = {
+							'Area': null,
+							'Path': null,
+							'Poi': null
+						};
 						$.each(data.data.items, function(i,v)
+						{
+							if (i.toLowerCase() == 'area')
+								ddi['Area'] = data.data.items['Area'];
+							if (i.toLowerCase() == 'path')
+								ddi['Path'] = data.data.items['Path'];
+							if (i.toLowerCase() == 'poi')
+								ddi['Poi'] = data.data.items['Poi'];
+						});
+						$.each(ddi, function(i,v)
 						{
 							var cs = (APP.utils.isset(section))? section : i.toLowerCase();
 							if (!APP.utils.isset(destination[cs]))
