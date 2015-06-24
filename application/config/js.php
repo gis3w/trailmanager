@@ -70,6 +70,7 @@ return array(
 		'../modules/jQuery-File-Upload/js/jquery.fileupload-ui.js',*/
 		//'../modules/jQuery-File-Upload/js/main.js',
 		'../modules/jquery_layout/jquery.layout-latest.min.js',
+        '../modules/jspdf.debug.js',
 		'global.js',
 		'i18n.js',
 		'utils.js',

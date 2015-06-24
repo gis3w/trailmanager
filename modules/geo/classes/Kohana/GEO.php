@@ -33,7 +33,7 @@ class Kohana_GEO extends geoPHP{
     
     public static function PostgisGentroid($geometry)
     {
-        $res = DB::query(Database::SELECT, "Select astext(ST_Centroid(ST_GeomFromText('".$geometry->asText()."')))")
+        $res = DB::query(Database::SELECT, "Select ST_AsText(ST_Centroid(ST_GeomFromText('".$geometry->asText()."'))) as astext")
                 ->execute();
         return self::load($res['0']['astext'],'wkt');
     }
