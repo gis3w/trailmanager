@@ -288,8 +288,11 @@ class Kohana_ORM extends Model implements serializable {
 	 */
 	protected function _initialize()
 	{
-		// Set the object name and plural name
-		$this->_object_name = strtolower(substr(get_class($this), 6));
+		// Set the object name if none predefined
+		if (empty($this->_object_name))
+		{
+			$this->_object_name = strtolower(substr(get_class($this), 6));
+		}
 		
 		// Check if this model has already been initialized
 		if ( ! $init = Arr::get(ORM::$_init_cache, $this->_object_name, FALSE))
@@ -624,7 +627,7 @@ class Kohana_ORM extends Model implements serializable {
 		elseif (isset($this->_belongs_to[$column]))
 		{
 			$model = $this->_related($column);
-                                        
+
 			// Use this model's column and foreign model's primary key
 			$col = $model->_object_name.'.'.$model->_primary_key;
 			$val = $this->_object[$this->_belongs_to[$column]['foreign_key']];
@@ -653,9 +656,7 @@ class Kohana_ORM extends Model implements serializable {
 		}
 		elseif (isset($this->_has_many[$column]))
 		{
-                    
-                                                $MODEL = isset($this->_has_many[$column]['orm_type']) ? 'ORM'.$this->_has_many[$column]['orm_type']:'ORM';
-			$model = $MODEL::factory($this->_has_many[$column]['model']);
+			$model = ORM::factory($this->_has_many[$column]['model']);
 
 			if (isset($this->_has_many[$column]['through']))
 			{
@@ -1503,14 +1504,14 @@ class Kohana_ORM extends Model implements serializable {
 	 * Returns the number of relationships 
 	 *
 	 *     // Counts the number of times the login role is attached to $model
-	 *     $model->has('roles', ORM::factory('role', array('name' => 'login')));
+	 *     $model->count_relations('roles', ORM::factory('role', array('name' => 'login')));
 	 *     // Counts the number of times role 5 is attached to $model
-	 *     $model->has('roles', 5);
+	 *     $model->count_relations('roles', 5);
 	 *     // Counts the number of times any of roles 1, 2, 3, or 4 are attached to
 	 *     // $model
-	 *     $model->has('roles', array(1, 2, 3, 4));
+	 *     $model->count_relations('roles', array(1, 2, 3, 4));
 	 *     // Counts the number roles attached to $model
-	 *     $model->has('roles')
+	 *     $model->count_relations('roles')
 	 *
 	 * @param  string  $alias    Alias of the has_many "through" relationship
 	 * @param  mixed   $far_keys Related model, primary key, or an array of primary keys
@@ -1626,7 +1627,7 @@ class Kohana_ORM extends Model implements serializable {
 			if ($method['name'] == 'select')
 			{
 				// Ignore any selected columns for now
-				$selects[] = $method;
+				$selects[$key] = $method;
 				unset($this->_db_pending[$key]);
 			}
 		}
@@ -1643,7 +1644,7 @@ class Kohana_ORM extends Model implements serializable {
 		$this->_build(Database::SELECT);
 
 		$records = $this->_db_builder->from(array($this->_table_name, $this->_object_name))
-			->select(array(DB::expr('COUNT(*)'), 'records_found'))
+			->select(array(DB::expr('COUNT('.$this->_db->quote_column($this->_object_name.'.'.$this->_primary_key).')'), 'records_found'))
 			->execute($this->_db)
 			->get('records_found');
 
@@ -1653,7 +1654,7 @@ class Kohana_ORM extends Model implements serializable {
 		$this->reset();
 
 		// Return the total number of records in a table
-		return $records;
+		return (int) $records;
 	}
 
 	/**
@@ -1681,13 +1682,11 @@ class Kohana_ORM extends Model implements serializable {
 		}
 		elseif (isset($this->_has_one[$alias]))
 		{
-                                                $MODEL = isset($this->_has_one[$alias]['orm_type']) ? 'ORM'.$this->_has_one[$alias]['orm_type']:'ORM';
-			return $this->_related[$alias] = $MODEL::factory($this->_has_one[$alias]['model']);
+			return $this->_related[$alias] = ORM::factory($this->_has_one[$alias]['model']);
 		}
 		elseif (isset($this->_belongs_to[$alias]))
 		{
-                                                $MODEL = isset($this->_belongs_to[$alias]['orm_type']) ? 'ORM'.$this->_belongs_to[$alias]['orm_type']:'ORM';
-			return $this->_related[$alias] = $MODEL::factory($this->_belongs_to[$alias]['model']);
+			return $this->_related[$alias] = ORM::factory($this->_belongs_to[$alias]['model']);
 		}
 		else
 		{

@@ -4,15 +4,15 @@
  * The group wrapper acts as an interface to all the config directives
  * gathered from across the system.
  *
- * This is the object returned from Kohana_Config::load 
+ * This is the object returned from Kohana_Config::load
  *
  * Any modifications to configuration items should be done through an instance of this object
  *
  * @package    Kohana
  * @category   Configuration
  * @author     Kohana Team
- * @copyright  (c) 2012 Kohana Team
- * @license    http://kohanaphp.com/license
+ * @copyright  (c) 2012-2014 Kohana Team
+ * @license    http://kohanaframework.org/license
  */
 class Kohana_Config_Group extends ArrayObject {
 
@@ -31,7 +31,7 @@ class Kohana_Config_Group extends ArrayObject {
 	protected $_group_name = '';
 
 	/**
-	 * Constructs the group object.  Kohana_Config passes the config group 
+	 * Constructs the group object.  Kohana_Config passes the config group
 	 * and its config items to the object here.
 	 *
 	 * @param Kohana_Config  $instance "Owning" instance of Kohana_Config
@@ -77,7 +77,7 @@ class Kohana_Config_Group extends ArrayObject {
 	{
 		return $this->_group_name;
 	}
-	
+
 	/**
 	 * Get a variable from the configuration or return the default value.
 	 *
@@ -110,7 +110,7 @@ class Kohana_Config_Group extends ArrayObject {
 
 	/**
 	 * Overrides ArrayObject::offsetSet()
-	 * This method is called when config is changed via 
+	 * This method is called when config is changed via
 	 *
 	 *     $config->var = 'asd';
 	 *
@@ -127,4 +127,5 @@ class Kohana_Config_Group extends ArrayObject {
 
 		return parent::offsetSet($key, $value);
 	}
+
 }

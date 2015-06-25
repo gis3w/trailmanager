@@ -361,34 +361,6 @@ class Kohana_RouteTest extends Unittest_TestCase
 				),
 				'',
 			),
-			/**
-			 * Specifying this should cause controller and action to show up
-			 * refs #4113
-			 */
-			array(
-				'(<controller>(/<action>(/<id>)))',
-				NULL,
-				array('controller' => 'welcome', 'action' => 'index'),
-				'Welcome',
-				'index',
-				'welcome/index/1',
-				array(
-					'id' => '1'
-				),
-				'',
-			),
-			array(
-				'<controller>(/<action>(/<id>))',
-				NULL,
-				array('controller' => 'welcome', 'action' => 'index'),
-				'Welcome',
-				'index',
-				'welcome/foo',
-				array(
-					'action' => 'foo',
-				),
-				'welcome',
-			),
 		);
 	}
 
@@ -425,6 +397,107 @@ class Kohana_RouteTest extends Unittest_TestCase
 		$this->assertSame($a, $matches['action']);
 		$this->assertSame($test_uri, $route->uri($test_uri_array));
 		$this->assertSame($default_uri, $route->uri());
+	}
+
+	/**
+	 * Provider for test_optional_groups_containing_specified_params
+	 *
+	 * @return array
+	 */
+	public function provider_optional_groups_containing_specified_params()
+	{
+		return array(
+			/**
+			 * Specifying this should cause controller and action to show up
+			 * refs #4113
+			 */
+			array(
+				'(<controller>(/<action>(/<id>)))',
+				array('controller' => 'welcome', 'action' => 'index'),
+				array('id' => '1'),
+				'welcome/index/1',
+			),
+			array(
+				'<controller>(/<action>(/<id>))',
+				array('controller' => 'welcome', 'action' => 'index'),
+				array('action' => 'foo'),
+				'welcome/foo',
+			),
+			array(
+				'<controller>(/<action>(/<id>))',
+				array('controller' => 'welcome', 'action' => 'index'),
+				array('action' => 'index'),
+				'welcome',
+			),
+			/**
+			 * refs #4630
+			 */
+			array(
+				'api(/<version>)/const(/<id>)(/<custom>)',
+				array('version' => 1),
+				NULL,
+				'api/const',
+			),
+			array(
+				'api(/<version>)/const(/<id>)(/<custom>)',
+				array('version' => 1),
+				array('version' => 9),
+				'api/9/const',
+			),
+			array(
+				'api(/<version>)/const(/<id>)(/<custom>)',
+				array('version' => 1),
+				array('id' => 2),
+				'api/const/2',
+			),
+			array(
+				'api(/<version>)/const(/<id>)(/<custom>)',
+				array('version' => 1),
+				array('custom' => 'x'),
+				'api/const/x',
+			),
+			array(
+				'(<controller>(/<action>(/<id>)(/<type>)))',
+				array('controller' => 'test', 'action' => 'index', 'type' => 'html'),
+				array('type' => 'json'),
+				'test/index/json',
+			),
+			array(
+				'(<controller>(/<action>(/<id>)(/<type>)))',
+				array('controller' => 'test', 'action' => 'index', 'type' => 'html'),
+				array('id' => 123),
+				'test/index/123',
+			),
+			array(
+				'(<controller>(/<action>(/<id>)(/<type>)))',
+				array('controller' => 'test', 'action' => 'index', 'type' => 'html'),
+				array('id' => 123, 'type' => 'html'),
+				'test/index/123',
+			),
+			array(
+				'(<controller>(/<action>(/<id>)(/<type>)))',
+				array('controller' => 'test', 'action' => 'index', 'type' => 'html'),
+				array('id' => 123, 'type' => 'json'),
+				'test/index/123/json',
+			),
+		);
+	}
+
+	/**
+	 * When an optional param is specified, the optional params leading up to it
+	 * must be in the URI.
+	 *
+	 * @dataProvider provider_optional_groups_containing_specified_params
+	 *
+	 * @ticket 4113
+	 * @ticket 4630
+	 */
+	public function test_optional_groups_containing_specified_params($uri, $defaults, $params, $expected)
+	{
+		$route = new Route($uri, NULL);
+		$route->defaults($defaults);
+
+		$this->assertSame($expected, $route->uri($params));
 	}
 
 	/**
@@ -556,6 +629,15 @@ class Kohana_RouteTest extends Unittest_TestCase
 				NULL,
 				array('action' => 'awesome-action'),
 			),
+			/**
+			 * Optional params are required when they lead to a specified param
+			 * refs #4113
+			 */
+			array(
+				'(<controller>(/<action>))',
+				NULL,
+				array('action' => 'awesome-action'),
+			),
 		);
 	}
 
@@ -573,18 +655,8 @@ class Kohana_RouteTest extends Unittest_TestCase
 	{
 		$route = new Route($uri, $regex);
 
-		try
-		{
-			$route->uri($uri_array);
-
-			$this->fail('Route::uri should throw exception if required param is not provided');
-		}
-		catch(Exception $e)
-		{
-			$this->assertInstanceOf('Kohana_Exception', $e);
-			// Check that the error in question is about the controller param
-			$this->assertContains('controller', $e->getMessage());
-		}
+		$this->setExpectedException('Kohana_Exception', 'controller');
+		$route->uri($uri_array);
 	}
 
 	/**
@@ -835,6 +907,45 @@ class Kohana_RouteTest extends Unittest_TestCase
 		$params = $route->defaults($defaults)->filter($filter)->matches($request);
 
 		$this->assertSame($expected_params, $params);
+	}
+
+	/**
+	 * Provides test data for test_route_uri_encode_parameters
+	 *
+	 * @return array
+	 */
+	public function provider_route_uri_encode_parameters()
+	{
+		return array(
+			array(
+				'article',
+				'blog/article/<article_name>',
+				array(
+					'controller' => 'home',
+					'action' => 'index'
+				),
+				'article_name',
+				'Article name with special chars \\ ##',
+				'blog/article/Article%20name%20with%20special%20chars%20\\%20%23%23'
+			)
+		);
+	}
+
+	/**
+	 * http://dev.kohanaframework.org/issues/4079
+	 *
+	 * @test
+	 * @covers Route::get
+	 * @ticket 4079
+	 * @dataProvider provider_route_uri_encode_parameters
+	 */
+	public function test_route_uri_encode_parameters($name, $uri_callback, $defaults, $uri_key, $uri_value, $expected)
+	{
+		Route::set($name, $uri_callback)->defaults($defaults);
+
+		$get_route_uri = Route::get($name)->uri(array($uri_key => $uri_value));
+
+		$this->assertSame($expected, $get_route_uri);
 	}
 
 }

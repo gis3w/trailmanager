@@ -219,7 +219,7 @@ class Kohana_Validation implements ArrayAccess {
 		if ($field !== TRUE AND ! isset($this->_labels[$field]))
 		{
 			// Set the field label to the field name
-			$this->_labels[$field] = preg_replace('/[^\pL]+/u', ' ', $field);
+			$this->_labels[$field] = $field;
 		}
 
 		// Store the rule and params for this rule
@@ -302,7 +302,7 @@ class Kohana_Validation implements ArrayAccess {
 		$expected = Arr::merge(array_keys($original), array_keys($this->_labels));
 
 		// Import the rules locally
-		$rules     = $this->_rules;
+		$rules = $this->_rules;
 
 		foreach ($expected as $field)
 		{
@@ -429,6 +429,13 @@ class Kohana_Validation implements ArrayAccess {
 				}
 			}
 		}
+
+		// Unbind all the automatic bindings to avoid memory leaks.
+		unset($this->_bound[':validation']);
+		unset($this->_bound[':data']);
+		unset($this->_bound[':field']);
+		unset($this->_bound[':value']);
+
 
 		// Restore the data to its original form
 		$this->_data = $original;
@@ -609,4 +616,4 @@ class Kohana_Validation implements ArrayAccess {
 		return $messages;
 	}
 
-} // End Validation
+}

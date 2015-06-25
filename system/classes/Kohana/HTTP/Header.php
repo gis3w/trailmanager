@@ -9,8 +9,8 @@
  * @category   HTTP
  * @author     Kohana Team
  * @since      3.1.0
- * @copyright  (c) 2008-2012 Kohana Team
- * @license    http://kohanaphp.com/license
+ * @copyright  (c) 2008-2014 Kohana Team
+ * @license    http://kohanaframework.org/license
  */
 class Kohana_HTTP_Header extends ArrayObject {
 
@@ -287,7 +287,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 	 * @param   int     $flags          Flags
 	 * @param   string  $iterator_class The iterator class to use
 	 */
-	public function __construct(array $input = array(), $flags = NULL, $iterator_class = 'ArrayIterator')
+	public function __construct(array $input = array(), $flags = 0, $iterator_class = 'ArrayIterator')
 	{
 		/**
 		 * @link http://www.w3.org/Protocols/rfc2616/rfc2616.html
@@ -859,12 +859,6 @@ class Kohana_HTTP_Header extends ArrayObject {
 	 */
 	public function send_headers(HTTP_Response $response = NULL, $replace = FALSE, $callback = NULL)
 	{
-		if ($response === NULL)
-		{
-			// Default to the initial request message
-			$response = Request::initial()->response();
-		}
-
 		$protocol = $response->protocol();
 		$status = $response->status();
 
@@ -946,4 +940,4 @@ class Kohana_HTTP_Header extends ArrayObject {
 		return $this;
 	}
 
-} // End Kohana_HTTP_Header
+}

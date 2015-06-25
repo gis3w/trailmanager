@@ -206,7 +206,7 @@ abstract class Kohana_Minion_Task {
 	public function build_validation(Validation $validation)
 	{
 		// Add a rule to each key making sure it's in the task
-		foreach ($validation->as_array() as $key => $value)
+		foreach ($validation->data() as $key => $value)
 		{
 			$validation->rule($key, array($this, 'valid_option'), array(':validation', ':field'));
 		}
@@ -236,7 +236,7 @@ abstract class Kohana_Minion_Task {
 		// Validate $options
 		$validation = Validation::factory($options);
 		$validation = $this->build_validation($validation);
-                
+
 		if ( $this->_method != '_help' AND ! $validation->check())
 		{
 			echo View::factory('minion/error/validation')

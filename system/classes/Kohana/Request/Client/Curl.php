@@ -2,7 +2,7 @@
 /**
  * [Request_Client_External] Curl driver performs external requests using the
  * php-curl extention. This is the default driver for all external requests.
- * 
+ *
  * @package    Kohana
  * @category   Base
  * @author     Kohana Team
@@ -34,7 +34,10 @@ class Kohana_Request_Client_Curl extends Request_Client_External {
 		// if using a request other than POST. PUT does support this method
 		// and DOES NOT require writing data to disk before putting it, if
 		// reading the PHP docs you may have got that impression. SdF
-		$options[CURLOPT_POSTFIELDS] = $request->body();
+		// This will also add a Content-Type: application/x-www-form-urlencoded header unless you override it
+		if ($body = $request->body()) {
+			$options[CURLOPT_POSTFIELDS] = $body;
+		}
 
 		// Process headers
 		if ($headers = $request->headers())
@@ -63,7 +66,7 @@ class Kohana_Request_Client_Curl extends Request_Client_External {
 		$this->_options[CURLOPT_RETURNTRANSFER] = TRUE;
 		$this->_options[CURLOPT_HEADER]         = FALSE;
 
-		// Apply any additional options set to 
+		// Apply any additional options set to
 		$options += $this->_options;
 
 		$uri = $request->uri();
@@ -110,8 +113,9 @@ class Kohana_Request_Client_Curl extends Request_Client_External {
 	}
 
 	/**
-	 * Sets the appropriate curl request options. Uses the responding options
-	 * for POST and PUT, uses CURLOPT_CUSTOMREQUEST otherwise
+	 * Sets the appropriate curl request options. Uses the responding option
+	 * for POST or CURLOPT_CUSTOMREQUEST otherwise
+	 *
 	 * @param Request $request
 	 * @param array $options
 	 * @return array
@@ -122,9 +126,6 @@ class Kohana_Request_Client_Curl extends Request_Client_External {
 			case Request::POST:
 				$options[CURLOPT_POST] = TRUE;
 				break;
-			case Request::PUT:
-				$options[CURLOPT_PUT] = TRUE;
-				break;
 			default:
 				$options[CURLOPT_CUSTOMREQUEST] = $request->method();
 				break;
@@ -132,4 +133,4 @@ class Kohana_Request_Client_Curl extends Request_Client_External {
 		return $options;
 	}
 
-} // End Kohana_Request_Client_Curl
+}
