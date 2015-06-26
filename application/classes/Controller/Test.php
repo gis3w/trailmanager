@@ -10,9 +10,12 @@ class Controller_Test extends Controller{
 
         //echo floatval('10,3456');
         $ORMType = 'ORM';
-        $sd = ORM::factory('Search_Data')->find_all();
-        var_dump($sd[0]->getElement());
-    
+        $sd = ORM::factory('Tp_Trat_Segment')->find();
+        var_dump($sd);
+        //var_dump($sd->considerable_points->find_all());
+
+        //$sd = ORMGIS::factory('Considerable_Point')->find();
+        //var_dump($sd);
     }
     
     

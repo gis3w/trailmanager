@@ -151,6 +151,126 @@ return array(
                     ),
              ),
             ),
+        ),
+        'regioncodes' => array(
+                'id' =>'regioncodes',
+                'name' => __('Region codes'),
+                'capability' => 'access-administration',
+                'icon' => 'cog',
+                'dropdown' => 'dropdown_administration',
+                'menu' => array(
+                    'type' => 'tabs',
+                    'items' => array(
+                        'administration_pathsegments_code' => array(
+                            'id' =>'pathsegments_code',
+                            'name' => __('Survey class segments'),
+                            'capability' => 'access-administration-clasrilsegments',
+                            'icon' => 'cog',
+                            'menu' => array(
+                                'type' => 'affix',
+                                'items' => array(
+                                    'administration_classrilsegments' => array(
+                                        'id' =>'classrilsegments',
+                                        'name' => __('Survey class segments'),
+                                        'url' => '/jx/admin/administration/clasrilsegments',
+                                        'capability' => 'access-administration-clasrilsegments',
+                                        'icon' => 'cog',
+                                    ),
+                                    'administration_tptratsegments' => array(
+                                        'id' =>'tptratsegments',
+                                        'name' => __('Typology path segments'),
+                                        'url' => '/jx/admin/administration/tptratsegments',
+                                        'capability' => 'access-administration-tptratsegments',
+                                        'icon' => 'cog',
+                                    ),
+                                    'administration_tpfondosegments' => array(
+                                        'id' =>'tpfondosegments',
+                                        'name' => __('Bottom typology path segments'),
+                                        'url' => '/jx/admin/administration/tpfondosegments',
+                                        'capability' => 'access-administration-tpfondosegments',
+                                        'icon' => 'cog',
+                                    ),
+                                    'administration_diffsegments' => array(
+                                        'id' =>'diffsegments',
+                                        'name' => __('Difficulty typology path segments'),
+                                        'url' => '/jx/admin/administration/diffsegments',
+                                        'capability' => 'access-administration-diffsegments',
+                                        'icon' => 'cog',
+                                    ),
+                                    'administration_percorrsegments' => array(
+                                        'id' =>'percorrsegments',
+                                        'name' => __('Walkable path segments'),
+                                        'url' => '/jx/admin/administration/percorrsegments',
+                                        'capability' => 'access-administration-percorrsegments',
+                                        'icon' => 'cog',
+                                    ),
+                                    'administration_ridpercsegments' => array(
+                                        'id' =>'ridpercsegments',
+                                        'name' => __('Reduction walkable path segments'),
+                                        'url' => '/jx/admin/administration/ridpercsegments',
+                                        'capability' => 'access-administration-ridpercsegments',
+                                        'icon' => 'cog',
+                                    ),
+                                    'administration_morfsegments' => array(
+                                        'id' =>'morfsegments',
+                                        'name' => __('Morfology path segments'),
+                                        'url' => '/jx/admin/administration/morfsegments',
+                                        'capability' => 'access-administration-morfsegments',
+                                        'icon' => 'cog',
+                                    ),
+                                    'administration_morfsegments' => array(
+                                        'id' =>'morfsegments',
+                                        'name' => __('Morfology path segments'),
+                                        'url' => '/jx/admin/administration/morfsegments',
+                                        'capability' => 'access-administration-morfsegments',
+                                        'icon' => 'cog',
+                                    ),
+                                    'administration_ambientesegments' => array(
+                                        'id' =>'ambientesegments',
+                                        'name' => __('Ambient path segments'),
+                                        'url' => '/jx/admin/administration/ambientesegments',
+                                        'capability' => 'access-administration-ambientesegments',
+                                        'icon' => 'cog',
+                                    ),
+                                    'administration_coptelsegments' => array(
+                                        'id' =>'coptelsegments',
+                                        'name' => __('GSM coverage segments'),
+                                        'url' => '/jx/admin/administration/coptelsegments',
+                                        'capability' => 'access-administration-coptelsegments',
+                                        'icon' => 'cog',
+                                    ),
+                                ),
+                            ),
+                        ),
+                        'administration_considerablepoints_code' => array(
+                            'id' =>'considerablepoints_codes',
+                            'name' => __('Survey class segments'),
+                            'capability' => 'access-administration-clasrilsegments',
+                            'icon' => 'cog',
+                            'menu' => array(
+                                'type' => 'affix',
+                                'items' => array(
+                                    'administration_ptinterpois' => array(
+                                        'id' =>'ptinterpois',
+                                        'name' => __('Point of interest considerable point'),
+                                        'url' => '/jx/admin/administration/ptinterpois',
+                                        'capability' => 'access-administration-ptinterpois',
+                                        'icon' => 'cog',
+                                    ),
+                                    'administration_strutricpois' => array(
+                                        'id' =>'strutricpois',
+                                        'name' => __('Point of interest considerable point'),
+                                        'url' => '/jx/admin/administration/strutricpois',
+                                        'capability' => 'access-administration-strutricpois',
+                                        'icon' => 'cog',
+                                    ),
+                                ),
+                            ),
+                        ),
+
+
+                    ),
+                ),
             
         ),
         'logout' => array(

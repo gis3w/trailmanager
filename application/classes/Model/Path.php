@@ -4,7 +4,7 @@ class Model_Path extends ORMGIS {
     
     public $geotype = ORMGIS::TP_MULTILINESTRING;
     
-    public $epsg_db = 4326;
+    public $epsg_db = 3004;
     public $epsg_out = 4326;
     
      protected $_has_many = array(
@@ -99,6 +99,10 @@ class Model_Path extends ORMGIS {
             case "length":
             case "altitude_gap":
                 $value = Filter::point2comma((string)parent::get($column));
+            break;
+
+            case "considerable_points":
+                $value = ORMGIS::factory('Considerable_Point')->where('se','=',$this->se);
             break;
         
             default:

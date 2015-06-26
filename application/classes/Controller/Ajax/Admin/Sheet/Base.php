@@ -271,9 +271,13 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
     
      protected function _set_urls(&$toRes,$orm)
     {
-        $urls = $orm->urls->find_all();
-        foreach($urls as $url)
-            $toRes[$this->_url_multifield_postname][] = $url->as_array();
+        if (isset($orm->urls))
+        {
+            $urls = $orm->urls->find_all();
+            foreach($urls as $url)
+                $toRes[$this->_url_multifield_postname][] = $url->as_array();
+        }
+
             
     }
 }

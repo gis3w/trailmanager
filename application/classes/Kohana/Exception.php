@@ -119,12 +119,12 @@ class Kohana_Exception extends Kohana_Kohana_Exception
         $attributes = array(
             'action'	=> 500,
             //'origuri'	=> rawurlencode(Arr::get($_SERVER, 'REQUEST_URI')),
-            'message'	=> trim(rawurlencode($e->getMessage())),
+            //'message'	=> trim(rawurlencode($e->getMessage())),
+            'message'	=> $e->getMessage(),
             'file' => rawurldecode($e->getFile()),
             'line' => rawurldecode($e->getLine()),
         );
 
-        error_log(print_r($e,true));
 
         if ($e instanceof Http_Exception)
         {

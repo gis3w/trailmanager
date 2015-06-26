@@ -48,11 +48,11 @@ return array(
 	'To view all the elements again, exit from itinerary' => 'Per visualizzare nuovamente tutti gli elementi esci dall\'itinerario',
 	'Info section' => 'Informazioni',
 	'poi' => 'Punto di interesse',
-	'path' => 'Percorso',
+	'path' => 'Sentiero',
 	'itinerary' => 'Itinerario',
 	'area' => 'Area',
 	'Poi section' => 'Punti di interesse',
-	'Path section' => 'Percorsi',
+	'Path section' => 'Sentieri',
 	'Itinerary section' => 'Itinerari',
 	'Area section' => 'Aree',
 	'Everytype section' => 'Luoghi da visitare',
@@ -163,7 +163,7 @@ return array(
     
     'Points of interest' => 'Punti di interesse',
 	'Pois' => 'Punti di interesse',
-    'Paths' => 'Percorsi',
+    'Paths' => 'Sentieri',
 	'Areas' => 'Aree',
     
     'Images to upload' => 'Immagini da caricare',
@@ -182,10 +182,10 @@ return array(
     'user-foreign-data' => 'Collegamenti',
     
     'itinerary-data' => 'Dati generali dell\'itinerario',
-    'itinerary-foreign-data' => 'Percorsi e punti di interesse associati',
+    'itinerary-foreign-data' => 'Sentieri e punti di interesse associati',
     'Itinerary-block-data' => 'Altri dati accessori',
     
-    'path-data' => 'Dati generali del percorso',
+    'path-data' => 'Dati generali del sentiero',
     'path-foreign-data' =>'Dati accessori',
     'path-block-data' => 'Altri dati accessori',
     

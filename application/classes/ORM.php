@@ -34,7 +34,7 @@ class ORM extends Kohana_ORM {
                     $colLang = $lang."_val";
                     if(!isset($i18nData->id))
                     {
-                        $i18nData->tb_id = $this->id;
+                        $i18nData->tb_id = $this->pk();
                         $i18nData->tb = $this->_table_name;
                         $i18nData->col = $column;
                     }
@@ -187,8 +187,8 @@ class ORM extends Kohana_ORM {
         
         $log = ORM::factory($tbLog);
         $log->data_ins = time();
-        $log->$tbId = $this->id;
-        $log->user_id_mod = $user_modificatore->id;
+        $log->$tbId = $this->pk();
+        $log->user_id_mod = $user_modificatore->pk();
         $log->azione = $action;
         $log->data = serialize($data);
         
@@ -213,7 +213,7 @@ class ORM extends Kohana_ORM {
         $value = array();
         $array = $this->$alias->find_all();
         foreach ($array as $data)
-            $value[] = $data->id;
+            $value[] = $data->pk();
         return $value;
     }
     

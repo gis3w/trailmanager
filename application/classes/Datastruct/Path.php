@@ -24,6 +24,11 @@ class Datastruct_Path extends Datastruct {
             'position' => 'block',
             'fields' => array('url_path'),
         ),
+        array(
+            'name' => 'path-base-data',
+            'position' => 'block',
+            'fields' => array('se','percorr'),
+        ),
     );
     
     public $title = array(
@@ -93,6 +98,17 @@ class Datastruct_Path extends Datastruct {
                     'label' => __('Main typology'),
                      'description' => __('Select the main typology  for this point of interest'),
                      "table_show" => TRUE,
+                ),
+                "percorr" => array(
+                    'form_input_type' => self::SELECT,
+                    'foreign_mode' => self::SINGLESELECT,
+                    'foreign_toshow' => '$1',
+                    'foreign_toshow_params' => array(
+                        '$1' => 'description',
+                    ),
+                    'url_values' => '/jx/admin/administration/percorrsegments',
+                    'label' => __('Walkable mode'),
+                    "table_show" => TRUE,
                 ),
                  "inquiry" => array(
                     'form_input_type' => self::TEXTAREA,

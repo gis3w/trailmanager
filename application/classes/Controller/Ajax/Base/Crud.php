@@ -10,6 +10,7 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
     
     protected $_datastruct;
     protected $_datastructName;
+    protected $_primary_column = 'id';
     protected $_orm;
     protected $_typeORM = 'ORM';
     protected $_table;
@@ -42,6 +43,7 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
            $datastruct = $this->_datastruct = Datastruct::factory($this->_datastruct);
            $this->_table  = $this->_datastruct->get_nameORM();
            $this->_typeORM = $this->_datastruct->getTypeORM();
+           $this->_primary_column = $this->_datastruct->primary_key;
            
            // si filtrano i dati post se ci un prekeyfield
            if(isset($datastruct::$preKeyField))
@@ -101,12 +103,12 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
         {
             $this->_status = $this->request->action() === 'update' ? self::UPDATE : self::DELETE;
              $this->_orm = $typeORM::factory($this->_table)
-                     ->where($this->_table_rid.'.id','=',$this->id);
+                     ->where($this->_table_rid.'.'.$this->_primary_column,'=',$this->id);
              $this->_apply_default_filter($this->_orm);
              $this->_orm = $this->_orm->find();
 
             //controllo della nullità della chiamata
-            if($this->_orm->id === NULL)
+            if($this->_orm->pk() === NULL)
             {
                 throw new HTTP_Exception_500(SAFE::message('ehttp','500_'.$this->_table_rid.'_id'));
             }

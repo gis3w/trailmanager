@@ -214,7 +214,6 @@ public function  __set($column,  $value) {
                 // si strasforma in wkt per il salvataggio
                 $value = "ST_GeomFromText('".Gis_Util::toWkt($value->asGeoJson)."',".$this->epsg_out.")";
 
-                $value = DB::expr($value);
             }
             elseif(is_array($value))
             {
@@ -224,6 +223,7 @@ public function  __set($column,  $value) {
                     $points = implode(' ', $value);
                 }
                 $value = "ST_GeomFromText('".$this->geotype."(".$points.")',".$this->epsg_out.")";
+
                 
                
             }
@@ -252,17 +252,13 @@ public function  __set($column,  $value) {
                 $value = 'null';
             }
             
-            
-             $value = DB::expr($value);
-            
              if($this->epsg_db !== $this->epsg_out){
 
                 $value = "ST_transform($value,".$this->epsg_db.")";
-
             }
-            
-            
-                
+
+            $value = DB::expr($value);
+
         break;
     }
 
