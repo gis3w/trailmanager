@@ -30,6 +30,17 @@ class Datastruct_Path extends Datastruct {
             'fields' => array('se','percorr'),
         ),
     );
+
+    public $tabs = array(
+        array(
+            'name' => 'tab-main',
+            'groups' => array('path-data','ath-foreign-data','path-block-data'),
+        ),
+        array(
+            'name' => 'tab-base-data',
+            'groups' => array('path-base-data'),
+        ),
+    );
     
     public $title = array(
         "title_toshow" => "$1",
@@ -102,6 +113,7 @@ class Datastruct_Path extends Datastruct {
                 "percorr" => array(
                     'form_input_type' => self::SELECT,
                     'foreign_mode' => self::SINGLESELECT,
+                    'foreign_value_field' => 'code',
                     'foreign_toshow' => '$1',
                     'foreign_toshow_params' => array(
                         '$1' => 'description',

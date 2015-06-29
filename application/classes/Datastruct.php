@@ -65,6 +65,8 @@ class Datastruct extends Kohana_Formstruct{
 
     // i gruppi in cui sono suddivisi i form
     public $groups;
+
+    public $tabs;
     
     public $menu;
     
