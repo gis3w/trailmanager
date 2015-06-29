@@ -30,6 +30,7 @@ $.extend(APP.interactiveMap,
 	searchUrl: '/jx/search?tofind=',
 	pages: {},
 	eventObj: $(document),
+	leafletSaveMapPluginDir: '/public/modules/leaflet-save-map/',
 	
 	insertRowAlphabetically: function(container, row, selector, offset)
 	{
@@ -1897,6 +1898,55 @@ $.extend(APP.interactiveMap,
 		}
 	},
 	
+	manipulateCanvasFunction: function(savedMap)
+	{
+		var that = this;
+		dataURL = savedMap.toDataURL("image/png");
+		dataURL = dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+		$.post(that.leafletSaveMapPluginDir+"saveMap.php", { savedMap: dataURL }, function(data) {
+			console.log('Image Saved to : ' + data);
+		});
+	},
+	
+	printPage: function()
+	{
+		var that = this;
+		
+		that.body.append('<div class="mapMap"></div>');
+		that.body.append('<div class="svgMap"></div>');
+		
+		
+		html2canvas($('#mainContent'),{
+			//allowTaint: true,
+			background: undefined,
+			//height: null,
+			//letterRendering: true,
+			//logging: true,
+			proxy: that.leafletSaveMapPluginDir+"proxy.php",
+			taintTest: false,
+			//timeout: 0,
+			//width: null,
+			//useCORS: true,
+		}).then(function(canvas){
+			that.body.find(".svgMap").append(canvas);
+		});
+		
+		html2canvas($('#mainContent'),{
+			allowTaint: true,
+			background: undefined,
+			//height: null,
+			//letterRendering: true,
+			//logging: true,
+			proxy: that.leafletSaveMapPluginDir+"proxy.php",
+			//taintTest: false,
+			//timeout: 0,
+			//width: null,
+			//useCORS: true,
+		}).then(function(canvas){
+			that.body.find(".mapMap").append(canvas);
+		});
+	},
+	
 	start: function()
 	{
 		var that = this;
@@ -2085,6 +2135,10 @@ $.extend(APP.interactiveMap,
 			that.closeItems();
 			that.getPage('help', true);
 		});
+		
+		that.body.find("#printButton").click(function(){
+			that.printPage();
+		})
 		
 		if (!that.leafletHash && !that.navbars.top.parents(".navbar").find(".navbar-toggle").is(":visible"))
 		{

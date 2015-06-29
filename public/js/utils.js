@@ -848,11 +848,11 @@ $.extend(APP.utils,{
 				var string = "";
 				var selected = "";
 				if (!$.isArray(valori))
-					valori = [parseInt(valori)];
+					valori = [valori];
 				if ((typeof valori[0] == "object") && (valori[0] !== null))
 					selected = (APP.utils.getIndexFromField(valori, valueField, k[valueField]) === -1)? "" : "selected";
 				else
-					selected = ($.inArray(parseInt(k[valueField]), valori) === -1)? "" : "selected";
+					selected = ($.inArray(k[valueField], valori) === -1)? "" : "selected";
 				
 				if (APP.utils.isset(group))
 				{

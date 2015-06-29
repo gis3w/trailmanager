@@ -1386,15 +1386,7 @@ $.extend(APP.anagrafica,
 		var form = $('<form id="fm_'+sectionLabel+'" class="form-horizontal" '+enctype+' role="form">\
 						<input type="hidden" name="csrf_token" class="tokenInput" value="'+APP.config.getToken(sectionTarget.resource)+'">\
 						<div class="row">\
-							<div id="leftColForm" class="col-md-6">\
-								<div class="row">\
-									<div id="formButtons" class="col-md-offset-4" style="margin-bottom: 30px; padding-left: 15px"></div>\
-								</div>\
-							</div>\
-							<div id="rightColForm" class="col-md-6"></div>\
-						</div>\
-						<div class="row">\
-							<div id="blockColForm" class="col-md-12"></div>\
+							<div id="formButtons" class="col-md-12" style="margin-bottom: 30px; padding-left: 15px"></div>\
 						</div>\
 					</form>');
 			
@@ -1407,6 +1399,46 @@ $.extend(APP.anagrafica,
 			str.click(function(){ v.onClick($(this)); });
 			fb.append(str);
 		});
+		
+		if (APP.utils.isset(sectionTarget.tabs))
+		{
+			var ul = $('<ul class="nav nav-tabs"></ul>');
+			var tabsContent = $('<div class="itemContentTabs"></div>');
+			$.each(sectionTarget.tabs, function(i, v)
+			{
+				var classe = (i===0)? "active" : "";
+				var tab = $('<li role="presentation" class="'+classe+'"><a href="#">'+APP.i18n.translate(v.name)+'</a></li>');
+				tab.click(function(){
+					ul.find("li.active").removeClass("active");
+					tab.addClass("active");						
+				});
+				ul.append(tab);
+				var tabc = $('<div id="'+v.name+'">\
+						<div class="row">\
+							<div class="leftColForm col-md-6"></div>\
+							<div class="rightColForm col-md-6"></div>\
+						</div>\
+						<div class="row">\
+							<div class="blockColForm col-md-12"></div>\
+						</div>\
+					</div>');
+				tabsContent.append(tabc);
+			});
+			form.append('<div class="row"><div class="itemTabsDiv col-md-12"></div></div>');
+			form.find('.itemTabsDiv').append(ul);
+			form.append(tabsContent);
+			
+		}
+		else
+		{
+			form.append('<div class="row">\
+				<div class="leftColForm col-md-6"></div>\
+				<div class="rightColForm col-md-6"></div>\
+			</div>');
+			form.append('<div class="row">\
+				<div class="blockColForm col-md-12"></div>\
+			</div>');
+		}
 		
 		$.each(sectionTarget.groups, function(j, k)
 		{
@@ -1431,8 +1463,19 @@ $.extend(APP.anagrafica,
 						console.log("aggiungi questa posizione: "+k.position);
 				}
 			};
-			
-			form.find("#"+position).append(group);
+			if (sectionTarget.tabs)
+			{
+				var tabsIndex = APP.utils.getIndexFromField(sectionTarget.tabs, "name", k.name);
+				if (tabsIndex>=0)
+				{
+					var name = sectionTarget.tabs[tabsIndex].name;
+					form.find("#"+name).find("."+position).append(group);
+				}
+				else
+					form.find("."+position).append(group);
+			}
+			else
+				form.find("."+position).append(group);
 			
 			displayInputs(k, group);
 		});

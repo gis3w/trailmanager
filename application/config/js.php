@@ -70,7 +70,14 @@ return array(
 		'../modules/jQuery-File-Upload/js/jquery.fileupload-ui.js',*/
 		//'../modules/jQuery-File-Upload/js/main.js',
 		'../modules/jquery_layout/jquery.layout-latest.min.js',
-        '../modules/jspdf.debug.js',
+        //'../modules/jspdf.debug.js',
+	//'../modules/leaflet-save-map/0.3.3/html2canvas.js',
+   	'../modules/leaflet-save-map/0.5.0/html2canvas.min.js',
+    '../modules/leaflet-save-map/0.5.0/html2canvas.svg.min.js',
+    //'../modules/leaflet-save-map/0.5.0/jquery.plugin.html2canvas.js',
+    //'../modules/leaflet-save-map/flashcanvas.min.js',
+    
+	//'../modules/leaflet-image/leaflet-image.js',
 		'global.js',
 		'i18n.js',
 		'utils.js',
