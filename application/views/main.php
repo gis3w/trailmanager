@@ -6,7 +6,7 @@
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title><?php if (isset($title)) echo $title; ?></title>
-        <link rel="shortcut icon" href="<?php echo $img_path ?>turisticgis.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="<?php echo $img_path ?><?php echo $logo_ico ?>" type="image/x-icon" />
 
         <?php if(isset($jspre) && $jspre !=''): ?>
             <script type="text/javascript"><?php echo $jspre; ?></script>

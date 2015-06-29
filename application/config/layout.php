@@ -1,10 +1,11 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 return array(
-    'title_default' => 'TuristicGis',
+    'title_default' => 'TrailManager',
     'main_tpl' => 'main',
     'mobile_main_tpl' => 'mobile/main',
     'img_path' => 'public/img/',
+    'logo_ico' => 'trail_ico.ico',
     'logo_main' => 'logo_trail_50h.png',
     'logo_navbar' => 'logo_trail_40h.png',
     'logo_print' => 'logo_trail_50h.png',
