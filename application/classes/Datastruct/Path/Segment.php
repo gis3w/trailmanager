@@ -102,7 +102,7 @@ class Datastruct_Path_Segment extends Datastruct
                 "table_show" => TRUE,
             ),
             "diff" => array(
-                'editable' => FALSE,
+                'editable' => TRUE,
                 'form_input_type' => self::SELECT,
                 'foreign_mode' => self::SINGLESELECT,
                 'foreign_value_field' => 'code',
