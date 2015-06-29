@@ -67,7 +67,7 @@ class Datastruct extends Kohana_Formstruct{
     public $groups;
 
     public $tabs;
-    
+
     public $menu;
     
     const SUBFORM = 'subform';
@@ -282,7 +282,7 @@ class Datastruct extends Kohana_Formstruct{
             $toRes['sortable'] = $this->sortable;
            
         
-        foreach(array('groups','menu','fields_to_save','icon','capabilities','filter') as $col)
+        foreach(array('groups','menu','fields_to_save','icon','capabilities','filter','tabs') as $col)
                 if(isset($this->$col))
                     $toRes[$col] = $this->$col;
         
