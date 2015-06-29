@@ -1407,13 +1407,17 @@ $.extend(APP.anagrafica,
 			$.each(sectionTarget.tabs, function(i, v)
 			{
 				var classe = (i===0)? "active" : "";
-				var tab = $('<li role="presentation" class="'+classe+'"><a href="#">'+APP.i18n.translate(v.name)+'</a></li>');
+				var tab = $('<li id="'+v.name+'" role="presentation" class="'+classe+'"><a href="#">'+APP.i18n.translate(v.name)+'</a></li>');
 				tab.click(function(){
+					var tabId = tab.attr("id");
 					ul.find("li.active").removeClass("active");
-					tab.addClass("active");						
+					tab.addClass("active");
+					form.find(".itemContentTabs").find('.active').removeClass("active").hide();
+					form.find(".itemContentTabs").find("#"+tabId).addClass("active").show();
+					APP.utils.setLookForm(form,form.attr("id"));
 				});
 				ul.append(tab);
-				var tabc = $('<div id="'+v.name+'">\
+				var tabc = $('<div id="'+v.name+'" class="tabContent '+classe+'">\
 						<div class="row">\
 							<div class="leftColForm col-md-6"></div>\
 							<div class="rightColForm col-md-6"></div>\
@@ -1422,6 +1426,7 @@ $.extend(APP.anagrafica,
 							<div class="blockColForm col-md-12"></div>\
 						</div>\
 					</div>');
+				tabc.css("opacity",0);
 				tabsContent.append(tabc);
 			});
 			form.append('<div class="row"><div class="itemTabsDiv col-md-12"></div></div>');
@@ -1465,14 +1470,16 @@ $.extend(APP.anagrafica,
 			};
 			if (sectionTarget.tabs)
 			{
-				var tabsIndex = APP.utils.getIndexFromField(sectionTarget.tabs, "name", k.name);
-				if (tabsIndex>=0)
+				$.each(sectionTarget.tabs, function(i, v)
 				{
-					var name = sectionTarget.tabs[tabsIndex].name;
-					form.find("#"+name).find("."+position).append(group);
-				}
-				else
-					form.find("."+position).append(group);
+					var tabsIndex = $.inArray(k.name, v.groups);
+					if (tabsIndex>=0)
+					{
+						var tabName = sectionTarget.tabs[i].name;
+						form.find("#"+tabName).find("."+position).append(group);
+					}
+					//form.find("."+position).append(group);
+				});
 			}
 			else
 				form.find("."+position).append(group);
