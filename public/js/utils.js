@@ -398,6 +398,21 @@ $.extend(APP.utils,{
 		}
 		
 		form.find(".tooltipElement").tooltip();
+		
+		var navTabs = form.find(".itemContentTabs").find(".tabContent");
+		if (navTabs.length>0)
+		{
+			$.each(navTabs, function(i,v){
+				var v = $(v);
+				if (v.hasClass("active"))
+				{
+					v.css("opacity",1);
+					v.show();
+				}
+				else
+					v.hide();
+			});
+		}
 	},
 	
 	checkError: function(error, param)
