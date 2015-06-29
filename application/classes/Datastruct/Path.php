@@ -34,7 +34,7 @@ class Datastruct_Path extends Datastruct {
     public $tabs = array(
         array(
             'name' => 'tab-main',
-            'groups' => array('path-data','ath-foreign-data','path-block-data'),
+            'groups' => array('path-data','path-foreign-data','path-block-data'),
         ),
         array(
             'name' => 'tab-base-data',
