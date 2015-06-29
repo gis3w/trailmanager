@@ -2,7 +2,7 @@
 
 class Model_Poi extends ORMGIS {
     
-    public $geotype = ORMGIS::TP_MULTIPOINT;
+    public $geotype = ORMGIS::TP_POINT;
     
     public $epsg_db = 3004;
     public $epsg_out = 4326;

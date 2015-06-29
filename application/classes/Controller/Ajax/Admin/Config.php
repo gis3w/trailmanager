@@ -26,6 +26,7 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
         $this->_set_menu();
         $this->_set_url();
         $this->_set_path_modes();
+        $this->_set_survey_codes_path_segments();
         $this->_set_global_configs();
         
         
@@ -152,6 +153,7 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
             'itinerary' => '/jx/admin/itinerary',
             'poi' => '/jx/admin/poi',
             'path' => '/jx/admin/path',
+            'path_segment' =>'/jx/admin/pathsegment',
             'area' => '/jx/admin/area',
             'user' => 'jx/admin/user',
             'image_poi' => 'jx/admin/imagepoi',
@@ -180,5 +182,30 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
         foreach($pms as $pm)
             $this->config->path_modes[] = $pm->as_array();
     }
+
+    public function _set_survey_codes_path_segments()
+    {
+        foreach (array(
+                     'Tp_Trat_Segment',
+                     'Class_Ril_Segment',
+                     'Tp_Fondo_Segment',
+                     'Diff_Segment',
+                     'Percorr_Segment',
+                     'Rid_Perc_Segment',
+                     'Morf_Segment',
+                     'Ambiente_Segment',
+                     'Cop_Tel_Segment'
+                 ) as $tb)
+        {
+            $pms = ORM::factory($tb)->find_all();
+            $tb_dcase = strtolower($tb);
+            $this->config->{$tb_dcase} = array();
+            foreach($pms as $pm)
+                $this->config->{$tb_dcase}[] = $pm->as_array();
+        }
+
+
+    }
+
 
 }

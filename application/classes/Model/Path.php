@@ -104,6 +104,10 @@ class Model_Path extends ORMGIS {
             case "considerable_points":
                 $value = ORMGIS::factory('Considerable_Point')->where('se','=',$this->se);
             break;
+
+            case "segments":
+                $value = ORMGIS::factory('Path_Segment')->where('se','=',$this->se);
+            break;
         
             default:
                 $value = parent::get($column);

@@ -6,7 +6,7 @@ class Datastruct_Path extends Datastruct {
     protected $_typeORM = "ORMGIS";
     
     public $icon = 'location-arrow';
-    public $filter = FALSE;
+    public $filter = TRUE;
 
     public $groups = array(
         array(
@@ -27,7 +27,7 @@ class Datastruct_Path extends Datastruct {
         array(
             'name' => 'path-base-data',
             'position' => 'block',
-            'fields' => array('se','percorr'),
+            'fields' => array('se','percorr','rid_perc','em_natura','em_paes','ev_stcul','op_attr'),
         ),
     );
 
@@ -98,6 +98,9 @@ class Datastruct_Path extends Datastruct {
                 "length" => array(
                     'suffix' => 'km',
                 ),
+                "se" => array(
+                    'editable' => FALSE,
+                ),
                 "typology_id" => array(
                     'form_input_type' => self::SELECT,
                     'foreign_mode' => self::SINGLESELECT,
@@ -121,6 +124,34 @@ class Datastruct_Path extends Datastruct {
                     'url_values' => '/jx/admin/administration/percorrsegments',
                     'label' => __('Walkable mode'),
                     "table_show" => TRUE,
+                ),
+                "rid_perc" => array(
+                    'form_input_type' => self::SELECT,
+                    'foreign_mode' => self::SINGLESELECT,
+                    'foreign_value_field' => 'code',
+                    'foreign_toshow' => '$1',
+                    'foreign_toshow_params' => array(
+                        '$1' => 'description',
+                    ),
+                    'url_values' => '/jx/admin/administration/ridpercsegments',
+                    'label' => __('Reduction walkable path'),
+                    "table_show" => TRUE,
+                ),
+                "em_natura" => array(
+                    'form_input_type' => self::TEXTAREA,
+                    'label' => __('Natural emergency'),
+                ),
+                "ev_stcul" => array(
+                    'form_input_type' => self::TEXTAREA,
+                    'label' => __('History cultural evidences'),
+                ),
+                "em_paes" => array(
+                    'form_input_type' => self::TEXTAREA,
+                    'label' => __('Landascape values'),
+                ),
+                "op_attr" => array(
+                    'form_input_type' => self::TEXTAREA,
+                    'label' => __('Works and equipment on the path'),
                 ),
                  "inquiry" => array(
                     'form_input_type' => self::TEXTAREA,

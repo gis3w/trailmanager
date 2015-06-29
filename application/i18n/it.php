@@ -196,6 +196,9 @@ return array(
     'area-data' => 'Dati generali dell\'area',
     'area-foreign-data' =>'Collegamenti',
     'area-block-data' => 'Altri dati accessori',
+
+    'Path segment' => 'Tratta',
+    'Path segments' => 'Tratte',
     
     
     

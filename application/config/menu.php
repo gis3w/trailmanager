@@ -45,6 +45,14 @@ return array(
              'capability' => 'access-admin-path',
             'icon' => 'location-arrow',
         ),
+        'path_segment' => array(
+            'id' =>'path_segment',
+            'name' => __('Path segments'),
+            'url' => '/jx/admin/pathsegment',
+            'url_mobile' => 'user',
+            'capability' => 'access-admin-pathsegment',
+            'icon' => 'location-arrow',
+        ),
         'area' => array(
             'id' =>'area',
             'name' => __('Areas'),
