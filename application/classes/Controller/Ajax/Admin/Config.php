@@ -27,6 +27,7 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
         $this->_set_url();
         $this->_set_path_modes();
         $this->_set_survey_codes_path_segments();
+        $this->_set_survey_codes_poi();
         $this->_set_global_configs();
         
         
@@ -195,6 +196,32 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
                      'Morf_Segment',
                      'Ambiente_Segment',
                      'Cop_Tel_Segment'
+                 ) as $tb)
+        {
+            $pms = ORM::factory($tb)->find_all();
+            $tb_dcase = strtolower($tb);
+            $this->config->{$tb_dcase} = array();
+            foreach($pms as $pm)
+                $this->config->{$tb_dcase}[] = $pm->as_array();
+        }
+
+
+    }
+
+    public function _set_survey_codes_poi()
+    {
+        foreach (array(
+                     'Pt_Inter_Poi',
+                     'Strut_Ric_Poi',
+                     'Aree_Attr_Poi',
+                     'Insediam_Poi',
+                     'Pt_Acqua_Poi',
+                     'Tipo_Segna_Poi',
+                     'Stato_Segn_Poi',
+                     'Fatt_Degr_Poi',
+                     'Pt_Socc_Poi',
+                     'Coin_In_Fi_Poi'
+
                  ) as $tb)
         {
             $pms = ORM::factory($tb)->find_all();

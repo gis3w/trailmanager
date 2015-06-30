@@ -82,6 +82,43 @@ class Datastruct_Poi extends Datastruct {
                     'prefix' => '1:',
                     'table_show' => FALSE,
                 ),
+                "bike" => array(
+                    'editable' => FALSE,
+                ),
+                "ip" => array(
+                    'editable' => FALSE,
+                ),
+                "cod_f1" => array(
+                    'editable' => FALSE,
+                ),
+                "cod_f2" => array(
+                    'editable' => FALSE,
+                ),
+                "data_ril" => array(
+                    'editable' => FALSE,
+                ),
+                "condmeteo" => array(
+                    'editable' => FALSE,
+                ),
+                "rilev" => array(
+                    'editable' => FALSE,
+                ),
+                "qual_ril" => array(
+                    'editable' => FALSE,
+                ),
+                "class_ril" => array(
+                    'editable' => FALSE,
+                    'form_input_type' => self::SELECT,
+                    'foreign_mode' => self::SINGLESELECT,
+                    'foreign_value_field' => 'class',
+                    'foreign_toshow' => '$1',
+                    'foreign_toshow_params' => array(
+                        '$1' => 'description',
+                    ),
+                    'foreign_key' => 'class_ril_segment',
+                    'label' => __('Survey class'),
+                    "table_show" => TRUE,
+                ),
             );
       }
       
