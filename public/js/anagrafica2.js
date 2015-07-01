@@ -8,7 +8,7 @@ $.extend(APP.anagrafica,
 		APP.subforms.finish();
 	},
 	
-	start: function(el, titolo, section, div)
+	start: function(el, titolo, section, div, loadCallback)
 	{
 		var that = this;
 		this.windows = [];
@@ -57,7 +57,7 @@ $.extend(APP.anagrafica,
 				'title': titolo,
 				'section': this.currentSection,
 				'filterString': APP.filter.getActiveFilterString(section),
-				'loadCallback': function(res){
+				'loadCallback': ($.isFunction(loadCallback))? loadCallback : function(res){
 						var obj = {
 							'section': that.currentSection,
 							'items_per_page': res.data.items_per_page,
@@ -600,7 +600,7 @@ $.extend(APP.anagrafica,
 					
 					$.each(data, function(x, y)
 					{
-						var primary_key = (APP.utils.isset(k.primary_key))? k.primary_key : "id";
+						var primary_key = (APP.utils.isset(k.foreign_value_field))? k.foreign_value_field : "id";
 						
 						y = (!$.isPlainObject(y))? y : y[primary_key];
 						var oi = APP.utils.getIndexFromField(fValues, primary_key, y);
@@ -624,7 +624,7 @@ $.extend(APP.anagrafica,
 					
 					$.each(data, function(x, y)
 					{
-						var primary_key = (APP.utils.isset(k.primary_key))? k.primary_key : "id";
+						var primary_key = (APP.utils.isset(k.foreign_value_field))? k.foreign_value_field : "id";
 						y = (!$.isPlainObject(y))? y : y[primary_key];
 						var oi = APP.utils.getIndexFromField(fValues, primary_key, y);
 						if (oi > -1)

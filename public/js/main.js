@@ -7,5 +7,4 @@ $(document).ready(function(){
 
     if(login.length >0)
         login.css('margin-top',(hhtml-login.height())/2);
-   
 });

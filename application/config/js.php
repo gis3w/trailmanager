@@ -4,8 +4,12 @@ return array(
     'js_compile' => FALSE,   // serve per il modulo jscompile per comprimere e unire in unico file i js
     'js_path'=> 'public/js/',
     'js_base' => array(
+    		
 		'../modules/jquery-1.11.1.min.js',
+    	'../modules/underscore-min.js',
+    	'../modules/backbone-min.js',
 		'../modules/jquery-ui-1.10.3/ui/minified/jquery-ui.min.js',
+    	
 		'../modules/tinymce/tinymce.min.js',
 		//'../modules/tinymce/jquery.tinymce.min.js',
 		//'../modules/AnimatedContentMenu/js/AnimatedContentMenu.js',
@@ -94,6 +98,7 @@ return array(
     ),
     'js_compiled' => array(
         '../modules/jquery-1.11.1.min.js',
+    		'../modules/backbone-min.js',
         '../modules/jquery-ui-1.10.3/ui/minified/jquery-ui.min.js',
         '../modules/tinymce/tinymce.min.js',
         '../modules/JavaScript-Load-Image-1.11.1/js/load-image.min.js',
