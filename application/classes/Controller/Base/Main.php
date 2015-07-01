@@ -93,6 +93,10 @@ abstract class Controller_Base_Main extends Controller_Template {
         {
             $this->tnavbar = View::factory($this->tnavbar);
             $this->tpl->tnavbar = $this->tnavbar;
+            // set themes
+            $themes = ORM::factory('Theme')->order_by('name','DESC')->find_all();
+            $this->tpl->tnavbar->themes = $themes;
+            View::set_global('themeActive',ORM::factory('Theme')->where('active','IS',DB::expr('true'))->find());
         }        
         // si settano nelle viste i menu
         View::bind_global('main_menu', $this->main_menu);

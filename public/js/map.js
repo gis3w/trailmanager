@@ -485,7 +485,7 @@ $.extend(APP.map,
 										version: v.version,
 										styles: v.styles,
 										format: v.format,
-										transparent:  v.trasparent,
+										transparent:  v.transparent,
 										attribution: v.description,
 										tileSize:1024
 									});

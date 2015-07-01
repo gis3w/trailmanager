@@ -199,6 +199,8 @@ return array(
 
     'Path segment' => 'Tratta',
     'Path segments' => 'Tratte',
+
+    'tab-base-data' => 'Dati rilievo',
     
     
     
