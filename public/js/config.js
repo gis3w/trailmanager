@@ -8,6 +8,88 @@ $.extend(APP.config,{
 	maxStringsLength: 128,
 	periodicRequestsIds: [],
 	serverSide: false,
+	workSpace: null,
+	
+	setBackboneRouting: function()
+	{
+		var that = this;
+		
+		var workNow = function(sec, secTitle, query)
+		{
+			var w = $("#mainContent").find("#"+sec+"Container").empty();
+			if (w.length==0)
+			{
+				w = $('<div id="'+sec+'Container"></div>');
+				$("#mainContent").append(w);
+			}
+			
+			APP.anagrafica.start($("#"+sec+"Button"), secTitle, sec, w, function()
+			{
+				if (1)
+				{
+					var tw = APP.anagrafica.windows[APP.anagrafica.windows.length-1];
+					var prevw = (APP.anagrafica.windows.length>2)? APP.anagrafica.windows[APP.anagrafica.windows.length-2] : tw;
+					
+					var obj = {//tableContainer, section, items_per_page, window, oldWindow, onSelectRow
+							'section': sec,
+							'tableContainer': tw,//tableDiv.hide(),
+							'window': tw,
+							'oldWindow': prevw,
+							'items_per_page': APP.config.default_iDisplayLength,
+							'sort_fields': {},
+							'onSelectRow': function(t){
+								//that.selectedItem = $(this);
+								APP.anagrafica.onSelectTableRow(t, sec, tw);
+							}
+						};
+					
+					APP.anagrafica.showTable(obj);
+				}
+
+				var iw = APP.anagrafica.windows[APP.anagrafica.windows.length-1];
+				
+				var index = APP.utils.getIndexFromField(APP.anagrafica.sections[sec].values, "id", parseInt(query));
+				if (index>-1)
+					APP.anagrafica.onSelectTableRow(APP.anagrafica.sections[sec].values[index],sec,iw);
+			});
+		};
+		
+		that.workspace = Backbone.Router.extend({
+
+			  routes: {
+			    "path/:query": "path",
+			    "poi/:query": "poi",
+			    "itinerary/:query": "itinerary",
+			    "path_segment/:query": "path_segment",
+			    "area/:query": "area",
+			    
+			    "search/:query/p:page": "search"   // #search/kiwis/p7
+			  },
+
+			  path: function(query) {
+				  workNow("path", "Sentieri", query);
+			  },
+			  
+			  poi: function(query) {
+				  workNow("poi", "Punti di interesse", query);
+			  },
+			  
+			  itinerary: function(query) {
+				  workNow("itinerary", "Itinerari", query);
+			  },
+			  
+			  path_segment: function(query) {
+				  workNow("path_segment", "Tratte", query);
+			  },
+
+			  search: function(query, page) {
+			    
+			  }
+
+		});
+		new that.workspace;
+		Backbone.history.start();
+	},
 	
 	bc_getLastSrcElement: function()
 	{
@@ -629,7 +711,7 @@ $.extend(APP.config,{
 		this.setFilterDialogsDiv();
 		this.setCreditsButton();
 		this.setMenu();
-				
+		this.setBackboneRouting();
 		//$(".navbar-nav:first").find("a:first").click();
 		return;
 	}
