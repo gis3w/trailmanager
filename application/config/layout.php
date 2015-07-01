@@ -14,9 +14,7 @@ return array(
     'css_path' => 'public/css/',
     'css_base' => array(
         '../modules/jquery-ui-1.10.3/themes/base/minified/jquery-ui.min.css' => 'screen',
-        //'../modules/bootstrap3/css/bootstrap.min.css' => 'screen',
-        //'../modules/bootstrap-3.1.1/css/bootstrap.min.css' => 'screen',
-        '../modules/bootstrap-3.2.0/css/bootstrap.min.css' => 'screen',
+        '../modules/bootstrap-3.3.5/css/bootstrap.min.css' => array('screen','bootstrapCSS'),
         '../modules/Gallery-2.15.1/css/blueimp-gallery.min.css' => 'screen',
         '../modules/Gallery-2.15.1/css/blueimp-gallery-indicator.css' => 'screen',
         '../modules/Gallery-2.15.1/css/blueimp-gallery-video.css' => 'screen',

@@ -21,13 +21,23 @@
                     {
                     foreach ($csss as $file => $type)
                     {
-                        switch($type)
+                        $attributes = is_array($type) ? array('media' => $type[0],'id'=>$type[1]) :array('media' => $type);
+                        if(isset($themeActive) AND isset($type[1]) AND $type[1] == 'bootstrapCSS')
                         {
-                            case "directory":
-                            break;
-                            default:
-                                echo HTML::style($css_path.$file, array('media' => $type)). "\n";
-                        }
+                            if($themeActive == 'default')
+                            {
+                                echo HTML::style($css_path.$file, $attributes). "\n";
+                            }
+                            else
+                            {
+                                echo HTML::style($css_path.'../bootswatch335/'.$themeActive.'/bootstrap.min.css', $attributes). "\n";
+                            }
+
+                            }
+                            else
+                            {
+                                echo HTML::style($css_path.$file, $attributes). "\n";
+                            }
                         
                     }
                 }
