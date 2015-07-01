@@ -14,16 +14,20 @@ $.extend(APP.config,{
 	{
 		var that = this;
 		
+		
+		
 		var workNow = function(sec, secTitle, query)
-		{
-			var w = $("#mainContent").find("#"+sec+"Container").empty();
-			if (w.length==0)
-			{
-				w = $('<div id="'+sec+'Container"></div>');
-				$("#mainContent").append(w);
-			}
+		{	
+			that.removeActiveClasses($(".navbar"), "li");
+			var button = $("#"+sec+"Button");
+			button.closest("li").addClass("active");
+			APP.anagrafica.finish();
+			that.currentConfigSection = sec;		
+			APP.utils.updateBreadcrumb("empty");
+			var w = $('<div id="'+sec+'Container"></div>');
+			$("#mainContent").html(w);			
 			
-			APP.anagrafica.start($("#"+sec+"Button"), secTitle, sec, w, function()
+			APP.anagrafica.start(button, secTitle, sec, w, function()
 			{
 				if (1)
 				{
@@ -48,7 +52,7 @@ $.extend(APP.config,{
 
 				var iw = APP.anagrafica.windows[APP.anagrafica.windows.length-1];
 				
-				var index = APP.utils.getIndexFromField(APP.anagrafica.sections[sec].values, "id", parseInt(query));
+				var index = APP.utils.getIndexFromField(APP.anagrafica.sections[sec].values, APP.anagrafica.sections[sec].primary_key, parseInt(query));
 				if (index>-1)
 					APP.anagrafica.onSelectTableRow(APP.anagrafica.sections[sec].values[index],sec,iw);
 			});
