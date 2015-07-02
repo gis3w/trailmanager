@@ -174,4 +174,9 @@ class Kohana_SAFE extends Kohana_Core
     {
         return "Controller_Admin_Download_".self::getObjfromClass($instance);
     }
+
+    public static function setBaseUrl($url)
+    {
+        return Kohana::$base_url.$url;
+    }
 }

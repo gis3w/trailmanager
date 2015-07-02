@@ -104,6 +104,25 @@
                 <?php echo $tcenter; ?>
             </div>
         <?php endif; ?>
+        <link rel="stylesheet" type="text/css" href="<?php echo $js_path."../modules/cookieconsent/cookieconsent.css"?>"/>
+        <script type="text/javascript" src="<?php echo $js_path."../modules/cookieconsent/cookieconsent.js"?>"></script>
+        <script type="text/javascript" src="<?php echo SAFE::setBaseUrl('cci18n/strings') ?>"></script>
+
+        <script type="text/javascript">
+            // <![CDATA[
+            cc.initialise({
+                cookies: {
+                    necessary: {},
+                },
+                settings: {
+                    consenttype: "implicit",
+                    hideallsitesbutton: true,
+                    hideprivacysettingstab: false,
+                    //testmode:'accept'
+                }
+            });
+            // ]]>
+        </script>
              
     </body>
 </html>
