@@ -56,7 +56,7 @@ class Datastruct_Poi extends Datastruct {
                 'insediam',
                 'pt_acqua',
                 'tipo_segna',
-                'stato_segna',
+                'stato_segn',
                 'fatt_degr',
                 'pt_socc',
                 'coin_in_fi'
@@ -203,8 +203,8 @@ class Datastruct_Poi extends Datastruct {
                     'label' => __('Signage type class'),
                 )),
 
-                "stato_segna" => array_replace($baseSingleSelectField,array(
-                    'foreign_key' => 'stato_segna_poi',
+                "stato_segn" => array_replace($baseSingleSelectField,array(
+                    'foreign_key' => 'stato_segn_poi',
                     'label' => __('Signage state class'),
                 )),
 
