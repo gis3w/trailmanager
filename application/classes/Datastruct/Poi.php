@@ -73,6 +73,14 @@ class Datastruct_Poi extends Datastruct {
             'name' => 'tab-base-data',
             'groups' => array('poi-base-data-poi','poi-base-data-survey','poi-base-data-data'),
         ),
+        array(
+            'name' => 'tab-path',
+            'datastruct' => 'path'
+            'url_values' => '/jx/admin/path?filter=se:$1',
+            'url_params' => array(
+                '$1' => 'se'
+            ),
+        )
     );
     
     public $title = array(
