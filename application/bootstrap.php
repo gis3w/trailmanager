@@ -136,6 +136,7 @@ Kohana::modules(array(
                 'restapi'  => MODPATH.'restapi',  // REST api systems
                 'tree'  => MODPATH.'tree',  // tree data sctructure
                 'pagination' => MODPATH.'pagination',
+    'highliting' => MODPATH.'highliting',
 	));
 
 /**
@@ -296,4 +297,20 @@ foreach($parms as $parametro => $valore)
      */
     
     define('HTTP_HOST',$_SERVER['HTTP_HOST']);
-    
+
+
+/**
+ * ADD HIGHLITING STATES
+ */
+$parms = ORM::factory('Highliting_State')->find_all()->as_array('name');
+
+foreach($parms as $parametro => $valore)
+    define('HSTATE_'.Inflector::underscore(strtoupper($parametro)), $valore->id);
+
+/**
+ * ADD ROLES
+ */
+$parms = ORM::factory('Role')->find_all()->as_array('name');
+
+foreach($parms as $parametro => $valore)
+    define('ROLE_'.Inflector::underscore(strtoupper($parametro)), $valore->id);

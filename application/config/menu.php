@@ -16,7 +16,13 @@ return array(
              'capability' => 'access-admin-poi',
              'name' => __('Trail elements'),
              'icon' => 'plus'
-         )
+         ),
+     'dropdown_highliting' => array(
+             'id' => 'dropdown_highliting',
+             'capability' => 'access-highliting',
+             'name' => __('Highlitings'),
+             'icon' => 'plus'
+         ),
     ),
     'main' => array(
         'home' => array(
@@ -26,6 +32,14 @@ return array(
             'url_mobile' => 'home',
             'capability' => NULL,
             'icon' => 'home',
+        ),
+        'highlitingpoi' => array(
+            'id' =>'highlitingpoi',
+            'name' => __('Highliting Poi'),
+            'url' => '/jx/admin/highlitingpoi',
+            'capability' => 'access-admin-highlitingpoi',
+            'dropdown' => 'dropdown_highliting',
+            'icon' => 'map-maker',
         ),
          'itinerary' => array(
             'id' =>'itinerary',
@@ -137,6 +151,13 @@ return array(
                         'name' => __('Path modes'),
                         'url' => '/jx/admin/administration/pathmodes',
                         'capability' => 'access-administration-pathmodes',
+                        'icon' => 'cog',
+                    ),
+                    'administration_highlitingstates' => array(
+                        'id' =>'highlitingstates',
+                        'name' => __('Hightlighting states'),
+                        'url' => SAFE::setBaseUrl('jx/admin/administration/highlitingstates'),
+                        'capability' => 'access-administration-highlitingstates',
                         'icon' => 'cog',
                     ),
                     'administration_globalconfigs' => array(

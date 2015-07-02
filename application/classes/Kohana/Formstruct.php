@@ -21,6 +21,7 @@ class Kohana_Formstruct{
     const MAPBOX = 'mapbox';
     const MAPBOX_COLOR = 'mapbox_color';
     const COLORPICKER = 'colorpicker';
+    const HTMLTEXT = 'htmltext';
     
     const GEOTYPE_POLYLINE = 'polyline';
     const GEOTYPE_POLYGON = 'polygon';

@@ -9,6 +9,7 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
          'image_poi' => 'image',
          'image_path' => 'image',
          'image_area' => 'image',
+         'image_highliting_poi' => 'image'
      );
      
      protected  $_subformToSave = array(
@@ -16,6 +17,7 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
                 'video_path' => 'Video_Path',
                 'video_area' => 'Video_Area',
                 'image_poi' => 'Image_Poi',
+                'image_highliting_poi' => 'Image_Highliting_Poi',
                 'image_path' => 'Image_Path',
                 'image_area' => 'Image_Area'
     );
@@ -68,7 +70,6 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
     
     protected function _set_typologies_edit()
     {
-         //si eseguono le associazioni con i mezzi
             foreach(array('typologies') as $alias)
             {
                 $var = "_".$alias;
@@ -85,7 +86,7 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
         $this->_set_the_geom_edit();
          $this->_orm->values($_POST);
          $this->_orm->save();
-         
+
          $this->_set_typologies_edit();
          
          $this->_save_subforms_1XN();
@@ -169,7 +170,8 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
 
                 }
 
-            $this->_vorm->label($_POST[$this->_url_multifield_postname],__('Urls'));
+            if(isset($_POST[$this->_url_multifield_postname]))
+                $this->_vorm->label($_POST[$this->_url_multifield_postname],__('Urls'));
             
             //adding empty image validation
             $imageField = 'image_'.strtolower($this->_datastruct->get_nameOrm());

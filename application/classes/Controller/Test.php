@@ -10,7 +10,7 @@ class Controller_Test extends Controller{
 
         //echo floatval('10,3456');
         $ORMType = 'ORM';
-        $sd = ORM::factory('Tp_Trat_Segment')->find();
+        $sd = ORMGIS::factory('Highliting_Poi');
         var_dump($sd);
         //var_dump($sd->considerable_points->find_all());
 

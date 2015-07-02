@@ -164,6 +164,8 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
             'video_poi' => 'jx/admin/videopoi',
             'video_path' => 'jx/admin/videopath',
             'video_area' => 'jx/admin/videoarea',
+            'highlitingpoi' => '/jx/admin/highlitingpoi',
+            'image_highliting_poi' => 'jx/admin/imagehighlitingpoi',
             
             
         );
