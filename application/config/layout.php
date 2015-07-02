@@ -43,7 +43,7 @@ return array(
         '../modules/DataTables-1.9.4/media/css/jquery.dataTables.css' => 'screen',
         '../modules/jquery-timepicker/jquery.timepicker.css' => 'screen',
         //'../modules/jquery_layout/layout-default-latest.css' => 'screen',
-        'style.css' => 'screen',
+        //'style.css' => 'screen',
         'layout.css' => 'screen',
     ),
     'css_compiled' => array(

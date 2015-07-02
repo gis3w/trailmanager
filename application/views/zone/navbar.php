@@ -27,18 +27,13 @@
 				<?php endif; ?>
             <?php endforeach; ?>
         </ul>
-        
         <ul class="nav navbar-nav navbar-right">
 			<?php if(isset($search) AND $search): ?>
 				<li><a id="searchButton" href="#" data-toggle="modal"><i class="icon icon-search"></i> <?php echo __('Search') ?></a></li>
 			<?php endif; ?>
-            <?php 
-                                                                foreach ($langs as $I18n => $lang):
-			?>
+            <?php foreach ($langs as $I18n => $lang): ?>
                     <li><a href="?lang=<?php echo $I18n ?>"><i class="icon icon-flag"></i> <?php echo $lang ?></a></li>
-            <?php
-				endforeach;
-			?>
+            <?php endforeach; ?>
 		<li id="printButton"><a href="#">Stampa</a></li>
             <?php if($frontend):?>
                 <li><a id="helpButton" href="#"><i class="icon icon-flag"></i> <?php echo __('Help') ?></a></li>
@@ -53,8 +48,23 @@
             
              </li>
              <?php endif; ?>
-		
+
         </ul>
+        <?php if(isset($user) AND !$frontend AND $user->is_a('ADMIN1')): ?>
+            <form class="navbar-form navbar-right">
+                <div class="form-group">
+                    <select id="themeButton" name="themeButton" class="form-control">
+                        <?php foreach($themes as $theme): ?>
+                            <?php if((string)$theme == 'default'):?>
+                                <option value="<?php echo $css_path?>../modules/bootstrap-3.3.5/css/bootstrap.min.css" <?php if($themeActive == (string)$theme) echo "selected=selected" ?>><?php echo $theme ?></option>
+                            <?php else: ?>
+                                <option value="<?php echo $css_path.'../bootswatch/'.$theme.'/bootstrap.min.css' ?>" <?php if($themeActive == (string)$theme) echo "selected=selected" ?>><?php echo $theme ?></option>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </form>
+        <?php endif; ?>
     </div>
     </div>
 </nav>

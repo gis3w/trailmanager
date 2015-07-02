@@ -10,7 +10,13 @@ return array(
             'capability' => 'access-administration',
             'name' => __('Global/Admin'),
             'icon' => 'cog'
-        )
+        ),
+     'dropdown_trail_elements' => array(
+             'id' => 'dropdown_trail_elements',
+             'capability' => 'access-admin-poi',
+             'name' => __('Trail elements'),
+             'icon' => 'plus'
+         )
     ),
     'main' => array(
         'home' => array(
@@ -32,6 +38,7 @@ return array(
          'poi' => array(
             'id' =>'poi',
             'name' => __('Points of interest'),
+            'dropdown' => 'dropdown_trail_elements',
             'url' => '/jx/admin/poi',
             'url_mobile' => 'user',
              'capability' => 'access-admin-poi',
@@ -40,6 +47,7 @@ return array(
         'path' => array(
             'id' =>'path',
             'name' => __('Paths'),
+            'dropdown' => 'dropdown_trail_elements',
             'url' => '/jx/admin/path',
             'url_mobile' => 'user',
              'capability' => 'access-admin-path',
@@ -48,6 +56,7 @@ return array(
         'path_segment' => array(
             'id' =>'path_segment',
             'name' => __('Path segments'),
+            'dropdown' => 'dropdown_trail_elements',
             'url' => '/jx/admin/pathsegment',
             'url_mobile' => 'user',
             'capability' => 'access-admin-pathsegment',
@@ -56,6 +65,7 @@ return array(
         'area' => array(
             'id' =>'area',
             'name' => __('Areas'),
+            'dropdown' => 'dropdown_trail_elements',
             'url' => '/jx/admin/area',
             'url_mobile' => 'user',
              'capability' => 'access-admin-area',
