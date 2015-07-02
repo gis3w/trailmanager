@@ -75,12 +75,13 @@ class Datastruct_Poi extends Datastruct {
         ),
         array(
             'name' => 'tab-path',
-            'datastruct' => 'path'
+            'datastruct' => 'path',
             'url_values' => '/jx/admin/path?filter=se:$1',
             'url_params' => array(
                 '$1' => 'se'
             ),
         )
+
     );
     
     public $title = array(
