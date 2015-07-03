@@ -1,6 +1,8 @@
 $.extend(APP.config,{
 	localConfig: {},
 	currentConfigSection: null,
+	currentUrl: null,
+	prevUrl: null,
 	default_iDisplayLength: 10,
 	breadCrumb: [],
 	fadeInDelay: 400,
@@ -14,10 +16,90 @@ $.extend(APP.config,{
 	{
 		var that = this;
 		
-		
-		
 		var workNow = function(sec, secTitle, query)
 		{	
+			/*
+			var button = $("#"+sec+"Button");
+			
+			var viewItem = function(index, w)
+			{
+				APP.anagrafica.onSelectTableRow(APP.anagrafica.sections[sec].values[index],sec,w);
+			};
+			
+			var loadData = function()
+			{
+				if (APP.anagrafica.windows.length==0)
+					APP.anagrafica.createWindow();
+				var w = APP.anagrafica.windows[APP.anagrafica.windows.length-1];
+				if (!APP.anagrafica.sections[sec].values)
+					APP.anagrafica.sections[sec].values = [];
+				var index = APP.utils.getIndexFromField(APP.anagrafica.sections[sec].values, APP.anagrafica.sections[sec].primary_key, parseInt(query));
+				if (index>-1)
+					viewItem(index, w);
+				else
+				{
+					$.ajax({
+						type: 'GET',
+						url: APP.config.localConfig.urls[sec]+"/"+query,
+						success: function(result)
+						{
+							if (result.data && result.data.items && result.data.items.length>0)
+							{
+								var obj = result.data.items[0];
+								APP.anagrafica.sections[sec].values.push(obj);
+								viewItem(APP.anagrafica.sections[sec].values.length-1, w);
+							}
+						},
+					});
+				}
+			};
+			
+			if (!APP.config.localConfig)
+				that.loadConfig();
+			
+			if (!APP.anagrafica.sections)
+			{
+				APP.anagrafica.windows = [];
+				APP.anagrafica.sections = {};
+				APP.anagrafica.previousSection = null;
+				APP.anagrafica.currentSection = sec;
+				APP.anagrafica.selectedItem = null;
+				APP.anagrafica.tmpSelectedItem = button;
+				if ($("#"+sec+"Container").length==0)
+					$("#mainContent").html($('<div id="'+sec+'Container"></div>'))
+				APP.anagrafica.mainDiv = $("#"+sec+"Container");
+			}
+			
+			if (!APP.anagrafica.sections.hasOwnProperty(sec))
+			{
+				APP.anagrafica.sections[sec] = APP.utils.setBaseStructure(secTitle, sec);
+				
+				$.ajax({
+					type: 'GET',
+					url: APP.config.localConfig.urls['dStruct']+"?tb="+sec,
+					dataType: 'json',
+					success: function(data)
+					{
+						if (!APP.utils.checkError(data.error, null))
+						{
+							APP.anagrafica.loadStructure(data, APP.anagrafica.sections[sec]);
+							loadData();
+						}
+						else
+						{
+							APP.utils.showErrMsg(data);
+						}
+					},
+					error: function(result)
+					{
+						APP.utils.showErrMsg(result);
+					}
+				});
+			}
+			else
+				loadData();
+			
+			*/
 			that.removeActiveClasses($(".navbar"), "li");
 			var button = $("#"+sec+"Button");
 			button.closest("li").addClass("active");
@@ -25,7 +107,7 @@ $.extend(APP.config,{
 			that.currentConfigSection = sec;		
 			APP.utils.updateBreadcrumb("empty");
 			var w = $('<div id="'+sec+'Container"></div>');
-			$("#mainContent").html(w);			
+			$("#mainContent").html(w);
 			
 			APP.anagrafica.start(button, secTitle, sec, w, function()
 			{
@@ -398,7 +480,10 @@ $.extend(APP.config,{
 		
 		var prevDiv = $("#mainContent").find("#"+this.currentConfigSection+"Container");
 		if (prevDiv.length > 0)
+		{
 			prevDiv.remove();
+			this.prevUrl = this.currentUrl;
+		}
 		
 		switch(this.currentConfigSection)
 		{
@@ -409,7 +494,8 @@ $.extend(APP.config,{
 					APP.anagrafica.finish();
 				break;
 		}
-		this.currentConfigSection = section;		
+		this.currentConfigSection = section;
+		this.currentUrl = section;
 		APP.utils.updateBreadcrumb("empty");
 		var divId = this.currentConfigSection+"Container";
 		$("#mainContent").append("<div id='"+divId+"' style='padding-top: 20px'></div>");
