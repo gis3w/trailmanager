@@ -11,6 +11,7 @@ $.extend(APP.config,{
 	periodicRequestsIds: [],
 	serverSide: false,
 	workSpace: null,
+	backboneRouter: null,
 	
 	setBackboneRouting: function()
 	{
@@ -140,7 +141,7 @@ $.extend(APP.config,{
 			});
 		};
 		
-		that.workspace = Backbone.Router.extend({
+		that.backboneRouter = Backbone.Router.extend({
 
 			  routes: {
 			    "path/:query": "path",
@@ -173,7 +174,7 @@ $.extend(APP.config,{
 			  }
 
 		});
-		new that.workspace;
+		that.workSpace = new that.backboneRouter;
 		Backbone.history.start();
 	},
 	

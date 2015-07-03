@@ -1414,42 +1414,87 @@ $.extend(APP.anagrafica,
 			{
 				var classe = (i===0)? "active" : "";
 				var tab = $('<li id="'+v.name+'" role="presentation" class="'+classe+'"><a href="#">'+APP.i18n.translate(v.name)+'</a></li>');
-				if (v.groups)
+				tab.click(function()
 				{
-					tab.click(function(){
-						var tabId = tab.attr("id");
-						ul.find("li.active").removeClass("active");
-						tab.addClass("active");
-						form.find(".itemContentTabs").find('.active').removeClass("active").hide();
-						form.find(".itemContentTabs").find("#"+tabId).addClass("active").show();
+					var tabId = tab.attr("id");
+					ul.find("li.active").removeClass("active");
+					tab.addClass("active");
+					form.find(".itemContentTabs").find('.active').removeClass("active").hide();
+					form.find(".itemContentTabs").find("#"+tabId).addClass("active").show();
+					if (v.groups)
 						APP.utils.setLookForm(form,form.attr("id"));
-					});
-				}
-				else
-				{
-					var urlV = v.url_values;
-					if (v.url_params)
+					else
 					{
-						$.each(v.url_params, function(j,k){
-							urlV = APP.utils.replaceAll(j, obj[k], urlV);
+						var urlV = v.url_values;
+						if (v.url_params)
+						{
+							$.each(v.url_params, function(j,k){
+								urlV = APP.utils.replaceAll(j, obj[k], urlV);
+							});
+						}
+
+						var getFilteredItems = function()
+						{
+							$.ajax({
+								type: 'GET',
+								url: urlV,
+								success: function(result)
+								{
+									if (result.data.items.length>0)
+									{
+										var idField = that.sections[v.datastruct].primary_key;
+										$.each(result.data.items, function(j,k){
+											var index = APP.utils.getIndexFromField(that.sections[v.datastruct].values, idField, k[idField]);
+											if (index>-1)
+												that.sections[v.datastruct].values[index] = k;
+											else
+												that.sections[v.datastruct].values.push(k);
+										});
+										
+										that.showTable({
+											tableContainer: form.find(".itemContentTabs").find("#"+tabId), 
+											section: v.datastruct,
+											sort_fields: {},
+											items_per_page: result.data.items_per_page, 
+											window: that.windows[that.windows.length-1], 
+											oldWindow: (that.windows.length-2>=0)? that.windows[that.windows.length-2] : that.windows[that.windows.length-1], 
+											onSelectRow: function(t){
+												APP.config.workSpace.navigate(v.datastruct+"/"+t[idField], {trigger: true, replace: true});
+											}
+										});
+									}
+								},
+								error: function(result)
+								{
+									APP.utils.showErrMsg(result);
+								}
+							});
+						};
+						
+						if (!that.sections.hasOwnProperty(v.datastruct))
+						{
+							that.sections[v.datastruct] = APP.utils.setBaseStructure(v.datastruct, v.datastruct);
+							that.getStructure(APP.config.localConfig.urls['dStruct']+"?tb="+v.datastruct, v.datastruct, "", function(){ getFilteredItems()});
+						}
+						else
+							getFilteredItems();
+					}
+					var navTabs = form.find(".itemContentTabs").find(".tabContent");
+					if (navTabs.length>0)
+					{
+						$.each(navTabs, function(i,v){
+							var v = $(v);
+							if (v.hasClass("active"))
+							{
+								v.css("opacity",1);
+								v.show();
+							}
+							else
+								v.hide();
 						});
 					}
-					tab.click(function()
-					{
-						$.ajax({
-							type: 'GET',
-							url: urlV,
-							success: function(result)
-							{
-								
-							},
-							error: function(result)
-							{
-								APP.utils.showErrMsg(result);
-							}
-						});
-					});
-				}
+				});
+
 				ul.append(tab);
 				var tabc = $('<div id="'+v.name+'" class="row tabContent '+classe+'">\
 					<div class="col-md-12>\
