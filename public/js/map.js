@@ -461,6 +461,7 @@ $.extend(APP.map,
 		var defLayName = null;
 		var defLayUrl = null;
 		var defaultLayer = null;
+		var defaultLayerIsOverlay = false;
 		if (APP.utils.isset(APP.config.localConfig))
 		{
 			$.each(APP.config.localConfig.background_layer, function(i,v)
@@ -498,6 +499,8 @@ $.extend(APP.map,
 					defLayUrl = v.url;
 					defaultLayer = l;
 					defLayName = v.name;
+					if (v.transparent)
+						defaultLayerIsOverlay = true;
 				}
 				else
 				{
@@ -527,8 +530,11 @@ $.extend(APP.map,
 		if (!O.center)
 			that.setExtent(that.globalData[id].globalExtent);
 		
-		baseLayers[defLayName] = defaultLayer;
-		L.control.layers(baseLayers,overlays).addTo(that.globalData[id].map);	
+		if (!defaultLayerIsOverlay)
+			baseLayers[defLayName] = defaultLayer;
+		else
+			overlays[defLayName] = defaultLayer;
+		L.control.layers(baseLayers,overlays).addTo(that.globalData[id].map);
 
 		that.setMapControls();
 		
