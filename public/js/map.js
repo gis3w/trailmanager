@@ -456,6 +456,7 @@ $.extend(APP.map,
 		// add an OpenStreetMap tile layer
 		
 		var baseLayers = {};
+		var overlays = {};
 		var layers = [];
 		var defLayName = null;
 		var defLayUrl = null;
@@ -501,7 +502,10 @@ $.extend(APP.map,
 				else
 				{
 					layers.push(l);
-					baseLayers[v.name] = l;
+					if (v.transparent)
+						overlays[v.name] = l;
+					else
+						baseLayers[v.name] = l;
 				}
 			});
 		}
@@ -524,7 +528,7 @@ $.extend(APP.map,
 			that.setExtent(that.globalData[id].globalExtent);
 		
 		baseLayers[defLayName] = defaultLayer;
-		L.control.layers(baseLayers).addTo(that.globalData[id].map);	
+		L.control.layers(baseLayers,overlays).addTo(that.globalData[id].map);	
 
 		that.setMapControls();
 		
