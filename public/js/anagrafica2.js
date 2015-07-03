@@ -1391,7 +1391,7 @@ $.extend(APP.anagrafica,
 		var form = $('<form id="fm_'+sectionLabel+'" class="form-horizontal" '+enctype+' role="form">\
 						<input type="hidden" name="csrf_token" class="tokenInput" value="'+APP.config.getToken(sectionTarget.resource)+'">\
 						<div class="row">\
-							<div id="formButtons" class="col-md-12" style="margin-bottom: 30px; padding-left: 15px"></div>\
+							<div id="formButtons" class="well well-sm" style="position: fixed; top: 55px; left: 15px; z-index: 50"></div>\
 						</div>\
 					</form>');
 			
