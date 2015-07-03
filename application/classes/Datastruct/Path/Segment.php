@@ -25,6 +25,11 @@ class Datastruct_Path_Segment extends Datastruct
             'fields' => array('the_geom'),
         ),
         array(
+            'name' => 'path-base-data-current',
+            'position' => 'right',
+            'fields' => array('percorr_current','rid_perc_current','cop_tel_current'),
+        ),
+        array(
             'name' => 'path-base-data-data',
             'position' => 'block',
             'fields' => array('tp_trat','tp_fondo','diff','percorr','rid_perc','morf','ambiente','cop_tel'),
@@ -33,6 +38,18 @@ class Datastruct_Path_Segment extends Datastruct
 
     protected function _columns_type()
     {
+
+        $baseSingleSelectField = array(
+            'editable' => TRUE,
+            'form_input_type' => self::SELECT,
+            'foreign_mode' => self::SINGLESELECT,
+            'foreign_value_field' => 'code',
+            'foreign_toshow' => '$1',
+            'foreign_toshow_params' => array(
+                '$1' => 'description',
+            ),
+            "table_show" => TRUE,
+        );
 
         return array(
             "se" => array(
@@ -62,123 +79,74 @@ class Datastruct_Path_Segment extends Datastruct
             "qual_ril" => array(
                 'editable' => FALSE,
             ),
-            "class_ril" => array(
-                'editable' => FALSE,
-                'form_input_type' => self::SELECT,
-                'foreign_mode' => self::SINGLESELECT,
-                'foreign_value_field' => 'class',
-                'foreign_toshow' => '$1',
-                'foreign_toshow_params' => array(
-                    '$1' => 'description',
-                ),
+
+            "class_ril" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'class_ril_segment',
                 'label' => __('Survey class'),
-                "table_show" => TRUE,
-            ),
-            "tp_trat" => array(
-                'editable' => FALSE,
-                'form_input_type' => self::SELECT,
-                'foreign_mode' => self::SINGLESELECT,
-                'foreign_value_field' => 'code',
-                'foreign_toshow' => '$1',
-                'foreign_toshow_params' => array(
-                    '$1' => 'description',
-                ),
+                'foreign_value_field' => 'class',
+            )),
+
+            "tp_trat" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'tp_trat_segment',
                 'label' => __('Typology path segment'),
-                "table_show" => TRUE,
-            ),
-            "tp_fondo" => array(
-                'editable' => FALSE,
-                'form_input_type' => self::SELECT,
-                'foreign_mode' => self::SINGLESELECT,
-                'foreign_value_field' => 'code',
-                'foreign_toshow' => '$1',
-                'foreign_toshow_params' => array(
-                    '$1' => 'description',
-                ),
+            )),
+
+            "tp_fondo" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'tp_fondo_segment',
                 'label' => __('Bottom typology path segment'),
-                "table_show" => TRUE,
-            ),
-            "diff" => array(
-                'editable' => TRUE,
-                'form_input_type' => self::SELECT,
-                'foreign_mode' => self::SINGLESELECT,
-                'foreign_value_field' => 'code',
-                'foreign_toshow' => '$1',
-                'foreign_toshow_params' => array(
-                    '$1' => 'description',
-                ),
+            )),
+
+            "diff" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'diff_segment',
                 'label' => __('Difficulty typology path segment'),
-                "table_show" => TRUE,
-            ),
-            "percorr" => array(
-                'editable' => FALSE,
-                'form_input_type' => self::SELECT,
-                'foreign_mode' => self::SINGLESELECT,
-                'foreign_value_field' => 'code',
-                'foreign_toshow' => '$1',
-                'foreign_toshow_params' => array(
-                    '$1' => 'description',
-                ),
+            )),
+
+            "percorr" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'percorr_segment',
                 'label' => __('Walkable path segment'),
-                "table_show" => TRUE,
-            ),
-            "morf" => array(
-                'editable' => FALSE,
-                'form_input_type' => self::SELECT,
-                'foreign_mode' => self::SINGLESELECT,
-                'foreign_value_field' => 'code',
-                'foreign_toshow' => '$1',
-                'foreign_toshow_params' => array(
-                    '$1' => 'description',
-                ),
+            )),
+
+            "morf" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'morf_segment',
                 'label' => __('Morfology path segment'),
-                "table_show" => TRUE,
-            ),
-            "ambiente" => array(
-                'editable' => FALSE,
-                'form_input_type' => self::SELECT,
-                'foreign_mode' => self::SINGLESELECT,
-                'foreign_value_field' => 'code',
-                'foreign_toshow' => '$1',
-                'foreign_toshow_params' => array(
-                    '$1' => 'description',
-                ),
+            )),
+
+            "ambiente" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'ambiente_segment',
                 'label' => __('Ambient path segment'),
-                "table_show" => TRUE,
-            ),
-            "cop_tel" => array(
-                'editable' => FALSE,
-                'form_input_type' => self::SELECT,
-                'foreign_mode' => self::SINGLESELECT,
-                'foreign_value_field' => 'code',
-                'foreign_toshow' => '$1',
-                'foreign_toshow_params' => array(
-                    '$1' => 'description',
-                ),
+            )),
+
+            "cop_tel" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'cop_tel_segment',
                 'label' => __('GSM coverage path segment'),
-                "table_show" => TRUE,
-            ),
-            "rid_perc" => array(
-                'editable' => FALSE,
-                'form_input_type' => self::SELECT,
-                'foreign_mode' => self::SINGLESELECT,
-                'foreign_value_field' => 'code',
-                'foreign_toshow' => '$1',
-                'foreign_toshow_params' => array(
-                    '$1' => 'description',
-                ),
+            )),
+
+            "rid_perc" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'rid_perc_segment',
                 'label' => __('Reduction walkable path segment'),
-                "table_show" => TRUE,
-            ),
+            )),
+
+            /* Fields current can be update
+             * =============================
+             */
+
+            "percorr_current" => array_replace($baseSingleSelectField,array(
+                'foreign_key' => 'percorr_segment',
+                'label' => __('Walkable path segment'),
+            )),
+
+            "rid_perc_current" => array_replace($baseSingleSelectField,array(
+                'foreign_key' => 'rid_perc_segment',
+                'label' => __('Reduction walkable path segment'),
+            )),
+
+            "cop_tel_current" => array_replace($baseSingleSelectField,array(
+                'foreign_key' => 'cop_tel_segment',
+                'label' => __('GSM coverage path segment'),
+            )),
+
+
+
             "the_geom" => array(
                 'form_input_type' => self::MAPBOX,
                 'map_box_editing' => TRUE,
