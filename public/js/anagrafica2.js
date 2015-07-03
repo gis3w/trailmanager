@@ -1294,7 +1294,6 @@ $.extend(APP.anagrafica,
 				if (APP.utils.isset(v.send_with_file) && v.send_with_file)
 					parNode.find("#APP-"+v.name).addClass("sendWithFile");
 			});
-		
 		};
 		
 		if (!APP.utils.isset(sectionTarget.groups) || sectionTarget.groups.length === 0)
@@ -1390,8 +1389,10 @@ $.extend(APP.anagrafica,
 		
 		var form = $('<form id="fm_'+sectionLabel+'" class="form-horizontal" '+enctype+' role="form">\
 						<input type="hidden" name="csrf_token" class="tokenInput" value="'+APP.config.getToken(sectionTarget.resource)+'">\
-						<div class="row">\
-							<div id="formButtons" class="col-md-12" style="margin-bottom: 30px; padding-left: 15px"></div>\
+						<div class="row" style="height: 55px">\
+							<div class="col-md-12">\
+								<div id="formButtons" class="well well-sm" style="position: fixed; top: 55px; left: 15px; z-index: 50;"></div>\
+							</div>\
 						</div>\
 					</form>');
 			
@@ -1413,16 +1414,45 @@ $.extend(APP.anagrafica,
 			{
 				var classe = (i===0)? "active" : "";
 				var tab = $('<li id="'+v.name+'" role="presentation" class="'+classe+'"><a href="#">'+APP.i18n.translate(v.name)+'</a></li>');
-				tab.click(function(){
-					var tabId = tab.attr("id");
-					ul.find("li.active").removeClass("active");
-					tab.addClass("active");
-					form.find(".itemContentTabs").find('.active').removeClass("active").hide();
-					form.find(".itemContentTabs").find("#"+tabId).addClass("active").show();
-					APP.utils.setLookForm(form,form.attr("id"));
-				});
+				if (v.groups)
+				{
+					tab.click(function(){
+						var tabId = tab.attr("id");
+						ul.find("li.active").removeClass("active");
+						tab.addClass("active");
+						form.find(".itemContentTabs").find('.active').removeClass("active").hide();
+						form.find(".itemContentTabs").find("#"+tabId).addClass("active").show();
+						APP.utils.setLookForm(form,form.attr("id"));
+					});
+				}
+				else
+				{
+					var urlV = v.url_values;
+					if (v.url_params)
+					{
+						$.each(v.url_params, function(j,k){
+							urlV = APP.utils.replaceAll(j, obj[k], urlV);
+						});
+					}
+					tab.click(function()
+					{
+						$.ajax({
+							type: 'GET',
+							url: urlV,
+							success: function(result)
+							{
+								
+							},
+							error: function(result)
+							{
+								APP.utils.showErrMsg(result);
+							}
+						});
+					});
+				}
 				ul.append(tab);
-				var tabc = $('<div id="'+v.name+'" class="tabContent '+classe+'">\
+				var tabc = $('<div id="'+v.name+'" class="row tabContent '+classe+'">\
+					<div class="col-md-12>\
 						<div class="row">\
 							<div class="leftColForm col-md-6"></div>\
 							<div class="rightColForm col-md-6"></div>\
@@ -1430,7 +1460,8 @@ $.extend(APP.anagrafica,
 						<div class="row">\
 							<div class="blockColForm col-md-12"></div>\
 						</div>\
-					</div>');
+					</div>\
+				</div>');
 				tabc.css("opacity",0);
 				tabsContent.append(tabc);
 			});
