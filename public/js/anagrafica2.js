@@ -204,7 +204,7 @@ $.extend(APP.anagrafica,
 		newDiv.show();
 	},
 	
-	processSectionsProperty: function(params)
+	processSectionsProperty: function(params) // title, section, filterString, loadCallback
 	{						
 		var that = this;
 		var section = params.section;
@@ -306,6 +306,8 @@ $.extend(APP.anagrafica,
 		var that = this;
 		that.selectedItem = that.tmpSelectedItem;
 		
+		APP.config.currentUrl = subSection+'/'+t[that.sections[subSection].primary_key];
+		
 		if (APP.utils.isset(that.sections[subSection].menu))
 		{
 			that.createWindow();
@@ -320,6 +322,7 @@ $.extend(APP.anagrafica,
 						htmlString: '<a id="button_list" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("list")+'" class="btn btn-default btn-lg tooltipElement" href="#"><i class="icon-list"></i></a>',
 						onClick: function(){
 							that.selectedItem.click();
+							APP.config.currentUrl = APP.config.prevUrl;
 						}
 					}					
 				];
@@ -361,6 +364,7 @@ $.extend(APP.anagrafica,
 						that.tmpSelectedItem = that.selectedItem;
 						that.destroyWindow();
 						that.selectedItem = APP.config.bc_getLastSrcElement();
+						APP.config.currentUrl = APP.config.prevUrl;
 					}
 				});
 				
@@ -401,6 +405,7 @@ $.extend(APP.anagrafica,
 				that.editItem(t[that.sections[subSection].primary_key], t, that.windows[that.windows.length-1], subSection, arr);
 			}
 		}
+		console.log(APP.config.currentUrl);
 	},
 	
 	showCapabilitiesGrid: function(obj, permissions, parentDiv)
