@@ -1,5 +1,7 @@
 $.extend(APP.anagrafica,
 {
+	sections: {},
+	
 	finish: function()
 	{
 		tinymce.remove(".textEditor");
@@ -12,7 +14,7 @@ $.extend(APP.anagrafica,
 	{
 		var that = this;
 		this.windows = [];
-		this.sections = {};
+		//this.sections = {};
 		this.previousSection = null;
 		this.currentSection = section;
 		this.selectedItem = null;
@@ -219,9 +221,24 @@ $.extend(APP.anagrafica,
 			this.loadData(APP.config.localConfig.urls[section]+filterString, that.sections[section], params.loadCallback);
 	},
 	
+	callbackCall: function(cb)
+	{
+		if (APP.utils.isset(cb) && $.isFunction(cb))
+			cb();
+		else
+			return false;
+	},
+	
 	getStructure: function(u, section, filterString, callback)
 	{
 		var that = this;
+		
+		if (APP.utils.isset(that.sections[section]) && !$.isEmptyObject(that.sections[section].columns))
+		{
+			that.loadData(APP.config.localConfig.urls[section]+filterString, that.sections[section], callback);
+			return;
+		}
+		
 		$.ajax({
 			type: 'GET',
 			url: u,
@@ -1389,7 +1406,7 @@ $.extend(APP.anagrafica,
 		
 		var form = $('<form id="fm_'+sectionLabel+'" class="form-horizontal" '+enctype+' role="form">\
 						<input type="hidden" name="csrf_token" class="tokenInput" value="'+APP.config.getToken(sectionTarget.resource)+'">\
-						<div class="row" style="height: 55px">\
+						<div class="row">\
 							<div class="col-md-12">\
 								<div id="formButtons" class="well well-sm" style="text-align: center"></div>\
 							</div>\
