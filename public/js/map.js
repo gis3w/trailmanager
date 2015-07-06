@@ -461,7 +461,7 @@ $.extend(APP.map,
 		var defLayName = null;
 		var defLayUrl = null;
 		var defaultLayer = null;
-		var defaultLayerIsOverlay = false;
+		var defaultOverlays = [];
 		if (APP.utils.isset(APP.config.localConfig))
 		{
 			$.each(APP.config.localConfig.background_layer, function(i,v)
@@ -494,24 +494,27 @@ $.extend(APP.map,
 								break;
 						}
 				}
-					
+				layers.push(l);
 				if (v.def)
 				{
+					
 					if (!v.transparent)
 					{
 						defLayUrl = v.url;
 						defaultLayer = l;
 						defLayName = v.name;
+						baseLayers[v.name] = l;
 					}
 					else
 					{
+						var nlg = new L.LayerGroup();
+						l.addTo(nlg);
+						defaultOverlays.push(nlg);
 						overlays[v.name] = l;
-						layers.push(l);
 					}
 				}
 				else
 				{
-					layers.push(l);
 					if (v.transparent)
 						overlays[v.name] = l;
 					else
@@ -526,18 +529,20 @@ $.extend(APP.map,
 			defLayName = "Openstreetmap";
 		}
 		
-		layers.push(defaultLayer);
+		var initialLayers = [defaultLayer];
+		$.each(defaultOverlays, function(i,v){
+			initialLayers.push(v);
+		});
 		
 		that.globalData[id].map = new L.map(id, {
 			'center': (O.center)? O.center : new L.LatLng(0,0),//new L.LatLng(44.160534,11.04126),
 			'zoom': (O.zoom)? O.zoom : 9,
-			'layers': [defaultLayer],
+			'layers': initialLayers,
 		});			
 		that.setGlobalExtent(APP.config.localConfig.default_extent);
 		if (!O.center)
 			that.setExtent(that.globalData[id].globalExtent);
 		
-		baseLayers[defLayName] = defaultLayer;
 		L.control.layers(baseLayers,overlays).addTo(that.globalData[id].map);
 
 		that.setMapControls();
