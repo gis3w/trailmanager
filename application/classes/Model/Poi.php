@@ -74,6 +74,9 @@ class Model_Poi extends ORMGIS {
                 $value = ORMGIS::factory('Path')->where('se','=',$this->se);
                 break;
 
+            default:
+                $value = parent::get($column);
+
         }
         return $value;
 

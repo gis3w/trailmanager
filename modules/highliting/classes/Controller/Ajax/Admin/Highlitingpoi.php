@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 
-class Controller_Ajax_Admin_Highlitingpoi extends Controller_Ajax_Admin_Sheet_Base{
+class Controller_Ajax_Admin_Highlitingpoi extends Controller_Ajax_Admin_Base_Highliting{
     
     protected $_pagination = FALSE;
     
