@@ -57,7 +57,8 @@
                             <?php if((string)$theme == 'default'):?>
                                 <option value="<?php echo $css_path?>../modules/bootstrap-3.3.5/css/bootstrap.min.css" <?php if($themeActive == (string)$theme) echo "selected=selected" ?>><?php echo $theme ?></option>
                             <?php else: ?>
-                                <option value="<?php echo $css_path.'../bootswatch/'.$theme.'/bootstrap.min.css' ?>" <?php if($themeActive == (string)$theme) echo "selected=selected" ?>><?php echo $theme ?></option>
+                                <?php echo $theme ?>
+                                <option value="<?php echo $css_path.'../bootswatch335/'.$theme.'/bootstrap.min.css' ?>" <?php if($themeActive == (string)$theme) echo "selected=selected" ?>><?php echo $theme ?></option>
                             <?php endif; ?>
                         <?php endforeach; ?>
                     </select>

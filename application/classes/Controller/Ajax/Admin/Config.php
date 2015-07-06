@@ -29,6 +29,7 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
         $this->_set_survey_codes_path_segments();
         $this->_set_survey_codes_poi();
         $this->_set_global_configs();
+        $this->_set_states();
         $this->_set_crud_menu();
         
         
@@ -145,6 +146,14 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
             
     }
 
+    protected function _set_states()
+    {
+        $states = ORM::factory('Highliting_State')->find_all();
+        $this->config->states = array();
+        foreach($states as $state)
+            $this->config->states[] = $state->as_array();
+    }
+
     
     protected function _set_timezone()
     {
@@ -175,6 +184,7 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
             'video_area' => 'jx/admin/videoarea',
             'highlitingpoi' => '/jx/admin/highlitingpoi',
             'image_highliting_poi' => 'jx/admin/imagehighlitingpoi',
+            'theme' => 'jx/admin/settheme'
             
             
         );
