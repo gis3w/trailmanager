@@ -2,10 +2,13 @@
 <?php echo '<?xml version="1.0" encoding="UTF-8"?>' ?>
 <!DOCTYPE pdf SYSTEM "%resources%/dtd/doctype.dtd">
 <pdf>
-    <dynamic-page document-template="/home/www/cosoweb/public/pdf/template_base.pdf">
+    <dynamic-page>
         <h1>Header</h1>
         <p>paragraph</p>
         <div color="red">Layer</div>
+        <div>
+            <img src="dir:<?php APPPATH.'../public/img/logo_trail_40h.png' ?>" />
+        </div>
         <table>
             <tr>
                 <td>Column</td>

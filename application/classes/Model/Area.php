@@ -55,6 +55,9 @@ class Model_Area extends ORMGIS {
             'typology_id' =>array(
                     array('not_empty'),
             ),
+            'the_geom' =>array(
+                array('not_empty'),
+            ),
             
         );
     }

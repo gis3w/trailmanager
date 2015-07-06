@@ -155,7 +155,8 @@ Route::set('print', 'print/<directory>/<controller>(/<type>(/<id>))')
                         ->filter(function($route, $params, $request)
                         {
                             $params['directory'] = 'Print/'.$params['directory'];
-                            $params['controller'] .= "_".ucfirst($params['type']);
+                            if(isset($params['type']))
+                                $params['controller'] .= "_".ucfirst($params['type']);
                             return $params; 
                         })
 	->defaults(array(

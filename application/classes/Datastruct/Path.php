@@ -25,10 +25,52 @@ class Datastruct_Path extends Datastruct {
             'fields' => array('url_path'),
         ),
         array(
-            'name' => 'path-base-data',
-            'position' => 'block',
-            'fields' => array('se','percorr','rid_perc','em_natura','em_paes','ev_stcul','op_attr'),
+            'name' => 'path-base-data-path',
+            'position' => 'left',
+            'fields' => array(
+                'se',
+                'bike',
+                'ip',
+                'cod_f1',
+                'cod_f2',
+            ),
         ),
+
+        array(
+            'name' => 'path-base-data-geo',
+            'position' => 'right',
+            'fields' => array(
+                'coordxini',
+                'coordyini',
+                'coordxen',
+                'coordyen',
+                'q_init',
+                'q_end',
+                'l'),
+        ),
+
+        array(
+            'name' => 'path-base-data-current',
+            'position' => 'left',
+            'fields' => array(
+                'percorr_current',
+                'rid_perc_current',
+            ),
+        ),
+
+        array(
+            'name' => 'path-base-data-data',
+            'position' => 'block',
+            'fields' => array(
+                'descriz',
+                'percorr',
+                'rid_perc',
+                'em_natur',
+                'em_paes',
+                'ev_stcul',
+                'op_attr'),
+        ),
+
     );
 
     public $tabs = array(
@@ -38,7 +80,7 @@ class Datastruct_Path extends Datastruct {
         ),
         array(
             'name' => 'tab-base-data',
-            'groups' => array('path-base-data'),
+            'groups' => array('path-base-data-path','path-base-data-geo','path-base-data-current','path-base-data-data'),
         ),
     );
     
@@ -110,9 +152,7 @@ class Datastruct_Path extends Datastruct {
                 "length" => array(
                     'suffix' => 'km',
                 ),
-                "se" => array(
-                    'editable' => FALSE,
-                ),
+
                 "typology_id" => array(
                     'form_input_type' => self::SELECT,
                     'foreign_mode' => self::SINGLESELECT,
@@ -126,6 +166,24 @@ class Datastruct_Path extends Datastruct {
                      "table_show" => TRUE,
                 ),
 
+                "se" => array(
+                    'editable' => FALSE,
+                ),
+                "bike" => array(
+                    'editable' => FALSE,
+                ),
+                "ip" => array(
+                    'editable' => FALSE,
+                ),
+                "cod_f1" => array(
+                    'editable' => FALSE,
+                ),
+                "cod_f2" => array(
+                    'editable' => FALSE,
+                ),
+                "descriz" => array(
+                    'editable' => FALSE,
+                ),
                 "percorr" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'percorr_segment',
                     'label' => __('Walkable path segment'),
@@ -136,30 +194,77 @@ class Datastruct_Path extends Datastruct {
                     'label' => __('Reduction walkable path segment'),
                 )),
 
-                "em_natura" => array(
-                    'form_input_type' => self::TEXTAREA,
+                "em_natur" => array(
                     'label' => __('Natural emergency'),
                 ),
 
                 "ev_stcul" => array(
-                    'form_input_type' => self::TEXTAREA,
                     'label' => __('History cultural evidences'),
                 ),
 
                 "em_paes" => array(
-                    'form_input_type' => self::TEXTAREA,
                     'label' => __('Landascape values'),
                 ),
 
                 "op_attr" => array(
-                    'form_input_type' => self::TEXTAREA,
                     'label' => __('Works and equipment on the path'),
                 ),
 
-                 "inquiry" => array(
-                    'form_input_type' => self::TEXTAREA,
-                    'editor' => TRUE,
+                "coordxini" => array(
+                    'editable' => FALSE,
+                    'suffix' => 'm',
+                    'label' => __('Start X coordinate'),
                 ),
+
+                "coordxen" => array(
+                    'editable' => FALSE,
+                    'suffix' => 'm',
+                    'label' => __('End X coordinate'),
+                ),
+
+                "coordyini" => array(
+                    'editable' => FALSE,
+                    'suffix' => 'm',
+                    'label' => __('Start Y coordinate'),
+                ),
+
+                "coordyen" => array(
+                    'editable' => FALSE,
+                    'suffix' => 'm',
+                    'label' => __('End Y coordinate'),
+                ),
+
+                "q_init" => array(
+                    'editable' => FALSE,
+                    'suffix' => 'm',
+                    'label' => __('Start altitude'),
+                ),
+                "q_end" => array(
+                    'editable' => FALSE,
+                    'suffix' => 'm',
+                    'label' => __('End altitude'),
+                ),
+                "l" => array(
+                    'editable' => FALSE,
+                    'suffix' => 'km',
+                    'label' => __('Length'),
+                ),
+
+                /* Fields current can be update
+                 * =============================
+                 */
+
+                "percorr_current" => array_replace($baseSingleSelectField,array(
+                    'foreign_key' => 'percorr_segment',
+                    'label' => __('Walkable path segment'),
+                )),
+
+                "rid_perc_current" => array_replace($baseSingleSelectField,array(
+                    'foreign_key' => 'rid_perc_segment',
+                    'label' => __('Reduction walkable path segment'),
+                )),
+
+
             );
       }
       

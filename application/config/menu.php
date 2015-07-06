@@ -35,7 +35,7 @@ return array(
         ),
         'highlitingpoi' => array(
             'id' =>'highlitingpoi',
-            'name' => __('Highliting Poi'),
+            'name' => __('Highliting point'),
             'url' => '/jx/admin/highlitingpoi',
             'capability' => 'access-admin-highlitingpoi',
             'dropdown' => 'dropdown_highliting',
@@ -46,7 +46,8 @@ return array(
             'name' => __('Itineraries'),
             'url' => '/jx/admin/itinerary',
             'url_mobile' => 'user',
-             'capability' => 'access-admin-itinerary',
+            'capability' => 'access-admin-itinerary',
+            'dropdown' => 'dropdown_trail_elements',
             'icon' => 'code-fork',
         ),
          'poi' => array(

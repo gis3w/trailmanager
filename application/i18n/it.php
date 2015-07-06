@@ -165,6 +165,9 @@ return array(
 	'Pois' => 'Punti di interesse',
     'Paths' => 'Sentieri',
 	'Areas' => 'Aree',
+    'Highlitings' => 'Segnalazioni',
+    'Trail elements' => 'Sentieri',
+    'Highliting point' => 'Puntuali',
     
     'Images to upload' => 'Immagini da caricare',
     'Videos to embed' => 'Video da incorporare',
@@ -200,8 +203,8 @@ return array(
     'Path segment' => 'Tratta',
     'Path segments' => 'Tratte',
 
-    'tab-base-data' => 'Dati rilievo',
-    
+    'tab-base-data' => 'Dati rilievo/stato attuale',
+    'tab-main' =>'Dati principali/turistico informativi',
     
     
     

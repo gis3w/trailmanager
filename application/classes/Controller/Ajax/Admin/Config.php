@@ -29,12 +29,21 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
         $this->_set_survey_codes_path_segments();
         $this->_set_survey_codes_poi();
         $this->_set_global_configs();
+        $this->_set_crud_menu();
         
         
         /**
          * Popolamento oggetto config per risposta
          */
         $this->jres->data->config = $this->config;
+    }
+
+    protected function _set_crud_menu()
+    {
+        $this->config->crud_menu = array(
+            'position' => 'TR',
+            'orentation' => 'V'
+        );
     }
     
     protected function _set_i18n()

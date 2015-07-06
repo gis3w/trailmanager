@@ -21,4 +21,14 @@ class Model_Path_Segment extends ORMGIS
 
     );
 
+    public function rules()
+    {
+        return array(
+            'the_geom' =>array(
+                array('not_empty'),
+            ),
+
+        );
+    }
+
 }

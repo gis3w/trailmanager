@@ -31,7 +31,12 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
 
     protected function _set_the_geom_edit()
     {
-        
+        if(!isset($_POST['the_geom']))
+        {
+            $_POST['the_geom'] = NULL;
+            return;
+        }
+
         $geodata  = json_decode($_POST['the_geom']);
    
         if(!empty($geodata->features))  

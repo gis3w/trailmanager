@@ -59,6 +59,9 @@ class Model_Poi extends ORMGIS {
              'max_scale' =>array(
                     array('numeric'),
             ),
+            'the_geom' =>array(
+                array('not_empty'),
+            ),
         );
     }
 

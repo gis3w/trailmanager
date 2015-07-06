@@ -37,8 +37,25 @@ class Datastruct_Poi extends Datastruct {
             ),
         ),
         array(
-            'name' => 'poi-base-data-survey',
+            'name' => 'poi-base-data-geo',
             'position' => 'right',
+            'fields' => array(
+                'coord_x',
+                'coord_y',
+                'quota',
+            ),
+        ),
+        array(
+            'name' => 'path-base-data-current',
+            'position' => 'right',
+            'fields' => array(
+                'stato_segn_current',
+                'fatt_degr_current',
+            ),
+        ),
+        array(
+            'name' => 'poi-base-data-survey',
+            'position' => 'left',
             'fields' => array(
                 'data_ril',
                 'condmeteo',
@@ -71,7 +88,7 @@ class Datastruct_Poi extends Datastruct {
         ),
         array(
             'name' => 'tab-base-data',
-            'groups' => array('poi-base-data-poi','poi-base-data-survey','poi-base-data-data'),
+            'groups' => array('poi-base-data-poi','poi-base-data-geo','poi-base-data-survey','path-base-data-current','poi-base-data-data'),
         ),
         array(
             'name' => 'tab-path',
@@ -231,6 +248,37 @@ class Datastruct_Poi extends Datastruct {
                     'foreign_key' => 'coin_in_fi_poi',
                     'label' => __('Start-end coincidence class'),
                 )),
+
+                "quota" => array(
+                    'editable' => FALSE,
+                    'suffix' => 'm',
+                    'label' => __('Altitude'),
+                ),
+                "coord_x" => array(
+                    'editable' => FALSE,
+                    'suffix' => 'm',
+                    'label' => __('X coordinate'),
+                ),
+                "coord_y" => array(
+                    'editable' => FALSE,
+                    'suffix' => 'm',
+                    'label' => __('Y coordinate'),
+                ),
+
+                /* Fields current can be update
+               * =============================
+               */
+
+                "stato_segn_current" => array_replace($baseSingleSelectField,array(
+                    'foreign_key' => 'stato_segn_poi',
+                    'label' => __('Current signage state class'),
+                )),
+
+                "fatt_degr_current" => array_replace($baseSingleSelectField,array(
+                    'foreign_key' => 'fatt_degr_poi',
+                    'label' => __('Current degeneration cause class'),
+                )),
+
 
             );
       }
