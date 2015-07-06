@@ -1499,7 +1499,8 @@ $.extend(APP.anagrafica,
 				case "H":
 					break;
 				case "V":
-					fb.css("width",75);
+					//alert(fb.find(".btn:first").width());
+					fb.css("width","5%");
 					break;
 			}
 		}

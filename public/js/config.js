@@ -572,6 +572,51 @@ $.extend(APP.config,{
 		}
 	},
 	
+	setCSSSelector: function(obj)
+	{
+		var that = this;
+		var btnId = "themeButton";
+		var sel = $("body").find("#"+btnId);
+		/*
+		if (sel)
+			sel.empty();
+		$.each(obj.items, function(i,v){
+			var selected = (obj.selected_skin === v)? " selected " : " ";
+			sel.append('<option '+selected+' value="'+v+'">'+i+'</option>');
+		});
+		*/
+		if (sel.length == 0)
+			return;
+		sel.change(function()
+		{
+			var link = $("head").find("#bootstrapCSS");
+			if (link)
+				link.attr("href",$(this).val());
+			
+			if (!APP.utils.isset(APP.config.localConfig.urls["theme"]))
+				return;
+			$.ajax({
+				type: 'POST',
+				url: APP.config.localConfig.urls["theme"],
+				dataType: 'json',
+				data: {theme: $(this).find("option:selected").text()},
+				success: function(data)
+				{
+					if (!APP.utils.checkError(data.error, null))
+					{
+						
+					}
+					else
+						APP.utils.showErrMsg(data);
+				},
+				error: function(result)
+				{
+					APP.utils.showErrMsg(result);
+				}
+			});
+		});
+	},
+	
 	setConfig: function(data)
 	{
 		if (!APP.utils.isset(data.data.config))
@@ -582,6 +627,7 @@ $.extend(APP.config,{
 		APP.config.localConfig = data.data.config;		
 		APP.i18n.loadLocale(APP.config.localConfig.i18n);
 		$.datepicker.setDefaults($.datepicker.regional[APP.config.localConfig.i18n.split("-")[0]]);
+		APP.config.setCSSSelector(null);
 		APP.config.setPeriodicRequests();
 	},
 	
