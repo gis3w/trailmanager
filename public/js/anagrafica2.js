@@ -1391,7 +1391,7 @@ $.extend(APP.anagrafica,
 						<input type="hidden" name="csrf_token" class="tokenInput" value="'+APP.config.getToken(sectionTarget.resource)+'">\
 						<div class="row" style="height: 55px">\
 							<div class="col-md-12">\
-								<div id="formButtons" class="well well-sm" style="position: fixed; top: 55px; left: 15px; z-index: 50;"></div>\
+								<div id="formButtons" class="well well-sm" style="text-align: center"></div>\
 							</div>\
 						</div>\
 					</form>');
@@ -1401,10 +1401,91 @@ $.extend(APP.anagrafica,
 		{
 			var str = $(v.htmlString);
 			//str.tooltip();
-			//str.css("margin-right", "5px");
+			str.css("margin", "3px");
+			//fb.append("&nbsp;");
 			str.click(function(){ v.onClick($(this)); });
 			fb.append(str);
 		});
+		if (APP.utils.isset(APP.config.localConfig.crud_menu))
+		{			
+			switch(APP.config.localConfig.crud_menu.position)
+			{
+				case "TL":
+					fb.css({
+						'position': "fixed",
+						'z-index': 50,
+						'top': 55,
+						'left': "2%"
+					});
+					break;
+				case "TC":
+					fb.css({
+						'position': "fixed",
+						'z-index': 50,
+						'top': 55,
+						'left': "50%",
+						'right': "50%",
+					});
+					break;
+				case "TR":
+					fb.css({
+						'position': "fixed",
+						'z-index': 50,
+						'top': 55,
+						'right': "2%"
+					});
+					break;
+				case "ML":
+					fb.css({
+						'position': "fixed",
+						'z-index': 50,
+						'top': "50%",
+						'left': "2%",
+					});
+					break;
+				case "MR":
+					fb.css({
+						'position': "fixed",
+						'z-index': 50,
+						'top': "50%",
+						'right': "2%",
+					});
+					break;
+				case "BL":
+					fb.css({
+						'position': "fixed",
+						'z-index': 50,
+						'bottom': 0,
+						'left': "2%",
+					});
+					break;
+				case "BC":
+					fb.css({
+						'position': "fixed",
+						'z-index': 50,
+						'bottom': 0,
+						'left': "50%",
+						'right': "50%",
+					});
+					break;
+				case "BR":
+					fb.css({
+						'position': "fixed",
+						'z-index': 50,
+						'bottom': 0,
+						'right': "2%",
+					});
+					break;
+			}
+			switch(APP.config.localConfig.crud_menu.orentation)
+			{
+				case "H":
+					break;
+				case "V":
+					fb.css("width",75);
+					break;
+			}
+		}
 		
 		if (APP.utils.isset(sectionTarget.tabs))
 		{
