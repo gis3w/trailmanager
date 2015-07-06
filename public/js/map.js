@@ -494,13 +494,20 @@ $.extend(APP.map,
 								break;
 						}
 				}
+					
 				if (v.def)
 				{
-					defLayUrl = v.url;
-					defaultLayer = l;
-					defLayName = v.name;
-					if (v.transparent)
-						defaultLayerIsOverlay = true;
+					if (!v.transparent)
+					{
+						defLayUrl = v.url;
+						defaultLayer = l;
+						defLayName = v.name;
+					}
+					else
+					{
+						overlays[v.name] = l;
+						layers.push(l);
+					}
 				}
 				else
 				{
@@ -530,10 +537,7 @@ $.extend(APP.map,
 		if (!O.center)
 			that.setExtent(that.globalData[id].globalExtent);
 		
-		if (!defaultLayerIsOverlay)
-			baseLayers[defLayName] = defaultLayer;
-		else
-			overlays[defLayName] = defaultLayer;
+		baseLayers[defLayName] = defaultLayer;
 		L.control.layers(baseLayers,overlays).addTo(that.globalData[id].map);
 
 		that.setMapControls();
