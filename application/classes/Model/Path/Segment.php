@@ -31,4 +31,18 @@ class Model_Path_Segment extends ORMGIS
         );
     }
 
+    public function get($column) {
+
+        switch($column)
+        {
+
+            case "paths":
+                $value = ORMGIS::factory('Path')->where('se','=',$this->se);
+                break;
+
+        }
+        return $value;
+
+    }
+
 }
