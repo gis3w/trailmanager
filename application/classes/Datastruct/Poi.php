@@ -362,7 +362,8 @@ class Datastruct_Poi extends Datastruct {
                 'url_values_params' => array(
                     '$1' => 'se',
                 ),
-                'ajax_mode' => self::AJAX_MODE_JSON
+                'datatable' => TRUE,
+                'ajax_mode' => self::AJAX_MODE_HTML
             )
         );
         
