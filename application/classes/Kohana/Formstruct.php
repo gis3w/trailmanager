@@ -35,6 +35,13 @@ class Kohana_Formstruct{
 
     const SUBFORM = 'subform';
     const SUBTABLE = 'subtable';
+
+    const AJAX_MODE_JSON = 'json';
+    const AJAX_MODE_HTML = 'html';
+    const AJAX_MODE_SCRIPT = 'script';
+    const AJAX_MODE_JSONP = 'jsonp';
+    const AJAX_MODE_XML = 'xml';
+    const AJAX_MODE_TEXT = 'text';
     
     
 

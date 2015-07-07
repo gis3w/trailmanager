@@ -358,10 +358,11 @@ class Datastruct_Poi extends Datastruct {
         $fct['paths_poi'] = array_replace($this->_columnStruct, array(
                 "data_type" => self::SUBTABLE,
                 "table_show" => FALSE,
-                'url_values' => '/jx/admin/path?filter=se:$1',
+                'url_values' => '/jx/admin/subtablepath?filter=se:$1',
                 'url_values_params' => array(
                     '$1' => 'se',
                 ),
+                'ajax_mode' => self::AJAX_MODE_JSON
             )
         );
         

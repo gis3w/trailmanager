@@ -213,37 +213,51 @@ abstract class Kohana_Controller_Api_Main extends Kohana_Controller_REST{
      * @return none
      */
     public function  after() {
-            switch(Route::name($this->request->route()))
+
+            if(isset($this->_template))
             {
-                case 'export':
-                    switch($this->mod_export)
-                    {
-                        case 'xls':
+                $view = View::factory($this->_template);
+                $view->jres = $this->jres;
 
-                            $objWriter = PHPExcel_IOFactory::createWriter($this->exls->objExport, 'Excel5');
-                            $objWriter->save('php://output');
-                            
-                            //$this->response->send_file(TRUE,$this->exls->objExport->getProperties()->getTitle().'.xls',array('mime_type' => 'application/vnd.ms-excel'));
-                            
-                            $this->response->headers('Content-Type','application/vnd.ms-excel');
-                            $this->response->headers('Content-Disposition','attachment;filename="'.$this->exls->objExport->getProperties()->getTitle().'.xls'.'"');
-                            $this->response->headers('Cache-Control','max-age=0');
+                $this->response->body($view->render());
+            }
+            else
+            {
+                switch(Route::name($this->request->route()))
+                {
+                    case 'export':
+                        switch($this->mod_export)
+                        {
+                            case 'xls':
+
+                                $objWriter = PHPExcel_IOFactory::createWriter($this->exls->objExport, 'Excel5');
+                                $objWriter->save('php://output');
+
+                                //$this->response->send_file(TRUE,$this->exls->objExport->getProperties()->getTitle().'.xls',array('mime_type' => 'application/vnd.ms-excel'));
+
+                                $this->response->headers('Content-Type','application/vnd.ms-excel');
+                                $this->response->headers('Content-Disposition','attachment;filename="'.$this->exls->objExport->getProperties()->getTitle().'.xls'.'"');
+                                $this->response->headers('Cache-Control','max-age=0');
+                                break;
+                        }
                         break;
-                    }
-                break;
-            
-                default:
-                    $body = $this->jres;
 
-                    $route_name = Route::name($this->request->route());
-                    if($this->request->is_ajax() OR  substr($route_name, 0,7) === 'restapi' OR  substr($route_name, 0,4) === 'rest'  OR substr($route_name, 0,2) === 'jx') 
-                    { 
-                        // impostazione del tipo di risposta
-                        $this->response->headers('Content-type','application/json');
-                    }
-                   
-                    $this->response->body($body);
-            }           
+                    default:
+                        $body = $this->jres;
+
+                        $route_name = Route::name($this->request->route());
+                        if($this->request->is_ajax() OR  substr($route_name, 0,7) === 'restapi' OR  substr($route_name, 0,4) === 'rest'  OR substr($route_name, 0,2) === 'jx')
+                        {
+                            // impostazione del tipo di risposta
+                            $this->response->headers('Content-type','application/json');
+                        }
+
+                        $this->response->body($body);
+                }
+            }
+
+
+
             
 
             return parent::after();
