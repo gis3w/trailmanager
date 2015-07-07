@@ -1283,21 +1283,37 @@ $.extend(APP.anagrafica,
 				else
 					spanValues = (APP.utils.isset(position) && position === "blockColForm")? [2, 9, 1] : [2, 9, 1];
 				
-				var myFieldLabel = (APP.utils.isset(v.label))? v.label+":" : "";
+				var myFieldLabel = (APP.utils.isset(v.label))? v.label+":" : null;
+				if (!myFieldLabel)
+				{
+					spanValues[1] = spanValues[0]+spanValues[1];
+					spanValues[0] = 0;
+				}
+				if (!APP.utils.isset(v.description))
+				{
+					spanValues[1] = spanValues[1]+spanValues[2];
+					spanValues[2] = 0;
+				}
 
-				var ctrlGrp = $("<div class='form-group' style=''>\
-									<label class='control-label col-md-"+spanValues[0]+"' for='APP-"+v.name+"' "+displayOnOff+">"+((v.required)? APP.utils.getRequiredSymbol() : '')+myFieldLabel+"</label>\
+				var ctrlGrp = $("<div class='form-group'>\
 									<div class='controls col-md-"+spanValues[1]+"' "+displayOnOff+"></div>\
-									<div class='descrInput col-md-"+spanValues[2]+"'></div>\
 								</div>");
+				
+				if (myFieldLabel)
+					ctrlGrp.prepend("<label class='control-label col-md-"+spanValues[0]+"' for='APP-"+v.name+"' "+displayOnOff+">"+((v.required)? APP.utils.getRequiredSymbol() : '')+myFieldLabel+"</label>");
 				
 				var cssClass = (APP.utils.isset(v.css_class))? v.css_class : "";
 				ctrlGrp.addClass(cssClass);
 								
 				ctrlGrp.find(".controls").append(inp);
-				if (APP.utils.isset(v.description))
-					ctrlGrp.find(".descrInput").append($('<span id="description_'+v.name+'" data-toggle="tooltip" title="'+v.description+'" data-placement="auto" data-container="body" class="tooltipElement text-muted" style="padding-left: 5px"><i class="icon icon-info-sign"></i></span>'));
 				
+				if (APP.utils.isset(v.description))
+				{
+					var descrInput = $("<div class='descrInput col-md-"+spanValues[2]+"'></div>");
+					descrInput.append($('<span id="description_'+v.name+'" data-toggle="tooltip" title="'+v.description+'" data-placement="auto" data-container="body" class="tooltipElement text-muted" style="padding-left: 5px"><i class="icon icon-info-sign"></i></span>'));
+					ctrlGrp.append(descrInput);
+				}
+								
 				parNode.append(ctrlGrp);							
 				
 				if (($.type(v.editable) === "boolean" && !v.editable) || ($.isPlainObject(v.editable) && ((!v.editable.insert && !APP.utils.isset(identifier)) || (!v.editable.update && APP.utils.isset(identifier)))) || (APP.utils.isset(identifier) && $.inArray("update", sectionTarget.capabilities) === -1) || (!APP.utils.isset(identifier) && $.inArray("insert", sectionTarget.capabilities) === -1))//if (!v.editable || $.inArray("update", sectionTarget.capabilities) === -1)
