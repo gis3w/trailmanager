@@ -3,7 +3,7 @@
 class Controller_Ajax_Admin_Base_Highliting extends Controller_Ajax_Admin_Sheet_Base{
 
     protected function _single_request_row($orm) {
-        $toRes = parent::_single_request_row($orm);
+        $toRes = Controller_Ajax_Base_Crud::_single_request_row($orm);
 
         $this->_unset_ORMGIS_geofield($toRes);
         $this->_set_the_geom($toRes, $orm);
@@ -15,6 +15,21 @@ class Controller_Ajax_Admin_Base_Highliting extends Controller_Ajax_Admin_Sheet_
 
         return $toRes;
     }
+
+    /**
+     * Set the old notes to show inside sheet
+     * @param type $tores
+     * @param type $orm
+     */
+    protected function _set_oldnotes(&$toRes, $orm)
+    {
+        $view = View::factory('data/oldnotes');
+        $view->states = $orm->states
+            ->order_by('date','DESC')
+            ->find_all();
+        $toRes['oldnotes'] = $view->render();
+    }
+
 
     /**
      * Set data from current reporter if anonimous or registerd

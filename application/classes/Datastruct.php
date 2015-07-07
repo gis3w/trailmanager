@@ -70,7 +70,7 @@ class Datastruct extends Kohana_Formstruct{
 
     public $menu;
     
-    const SUBFORM = 'subform';
+
     
     // modalità di recuper default value per le combobox
     // per il campo default_value

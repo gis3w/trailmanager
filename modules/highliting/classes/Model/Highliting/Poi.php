@@ -12,7 +12,7 @@ class Model_Highliting_Poi extends Model_Highliting{
             'model'   => 'Image_Highliting_Poi',
         ),
         'states' => array(
-            'model'   => 'State_Poi',
+            'model'   => 'State_Highliting_Poi',
         ),
     );
     
