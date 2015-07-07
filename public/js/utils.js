@@ -332,13 +332,14 @@ $.extend(APP.utils,{
 			APP.fileuploader.init(form);
 			
 		var ip = form.find(".input-group-prefix"); // prepend
+		/*
 		if (ip.length>0)
 		{
 			$.each(ip, function(i,v)
 			{
 				var input = $(v).find("input").first();
 				var w1 = input.width();
-				var w2 = 30;//$(v).find("span.add-on").first().width(); non va perche' c'e' anche il padding
+				var w2 = 0;//$(v).find("span.add-on").first().width(); non va perche' c'e' anche il padding
 				input.width(w1-w2);
 			});
 		}
@@ -349,10 +350,11 @@ $.extend(APP.utils,{
 			{
 				var input = $(v).find("input").first();
 				var w1 = input.width();
-				var w2 = 30;//$(v).find("span.add-on").first().width(); non va perche' c'e' anche il padding
+				var w2 = 0;//$(v).find("span.add-on").first().width(); non va perche' c'e' anche il padding
 				//input.width(w1-w2);
 			});
 		}
+		*/
 		
 		//form.find(".minicolors").minicolors();	
 		
@@ -1007,18 +1009,27 @@ $.extend(APP.utils,{
 					case "subtable":
 						inp = "<div id='APP-"+v.name+"' class='table-responsive'></div>";
 						
+						var myUrl = v.url_values;
+						if (v.url_values_params)
+						{
+							$.each(v.url_values_params, function(j,k){
+								myUrl = that.replaceAll(j, obj[k], myUrl);
+							});
+						}
+						
 						$.ajax({
 							type: 'GET',
-							url: v.url_values+"?filter="+v.foreign_key+":"+identifier,
-							dataType: 'json',
+							url: myUrl,//v.url_values+"?filter="+v.foreign_key+":"+identifier,
+							dataType: v.ajax_mode,
 							success: function(data)
 							{
-								if (!APP.utils.checkError(data.error, null))
+								var table = null;
+								if (v.ajax_mode == "json")
 								{
-									var table = $(	'<table class="table table-striped table-bordered table-condensed datatable">\
-														<thead><tr></tr></thead>\
-														<tbody></tbody>\
-													</table>');
+									table = $(	'<table class="table table-striped table-bordered table-condensed datatable">\
+													<thead><tr></tr></thead>\
+													<tbody></tbody>\
+												</table>');
 									
 									var theadtr = table.find("thead tr");
 									var tbody = table.find("tbody");
@@ -1044,9 +1055,14 @@ $.extend(APP.utils,{
 											tr.append("<td>"+vv[vvv]+"</td>");
 										});
 										tbody.append(tr);
-									});													
-									
-									form.find("#APP-"+v.name).html(table);
+									});
+								}
+								else
+									table = $(data);
+								
+								form.find("#APP-"+v.name).html(table);
+								if (v.datatable)
+								{
 									form.find("#APP-"+v.name).find("table").dataTable({
 										"bProcessing": true,
 										"bFilter": false,
@@ -1057,8 +1073,6 @@ $.extend(APP.utils,{
 										"oLanguage": APP.utils.getDataTableLanguage()
 									});
 								}
-								else
-									APP.utils.showErrMsg(data);
 							},
 							error: function(result){ APP.utils.showErrMsg(result); }
 						});

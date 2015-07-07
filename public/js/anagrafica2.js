@@ -1283,21 +1283,37 @@ $.extend(APP.anagrafica,
 				else
 					spanValues = (APP.utils.isset(position) && position === "blockColForm")? [2, 9, 1] : [2, 9, 1];
 				
-				var myFieldLabel = (APP.utils.isset(v.label))? v.label+":" : "";
+				var myFieldLabel = (APP.utils.isset(v.label))? v.label+":" : null;
+				if (!myFieldLabel)
+				{
+					spanValues[1] = spanValues[0]+spanValues[1];
+					spanValues[0] = 0;
+				}
+				if (!APP.utils.isset(v.description))
+				{
+					spanValues[1] = spanValues[1]+spanValues[2];
+					spanValues[2] = 0;
+				}
 
-				var ctrlGrp = $("<div class='form-group' style=''>\
-									<label class='control-label col-md-"+spanValues[0]+"' for='APP-"+v.name+"' "+displayOnOff+">"+((v.required)? APP.utils.getRequiredSymbol() : '')+myFieldLabel+"</label>\
+				var ctrlGrp = $("<div class='form-group'>\
 									<div class='controls col-md-"+spanValues[1]+"' "+displayOnOff+"></div>\
-									<div class='descrInput col-md-"+spanValues[2]+"'></div>\
 								</div>");
+				
+				if (myFieldLabel)
+					ctrlGrp.prepend("<label class='control-label col-md-"+spanValues[0]+"' for='APP-"+v.name+"' "+displayOnOff+">"+((v.required)? APP.utils.getRequiredSymbol() : '')+myFieldLabel+"</label>");
 				
 				var cssClass = (APP.utils.isset(v.css_class))? v.css_class : "";
 				ctrlGrp.addClass(cssClass);
 								
 				ctrlGrp.find(".controls").append(inp);
-				if (APP.utils.isset(v.description))
-					ctrlGrp.find(".descrInput").append($('<span id="description_'+v.name+'" data-toggle="tooltip" title="'+v.description+'" data-placement="auto" data-container="body" class="tooltipElement text-muted" style="padding-left: 5px"><i class="icon icon-info-sign"></i></span>'));
 				
+				if (APP.utils.isset(v.description))
+				{
+					var descrInput = $("<div class='descrInput col-md-"+spanValues[2]+"'></div>");
+					descrInput.append($('<span id="description_'+v.name+'" data-toggle="tooltip" title="'+v.description+'" data-placement="auto" data-container="body" class="tooltipElement text-muted" style="padding-left: 5px"><i class="icon icon-info-sign"></i></span>'));
+					ctrlGrp.append(descrInput);
+				}
+								
 				parNode.append(ctrlGrp);							
 				
 				if (($.type(v.editable) === "boolean" && !v.editable) || ($.isPlainObject(v.editable) && ((!v.editable.insert && !APP.utils.isset(identifier)) || (!v.editable.update && APP.utils.isset(identifier)))) || (APP.utils.isset(identifier) && $.inArray("update", sectionTarget.capabilities) === -1) || (!APP.utils.isset(identifier) && $.inArray("insert", sectionTarget.capabilities) === -1))//if (!v.editable || $.inArray("update", sectionTarget.capabilities) === -1)
@@ -1424,7 +1440,8 @@ $.extend(APP.anagrafica,
 			fb.append(str);
 		});
 		if (APP.utils.isset(APP.config.localConfig.crud_menu))
-		{			
+		{
+			var hDistance = 4;
 			switch(APP.config.localConfig.crud_menu.position)
 			{
 				case "TL":
@@ -1432,7 +1449,7 @@ $.extend(APP.anagrafica,
 						'position': "fixed",
 						'z-index': 50,
 						'top': 55,
-						'left': "2%"
+						'left': hDistance
 					});
 					break;
 				case "TC":
@@ -1449,7 +1466,8 @@ $.extend(APP.anagrafica,
 						'position': "fixed",
 						'z-index': 50,
 						'top': 55,
-						'right': "2%"
+						'right': hDistance
+						//'right': "2%"
 					});
 					break;
 				case "ML":
@@ -1457,7 +1475,7 @@ $.extend(APP.anagrafica,
 						'position': "fixed",
 						'z-index': 50,
 						'top': "50%",
-						'left': "2%",
+						'left': hDistance,
 					});
 					break;
 				case "MR":
@@ -1465,7 +1483,7 @@ $.extend(APP.anagrafica,
 						'position': "fixed",
 						'z-index': 50,
 						'top': "50%",
-						'right': "2%",
+						'right': hDistance,
 					});
 					break;
 				case "BL":
@@ -1473,7 +1491,7 @@ $.extend(APP.anagrafica,
 						'position': "fixed",
 						'z-index': 50,
 						'bottom': 0,
-						'left': "2%",
+						'left': hDistance,
 					});
 					break;
 				case "BC":
@@ -1490,7 +1508,7 @@ $.extend(APP.anagrafica,
 						'position': "fixed",
 						'z-index': 50,
 						'bottom': 0,
-						'right': "2%",
+						'right': hDistance,
 					});
 					break;
 			}
@@ -1508,7 +1526,7 @@ $.extend(APP.anagrafica,
 		if (APP.utils.isset(sectionTarget.tabs))
 		{
 			var ul = $('<ul class="nav nav-tabs"></ul>');
-			var tabsContent = $('<div class="itemContentTabs"></div>');
+			var tabsContent = $('<div class="itemContentTabs row"></div>');
 			$.each(sectionTarget.tabs, function(i, v)
 			{
 				var classe = (i===0)? "active" : "";
@@ -1595,17 +1613,15 @@ $.extend(APP.anagrafica,
 				});
 
 				ul.append(tab);
-				var tabc = $('<div id="'+v.name+'" class="row tabContent '+classe+'">\
-					<div class="col-md-12>\
-						<div class="row">\
-							<div class="leftColForm col-md-6"></div>\
-							<div class="rightColForm col-md-6"></div>\
-						</div>\
-						<div class="row">\
-							<div class="blockColForm col-md-12"></div>\
-						</div>\
-					</div>\
-				</div>');
+				var tabc = $('<div id="'+v.name+'" class="col-md-12 tabContent '+classe+'">\
+								<div class="row">\
+									<div class="leftColForm col-md-6"></div>\
+									<div class="rightColForm col-md-6"></div>\
+								</div>\
+								<div class="row">\
+									<div class="blockColForm col-md-12"></div>\
+								</div>\
+							</div>');
 				tabc.css("opacity",0);
 				tabsContent.append(tabc);
 			});
