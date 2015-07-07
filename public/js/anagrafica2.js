@@ -323,6 +323,7 @@ $.extend(APP.anagrafica,
 		var that = this;
 		that.selectedItem = that.tmpSelectedItem;
 		
+		APP.config.prevUrl = APP.config.currentUrl;
 		APP.config.currentUrl = subSection+'/'+t[that.sections[subSection].primary_key];
 		
 		if (APP.utils.isset(that.sections[subSection].menu))
@@ -382,8 +383,11 @@ $.extend(APP.anagrafica,
 						that.destroyWindow();
 						that.selectedItem = APP.config.bc_getLastSrcElement();
 						APP.config.currentUrl = APP.config.prevUrl;
-						if (APP.config.prevUrl)
-							APP.config.workSpace.navigate(APP.config.prevUrl, {trigger: true, replace: true});
+						if (APP.config.backUrl)
+						{
+							APP.config.workSpace.navigate(APP.config.backUrl, {trigger: true, replace: true});
+							APP.config.backUrl = null;
+						}
 					}
 				});
 				
@@ -821,8 +825,11 @@ $.extend(APP.anagrafica,
 					that.tmpSelectedItem = that.selectedItem;
 					that.destroyWindow();
 					that.selectedItem = APP.config.bc_getLastSrcElement();
-					if (APP.config.currentUrl)
-						APP.config.workSpace.navigate(APP.config.currentUrl, {trigger: true, replace: true});
+					if (APP.config.backUrl)
+					{
+						APP.config.workSpace.navigate(APP.config.backUrl, {trigger: true, replace: true});
+						APP.config.backUrl = null;
+					}
 				}
 			});
 			
