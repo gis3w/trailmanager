@@ -79,7 +79,16 @@ class Datastruct_Poi extends Datastruct {
                 'coin_in_fi'
             ),
         ),
+        array(
+            'name' => 'poi-base-data-paths',
+            'position' => 'block',
+            'fields' => array(
+                'paths_poi',
+            ),
+        ),
     );
+
+
 
     public $tabs = array(
         array(
@@ -92,11 +101,7 @@ class Datastruct_Poi extends Datastruct {
         ),
         array(
             'name' => 'tab-path',
-            'datastruct' => 'path',
-            'url_values' => '/jx/admin/path?filter=se:$1',
-            'url_params' => array(
-                '$1' => 'se'
-            ),
+            'groups' => array('poi-base-data-paths'),
         )
 
     );
@@ -348,6 +353,16 @@ class Datastruct_Poi extends Datastruct {
                         self::STATE_UPDATE =>TRUE
                     ),
                 )
+        );
+
+        $fct['paths_poi'] = array_replace($this->_columnStruct, array(
+                "data_type" => self::SUBTABLE,
+                "table_show" => FALSE,
+                'url_values' => '/jx/admin/path?filter=se:$1',
+                'url_values_params' => array(
+                    '$1' => 'se',
+                ),
+            )
         );
         
         return $fct;

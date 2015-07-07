@@ -32,6 +32,9 @@ class Kohana_Formstruct{
     const STATE_DELETE = 'delete';
     const STATE_GET = 'get';
     const STATE_LIST = 'list';
+
+    const SUBFORM = 'subform';
+    const SUBTABLE = 'subtable';
     
     
 
