@@ -71,6 +71,14 @@ class Datastruct_Path extends Datastruct {
                 'op_attr'),
         ),
 
+        array(
+            'name' => 'path-base-data-poi',
+            'position' => 'left',
+            'fields' => array(
+                'pois_path',
+            ),
+        ),
+
     );
 
     public $tabs = array(
@@ -82,6 +90,10 @@ class Datastruct_Path extends Datastruct {
             'name' => 'tab-base-data',
             'groups' => array('path-base-data-path','path-base-data-geo','path-base-data-current','path-base-data-data'),
         ),
+        array(
+            'name' => 'tab-poi',
+            'groups' => array('path-base-data-poi'),
+        )
     );
     
     public $title = array(
@@ -333,6 +345,19 @@ class Datastruct_Path extends Datastruct {
                         self::STATE_UPDATE =>TRUE
                     ),
                 )
+        );
+
+        $fct['pois_path'] = array_replace($this->_columnStruct, array(
+                "data_type" => self::SUBTABLE,
+                "table_show" => FALSE,
+                'url_values' => '/jx/admin/subtablepoi?filter=se:$1&path_id=$2',
+                'url_values_params' => array(
+                    '$1' => 'se',
+                    '$2' => 'id'
+                ),
+                'datatable' => TRUE,
+                'ajax_mode' => self::AJAX_MODE_HTML
+            )
         );
         
         return $fct;
