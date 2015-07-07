@@ -12,10 +12,24 @@
 
 class Kohana_SAFEDB
 {
+
+    public static $CACHE_TB = array();
+
     public static function joinTbAssoc($mainTb,$joinInterTb)
     {
         return "(select ".$mainTb."_id from 
             (select ".$mainTb."_id, time_dissociazione ,row_number() over (partition by ".$mainTb."_id order by time_dissociazione desc) as rn from ".$joinInterTb.") as tb 
                 where rn= 1 and time_dissociazione is null)";
+    }
+
+    public static function tbCache($tbname,$pkvalue,$field,$pkfield = 'id')
+    {
+        if(!isset(self::$CACHE_TB[$tbname]))
+        {
+            $td = ORM::factory($tbname)->find_all()->as_array($pkfield);
+            self::$CACHE_TB[$tbname] = $td;
+        }
+
+        return isset(self::$CACHE_TB[$tbname][$pkvalue]) ? self::$CACHE_TB[$tbname][$pkvalue]->{$field} : NULL;
     }
 }

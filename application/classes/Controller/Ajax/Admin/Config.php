@@ -43,7 +43,7 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
     {
         $this->config->crud_menu = array(
             'position' => 'TR',
-            'orentation' => 'V'
+            'orentation' => 'H'
         );
     }
     

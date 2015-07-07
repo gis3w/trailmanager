@@ -205,6 +205,7 @@ return array(
 
     'tab-base-data' => 'Dati rilievo/stato attuale',
     'tab-main' =>'Dati principali/turistico informativi',
+    'tab-path' => 'Sentieri relativi',
     
     
     

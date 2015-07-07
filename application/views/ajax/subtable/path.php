@@ -17,7 +17,7 @@ $items = $jres->data->items;
         <tr>
             <td><?php echo $item['se'] ?></td>
             <td><?php echo $item['descriz'] ?></td>
-            <td><a class="btn" href="/admin/#path/<?php echo $item['id'] ?>"><?php echo $item['id'] ?></a></td>
+            <td><a class="btn btn-default" href="/admin#path/<?php echo $item['id'] ?>"><?php echo $item['id'] ?></a></td>
         </tr>
     <?php endforeach ?>
     </tbody>

@@ -315,3 +315,4 @@ $parms = ORM::factory('Role')->find_all()->as_array('name');
 
 foreach($parms as $parametro => $valore)
     define('ROLE_'.Inflector::underscore(strtoupper($parametro)), $valore->id);
+
