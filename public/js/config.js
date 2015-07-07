@@ -112,7 +112,7 @@ $.extend(APP.config,{
 			
 			APP.anagrafica.start(button, secTitle, sec, w, function()
 			{
-				if (1)
+				if (0)
 				{
 					var tw = APP.anagrafica.windows[APP.anagrafica.windows.length-1];
 					var prevw = (APP.anagrafica.windows.length>2)? APP.anagrafica.windows[APP.anagrafica.windows.length-2] : tw;

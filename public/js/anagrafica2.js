@@ -382,6 +382,8 @@ $.extend(APP.anagrafica,
 						that.destroyWindow();
 						that.selectedItem = APP.config.bc_getLastSrcElement();
 						APP.config.currentUrl = APP.config.prevUrl;
+						if (APP.config.prevUrl)
+							APP.config.workSpace.navigate(APP.config.prevUrl, {trigger: true, replace: true});
 					}
 				});
 				
@@ -819,6 +821,8 @@ $.extend(APP.anagrafica,
 					that.tmpSelectedItem = that.selectedItem;
 					that.destroyWindow();
 					that.selectedItem = APP.config.bc_getLastSrcElement();
+					if (APP.config.currentUrl)
+						APP.config.workSpace.navigate(APP.config.currentUrl, {trigger: true, replace: true});
 				}
 			});
 			
