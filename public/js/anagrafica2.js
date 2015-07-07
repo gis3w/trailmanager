@@ -1424,7 +1424,8 @@ $.extend(APP.anagrafica,
 			fb.append(str);
 		});
 		if (APP.utils.isset(APP.config.localConfig.crud_menu))
-		{			
+		{
+			var hDistance = 4;
 			switch(APP.config.localConfig.crud_menu.position)
 			{
 				case "TL":
@@ -1432,7 +1433,7 @@ $.extend(APP.anagrafica,
 						'position': "fixed",
 						'z-index': 50,
 						'top': 55,
-						'left': "2%"
+						'left': hDistance
 					});
 					break;
 				case "TC":
@@ -1449,7 +1450,8 @@ $.extend(APP.anagrafica,
 						'position': "fixed",
 						'z-index': 50,
 						'top': 55,
-						'right': "2%"
+						'right': hDistance
+						//'right': "2%"
 					});
 					break;
 				case "ML":
@@ -1457,7 +1459,7 @@ $.extend(APP.anagrafica,
 						'position': "fixed",
 						'z-index': 50,
 						'top': "50%",
-						'left': "2%",
+						'left': hDistance,
 					});
 					break;
 				case "MR":
@@ -1465,7 +1467,7 @@ $.extend(APP.anagrafica,
 						'position': "fixed",
 						'z-index': 50,
 						'top': "50%",
-						'right': "2%",
+						'right': hDistance,
 					});
 					break;
 				case "BL":
@@ -1473,7 +1475,7 @@ $.extend(APP.anagrafica,
 						'position': "fixed",
 						'z-index': 50,
 						'bottom': 0,
-						'left': "2%",
+						'left': hDistance,
 					});
 					break;
 				case "BC":
@@ -1490,7 +1492,7 @@ $.extend(APP.anagrafica,
 						'position': "fixed",
 						'z-index': 50,
 						'bottom': 0,
-						'right': "2%",
+						'right': hDistance,
 					});
 					break;
 			}
@@ -1508,7 +1510,7 @@ $.extend(APP.anagrafica,
 		if (APP.utils.isset(sectionTarget.tabs))
 		{
 			var ul = $('<ul class="nav nav-tabs"></ul>');
-			var tabsContent = $('<div class="itemContentTabs"></div>');
+			var tabsContent = $('<div class="itemContentTabs row"></div>');
 			$.each(sectionTarget.tabs, function(i, v)
 			{
 				var classe = (i===0)? "active" : "";
@@ -1595,17 +1597,15 @@ $.extend(APP.anagrafica,
 				});
 
 				ul.append(tab);
-				var tabc = $('<div id="'+v.name+'" class="row tabContent '+classe+'">\
-					<div class="col-md-12>\
-						<div class="row">\
-							<div class="leftColForm col-md-6"></div>\
-							<div class="rightColForm col-md-6"></div>\
-						</div>\
-						<div class="row">\
-							<div class="blockColForm col-md-12"></div>\
-						</div>\
-					</div>\
-				</div>');
+				var tabc = $('<div id="'+v.name+'" class="col-md-12 tabContent '+classe+'">\
+								<div class="row">\
+									<div class="leftColForm col-md-6"></div>\
+									<div class="rightColForm col-md-6"></div>\
+								</div>\
+								<div class="row">\
+									<div class="blockColForm col-md-12"></div>\
+								</div>\
+							</div>');
 				tabc.css("opacity",0);
 				tabsContent.append(tabc);
 			});
