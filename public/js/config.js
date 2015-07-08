@@ -3,6 +3,8 @@ $.extend(APP.config,{
 	currentConfigSection: null,
 	currentUrl: null,
 	prevUrl: null,
+	backUrl: null,
+	bMustNullBackUrl: false,
 	default_iDisplayLength: 10,
 	breadCrumb: [],
 	fadeInDelay: 400,
@@ -19,6 +21,54 @@ $.extend(APP.config,{
 		
 		var workNow = function(sec, secTitle, query)
 		{	
+			APP.config.backUrl = APP.config.currentUrl;
+			that.removeActiveClasses($(".navbar"), "li");
+			var button = $("#"+sec+"Button");
+			button.closest("li").addClass("active");
+			APP.anagrafica.finish();
+			that.currentConfigSection = sec;		
+			APP.utils.updateBreadcrumb("empty");
+			var w = $('<div id="'+sec+'Container"></div>');
+			$("#mainContent").html(w);
+			
+			APP.anagrafica.start(button, secTitle, sec, w, "/"+query, function()
+			{
+				if (!APP.config.backUrl)
+				{
+					var tw = APP.anagrafica.windows[APP.anagrafica.windows.length-1];
+					var prevw = (APP.anagrafica.windows.length>2)? APP.anagrafica.windows[APP.anagrafica.windows.length-2] : tw;
+					
+					var obj = {//tableContainer, section, items_per_page, window, oldWindow, onSelectRow
+							'section': sec,
+							'tableContainer': tw,//tableDiv.hide(),
+							'window': tw,
+							'oldWindow': prevw,
+							'items_per_page': APP.config.default_iDisplayLength,
+							'sort_fields': {},
+							'onSelectRow': function(t){
+								//that.selectedItem = $(this);
+								APP.anagrafica.onSelectTableRow(t, sec, tw);
+							}
+						};
+					
+					APP.anagrafica.showTable(obj);
+				}
+				else
+				{
+					var iw = APP.anagrafica.windows[APP.anagrafica.windows.length-1];				
+					
+					var index = APP.utils.getIndexFromField(APP.anagrafica.sections[sec].values, APP.anagrafica.sections[sec].primary_key, parseInt(query));
+					if (index>-1)
+						APP.anagrafica.onSelectTableRow(APP.anagrafica.sections[sec].values[index],sec,iw);
+					if (APP.config.bMustNullBackUrl)
+					{
+						APP.config.backUrl = null;
+						APP.config.bMustNullBackUrl = false;
+					}
+				}
+				
+			});
+			
 			/*
 			var button = $("#"+sec+"Button");
 			
@@ -101,45 +151,6 @@ $.extend(APP.config,{
 				loadData();
 			
 			*/
-			APP.config.backUrl = APP.config.currentUrl;
-			that.removeActiveClasses($(".navbar"), "li");
-			var button = $("#"+sec+"Button");
-			button.closest("li").addClass("active");
-			APP.anagrafica.finish();
-			that.currentConfigSection = sec;		
-			APP.utils.updateBreadcrumb("empty");
-			var w = $('<div id="'+sec+'Container"></div>');
-			$("#mainContent").html(w);
-			
-			APP.anagrafica.start(button, secTitle, sec, w, function()
-			{
-				if (!APP.config.backUrl)
-				{
-					var tw = APP.anagrafica.windows[APP.anagrafica.windows.length-1];
-					var prevw = (APP.anagrafica.windows.length>2)? APP.anagrafica.windows[APP.anagrafica.windows.length-2] : tw;
-					
-					var obj = {//tableContainer, section, items_per_page, window, oldWindow, onSelectRow
-							'section': sec,
-							'tableContainer': tw,//tableDiv.hide(),
-							'window': tw,
-							'oldWindow': prevw,
-							'items_per_page': APP.config.default_iDisplayLength,
-							'sort_fields': {},
-							'onSelectRow': function(t){
-								//that.selectedItem = $(this);
-								APP.anagrafica.onSelectTableRow(t, sec, tw);
-							}
-						};
-					
-					APP.anagrafica.showTable(obj);
-				}
-
-				var iw = APP.anagrafica.windows[APP.anagrafica.windows.length-1];
-				
-				var index = APP.utils.getIndexFromField(APP.anagrafica.sections[sec].values, APP.anagrafica.sections[sec].primary_key, parseInt(query));
-				if (index>-1)
-					APP.anagrafica.onSelectTableRow(APP.anagrafica.sections[sec].values[index],sec,iw);
-			});
 		};
 		
 		that.backboneRouter = Backbone.Router.extend({

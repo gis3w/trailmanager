@@ -10,7 +10,7 @@ $.extend(APP.anagrafica,
 		APP.subforms.finish();
 	},
 	
-	start: function(el, titolo, section, div, loadCallback)
+	start: function(el, titolo, section, div, filterString, loadCallback)
 	{
 		var that = this;
 		this.windows = [];
@@ -58,7 +58,7 @@ $.extend(APP.anagrafica,
 			this.processSectionsProperty({
 				'title': titolo,
 				'section': this.currentSection,
-				'filterString': APP.filter.getActiveFilterString(section),
+				'filterString': (APP.utils.isset(filterString))? filterString : APP.filter.getActiveFilterString(section),
 				'loadCallback': ($.isFunction(loadCallback))? loadCallback : function(res){
 						var obj = {
 							'section': that.currentSection,
@@ -385,8 +385,8 @@ $.extend(APP.anagrafica,
 						APP.config.currentUrl = APP.config.prevUrl;
 						if (APP.config.backUrl)
 						{
+							APP.config.bMustNullBackUrl = true;
 							APP.config.workSpace.navigate(APP.config.backUrl, {trigger: true, replace: true});
-							APP.config.backUrl = null;
 						}
 					}
 				});
@@ -827,8 +827,8 @@ $.extend(APP.anagrafica,
 					that.selectedItem = APP.config.bc_getLastSrcElement();
 					if (APP.config.backUrl)
 					{
+						APP.config.bMustNullBackUrl = true;
 						APP.config.workSpace.navigate(APP.config.backUrl, {trigger: true, replace: true});
-						APP.config.backUrl = null;
 					}
 				}
 			});
