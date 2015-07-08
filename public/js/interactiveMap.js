@@ -1206,7 +1206,7 @@ $.extend(APP.interactiveMap,
 		"poi": false,
 		"path": false,
 		"area": false,
-		//"itinerary": false
+		"itinerary": false
 	},
 	
 	checkIfsectionCompleted: function(section)
