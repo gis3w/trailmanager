@@ -79,6 +79,14 @@ class Datastruct_Path extends Datastruct {
             ),
         ),
 
+        array(
+            'name' => 'path-base-data-path-segment',
+            'position' => 'left',
+            'fields' => array(
+                'path_segments_path',
+            ),
+        ),
+
     );
 
     public $tabs = array(
@@ -93,6 +101,10 @@ class Datastruct_Path extends Datastruct {
         array(
             'name' => 'tab-poi',
             'groups' => array('path-base-data-poi'),
+        ),
+        array(
+            'name' => 'tab-path-segment',
+            'groups' => array('path-base-data-path-segment'),
         )
     );
     
@@ -356,6 +368,19 @@ class Datastruct_Path extends Datastruct {
                     '$2' => 'id'
                 ),
                 'datatable' => TRUE,
+                'ajax_mode' => self::AJAX_MODE_HTML
+            )
+        );
+
+        $fct['path_segments_path'] = array_replace($this->_columnStruct, array(
+                "data_type" => self::SUBTABLE,
+                "table_show" => FALSE,
+                'url_values' => '/jx/admin/subtablepathsegment?filter=se:$1&path_id=$2',
+                'url_values_params' => array(
+                    '$1' => 'se',
+                    '$2' => 'id'
+                ),
+                'datatable' => FALSE,
                 'ajax_mode' => self::AJAX_MODE_HTML
             )
         );

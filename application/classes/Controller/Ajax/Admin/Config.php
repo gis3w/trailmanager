@@ -175,6 +175,7 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
             'path_segment' =>'/jx/admin/pathsegment',
             'area' => '/jx/admin/area',
             'user' => 'jx/admin/user',
+            'anonimous_highlitings_data' => 'jx/admin/anonimoushighlitingsdata',
             'image_poi' => 'jx/admin/imagepoi',
             'image_path' => 'jx/admin/imagepath',
             'image_area' => 'jx/admin/imagearea',

@@ -23,13 +23,18 @@ return array(
              'name' => __('Highlitings'),
              'icon' => 'plus'
          ),
+     'dropdown_user' => array(
+             'id' => 'dropdown_user',
+             'capability' => 'access-administration',
+             'name' => __('Users'),
+             'icon' => 'group'
+         ),
     ),
     'main' => array(
         'home' => array(
             'id' =>'home',
-            'name' => __('Home'),
+            'name' => '',
             'url' => 'jx/home',
-            'url_mobile' => 'home',
             'capability' => NULL,
             'icon' => 'home',
         ),
@@ -39,7 +44,7 @@ return array(
             'url' => '/jx/admin/highlitingpoi',
             'capability' => 'access-admin-highlitingpoi',
             'dropdown' => 'dropdown_highliting',
-            'icon' => 'map-maker',
+            'icon' => 'map-marker',
         ),
          'itinerary' => array(
             'id' =>'itinerary',
@@ -88,11 +93,20 @@ return array(
         ),
         'user' => array(
             'id' =>'user',
-            'name' => __('Users'),
+            'name' => __('System users'),
             'url' => '/jx/user',
             'url_mobile' => 'user',
             'capability' => 'access-admin-user',
             'icon' => 'user',
+            'dropdown' => 'dropdown_user',
+        ),
+        'anonimous_highlitings_data' => array(
+            'id' =>'anonimous_highlitings_data',
+            'name' => __('Anonimous Users'),
+            'url' => SAFE::setBaseUrl('jx/admin/anonimoushighlitingsdata'),
+            'capability' => 'access-admin-user',
+            'icon' => 'user',
+            'dropdown' => 'dropdown_user',
         ),
          'global' => array(
             'id' =>'global',

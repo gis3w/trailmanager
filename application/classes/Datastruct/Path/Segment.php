@@ -34,7 +34,26 @@ class Datastruct_Path_Segment extends Datastruct
             'position' => 'block',
             'fields' => array('tp_trat','tp_fondo','diff','percorr','rid_perc','morf','ambiente','cop_tel'),
         ),
+        array(
+            'name' => 'poi-base-data-paths',
+            'position' => 'block',
+            'fields' => array(
+                'paths_path_segment',
+            ),
+        ),
     );
+
+    public $tabs = array(
+        array(
+            'name' => 'tab-main',
+            'groups' => array('path-base-data-path','path-base-data-survey','path-base-data-geodata','path-base-data-current','path-base-data-data'),
+        ),
+        array(
+            'name' => 'tab-path-segment-path',
+            'groups' => array('poi-base-data-paths'),
+        )
+    );
+
 
     protected function _columns_type()
     {
@@ -159,4 +178,25 @@ class Datastruct_Path_Segment extends Datastruct
             ),
         );
     }
+
+    protected function _extra_columns_type()
+    {
+        $fct = array();
+        $fct['paths_path_segment'] = array_replace($this->_columnStruct, array(
+                "data_type" => self::SUBTABLE,
+                "table_show" => FALSE,
+                'url_values' => '/jx/admin/subtablepath?filter=se:$1&path_segment_id=$2',
+                'url_values_params' => array(
+                    '$1' => 'se',
+                    '$2' => 'gid'
+                ),
+                'datatable' => TRUE,
+                'ajax_mode' => self::AJAX_MODE_HTML
+            )
+        );
+
+        return $fct;
+    }
+
+
 }

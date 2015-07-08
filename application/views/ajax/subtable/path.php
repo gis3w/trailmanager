@@ -9,15 +9,17 @@ $items = $jres->data->items;
     <tr>
         <th><?php echo _('SE')?></th>
         <th><?php echo _('Origin description')?></th>
-        <th><?php echo _('Link')?></th>
     </tr>
     </thead>
     <tbody>
     <?php foreach ($items as $item): ?>
         <tr>
-            <td><?php echo $item['se'] ?></td>
+            <td>
+                <a class="btn btn-default" href="/admin#path/<?php echo $item['id'] ?>">
+                    <span class="icon icon-link"></span> <?php echo $item['se'] ?>
+                </a>
+            </td>
             <td><?php echo $item['descriz'] ?></td>
-            <td><a class="btn btn-default" href="/admin#path/<?php echo $item['id'] ?>"><?php echo $item['id'] ?></a></td>
         </tr>
     <?php endforeach ?>
     </tbody>

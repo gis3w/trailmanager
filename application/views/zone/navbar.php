@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<nav class="navbar <?php echo $themeActive == 'default' ? 'navbar-inverse': 'navbar-default navbar-collapse' ?> navbar-fixed-top" role="navigation">
     <div class="container-fluid">
     <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main_navbar_admin">
