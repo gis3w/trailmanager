@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Datastruct_Front_Image_Poi extends Datastruct_Image_Poi {
+class Datastruct_Front_Image_Highliting_Poi extends Datastruct_Image_Highliting_Poi {
     
    
      protected function _columns_type() {

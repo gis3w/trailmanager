@@ -51,7 +51,7 @@
   <projectlayers layercount="1">
     <maplayer minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="1" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" geometry="Polygon" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
       <id>Comuni_PU20150701100841922</id>
-      <datasource>./gis_data/Comuni PU.shp|layerid=0|subset="UnioniMont" = 'UNIONE MONTANA ALTA VALLE DEL METAURO'</datasource>
+      <datasource>./gis_data/Comuni PU.shp|layerid=0</datasource>
       <title></title>
       <abstract></abstract>
       <keywordList>
@@ -121,7 +121,7 @@
               <prop k="offset_unit" v="MM"/>
               <prop k="outline_color" v="217,0,0,255"/>
               <prop k="outline_style" v="dot"/>
-              <prop k="outline_width" v="0.86"/>
+              <prop k="outline_width" v="0.46"/>
               <prop k="outline_width_unit" v="MM"/>
               <prop k="style" v="no"/>
             </layer>

@@ -38,8 +38,8 @@ return array(
             'capability' => NULL,
             'icon' => 'home',
         ),
-        'highlitingpoi' => array(
-            'id' =>'highlitingpoi',
+        'highliting_poi' => array(
+            'id' =>'highliting_poi',
             'name' => __('Highliting point'),
             'url' => '/jx/admin/highlitingpoi',
             'capability' => 'access-admin-highlitingpoi',
@@ -133,6 +133,22 @@ return array(
                             )
                          )
                       ),
+                     'highlitingtypologies' => array(
+                         'name' => __('Typologies'),
+                         'icon' =>'suitcase',
+                         'menu' => array(
+                             'type' => 'affix',
+                             'items' => array(
+                                 'global_highlitingtypology' => array(
+                                     'id' =>'highlitingtypology',
+                                     'name' => __('Highliting typologies'),
+                                     'url' => '/jx/admin/global/highlitingtypology',
+                                     'capability' => 'access-global-typology',
+                                     'icon' => 'list-alt',
+                                 ),
+                             )
+                         )
+                     ),
                      'pages' => array(
                          'name' => __('Pages'),
                          'icon' =>'suitcase',

@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Datastruct_Front_Poi extends Datastruct_Highlitingpoi {
+class Datastruct_Front_Highlitingpoi extends Datastruct_Highlitingpoi {
 
     public $filter = FALSE;
     public $unsetColumns = array('the_geom','highliting_state_id','publish');

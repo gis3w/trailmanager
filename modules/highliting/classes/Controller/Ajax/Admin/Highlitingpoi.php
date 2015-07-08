@@ -5,7 +5,7 @@ class Controller_Ajax_Admin_Highlitingpoi extends Controller_Ajax_Admin_Base_Hig
     
     protected $_pagination = FALSE;
     
-    protected $_datastruct = "Highlitingpoi";
+    protected $_datastruct = "Highliting_Poi";
 
     protected function _data_edit()
     {

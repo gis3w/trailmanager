@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Datastruct_Highlitingpoi extends Datastruct {
+class Datastruct_Highliting_Poi extends Datastruct {
     
     protected $_nameORM = "Highliting_Poi";
     protected $_typeORM = "ORMGIS";
@@ -25,7 +25,7 @@ class Datastruct_Highlitingpoi extends Datastruct {
        array(
             'name' => 'highliting-poi-foreign-data',
             'position' => 'right',
-            'fields' => array('typology_id','the_geom','image_highliting_poi'),
+            'fields' => array('highliting_typology_id','the_geom','image_highliting_poi'),
         ),
         array(
             'name' => 'highliting-poi-ending',
@@ -83,7 +83,7 @@ class Datastruct_Highlitingpoi extends Datastruct {
                     'foreign_toshow_params' => array(
                         '$1' => 'name',
                     ),
-                    'url_values' => Kohana::$base_url.'jx/typology',
+                    'url_values' => Kohana::$base_url.'jx/highlitingtypology',
                      'description' => __('Select the main typology for this highlighting'),
                      "table_show" => TRUE,
                 ),
