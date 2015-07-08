@@ -66,7 +66,7 @@ class Model_Highliting extends ORMGIS {
             'highliting_state_id' =>array(
                     array('not_empty'),
             ),
-            'typology_id' =>array(
+            'highliting_typology_id' =>array(
                     array('not_empty'),
             ),
             'the_geom' =>array(

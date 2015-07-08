@@ -76,7 +76,7 @@ class Datastruct_Highliting_Poi extends Datastruct {
                     'label' =>__('Geodata'),
                     'table_show' => FALSE,
                 ),
-                "typology_id" => array(
+                "highliting_typology_id" => array(
                     'form_input_type' => self::SELECT,
                     'foreign_mode' => self::SINGLESELECT,
                     'foreign_toshow' => '$1',
