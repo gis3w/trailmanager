@@ -318,7 +318,7 @@ $.extend(APP.anagrafica,
 			APP.utils.showNoty({title: APP.i18n.translate("error"), type: "error", content: APP.i18n.translate("list_capability_denied")});		
 	},
 	
-	onSelectTableRow: function(t, subSection, contentDiv)
+	onSelectTableRow: function(t, subSection, contentDiv, backUrl)
 	{
 		var that = this;
 		that.selectedItem = that.tmpSelectedItem;
@@ -378,15 +378,15 @@ $.extend(APP.anagrafica,
 				
 				arr.push({
 					htmlString: '<a id="button_cancel" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("cancel")+'" class="btn btn-default btn-lg tooltipElement" href="#"><i class="icon-arrow-left"></i></a>',
-					onClick: function(){ 
-						that.tmpSelectedItem = that.selectedItem;
-						that.destroyWindow();
-						that.selectedItem = APP.config.bc_getLastSrcElement();
-						APP.config.currentUrl = APP.config.prevUrl;
-						if (APP.config.backUrl)
+					onClick: function(){
+						if (backUrl)
+							APP.config.workSpace.navigate(backUrl, {trigger: true, replace: true});
+						else
 						{
-							APP.config.bMustNullBackUrl = true;
-							APP.config.workSpace.navigate(APP.config.backUrl, {trigger: true, replace: true});
+							that.tmpSelectedItem = that.selectedItem;
+							that.destroyWindow();
+							that.selectedItem = APP.config.bc_getLastSrcElement();
+							APP.config.currentUrl = APP.config.prevUrl;
 						}
 					}
 				});

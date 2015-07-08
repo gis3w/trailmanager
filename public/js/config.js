@@ -3,8 +3,6 @@ $.extend(APP.config,{
 	currentConfigSection: null,
 	currentUrl: null,
 	prevUrl: null,
-	backUrl: null,
-	bMustNullBackUrl: false,
 	default_iDisplayLength: 10,
 	breadCrumb: [],
 	fadeInDelay: 400,
@@ -60,11 +58,6 @@ $.extend(APP.config,{
 					var index = APP.utils.getIndexFromField(APP.anagrafica.sections[sec].values, APP.anagrafica.sections[sec].primary_key, parseInt(query));
 					if (index>-1)
 						APP.anagrafica.onSelectTableRow(APP.anagrafica.sections[sec].values[index],sec,iw);
-					if (APP.config.bMustNullBackUrl)
-					{
-						APP.config.backUrl = null;
-						APP.config.bMustNullBackUrl = false;
-					}
 				}
 				
 			});
