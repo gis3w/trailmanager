@@ -1022,16 +1022,22 @@ $.extend(APP.anagrafica,
 			var ddd = form.find("div.mapbox");
 			APP.map.setMap({container: ddd});
 			
+			if (APP.utils.isset(APP.map.globalData[APP.map.currentMapId].drawnItems))
+			{
+				APP.map.globalData[APP.map.currentMapId].map.removeLayer(APP.map.globalData[APP.map.currentMapId].drawnItems);
+				APP.map.globalData[APP.map.currentMapId].drawnItems = null;
+			}
+			if (APP.utils.isset(APP.map.globalData[APP.map.currentMapId].drawControl))
+			{
+				APP.map.globalData[APP.map.currentMapId].map.removeControl(APP.map.globalData[APP.map.currentMapId].drawControl);
+				APP.map.globalData[APP.map.currentMapId].drawControl = null;
+			}
+			
 			var index = APP.utils.getIndexFromField(this.sections[this.currentSection].columns, "form_input_type", "mapbox");
 			if (index > -1)
 			{
-				if (APP.utils.isset(APP.map.globalData[APP.map.currentMapId].drawnItems))
-					APP.map.globalData[APP.map.currentMapId].map.removeLayer(APP.map.globalData[APP.map.currentMapId].drawnItems);				
-				
-				APP.map.globalData[APP.map.currentMapId].drawnItems = new L.FeatureGroup();
-				APP.map.globalData[APP.map.currentMapId].map.addLayer(APP.map.globalData[APP.map.currentMapId].drawnItems);				
-				
 				var obj = this.sections[this.currentSection].columns[index];
+				
 				if (obj.map_box_editing)
 				{
 					var opt = {
@@ -1043,33 +1049,29 @@ $.extend(APP.anagrafica,
 							rectangle: false
 						},
 						edit: {
-							featureGroup: APP.map.globalData[APP.map.currentMapId].drawnItems,
-							edit: obj.editable
+							edit: {
+								selectedPathOptions: {}
+							},
+							remove: {}
 						}
 					};
+					if (!obj.editable)
+						opt.edit.edit = false;
+					/*if (!obj.removable)
+						opt.edit.remove = false;*/
+						
 					$.each(obj.map_box_editing_geotype, function(i,v)
 					{
 						opt.draw[v] = {title: APP.i18n.translate(v)};
 					});
 					APP.map.toggleDrawEditor(APP.map.currentMapId, true, opt);
+					
 					APP.map.globalData[APP.map.currentMapId].map.on('draw:created', function (e)
 					{
-						
 						var type = e.layerType;
 						var	layer = e.layer;
 						
-						/*
-						var counter = 0;
-						APP.map.globalData[APP.map.currentMapId].drawnItems.eachLayer(function(l)
-						{
-							counter++;
-						});
-						
-						if (counter == 0)*/
-						{
-							APP.map.globalData[APP.map.currentMapId].drawnItems.addLayer(layer);
-                                                                                                                              
-						}
+						APP.map.globalData[APP.map.currentMapId].drawnItems.addLayer(layer);
 					});
 					APP.map.globalData[APP.map.currentMapId].map.on('draw:edited', function (e)
 					{
@@ -1083,6 +1085,51 @@ $.extend(APP.anagrafica,
 						//APP.map.globalData[APP.map.currentMapId].drawnItems.clearLayers(layers);
 					});
 				}
+				
+				var inp = form.find("input.mapbox");
+				if (inp.length > 0 && inp.val() != "")
+				{
+					var value = inp.val();
+					
+					var gj = L.geoJson($.parseJSON(value), {
+						
+						onEachFeature: function(feature, layer)
+						{
+							switch( feature.type)
+							{
+								case "MultiLineString": case "LineString":
+									var cs = feature.coordinates;
+									$.each(cs, function(i,v){
+										$.each(v,function(j,k){
+											v[j] = [k[1],k[0]];
+										});
+										L.polyline(v).addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
+									});
+									break;
+								case "MultiPolygon": case "Polygon":
+									var cs = feature.coordinates;
+									$.each(cs, function(i,v){
+										$.each(v[0],function(j,k){
+											v[0][j] = [k[1],k[0]];
+										});
+										L.polygon(v[0]).addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
+									});
+									break;
+								default:
+									layer.addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
+
+							}
+						},
+						
+						pointToLayer: function (data, latlng) {
+							return L.circleMarker(latlng);
+						},
+						
+					});
+					
+					APP.map.globalData[APP.map.currentMapId].map.fitBounds(APP.map.globalData[APP.map.currentMapId].drawnItems.getBounds());
+				}
+				
 				if (obj.map_box_fileloading)
 				{
 					var options_eraseall = {
@@ -1109,37 +1156,6 @@ $.extend(APP.anagrafica,
 						//APP.map.globalData[APP.map.currentMapId].map.removeLayer(e.layer);
 					});					
 					
-				}
-				var inp = form.find("input.mapbox");
-				if (inp.length > 0 && inp.val() != "")
-				{
-					if (!APP.map.globalData[APP.map.currentMapId].map.hasLayer(APP.map.globalData[APP.map.currentMapId].drawnItems))
-					{
-						APP.map.globalData[APP.map.currentMapId].drawnItems = new L.FeatureGroup();
-						APP.map.globalData[APP.map.currentMapId].map.addLayer(APP.map.globalData[APP.map.currentMapId].drawnItems);
-					}
-					var value = inp.val();
-					var gj = new L.geoJson($.parseJSON(value), {
-						
-						onEachFeature: function(feature, layer)
-						{
-							if ($.isArray(feature.geometries))
-							{
-								$.each(feature.geometries, function(ij,vj){
-									APP.map.globalData[APP.map.currentMapId].drawnItems.addLayer(L.GeoJSON.geometryToLayer(vj));
-								});
-							}
-							else
-								APP.map.globalData[APP.map.currentMapId].drawnItems.addLayer(L.GeoJSON.geometryToLayer(feature));
-						},
-						
-						pointToLayer: function (data, latlng) {
-							return L.circleMarker(latlng);
-						},
-					});
-					
-					//APP.map.globalData[APP.map.currentMapId].drawnItems.addLayer(gj);
-					APP.map.globalData[APP.map.currentMapId].map.fitBounds(APP.map.globalData[APP.map.currentMapId].drawnItems.getBounds());
 				}
 			}
 		}

@@ -369,20 +369,27 @@ $.extend(APP.map,
 		
 		if (b)
 		{
-			if (!APP.utils.isset(options))
-			{
+			if (!this.globalData[mapId].drawnItems)
 				this.globalData[mapId].drawnItems = new L.FeatureGroup();
+			if (!this.globalData[mapId].map.hasLayer(this.globalData[mapId].drawnItems))
 				this.globalData[mapId].map.addLayer(this.globalData[mapId].drawnItems);
 			
+			if (!APP.utils.isset(options))
+			{
 				options = {
 					edit: {
-						featureGroup: that.globalData[mapId].drawnItems,
 						edit: false
 					}
 				};
-			}	
+			}
+
+			if (!options.edit.featureGroup)
+				options.edit.featureGroup = that.globalData[mapId].drawnItems;
 			
-			this.globalData[mapId].drawControl = new L.Control.Draw(options);			
+			if (this.globalData[mapId].drawControl)
+				this.globalData[mapId].map.removeControl(this.globalData[mapId].drawControl); 
+			
+			this.globalData[mapId].drawControl = new L.Control.Draw(options);
 			this.globalData[mapId].map.addControl(this.globalData[mapId].drawControl);
 		}
 		else

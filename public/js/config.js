@@ -152,7 +152,7 @@ $.extend(APP.config,{
 			    "path/:query": "path",
 			    "poi/:query": "poi",
 			    "itinerary/:query": "itinerary",
-			    "path_segment/:query": "path_segment",
+			    "pathsegment/:query": "pathsegment",
 			    "area/:query": "area",
 			    
 			    "search/:query/p:page": "search"   // #search/kiwis/p7
@@ -171,7 +171,7 @@ $.extend(APP.config,{
 			  },
 			  
 			  path_segment: function(query) {
-				  workNow("path_segment", "Tratte", query);
+				  workNow("pathsegment", "Tratte", query);
 			  },
 
 			  search: function(query, page) {
