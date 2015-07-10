@@ -1109,10 +1109,12 @@ $.extend(APP.anagrafica,
 								case "MultiPolygon": case "Polygon":
 									var cs = feature.coordinates;
 									$.each(cs, function(i,v){
-										$.each(v[0],function(j,k){
-											v[0][j] = [k[1],k[0]];
+										$.each(v,function(w,z){
+											$.each(z,function(j,k){
+												z[j] = [k[1],k[0]];
+											});
+											L.polygon(z).addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
 										});
-										L.polygon(v[0]).addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
 									});
 									break;
 								default:
