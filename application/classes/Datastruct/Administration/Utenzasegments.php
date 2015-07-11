@@ -1,9 +1,9 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Datastruct_Administration_Tpfondosegments extends Datastruct {
+class Datastruct_Administration_Utenzasegments extends Datastruct {
 
     
-    protected $_nameORM = "Tp_Fondo_Segment";
+    protected $_nameORM = "Utenza_Segment";
     
      public $title = array(
         "title_toshow" => "$1",
@@ -15,7 +15,7 @@ class Datastruct_Administration_Tpfondosegments extends Datastruct {
     
     public $groups = array(
         array(
-            'name' => 'tpfondosegment-data',
+            'name' => 'utenzasegment-data',
             'position' => 'left',
             'fields' => array('code','description'),
         ),
@@ -28,7 +28,7 @@ class Datastruct_Administration_Tpfondosegments extends Datastruct {
                 "editable" => TRUE,
             ),
             "description" => array(
-                "form_input_type" => self::TEXTAREA
+                "form_input_type" => self::TEXTAREA,
             ),
         );
     }  

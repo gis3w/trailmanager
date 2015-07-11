@@ -73,7 +73,7 @@ class Datastruct_Path extends Datastruct {
 
         array(
             'name' => 'path-base-data-poi',
-            'position' => 'left',
+            'position' => 'block',
             'fields' => array(
                 'pois_path',
             ),
@@ -81,7 +81,7 @@ class Datastruct_Path extends Datastruct {
 
         array(
             'name' => 'path-base-data-path-segment',
-            'position' => 'left',
+            'position' => 'block',
             'fields' => array(
                 'path_segments_path',
             ),
@@ -92,18 +92,22 @@ class Datastruct_Path extends Datastruct {
     public $tabs = array(
         array(
             'name' => 'tab-main',
+            'icon' => 'globe',
             'groups' => array('path-data','path-foreign-data','path-block-data'),
         ),
         array(
             'name' => 'tab-base-data',
+            'icon' => 'phone',
             'groups' => array('path-base-data-path','path-base-data-geo','path-base-data-current','path-base-data-data'),
         ),
         array(
             'name' => 'tab-poi',
+            'icon' => 'map-marker',
             'groups' => array('path-base-data-poi'),
         ),
         array(
             'name' => 'tab-path-segment',
+            'icon' => 'location-arrow',
             'groups' => array('path-base-data-path-segment'),
         )
     );

@@ -156,6 +156,13 @@ return array(
     'general_informations' => 'Informazioni generali', 
     'More informations' => 'Motivi di interesse',
     'Request informations' => 'Richiesta informazioni',
+    'Region codes' => 'Codici regionali',
+    'Survey class segments' => 'Classi di rilievo <b>TRATTE</b>',
+    'Survey class points' => 'Classi di rilievo <b>PUNTI NOTEVOLI</b>',
+    'Highliting typologies' => 'Categorie segnalazioni',
+    'Highliting states' => 'Stati della segnalazione',
+    'System users' => 'Utenti di sistema',
+    'Anonimous Users' => 'Segnalatori non registrati',
     
     'actions' => 'Azioni',
     
@@ -168,6 +175,11 @@ return array(
     'Highlitings' => 'Segnalazioni',
     'Trail elements' => 'Sentieri',
     'Highliting point' => 'Puntuali',
+    'Descriz' => 'Descrizione',
+    'Walkable path segment' => 'Percorribilità',
+    'Landascape values' => 'Valori paesaggistici',
+    'Natural emergency' => 'Emergenze naturali',
+    'History cultural evidences' => 'Evidenze storico culturali',
     
     'Images to upload' => 'Immagini da caricare',
     'Videos to embed' => 'Video da incorporare',
@@ -203,9 +215,20 @@ return array(
     'Path segment' => 'Tratta',
     'Path segments' => 'Tratte',
 
-    'tab-base-data' => 'Dati rilievo/stato attuale',
-    'tab-main' =>'Dati principali/turistico informativi',
-    'tab-path' => 'Sentieri relativi',
+    'tab-base-data' => '<b>DATI RILIEVO/STATO</b> attuale',
+    'tab-main' =>'<b>DATI PRINCIPALI/TURISTICI</b> informativi',
+    'tab-path' => '<b>SENTIERI</b> relativi',
+    'tab-poi' => '<b>PUNTI INTERESSE</b> correlati',
+    'tab-path-segment' => '<b>TRATTE</b> correlate',
+    'tab-path-segment-path' => '<b>SENTIERI</b> relativi',
+    'path-base-data-path' => 'Dati identificativi sentiero',
+    'path-base-data-geo' => 'Geo dati',
+    'path-base-data-current' => '<b>STATO ATTUALE</b>',
+    'path-base-data-data' => 'Attributi sentiero',
+    'path-base-data-poi' => 'Punti notevoli',
+    'path-base-data-path-segment' => 'Tratte',
+
+
     
     
     

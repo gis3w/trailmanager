@@ -119,7 +119,7 @@ return array(
                  'items' => array(
                       'typologies' => array(
                          'name' => __('Typologies'),
-                         'icon' =>'suitcase',
+                         'icon' =>'th-list',
                          'menu' => array(
                              'type' => 'affix',
                              'items' => array(
@@ -134,8 +134,8 @@ return array(
                          )
                       ),
                      'highlitingtypologies' => array(
-                         'name' => __('Typologies'),
-                         'icon' =>'suitcase',
+                         'name' => __('Highliting typologies'),
+                         'icon' =>'th-list',
                          'menu' => array(
                              'type' => 'affix',
                              'items' => array(
@@ -151,7 +151,7 @@ return array(
                      ),
                      'pages' => array(
                          'name' => __('Pages'),
-                         'icon' =>'suitcase',
+                         'icon' =>'book',
                          'menu' => array(
                              'type' => 'affix',
                              'items' => array(
@@ -186,7 +186,7 @@ return array(
                     ),
                     'administration_highlitingstates' => array(
                         'id' =>'highlitingstates',
-                        'name' => __('Hightlighting states'),
+                        'name' => __('Highliting states'),
                         'url' => SAFE::setBaseUrl('jx/admin/administration/highlitingstates'),
                         'capability' => 'access-administration-highlitingstates',
                         'icon' => 'cog',
@@ -214,7 +214,7 @@ return array(
                     ),
                     'administration_backgroundlayers' => array(
                         'id' =>'backgroundlayers',
-                        'name' => __('Background layers'),
+                        'name' => __('Background and overlay layers'),
                         'url' => '/jx/admin/administration/backgroundlayers',
                         'capability' => 'access-administration-backgroundlayers',
                         'icon' => 'leaf',
@@ -309,6 +309,13 @@ return array(
                                         'capability' => 'access-administration-coptelsegments',
                                         'icon' => 'cog',
                                     ),
+                                    'administration_utenzasegments' => array(
+                                        'id' =>'utenzasegments',
+                                        'name' => __('Consumption path segments'),
+                                        'url' => '/jx/admin/administration/utenzasegments',
+                                        'capability' => 'access-administration-utenzasegments',
+                                        'icon' => 'cog',
+                                    ),
                                 ),
                             ),
                         ),
@@ -316,7 +323,7 @@ return array(
                             'id' =>'considerablepoints_codes',
                             'name' => __('Survey class points'),
                             'capability' => 'access-administration-clasrilsegments',
-                            'icon' => 'cog',
+                            'icon' => 'map-marker',
                             'menu' => array(
                                 'type' => 'affix',
                                 'items' => array(
@@ -388,6 +395,20 @@ return array(
                                         'name' => __('Start-end coincidence class'),
                                         'url' => '/jx/admin/administration/coininfipois',
                                         'capability' => 'access-administration-coininfipois',
+                                        'icon' => 'cog',
+                                    ),
+                                    'administration_nuovasegnpois' => array(
+                                        'id' =>'nuovasegnpois',
+                                        'name' => __('New signage class'),
+                                        'url' => '/jx/admin/administration/nuovasegnpois',
+                                        'capability' => 'access-administration-nuovasegnpois',
+                                        'icon' => 'cog',
+                                    ),
+                                    'administration_priointpois' => array(
+                                        'id' =>'priointpois',
+                                        'name' => __('Priority intervention class'),
+                                        'url' => '/jx/admin/administration/priointpois',
+                                        'capability' => 'access-administration-priointpois',
                                         'icon' => 'cog',
                                     ),
                                 ),

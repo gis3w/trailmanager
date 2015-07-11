@@ -1,9 +1,9 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Datastruct_Administration_Tpfondosegments extends Datastruct {
+class Datastruct_Administration_Priointpois extends Datastruct {
 
     
-    protected $_nameORM = "Tp_Fondo_Segment";
+    protected $_nameORM = "Prio_Int_Poi";
     
      public $title = array(
         "title_toshow" => "$1",
@@ -15,7 +15,7 @@ class Datastruct_Administration_Tpfondosegments extends Datastruct {
     
     public $groups = array(
         array(
-            'name' => 'tpfondosegment-data',
+            'name' => 'priointpois-data',
             'position' => 'left',
             'fields' => array('code','description'),
         ),
