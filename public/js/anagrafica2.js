@@ -1092,11 +1092,17 @@ $.extend(APP.anagrafica,
 					var value = inp.val();
 					
 					var gj = L.geoJson($.parseJSON(value), {
-						
+						/*
+						coordsToLatLng: function(coords)
+						{
+							return [coords[1],coords[0]];
+						},
+						*/
 						onEachFeature: function(feature, layer)
 						{
 							switch( feature.type)
 							{
+								
 								case "MultiLineString": case "LineString":
 									var cs = feature.coordinates;
 									$.each(cs, function(i,v){
@@ -1560,6 +1566,8 @@ $.extend(APP.anagrafica,
 			{
 				var classe = (i===0)? "active" : "";
 				var tab = $('<li id="'+v.name+'" role="presentation" class="'+classe+'"><a href="#">'+APP.i18n.translate(v.name)+'</a></li>');
+				if (v.icon)
+					tab.find("a").prepend('<i class="icon-'+v.icon+'"></i> ');
 				tab.click(function()
 				{
 					var tabId = tab.attr("id");
