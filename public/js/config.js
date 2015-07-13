@@ -23,10 +23,6 @@ $.extend(APP.config,{
 		var workNow = function(sec, secTitle, query)
 		{	
 			that.bDirectUrl = true;
-			if (!that.bBack)
-				that.queue.push(APP.config.currentUrl);
-			else
-				that.bBack = false;
 			
 			that.removeActiveClasses($(".navbar"), "li");
 			var button = $("#"+sec+"Button");
@@ -70,6 +66,7 @@ $.extend(APP.config,{
 				}
 				if (APP.config.queue.length==0)
 					APP.config.bDirectUrl = false;
+				APP.config.bBack = false;
 			});
 			
 			/*

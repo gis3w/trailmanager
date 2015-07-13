@@ -329,7 +329,11 @@ $.extend(APP.anagrafica,
 			APP.config.queue.push(subSection);
 			APP.config.prevUrl = subSection;
 		}
+		
 		APP.config.currentUrl = subSection+'/'+t[that.sections[subSection].primary_key];
+		if (!APP.config.bBack)
+			APP.config.queue.push(APP.config.currentUrl);
+		console.log(APP.config.queue);
 		
 		if (APP.utils.isset(that.sections[subSection].menu))
 		{
@@ -384,11 +388,23 @@ $.extend(APP.anagrafica,
 				arr.push({
 					htmlString: '<a id="button_cancel" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("cancel")+'" class="btn btn-default btn-lg tooltipElement" href="#"><i class="icon-arrow-left"></i></a>',
 					onClick: function(){
+						APP.config.bBack = true;
+						APP.config.queue.pop();
 						if (APP.config.bDirectUrl && APP.config.queue.length>0)
 						{
-							APP.config.bBack = true;
-							APP.config.workSpace.navigate(APP.config.queue.pop(), {trigger: true, replace: true});
+							var ssss = APP.config.queue[APP.config.queue.length-1];
+							var ios = ssss.indexOf("path_segment");
 							
+							if (ios > -1)
+							{
+								var psa = ssss.split("/");
+								ssss = "pathsegment";
+								
+								if (psa.length==2)
+									ssss =  "pathsegment"+"/"+psa[1];
+							}
+							
+							APP.config.workSpace.navigate(ssss, {trigger: true, replace: true});
 						}
 						else
 						{
@@ -437,7 +453,7 @@ $.extend(APP.anagrafica,
 				that.editItem(t[that.sections[subSection].primary_key], t, that.windows[that.windows.length-1], subSection, arr);
 			}
 		}
-		console.log(APP.config.currentUrl);
+		//console.log(APP.config.currentUrl);
 	},
 	
 	showCapabilitiesGrid: function(obj, permissions, parentDiv)
