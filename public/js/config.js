@@ -266,6 +266,11 @@ $.extend(APP.config,{
 	getToken: function(ds)
 	{
 		var that = this;
+		if (!APP.utils.isset(APP.config.localConfig.urls["token"]))
+		{
+			alert("Attenzione: inserire url del token nel CONFIG");
+			return false;
+		}
 		ds = (APP.utils.isset(ds) && ds !== "")? "?datastruct="+ds : "";
 		var token = "";
 		$.ajax({
@@ -802,6 +807,31 @@ $.extend(APP.config,{
 			APP.map.resizeMap();
 			APP.interactiveMap.resize();
 		});
+	},
+	
+	amIAdmin: function()
+	{
+		var that = this;
+		var mri = parseInt(that.localConfig.authuser.main_role_id);
+		var index = APP.utils.getIndexFromField(that.localConfig.role, "id", mri);
+		return (APP.i18n.translate(that.localConfig.role[index]).name === APP.i18n.translate("admin_role"))? true : false;
+	},
+	
+	isMobileVersion: function()
+	{
+		var that = this;
+		return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
+	},
+	
+	hasLittleWidth: function()
+	{
+		var navbarToggle = $("body").find(".navbar:first").find('.navbar-toggle');
+		return (navbarToggle.length>0 && navbarToggle.is(":visible"));
+	},
+	
+	checkLoggedUser: function()
+	{
+		return (this.localConfig.authuser)? true : false;
 	},
 	
 	setCreditsButton: function()

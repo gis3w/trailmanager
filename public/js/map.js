@@ -119,6 +119,11 @@ $.extend(APP.map,
 		return this.globalData[this.currentMapId].map;
 	},
 	
+	getCurrentMap: function()
+	{
+		return this.globalData[this.currentMapId].map;
+	},
+	
 	getLayer: function(id)
 	{
 		var that = this;

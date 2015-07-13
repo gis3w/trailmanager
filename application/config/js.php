@@ -87,6 +87,7 @@ return array(
 		'utils.js',
 		'config.js',
 		'filter.js',
+    	'modals.js',
 		'fileuploader3.js',
 		'subforms.js',
 		'anagrafica2.js',

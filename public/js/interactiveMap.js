@@ -16,6 +16,9 @@ $.extend(APP.interactiveMap,
 	},
 	infoDelay: 1000,
 	searchModal: null,
+	registrationModal: null,
+	loginMsgModal: null,
+	loginModal: null,
 	itemsOnSidebar: true,
 	mySidebar: {
 		control: null,
@@ -51,6 +54,30 @@ $.extend(APP.interactiveMap,
 			that.insertRowAlphabetically(container, row, selector, offset+1);
 	},
 	
+	insertMediaImage: function(src, media)
+	{
+		var that = this;
+		if (!APP.utils.isset(src) && !that.bDefaultImage)
+			return;
+		var img = $('<img class="media-object img-responsive img-rounded" src="'+(APP.utils.isset(src)? src : APP.config.localConfig.default_overview_image)+'" alt="" style="max-width: 60px; max-height: 60px">')
+		media.find("a:first").append(img);
+	},
+	
+	getSectionFromLayerType: function(type)
+	{
+		switch(type)
+		{
+			case "marker":
+				return "poi";
+			case "polyline":
+				return "path";
+			case "polygon":
+				return "area";
+			default:
+				return null;
+		}
+	},
+	
 	getObjectTitle: function(section, id)
 	{
 		var that = this;
@@ -81,6 +108,201 @@ $.extend(APP.interactiveMap,
 		var x = this.body.find(".centerImage");
 		x.css("width","100%");
 		x.centerImage();
+	},
+	
+	openEditModal: function(section, id, layer, onSave, onCancel)
+	{
+		var that = this;
+		
+		var body = APP.anagrafica.createFormTemplate(id, null, APP.anagrafica.sections["front_"+section], "front_"+section, []);
+		
+		var footerDiv = $(	'<div>\
+								<button type="button" class="btn btn-success"><i class="icon icon-ok"></i> '+APP.i18n.translate('save')+'</button>\
+								<button type="button" class="btn btn-default"><i class="icon icon-remove"></i> '+APP.i18n.translate('cancel')+'</button>\
+							</div>');
+		
+		footerDiv.find(".btn-success").click(function()
+		{
+			var tg = body.find("#APP-the_geom");
+			if (tg.length === 0)
+			{
+				tg = $('<input id="APP-the_geom" name="the_geom" type="hidden">');
+				body.append(tg);
+			}
+			
+			var template = {
+				"type":"FeatureCollection",
+				"features":[]
+			};
+			
+			template.features.push(layer.toGeoJSON());
+			tg.val(JSON.stringify(template));
+			
+			APP.anagrafica.formSubmit(id, "front_"+section, function(){
+				myModal.modal("hide");
+				if (APP.utils.isset(onSave) && $.isFunction(onSave))
+					onSave();
+			}, true);
+		});
+		footerDiv.find(".btn-default").click(function(){
+			myModal.modal("hide");
+			if (myModal.find(".mapboxDiv").length > 0)
+				APP.map.reverseMap();
+			var map = APP.map.getCurrentMap();
+			map.removeLayer(layer);
+			
+			if (APP.utils.isset(onCancel) && $.isFunction(onCancel))
+				onCancel();
+		});
+		
+		var modalId = "newGeometry";
+		
+		var myModal = APP.modals.create({
+			container: that.body,
+			id: modalId,
+			//size: "lg",
+			keyboard: 'false',
+			backdrop: "static",
+			bTopCloseButton: false,
+			header: APP.utils.capitalize(APP.i18n.translate("New report")),
+			body: body,
+			footer: footerDiv,
+			onShown: function(){
+				var f = that.body.find("#"+modalId+" form");
+				APP.utils.setLookForm(f, null);
+			},
+			onHidden: function(){ 
+				
+			}
+		});
+		
+		if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
+			that.mySidebar.control.hide();
+		
+		myModal.modal("show");
+	},
+	
+	addMarker: function(latlng)
+	{
+		var that = this;
+		var map = APP.map.getCurrentMap();
+		var marker = L.marker(latlng);
+		marker.addTo(map);
+		
+		setTimeout(function(){
+			that.openEditModal("poi", null, marker);
+		},250);
+	},
+	
+	toggleDrawEditor: function(bDraw, geometries)
+	{
+		var that = this;
+		
+		if (!APP.utils.isset(APP.map.globalData[APP.map.currentMapId].drawnItems))
+			APP.map.globalData[APP.map.currentMapId].drawnItems = new L.FeatureGroup();
+		if (!APP.map.globalData[APP.map.currentMapId].map.hasLayer(APP.map.globalData[APP.map.currentMapId].drawnItems))
+			APP.map.globalData[APP.map.currentMapId].map.addLayer(APP.map.globalData[APP.map.currentMapId].drawnItems);
+		var options = {
+			position: 'topleft',
+			draw: {
+				polyline: false,
+				polygon: false,
+				rectangle: false,
+				circle: false,
+				marker: false
+			},
+			edit: {
+				featureGroup: APP.map.globalData[APP.map.currentMapId].drawnItems,
+				edit: false,
+				remove: false
+			}
+		};
+		if (!APP.utils.isset(geometries) || !$.isArray(geometries) || geometries.length===0)
+		{
+			geometries = ['marker'];
+			/*
+			if (APP.config.checkLoggedUser())
+			{
+				geometries.push('polyline');
+				geometries.push('polygon');
+			}
+			*/
+		}				
+		$.each(geometries, function(i, v){
+			delete options.draw[v];
+		});				
+		APP.map.toggleDrawEditor(APP.map.currentMapId, bDraw, options);
+		if (bDraw)
+		{
+			APP.utils.showNoty({title: APP.i18n.translate("Information"), type: "information", content: APP.i18n.translate("use_left_buttons_to_draw_geometries"), timeout: 2000});
+			APP.map.globalData[APP.map.currentMapId].map.on('draw:drawstart', function (e)
+			{
+				//alert(e.layerType);
+			});
+			
+			APP.map.globalData[APP.map.currentMapId].map.on('draw:created', function (e)
+			{
+				APP.map.globalData[APP.map.currentMapId].map.addLayer(e.layer);
+				
+				var key = that.getSectionFromLayerType(e.layerType);
+				that.openEditModal(key, null, e.layer);
+			});
+			
+			/*
+			APP.map.globalData[APP.map.currentMapId].map.on('draw:edited', function (e) {
+				var layers = e.layers;
+				layers.eachLayer(function (layer) {
+					//do whatever you want, most likely save back to db
+				});
+			});
+			*/
+		}
+		else
+		{
+			APP.map.globalData[APP.map.currentMapId].map.off('draw:drawstart');
+			APP.map.globalData[APP.map.currentMapId].map.off('draw:created');
+			//APP.map.globalData[APP.map.currentMapId].map.off('draw:edited');
+		}
+	},
+	
+	toggleGeometry: function(b, bAskLogin)
+	{
+		var that = this;
+		
+		if (b && bAskLogin)
+		{
+			if (!APP.utils.isset(APP.config.localConfig.authuser))
+			{
+				if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
+					that.mySidebar.control.hide();
+				that.loginMsgModal.modal("show");
+				return false;
+			}			
+		}
+		
+		that.bAddGeometry = APP.utils.isset(b)? b : !that.bAddGeometry;
+		
+		if (APP.config.isMobileVersion())
+		{
+			if (that.currentNoty)
+				that.currentNoty.close();
+			if (that.bAddGeometry)
+				that.currentNoty = APP.utils.showNoty({content: '<p>'+APP.i18n.translate("Click to map to place marker")+'.</p>', title: APP.i18n.translate("Information"), type: "information", timeout: false});
+			else
+				that.currentNoty = null;
+		}
+		else
+		{
+			that.toggleDrawEditor(that.bAddGeometry);
+		}		
+		if (that.bAddGeometry)
+		{
+			if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
+				that.mySidebar.control.hide();
+			that.navbars.top.find("#addGeometriesButton").parent().addClass("active");
+		}
+		else
+			that.navbars.top.find("#addGeometriesButton").parent().removeClass("active");
 	},
 	
 	checkVideoUrl: function(url)
@@ -1898,6 +2120,365 @@ $.extend(APP.interactiveMap,
 		}
 	},
 	
+	setLoginMsg: function()
+	{
+		var that = this;
+		var callback = function(){ 
+			that.toggleGeometry(true, false);
+		};
+		
+		var body = $('<p>'+APP.i18n.translate('you_are_not_logged_in')+'</p>');
+		var footer = $('<div>\
+							<button type="button" class="btn btn-success" id="loginMsg_login">'+APP.i18n.translate('Login')+'</button>\
+							<button type="button" class="btn btn-primary" id="loginMsg_register">'+APP.i18n.translate('Register')+'</button>\
+							<button type="button" class="btn btn-default pull-right" id="loginMsg_close">'+APP.i18n.translate('Skip')+'</button>\
+						</div>');
+		
+		footer.find("#loginMsg_login").click(function(){
+			that.bWouldAddGeometry = true;
+			//that.loginMsgModal.modal("hide");
+			if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
+				that.mySidebar.control.hide();
+			that.loginModal.modal("show");
+			that.changeLoginModalPage("login");
+		});
+		footer.find("#loginMsg_register").click(function(){
+			//that.loginMsgModal.modal("hide");
+			/*
+			that.registrationModal.on('hidden.bs.modal', function(){
+				that.registrationModal.off('hidden.bs.modal');
+				if (APP.utils.isset(callback) && $.isFunction(callback))
+					callback();
+			});
+			*/
+			if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
+				that.mySidebar.control.hide();
+			that.registrationModal.modal("show");
+			that.navbars.top.find("li").removeClass("active");
+		});
+		footer.find("#loginMsg_close").click(function(){
+			that.loginMsgModal.modal("hide");
+			if (APP.utils.isset(callback) && $.isFunction(callback))
+				callback();
+		});
+		
+		that.loginMsgModal = APP.modals.create({
+			container: that.body,
+			id: "loginMsgModal",
+			size: "sm",
+			keyboard: 'false',
+			backdrop: "static",
+			bTopCloseButton: true,
+			header: APP.i18n.translate("Notice"),
+			body: body,
+			footer: footer,
+			/*
+			onShown: function(){
+				
+			},
+			onHidden: function(){ 
+				
+			}
+			*/
+		});
+	},
+	
+	changeLoginModalPage: function(page)
+	{
+		var that = this;
+		switch(page)
+		{
+			case "forgot_password":
+				that.loginModal.find(".fg_login").hide();
+				that.loginModal.find(".fg_forgot_password").show();
+				break;
+			case "login":
+				that.loginModal.find(".fg_forgot_password").hide();
+				that.loginModal.find(".fg_login").show();
+				break;
+			default:
+				console.log("aggiungere page: "+page);
+				break;
+		}
+		
+	},
+	
+	setLoginModal: function()
+	{
+		var that = this;
+		
+		var htmlPage = $(	'<form role="form">\
+								<div class="form-group fg_login">\
+									<label class="control-label" for="APP-username">'+APP.i18n.translate("Username")+'</label>\
+									<input type="text" class="form-control" id="APP-username" name="username" placeholder="'+APP.i18n.translate("Enter username")+'">\
+								</div>\
+								<div class="form-group fg_forgot_password" style="display:none">\
+									<label class="control-label" for="APP-email">'+APP.i18n.translate("Email")+'</label>\
+									<input type="email" class="form-control" id="APP-email" name="email" placeholder="'+APP.i18n.translate("Enter email")+'">\
+								</div>\
+								<div class="form-group fg_login">\
+									<label class="control-label" for="APP-password">'+APP.i18n.translate("Password")+'</label>\
+									<input type="password" class="form-control" id="APP-password" name="password" placeholder="'+APP.i18n.translate("Enter password")+'">\
+								</div>\
+								<div class="form-group fg_login">\
+									<button type="button" class="btn btn-link">'+APP.i18n.translate("Forgot password")+'?</button>\
+								</div>\
+							</form>');
+		
+		htmlPage.find(".btn-link").click(function(){
+			that.changeLoginModalPage("forgot_password");
+		});
+		
+		var footerPage = $('<div>\
+								<button id="backToLoginBtn" type="button" class="btn btn-default pull-left fg_forgot_password" style="display:none"><i class="icon icon-undo"></i> '+APP.i18n.translate("Back")+'</button>\
+								<button id="form_login" type="button" class="btn btn-default fg_login">'+APP.i18n.translate("Login")+'</button>\
+								<button id="form_register" type="button" class="btn btn-primary fg_login">'+APP.i18n.translate("Register")+'</button>\
+								<button id="form_resetpassword" type="button" class="btn btn-success fg_forgot_password" style="display:none"><i class="icon icon-ok"></i> '+APP.i18n.translate("Send email")+'</button>\
+							</div>');
+		
+		footerPage.find("#backToLoginBtn").click(function(){
+			that.changeLoginModalPage("login");
+		});
+		footerPage.find("#form_login").click(function(){
+			if (!APP.utils.isset(APP.config.localConfig.urls.login))
+				return;
+			htmlPage.find(".help-block").remove();
+			htmlPage.find(".has-error").removeClass("has-error");
+			$.ajax({
+				type: 'POST',
+				url: APP.config.localConfig.urls.login,
+				dataType: 'json',
+				data: htmlPage.find(".fg_login :input").serializeArray(),
+				success: function(data)
+				{
+					if (!APP.utils.checkError(data.error, that.loginModal.find("form")))
+					{
+						if (APP.utils.isset(data.data.authuser))
+						{
+							that.loginModal.modal("hide");
+							APP.config.localConfig.authuser = data.data.authuser;
+							$.each(["poi","path","area"], function(i, v)
+							{
+								that.getDstruct(v, function(){
+									if (that.body.find("#loginButton").parent().is(":visible"))
+										that.body.find("#loginButton").parent().hide();
+									if (that.body.find("#logoutButton").parent().is(":hidden"))
+										that.body.find("#logoutButton").parent().show();
+									if (that.body.find("#mydatadropdownButton").parent().is(":hidden"))
+										that.body.find("#mydatadropdownButton").parent().show();
+									if (that.body.find("#addPathButton").parent().hasClass("disabled"))
+										that.body.find("#addPathButton").parent().removeClass("disabled");
+									if (that.body.find("#addAreaButton").parent().hasClass("disabled"))
+										that.body.find("#addAreaButton").parent().removeClass("disabled");
+								});
+							});
+							if (that.bAddGeometry || that.bWouldAddGeometry)
+							{
+								that.toggleGeometry(false,false);
+								that.toggleGeometry(true,false);
+							}
+						}
+						else
+							APP.utils.showErrMsg(data);
+					}
+					else
+						APP.utils.showErrMsg(data);
+				},
+				error: function(result)
+				{
+					APP.utils.showErrMsg(result);
+				}
+			});
+		});
+		footerPage.find("#form_register").click(function(){
+			//that.loginModal.modal("hide");
+			if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
+				that.mySidebar.control.hide();
+			that.registrationModal.modal("show");
+			//setTimeout(function(){that.registrationModal.modal("show");},600);
+		});
+		footerPage.find("#form_resetpassword").click(function(){
+			if (!APP.utils.isset(APP.config.localConfig.urls.reset_password))
+				return;
+			htmlPage.find(".help-block").remove();
+			htmlPage.find(".has-error").removeClass("has-error");
+			$.ajax({
+				type: 'POST',
+				url: APP.config.localConfig.urls.reset_password,
+				dataType: 'json',
+				data: htmlPage.find(".fg_forgot_password :input").serializeArray(),
+				success: function(data)
+				{
+					if (!APP.utils.checkError(data.error, that.loginModal.find("form")))
+					{
+						that.loginModal.modal("hide");
+						APP.utils.showNoty({title: APP.i18n.translate("success"), type: "success", content: APP.i18n.translate("email_sent")});
+					}
+					else
+						APP.utils.showErrMsg(data);
+				},
+				error: function(result)
+				{
+					APP.utils.showErrMsg(result);
+				}
+			});
+		});
+		
+		var header = $('<span><span class="fg_login">'+APP.utils.capitalize(APP.i18n.translate("login"))+'</span><span class="fg_forgot_password" style="display:none">'+APP.utils.capitalize(APP.i18n.translate("reset_password"))+'</span></span>');
+		
+		that.loginModal = APP.modals.create({
+			container: that.body,
+			id: "loginModal",
+			size: "sm",
+			bTopCloseButton: true,
+			header: header,
+			body: htmlPage,
+			footer: footerPage,
+			/*
+			onShown: function(){
+				
+			},*/
+			onHidden: function(){
+				that.bWouldAddGeometry = false;
+			}			
+		});
+		
+		that.body.find("#loginButton").click(function(){
+			if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
+				that.mySidebar.control.hide();
+			that.loginModal.modal("show");
+			that.changeLoginModalPage("login");
+		}).parent().removeClass("disabled");
+		
+		that.body.find("#logoutButton").click(function(){
+			$.ajax({
+				type: 'POST',
+				url: APP.config.localConfig.urls.logout,
+				dataType: 'json',
+				data: APP.config.localConfig.authuser,
+				success: function(data)
+				{
+					if (!APP.utils.checkError(data.error, null))
+					{
+						delete APP.config.localConfig.authuser;
+						$.each(["poi","path","area"], function(i, v)
+						{
+							that.getDstruct(v, function(){
+								if (that.body.find("#loginButton").parent().is(":hidden"))
+									that.body.find("#loginButton").parent().show();
+								if (that.body.find("#logoutButton").parent().is(":visible"))
+									that.body.find("#logoutButton").parent().hide();
+								if (that.body.find("#mydatadropdownButton").parent().is(":visible"))
+									that.body.find("#mydatadropdownButton").parent().hide();
+							});
+						});
+						if (!APP.config.isMobileVersion() && that.bAddGeometry)
+						{
+							that.toggleGeometry(false,false);
+							that.toggleGeometry(true,false);
+						}
+					}
+					else
+						APP.utils.showErrMsg(data);
+					
+				},
+				error: function(result)
+				{
+					APP.utils.showErrMsg(result);
+				}
+			});
+		}).parent().removeClass("disabled");
+		
+		if (APP.utils.isset(APP.config.localConfig.authuser))
+		{
+			that.body.find("#loginButton").parent().hide();
+			that.body.find("#mydatadropdownButton").parent().show();
+			that.body.find("#logoutButton").parent().show();
+		}
+		else
+		{
+			that.body.find("#loginButton").parent().show();
+			that.body.find("#mydatadropdownButton").parent().hide();
+			that.body.find("#logoutButton").parent().hide();
+		}
+	},
+	
+	openRegistrationModal: function(data)
+	{
+		var that = this;
+		if (!APP.utils.isset(that.registrationModal))
+			that.setRegistrationModal();
+		if (data && data.items && data.items.length > 0)
+		{
+			$.each(data.items[0], function(i,v){
+				that.registrationModal.find("#APP-"+i).val(v);
+			});
+		}
+		if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
+			that.mySidebar.control.hide();
+		that.registrationModal.modal('show');
+	},
+	
+	setRegistrationModal: function()
+	{
+		var that = this;
+		var body = $('<div></div>');
+		
+		var footer = $('<div>\
+							<button type="button" class="btn btn-success"><i class="icon icon-ok"></i> '+APP.i18n.translate('send')+'</button>\
+							<button type="button" class="btn btn-default"><i class="icon icon-remove"></i> '+APP.i18n.translate('cancel')+'</button>\
+						</div>');
+		
+		footer.find(".btn-success").click(function()
+		{
+			var s = (APP.config.checkLoggedUser())? "front_userdata" : "front_registration";
+		
+			if (!APP.utils.isset(APP.config.localConfig.urls[s]))
+				return;
+			var id = (APP.config.checkLoggedUser())? APP.config.localConfig.authuser.id : null;
+			that.registrationModal.find("form").attr('id','fm_'+s);
+			var finalOperation = function()
+			{
+				APP.anagrafica.formSubmit(id, s, function(){
+					that.registrationModal.modal("hide");
+				}, false);
+			};
+			APP.config.getToken(s, that.registrationModal.find("form .tokenInput"), function(){ finalOperation(); });
+		});
+		footer.find(".btn-default").click(function()
+		{
+			that.registrationModal.modal("hide");
+		});
+		
+		that.getDstruct("registration", function()
+		{
+			var registrationForm = APP.anagrafica.createFormTemplate(null, null, APP.anagrafica.sections["front_registration"], "front_registration", []);
+			body.append(registrationForm);
+			APP.utils.setLookForm(registrationForm, null);
+		});
+		
+		that.registrationModal = APP.modals.create({
+			container: that.body,
+			id: "registrationModal",
+			size: "lg",
+			keyboard: 'false',
+			backdrop: "static",
+			bTopCloseButton: false,
+			header: APP.i18n.translate("Register"),
+			body: body,
+			footer: footer,
+			onShown: function(){
+				var title = (APP.config.checkLoggedUser())? APP.i18n.translate("User's data") : APP.i18n.translate("Register");
+				that.registrationModal.find(".modal-header .lead").text(title);
+			},
+			onHidden: function(){
+				var f = that.registrationModal.find("form");
+				APP.utils.resetFormErrors(f);
+				f[0].reset();
+			}
+		});
+	},
+	
 	manipulateCanvasFunction: function(savedMap)
 	{
 		var that = this;
@@ -1945,6 +2526,72 @@ $.extend(APP.interactiveMap,
 		}).then(function(canvas){
 			that.body.find(".mapMap").append(canvas);
 		});
+	},
+	
+	getDstruct: function(section, callback)
+	{
+		var that = this;
+		
+		if (!APP.utils.isset(section))
+			return false;
+		
+		var s = "front_"+section;
+		if (!APP.anagrafica.hasOwnProperty("sections"))
+			APP.anagrafica.sections = {};
+		//if (!APP.anagrafica.sections.hasOwnProperty(s)) // forzo il reset perch� in questo progetto i datastruct possono cambiare dinamicamente
+			APP.anagrafica.sections[s] = APP.utils.setBaseStructure(s, s);
+		APP.anagrafica.getStructure(APP.config.localConfig.urls.dStruct+"?tb="+s, s, null, false, callback);
+	},
+	
+	updateMyData: function(end, myCallback)
+	{
+		var that = this;
+		APP.map.removeAllLayers();
+		that.myData = {};
+		
+		that.eventObj.off('all_sections_completed').on('all_sections_completed', function()
+		{
+			if (APP.utils.isset(myCallback) && $.isFunction(myCallback))
+				myCallback();
+		});
+		
+		that.getGeo({url: BASE_URL+"jx/geo/"+end});
+		that.getData({url: BASE_URL+"jx/data/"+end});
+		that.getMedia({url: BASE_URL+"jx/media/"+end});
+	},
+	
+	closeHighlightingsdata: function(callback)
+	{
+		var that = this;
+		that.bMyReportView = false;
+		if (APP.utils.isset(that.currentNoty))
+		{
+			that.currentNoty.close();
+			that.currentNoty = null;
+		}
+		
+		if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
+			that.mySidebar.control.hide();
+		
+		that.updateMyData("", callback);
+	},
+	
+	safeExecution: function(callback)
+	{
+		var that = this;
+		
+		if (that.bMyReportView)
+		{
+			if (that.currentSection == "highlightingsdata")
+				that.updateMyData("my", callback);
+			else
+				that.closeHighlightingsdata(callback);
+		}
+		else
+		{
+			if (APP.utils.isset(callback) && $.isFunction(callback))
+				callback();
+		}
 	},
 	
 	start: function()
@@ -2046,6 +2693,14 @@ $.extend(APP.interactiveMap,
 			that.currentSection = section;
 			switch(section)
 			{
+				case "addGeometries":
+					var callbackFun = function(){
+						that.navbars.top.find("li").removeClass("active");
+						that.toggleGeometry(!that.bAddGeometry, true);
+					};
+					
+					that.safeExecution(callbackFun);
+					break;
 				case "to_default_extent":
 					btn.parents("li:first").removeClass("active");
 					if (!APP.utils.isset(APP.config.localConfig.default_extent))
@@ -2059,6 +2714,9 @@ $.extend(APP.interactiveMap,
 			}
 		});
 		that.navbars.top.find("#to_default_extentButton").parent().removeClass("disabled");
+		that.setRegistrationModal();
+		that.setLoginMsg();
+		that.setLoginModal();
 		that.setSearchModal();
 		
 		$("#mainContent").css({"height":"100%","width":"100%","margin-bottom":"0px"});		
@@ -2104,6 +2762,10 @@ $.extend(APP.interactiveMap,
 			}});
 			that.getData({});
 			that.getMedia({});
+			
+			that.getDstruct("area");
+			that.getDstruct("path");
+			that.getDstruct("poi");
 			$.each(that.arrEverytypeGeometries, function(i,v)
 			{
 				var btn = that.body.find("#"+v+"Button");
@@ -2130,6 +2792,33 @@ $.extend(APP.interactiveMap,
 		
 		that.getData({section: "itinerary"});
 		that.getMedia({section: "itinerary"});
+		
+		that.body.find("#addGeometriesButton").parent().removeClass("disabled");
+		that.body.find("#userdataButton").click(function(){
+			if (!APP.utils.isset(APP.config.localConfig.authuser))
+				return false;
+			$.ajax({
+				type: 'GET',
+				url: APP.config.localConfig.urls["front_"+that.currentSection]+"/"+APP.config.localConfig.authuser.id,
+				dataType: 'json',
+				success: function(data)
+				{
+					if (!APP.utils.checkError(data.error, null))
+					{
+						that.openRegistrationModal(data.data);
+					}
+					else
+						APP.utils.showErrMsg(data);
+				},
+				error: function(result)
+				{
+					APP.utils.showErrMsg(result);
+				}
+			});
+		}).parent().removeClass("disabled").show();
+		that.body.find("#highlightingsdataButton").click(function(){
+			//APP.map.hideAllLayers();
+		}).parent().removeClass("disabled").show();
 		
 		that.body.find("#helpButton").click(function(){
 			that.closeItems();

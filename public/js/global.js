@@ -5,6 +5,7 @@ var APP = {
 	map: {},
 	interactiveMap: {},
 	filter: {},
+	modals: {},
 	fileuploader: {},
 	multifields: {},
 	subforms: {},
