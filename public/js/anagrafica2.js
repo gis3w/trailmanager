@@ -324,6 +324,11 @@ $.extend(APP.anagrafica,
 		that.selectedItem = that.tmpSelectedItem;
 		
 		APP.config.prevUrl = APP.config.currentUrl;
+		if (APP.config.queue.length==0)
+		{
+			APP.config.queue.push(subSection);
+			APP.config.prevUrl = subSection;
+		}
 		APP.config.currentUrl = subSection+'/'+t[that.sections[subSection].primary_key];
 		
 		if (APP.utils.isset(that.sections[subSection].menu))
@@ -379,8 +384,12 @@ $.extend(APP.anagrafica,
 				arr.push({
 					htmlString: '<a id="button_cancel" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("cancel")+'" class="btn btn-default btn-lg tooltipElement" href="#"><i class="icon-arrow-left"></i></a>',
 					onClick: function(){
-						if (backUrl)
-							APP.config.workSpace.navigate(backUrl, {trigger: true, replace: true});
+						if (APP.config.bDirectUrl && APP.config.queue.length>0)
+						{
+							APP.config.bBack = true;
+							APP.config.workSpace.navigate(APP.config.queue.pop(), {trigger: true, replace: true});
+							
+						}
 						else
 						{
 							that.tmpSelectedItem = that.selectedItem;
@@ -1103,16 +1112,31 @@ $.extend(APP.anagrafica,
 							switch( feature.type)
 							{
 								
-								case "MultiLineString": case "LineString":
-									var cs = feature.coordinates;
+								case "MultiLineString": 
+									$.each(feature.coordinates, function(i,v){
+										L.polyline(L.GeoJSON.coordsToLatLngs(v)).addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
+									});
+								
+									/*var cs = feature.coordinates;
 									$.each(cs, function(i,v){
 										$.each(v,function(j,k){
 											v[j] = [k[1],k[0]];
 										});
 										L.polyline(v).addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
 									});
+									*/	
+									break
+								case "LineString":
+									L.polyline(feature.coordinates).addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
 									break;
-								case "MultiPolygon": case "Polygon":
+								case "MultiPolygon": 
+									$.each(feature.coordinates, function(i,v){
+										L.polygon(L.GeoJSON.coordsToLatLngs(v,1)).addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
+									});
+									break;
+								case "Polygon":
+									L.polygon(feature.coordinates).addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
+									/*
 									var cs = feature.coordinates;
 									$.each(cs, function(i,v){
 										$.each(v,function(w,z){
@@ -1122,17 +1146,18 @@ $.extend(APP.anagrafica,
 											L.polygon(z).addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
 										});
 									});
+									*/
 									break;
 								default:
 									layer.addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
 
 							}
 						},
-						
+						/*
 						pointToLayer: function (data, latlng) {
 							return L.circleMarker(latlng);
 						},
-						
+						*/
 					});
 					
 					APP.map.globalData[APP.map.currentMapId].map.fitBounds(APP.map.globalData[APP.map.currentMapId].drawnItems.getBounds());

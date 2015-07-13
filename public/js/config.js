@@ -5,6 +5,9 @@ $.extend(APP.config,{
 	prevUrl: null,
 	default_iDisplayLength: 10,
 	breadCrumb: [],
+	bBack: false,
+	bDirectUrl: false,
+	queue: [],
 	fadeInDelay: 400,
 	fadeOutDelay: 100,
 	maxStringsLength: 128,
@@ -19,7 +22,12 @@ $.extend(APP.config,{
 		
 		var workNow = function(sec, secTitle, query)
 		{	
-			APP.config.backUrl = APP.config.currentUrl;
+			that.bDirectUrl = true;
+			if (!that.bBack)
+				that.queue.push(APP.config.currentUrl);
+			else
+				that.bBack = false;
+			
 			that.removeActiveClasses($(".navbar"), "li");
 			var button = $("#"+sec+"Button");
 			button.closest("li").addClass("active");
@@ -29,9 +37,10 @@ $.extend(APP.config,{
 			var w = $('<div id="'+sec+'Container"></div>');
 			$("#mainContent").html(w);
 			
-			APP.anagrafica.start(button, secTitle, sec, w, "/"+query, function()
+			var ff = (query)? "/"+query : "";
+			APP.anagrafica.start(button, secTitle, sec, w, ff, function()
 			{
-				if (!APP.config.backUrl)
+				if (!query)
 				{
 					var tw = APP.anagrafica.windows[APP.anagrafica.windows.length-1];
 					var prevw = (APP.anagrafica.windows.length>2)? APP.anagrafica.windows[APP.anagrafica.windows.length-2] : tw;
@@ -59,7 +68,8 @@ $.extend(APP.config,{
 					if (index>-1)
 						APP.anagrafica.onSelectTableRow(APP.anagrafica.sections[sec].values[index],sec,iw);
 				}
-				
+				if (APP.config.queue.length==0)
+					APP.config.bDirectUrl = false;
 			});
 			
 			/*
@@ -150,10 +160,15 @@ $.extend(APP.config,{
 
 			  routes: {
 			    "path/:query": "path",
+			    "path": "path",
 			    "poi/:query": "poi",
+			    "poi": "poi",
 			    "itinerary/:query": "itinerary",
+			    "itinerary": "itinerary",
 			    "pathsegment/:query": "pathsegment",
+			    "pathsegment": "pathsegment",
 			    "area/:query": "area",
+			    "area": "area",
 			    
 			    "search/:query/p:page": "search"   // #search/kiwis/p7
 			  },
@@ -170,8 +185,8 @@ $.extend(APP.config,{
 				  workNow("itinerary", "Itinerari", query);
 			  },
 			  
-			  path_segment: function(query) {
-				  workNow("pathsegment", "Tratte", query);
+			  pathsegment: function(query) {
+				  workNow("path_segment", "Tratte", query);
 			  },
 
 			  search: function(query, page) {
