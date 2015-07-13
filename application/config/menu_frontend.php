@@ -63,6 +63,13 @@ return array(
             'capability' => NULL,
             'icon' => 'crop',
         ),
+        'addGeometries' => array(
+            'id' =>'addGeometries',
+            'name' => __('New Report'),
+            'url' => NULL,
+            'capability' => NULL,
+            'icon' => 'plus',
+        ),
     ),
     
 );
