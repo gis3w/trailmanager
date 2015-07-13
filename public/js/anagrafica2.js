@@ -1402,6 +1402,9 @@ $.extend(APP.anagrafica,
 								<legend>'+APP.i18n.translate(k.name)+'</legend>\
 							</fieldset>');
 				
+				if (k['class'])
+					step.addClass(k['class']);
+				
 				form.append(step);
 				displayInputs(k, step);
 				form.data({
@@ -1683,6 +1686,10 @@ $.extend(APP.anagrafica,
 			var group = $(	'<fieldset style="padding-bottom: 22px">\
 								<legend class="text-info">'+APP.i18n.translate(k.name)+'</legend>\
 							</fieldset>');
+			
+			if (k['class'])
+				group.addClass(k['class']);
+			
 			position = "leftColForm";
 			if (APP.utils.isset(k.position))
 			{
