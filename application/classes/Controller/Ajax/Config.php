@@ -172,6 +172,7 @@ class Controller_Ajax_Config extends Controller_Ajax_Main{
             'config'=> '/jx/config', // i18n
             'dStruct'=> '/jx/datastruct', // /jx/datastruct?tb=user          
             'filter'=> '/jx/filterdata?f=',
+            'front_registration' => 'jx/registration',
             
         );
           
