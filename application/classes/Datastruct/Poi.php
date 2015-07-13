@@ -61,6 +61,8 @@ class Datastruct_Poi extends Datastruct {
                 'condmeteo',
                 'rilev',
                 'class_ril',
+                'photo',
+                'note'
             ),
         ),
         array(
@@ -76,7 +78,9 @@ class Datastruct_Poi extends Datastruct {
                 'stato_segn',
                 'fatt_degr',
                 'pt_socc',
-                'coin_in_fi'
+                'coin_in_fi',
+                'prio_int',
+                'nuov_segna'
             ),
         ),
         array(
@@ -93,14 +97,17 @@ class Datastruct_Poi extends Datastruct {
     public $tabs = array(
         array(
             'name' => 'tab-main',
+            'icon' => 'globe',
             'groups' => array('poi-data','poi-foreign-data','poi-block-data'),
         ),
         array(
             'name' => 'tab-base-data',
+            'icon' => 'mobile-phone',
             'groups' => array('poi-base-data-poi','poi-base-data-geo','poi-base-data-survey','path-base-data-current','poi-base-data-data'),
         ),
         array(
             'name' => 'tab-path',
+            'icon' => 'location-arrow',
             'groups' => array('poi-base-data-paths'),
         )
 
@@ -254,6 +261,16 @@ class Datastruct_Poi extends Datastruct {
                     'label' => __('Start-end coincidence class'),
                 )),
 
+                "prio_int" => array_replace($baseSingleSelectField,array(
+                    'foreign_key' => 'prio_int_poi',
+                    'label' => __('Priority intervention class'),
+                )),
+
+                "nuov_segna" => array_replace($baseSingleSelectField,array(
+                    'foreign_key' => 'nuov_segna_poi',
+                    'label' => __('New signage'),
+                )),
+
                 "quota" => array(
                     'editable' => FALSE,
                     'suffix' => 'm',
@@ -364,6 +381,10 @@ class Datastruct_Poi extends Datastruct {
                     '$2' => 'id'
                 ),
                 'datatable' => TRUE,
+                'form_show' => array(
+                    'insert' => FALSE,
+                    'update' => TRUE,
+                ),
                 'ajax_mode' => self::AJAX_MODE_HTML
             )
         );

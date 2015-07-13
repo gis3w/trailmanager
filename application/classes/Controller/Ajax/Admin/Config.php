@@ -242,7 +242,9 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
                      'Stato_Segn_Poi',
                      'Fatt_Degr_Poi',
                      'Pt_Socc_Poi',
-                     'Coin_In_Fi_Poi'
+                     'Coin_In_Fi_Poi',
+                     'Prio_Int_Poi',
+                     'Nuov_Segna_Poi',
 
                  ) as $tb)
         {

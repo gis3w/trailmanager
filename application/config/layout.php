@@ -8,6 +8,7 @@ return array(
     'logo_ico' => 'trail_ico.ico',
     'logo_main' => 'logo_trail_50h.png',
     'logo_navbar' => 'logo_trail_40h.png',
+    'logo_navbar_frontend' => 'logo_metauro_puro.png',
     'logo_print' => 'logo_trail_50h.png',
     'logo_email' => 'logo_trail_30h.png',
     'css_compile' => FALSE,

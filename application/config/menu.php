@@ -397,11 +397,11 @@ return array(
                                         'capability' => 'access-administration-coininfipois',
                                         'icon' => 'cog',
                                     ),
-                                    'administration_nuovasegnpois' => array(
-                                        'id' =>'nuovasegnpois',
+                                    'administration_nuovsegnapois' => array(
+                                        'id' =>'nuovsegnapois',
                                         'name' => __('New signage class'),
-                                        'url' => '/jx/admin/administration/nuovasegnpois',
-                                        'capability' => 'access-administration-nuovasegnpois',
+                                        'url' => '/jx/admin/administration/nuovsegnapois',
+                                        'capability' => 'access-administration-nuovasegnapois',
                                         'icon' => 'cog',
                                     ),
                                     'administration_priointpois' => array(

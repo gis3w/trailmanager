@@ -1,9 +1,9 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Datastruct_Administration_Nuovasegnpois extends Datastruct {
+class Datastruct_Administration_Nuovsegnapois extends Datastruct {
 
     
-    protected $_nameORM = "Nuova_Segn_Poi";
+    protected $_nameORM = "Nuov_Segna_Poi";
     
      public $title = array(
         "title_toshow" => "$1",
@@ -15,7 +15,7 @@ class Datastruct_Administration_Nuovasegnpois extends Datastruct {
     
     public $groups = array(
         array(
-            'name' => 'nuovasegnpois-data',
+            'name' => 'nuovsegnapois-data',
             'position' => 'left',
             'fields' => array('code','description'),
         ),

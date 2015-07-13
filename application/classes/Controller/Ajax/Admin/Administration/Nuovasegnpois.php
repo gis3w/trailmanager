@@ -1,9 +1,9 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 
-class Controller_Ajax_Admin_Administration_Nuovasegnpois extends Controller_Ajax_Admin_Administration_Base{
+class Controller_Ajax_Admin_Administration_Nuovsegnapois extends Controller_Ajax_Admin_Administration_Base{
     
     protected $_pagination = FALSE;
-    protected $_datastruct = "Administration_Nuovasegnpois";
+    protected $_datastruct = "Administration_Nuovsegnapois";
 
 }

@@ -110,6 +110,8 @@ abstract class Controller_Base_Main extends Controller_Template {
         View::set_global('logo_ico',Kohana::$config->load('layout.logo_ico'));
         View::set_global('logo_main',Kohana::$config->load('layout.logo_main'));
         View::set_global('logo_navbar',Kohana::$config->load('layout.logo_navbar'));
+        if(Kohana::$config->load('layout.logo_navbar_frontend'))
+            View::set_global('logo_navbar_frontend',Kohana::$config->load('layout.logo_navbar_frontend'));
         View::set_global('logo_print',Kohana::$config->load('layout.logo_print'));
         View::set_global('logo_email',Kohana::$config->load('layout.logo_email'));
         

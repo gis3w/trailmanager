@@ -49,9 +49,9 @@
     </legendlayer>
   </legend>
   <projectlayers layercount="1">
-    <maplayer minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="1" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" geometry="Polygon" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
+    <maplayer minimumScale="-4.65661e-10" maximumScale="1e+08" simplifyDrawingHints="1" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" geometry="Polygon" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
       <id>Comuni_PU20150701100841922</id>
-      <datasource>./gis_data/Comuni PU.shp|layerid=0</datasource>
+      <datasource>./gis_data/Comuni PU.shp</datasource>
       <title></title>
       <abstract></abstract>
       <keywordList>
@@ -212,7 +212,7 @@
         <property key="labeling/shadowColorB" value="0"/>
         <property key="labeling/shadowColorG" value="0"/>
         <property key="labeling/shadowColorR" value="0"/>
-        <property key="labeling/shadowDraw" value="true"/>
+        <property key="labeling/shadowDraw" value="false"/>
         <property key="labeling/shadowOffsetAngle" value="135"/>
         <property key="labeling/shadowOffsetDist" value="1"/>
         <property key="labeling/shadowOffsetGlobal" value="true"/>

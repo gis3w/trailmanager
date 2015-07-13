@@ -28,6 +28,8 @@ class Datastruct_Path extends Datastruct {
             'name' => 'path-base-data-path',
             'position' => 'left',
             'fields' => array(
+                'nome',
+                'loc',
                 'se',
                 'bike',
                 'ip',
@@ -68,7 +70,10 @@ class Datastruct_Path extends Datastruct {
                 'em_natur',
                 'em_paes',
                 'ev_stcul',
-                'op_attr'),
+                'op_attr',
+                'diff',
+                'time',
+                'rev_time'),
         ),
 
         array(
@@ -97,7 +102,7 @@ class Datastruct_Path extends Datastruct {
         ),
         array(
             'name' => 'tab-base-data',
-            'icon' => 'phone',
+            'icon' => 'mobile-phone',
             'groups' => array('path-base-data-path','path-base-data-geo','path-base-data-current','path-base-data-data'),
         ),
         array(
@@ -193,7 +198,12 @@ class Datastruct_Path extends Datastruct {
                      'description' => __('Select the main typology  for this point of interest'),
                      "table_show" => TRUE,
                 ),
-
+                "nome" => array(
+                    'editable' => FALSE,
+                ),
+                "loc" => array(
+                    'editable' => FALSE,
+                ),
                 "se" => array(
                     'editable' => FALSE,
                 ),
@@ -220,6 +230,11 @@ class Datastruct_Path extends Datastruct {
                 "rid_perc" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'rid_perc_segment',
                     'label' => __('Reduction walkable path segment'),
+                )),
+
+                "diff" => array_replace($baseSingleSelectField,array(
+                    'foreign_key' => 'diff_segment',
+                    'label' => __('Difficulty typology path segment'),
                 )),
 
                 "em_natur" => array(
@@ -276,6 +291,16 @@ class Datastruct_Path extends Datastruct {
                     'editable' => FALSE,
                     'suffix' => 'km',
                     'label' => __('Length'),
+                ),
+                "time" => array(
+                    'editable' => FALSE,
+                    'suffix' => 'm',
+                    'label' => __('Travel time'),
+                ),
+                "rev_time" => array(
+                    'editable' => FALSE,
+                    'suffix' => 'm',
+                    'label' => __('Back travel time'),
                 ),
 
                 /* Fields current can be update
@@ -372,6 +397,10 @@ class Datastruct_Path extends Datastruct {
                     '$2' => 'id'
                 ),
                 'datatable' => TRUE,
+                'form_show' => array(
+                    'insert' => FALSE,
+                    'update' => TRUE,
+                ),
                 'ajax_mode' => self::AJAX_MODE_HTML
             )
         );
@@ -385,6 +414,10 @@ class Datastruct_Path extends Datastruct {
                     '$2' => 'id'
                 ),
                 'datatable' => FALSE,
+                'form_show' => array(
+                    'insert' => FALSE,
+                    'update' => TRUE,
+                ),
                 'ajax_mode' => self::AJAX_MODE_HTML
             )
         );

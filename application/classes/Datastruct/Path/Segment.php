@@ -46,10 +46,12 @@ class Datastruct_Path_Segment extends Datastruct
     public $tabs = array(
         array(
             'name' => 'tab-main',
+            'icon' => 'mobile-phone',
             'groups' => array('path-base-data-path','path-base-data-survey','path-base-data-geodata','path-base-data-current','path-base-data-data'),
         ),
         array(
             'name' => 'tab-path-segment-path',
+            'icon' => 'location-arrow',
             'groups' => array('poi-base-data-paths'),
         )
     );
@@ -191,6 +193,10 @@ class Datastruct_Path_Segment extends Datastruct
                     '$2' => 'gid'
                 ),
                 'datatable' => TRUE,
+                'form_show' => array(
+                    'insert' => FALSE,
+                    'update' => TRUE,
+                ),
                 'ajax_mode' => self::AJAX_MODE_HTML
             )
         );
