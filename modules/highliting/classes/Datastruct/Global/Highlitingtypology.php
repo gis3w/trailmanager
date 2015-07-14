@@ -13,7 +13,7 @@ class Datastruct_Global_Highlitingtypology extends Datastruct {
         array(
             'name' => 'global-highlitingtypology-data',
             'position' => 'left',
-            'fields' => array('id','name','description','icon','marker'),
+            'fields' => array('id','name','description','icon'),
         ),
        
     );
@@ -52,30 +52,6 @@ class Datastruct_Global_Highlitingtypology extends Datastruct {
                         'thumbnail' => 'admin/download/highlitingtypologyicon/thumbnail/$1',
                         'thumbnail_options' => array(
                             '$1' =>'icon',
-                            ),
-                    ),  
-                ),
-                "marker" => array(
-                    "form_input_type" => self::INPUT,
-                    "multiple" => FALSE,
-                    "data_type" => self::FILE,
-                    "form_show" => TRUE,
-                    "table_show" => FALSE,
-                   "subform_table_show" => TRUE, 
-                    'label' =>__('Marker'),
-                    'urls' => array(
-                        'data' => 'jx/admin/upload/highlitingtypologymarker',
-                        'delete' => 'jx/admin/upload/highlitingtypologymarker?file=$1',
-                        'delete_options' => array(
-                           '$1' => 'marker',
-                        ),
-                        'download' => 'admin/download/highlitingtypologymarker/index/$1',
-                        'download_options' => array(
-                            '$1' => 'marker',
-                            ),
-                        'thumbnail' => 'admin/download/highlitingtypologymarker/thumbnail/$1',
-                        'thumbnail_options' => array(
-                            '$1' => 'marker',
                             ),
                     ),  
                 ),

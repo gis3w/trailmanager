@@ -117,7 +117,7 @@ class Controller_Ajax_Config extends Controller_Ajax_Main{
     protected function _set_highliting_typologies()
     {
         $this->_get_table('Highliting_Typology');
-        foreach($this->config->typology as &$typologies)
+        foreach($this->config->highliting_typology as &$typologies)
         {
             $typologies['icon'] =(isset($typologies['icon']) AND $typologies['icon'] != '') ? $this->_icon_uri.$typologies['icon'] : NULL;
             $typologies['marker'] =(isset($typologies['marker']) AND $typologies['marker'] != '') ? $this->_marker_uri.$typologies['marker'] : NULL;
@@ -181,6 +181,7 @@ class Controller_Ajax_Config extends Controller_Ajax_Main{
         $this->config->urls =  array(
             'logout'=> '/login/out',
             'i18n'=>  '/jx/i18n/', //language
+            'token' => 'jx/token',
             'config'=> '/jx/config', // i18n
             'dStruct'=> '/jx/datastruct', // /jx/datastruct?tb=user          
             'filter'=> '/jx/filterdata?f=',

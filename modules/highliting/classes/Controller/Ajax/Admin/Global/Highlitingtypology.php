@@ -9,7 +9,6 @@ class Controller_Ajax_Admin_Global_Highlitingtypology extends Controller_Ajax_Ba
     
     protected $_upload_path = array(
          'highliting_typology_icon' => 'highlitingtypologyicon',
-         'highliting_typology_marker' => 'highlitingtypologymarker'
      );
     
     
