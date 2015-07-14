@@ -931,7 +931,8 @@ $.extend(APP.interactiveMap,
 							                position: 'outer-center'
 							            },
 							            tick: {
-							                format: function (x) { return Number((x).toFixed(2)); },
+							                format: function (x) { return Number((x).toFixed(1)); },
+							                count: 9,
 							            }
 							        },
 							        y: {
