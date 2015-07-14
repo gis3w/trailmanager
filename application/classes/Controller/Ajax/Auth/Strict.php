@@ -42,8 +42,6 @@ abstract class Controller_Ajax_Auth_Strict extends Controller_Ajax_Main {
            // ORA parte il processo di autenticazione
            $this->a = Auth::instance();
 
-           Kohana::$log->add(Log::DEBUG, print_r($_SERVER,TRUE));
-           
            if($this->_exeLogin)
            {
                Kohana::$log->add(Log::DEBUG,preg_match('/PycURL/', $_SERVER['HTTP_USER_AGENT']) );

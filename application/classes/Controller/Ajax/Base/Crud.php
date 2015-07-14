@@ -448,7 +448,6 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
                     case "D":
                         $rac = $this->_orm->documenti->where($foreign_key,'=',$doc['id'])->find();
                         $path_to_delete = $this->uploadPath."/".$subuploadpath."/".$rac->$far_key."/".$rac->nome;
-                        error_log($path_to_delete);
                         $rac->delete();
                         @unlink($path_to_delete);
                     break;
