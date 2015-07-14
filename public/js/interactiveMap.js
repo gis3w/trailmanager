@@ -921,6 +921,9 @@ $.extend(APP.interactiveMap,
 							        type: "area",
 							        axes: ax
 							    },
+							    legend: {
+							        show: false
+							    },
 							    axis: {
 							    	x: {
 							            label: {
