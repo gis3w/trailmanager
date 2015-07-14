@@ -921,6 +921,9 @@ $.extend(APP.interactiveMap,
 							        type: "area",
 							        axes: ax
 							    },
+							    zoom: {
+							        enabled: true
+							    },
 							    legend: {
 							        show: false
 							    },
