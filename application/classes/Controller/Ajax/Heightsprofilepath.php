@@ -16,7 +16,7 @@ class Controller_Ajax_Heightsprofilepath extends Controller_Ajax_Base_GET{
             throw new HTTP_Exception_500(SAFE::message('ehttp','500_path_orm'));
 
         //we get heights_profile data
-        $this->jres->data->heights_profile_data = $path->heights_profile->find_all()->as_array();
+        $this->jres->data = $path->heights_profile->find_all()->as_array();
 
     }
 }
