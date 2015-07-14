@@ -163,6 +163,23 @@ return array(
     'Highliting states' => 'Stati della segnalazione',
     'System users' => 'Utenti di sistema',
     'Anonimous Users' => 'Segnalatori non registrati',
+
+    'New Report' => 'Nuova segnalazione',
+    'New report' => 'Nuova segnalazione',
+    'you_are_not_logged_in' => 'Non sei loggato. Si consiglia di effettuare il login',
+    'use_left_buttons_to_draw_geometries' => 'Usa i bottoni a sinistra per aggiungere le geometrie',
+    'Register' => 'Registrazione',
+    'Skip' => 'Salta',
+    'Login' => 'Login',
+    'Enter username' => 'Inserisci lo Username',
+    'Enter password' =>'Inserisci la password',
+    'Forgot password' => 'Password dimenticata',
+    'Notice' => 'Avviso',
+    'you_are_not_logged_in' => 'Non sei loggato. Si consiglia di effettuare il login',
+
+    'registration-data-data' => 'Dati personali',
+    'registration-data-login' => 'Autenticazione',
+    'registration-data-contact' => 'Contatti',
     
     'actions' => 'Azioni',
     
