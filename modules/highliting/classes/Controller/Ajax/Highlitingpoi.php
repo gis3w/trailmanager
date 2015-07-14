@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 
-class Controller_Ajax_Highlitingpoi extends Controller_Ajax_Base_Sheet{
+class Controller_Ajax_Highlitingpoi extends Controller_Ajax_Base_Crud_GET{
 
     protected $_pagination = FALSE;
     

@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 
-class Controller_Ajax_Datastruct extends Controller_Ajax_Auth_Strict{
+class Controller_Ajax_Datastruct extends Controller_Ajax_Auth_Nostrict{
 
     /**
      * Contiene il nome dell'orm richiesto

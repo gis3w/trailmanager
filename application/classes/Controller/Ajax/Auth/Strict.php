@@ -77,7 +77,8 @@ abstract class Controller_Ajax_Auth_Strict extends Controller_Ajax_Main {
             }
             else
             {
-                $this->_get_orm_base();
+                if(method_exists($this, '_get_orm_base'))
+                    $this->_get_orm_base();
             }
 
 
