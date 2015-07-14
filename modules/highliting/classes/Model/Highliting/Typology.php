@@ -25,9 +25,6 @@ class Model_Highliting_Typology extends ORM {
             'icon' => array(
                     array('not_empty'),
             ),
-             'marker' => array(
-                    array('not_empty'),
-            ),
         );
     }
 

@@ -27,6 +27,9 @@ class Model_Path extends ORMGIS {
             'through' => 'path_modes_paths',
             'far_key' => 'path_mode_id'
         ),
+         'heights_profile' => array(
+             'model'   => 'Heights_Profile_Path',
+         ),
          'urls' => array(
             'model'   => 'Url_Path',
         ),

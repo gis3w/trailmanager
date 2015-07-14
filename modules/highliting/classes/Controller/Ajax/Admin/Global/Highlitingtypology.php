@@ -24,9 +24,9 @@ class Controller_Ajax_Admin_Global_Highlitingtypology extends Controller_Ajax_Ba
             $this->_get_icon_marker();
             
             $this->_orm->values($_POST)->save($this->_extra_validation);
-            
-            if(method_exists($this, '_save_environments'))
-                    $this->_save_environments();
+
+            // we update or save mappins relative
+            $this->_update_mappins();
             
             Database::instance()->commit();
         }
@@ -49,10 +49,19 @@ class Controller_Ajax_Admin_Global_Highlitingtypology extends Controller_Ajax_Ba
             
         }
     }
+
+    protected function _update_mappins()
+    {
+        // for evevy state we bould mappin!
+        $highliting_states = ORM::factory('Highliting_State')->find_all();
+        foreach ($highliting_states as $highliting_state)
+            SVG2PNGPinmap::instance($highliting_state->id, $this->_orm->id);
+
+    }
     
     protected function _get_icon_marker() {
         
-        $fields = array('icon','marker');
+        $fields = array('icon');
         
    
 
@@ -92,10 +101,7 @@ class Controller_Ajax_Admin_Global_Highlitingtypology extends Controller_Ajax_Ba
         
         if($res['icon'] == '')
             $res['icon'] = NULL;
-        
-        if($res['marker'] == '')
-            $res['marker'] = NULL;
-        
+
         return $res;
     }
     
