@@ -22,7 +22,7 @@ class Datastruct_Path extends Datastruct {
         array(
             'name' => 'path-block-data',
             'position' => 'block',
-            'fields' => array('url_path'),
+            'fields' => array('url_path','heights_profile_path'),
         ),
         array(
             'name' => 'path-base-data-path',
@@ -421,6 +421,21 @@ class Datastruct_Path extends Datastruct {
                 'ajax_mode' => self::AJAX_MODE_HTML
             )
         );
+
+        $fct['heights_profile_path'] = array_replace($this->_columnStruct, array(
+                "data_type" => self::C3CHART,
+                "c3chart_type" => self::C3CHART_TYPE_LINECHART,
+                "c3chart_x_axis" => 'cds2d',
+                "c3chart_y_axis" => 'z',
+                "table_show" => FALSE,
+                'url_values' => '/jx/heightsprofilepath/$1',
+                'url_values_params' => array(
+                    '$1' => 'id',
+
+                ),
+                'datatable' => FALSE,
+            )
+        );
         
         return $fct;
         
@@ -464,6 +479,9 @@ class Datastruct_Path extends Datastruct {
             "table_show" => FALSE,
             
         ));
+
+
+
         
       
         return $fct;

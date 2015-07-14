@@ -22,6 +22,14 @@ class Kohana_Formstruct{
     const MAPBOX_COLOR = 'mapbox_color';
     const COLORPICKER = 'colorpicker';
     const HTMLTEXT = 'htmltext';
+    const C3CHART = 'c3chart';
+
+    const C3CHART_TYPE_LINECHART = 'linechart';
+    const C3CHART_TYPE_TIMESERIES = 'timeseries';
+    const C3CHART_TYPE_STEPCHART = 'stepchart';
+    const C3CHART_AREA_TRUE = TRUE;
+    const C3CHART_AREA_FALSE = FALSE;
+
     
     const GEOTYPE_POLYLINE = 'polyline';
     const GEOTYPE_POLYGON = 'polygon';
