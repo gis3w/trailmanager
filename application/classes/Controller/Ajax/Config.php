@@ -187,6 +187,7 @@ class Controller_Ajax_Config extends Controller_Ajax_Main{
             'filter'=> '/jx/filterdata?f=',
             'front_registration' => 'jx/registration',
             'front_highlitingpoi' => 'jx/highlitingpoi',
+            'heightsprofilepath' => 'jx/heightsprofilepath/'
             
         );
           
