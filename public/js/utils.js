@@ -317,6 +317,27 @@ $.extend(APP.utils,{
 			APP.map.changeColors(form.find(".mapBoxColor").val());
 		}
 		
+		if (form.find(".c3chart").length>0)
+		{
+			$.each(form.find(".c3chart"), function(i,v)
+			{
+				v = $(v);
+				switch (v.getAttr("data-chartType"))
+				{
+					case "line":
+						var chart = c3.generate({
+							bindto: v,
+						    data: {
+						        url: APP.config.urls.heightsprofilepath+'/'+v.attr('name')
+						    }
+						});
+						break;
+					default:
+						break;
+				}
+			});
+		}
+		
 		form.find(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
 		var timepickerInputs = form.find(".time");
 		$.each(timepickerInputs, function(i,v)
@@ -1393,6 +1414,9 @@ $.extend(APP.utils,{
 				inp = "<input type='color' id='APP-"+v.name+"' name='"+v.name+"' class='form-control mapBoxColor' value='"+valore+"' "+required+">";
 				inp = $(inp);
 				inp.change(function(){APP.map.changeColors($(this).val())});
+				break;
+			case "c3chart":
+				inp = $('<div id="APP-'+v.name+'" name="'+v.name+'" class="c3chart" data-chartType="'+v.type+'"></div>');
 				break;
 			default:
 				console.log("Aggiungi questo form_input_type: "+v.form_input_type);

@@ -894,6 +894,58 @@ $.extend(APP.interactiveMap,
 						div.append(ul);
 					}
 					break;
+				case "c3chart":
+					var c3c = $('<div id="APP-'+voice+'" name="'+voice+'" class="c3chart" data-chartType="'+moreParams.chartType+'"></div>');
+					div.append(c3c);
+					
+					$.ajax({
+						type: 'GET',
+						url: APP.config.localConfig.urls[voice]+id,
+						dataType: 'json',
+						success: function(data)
+						{
+							var result = data.data;
+							
+							var ax = {};
+							ax['data-'+id] = 'y';
+														
+							var chart = c3.generate({
+								bindto: "#"+c3c.attr("id"),
+								size: {
+								  width: 858,
+								  height: 320
+								},
+							    data: {
+							    	x: 'x',
+							        columns: result,
+							        type: "area",
+							        axes: ax
+							    },
+							    axis: {
+							    	x: {
+							            label: {
+							                text: 'Distanza (m)',
+							                position: 'outer-center'
+							            },
+							            tick: {
+							                format: function (x) { return Number((x).toFixed(2)); },
+							            }
+							        },
+							        y: {
+							            label: {
+							                text: 'Altitudine (m)',
+							                position: 'outer-middle'
+							            }
+							        },
+							    },
+							    point: {
+							        show: false
+							    }
+							});
+						}
+					});
+					
+					break;						
 				case "url":
 					if (APP.utils.isset(that.myData[section][id].data[voice]) && !APP.utils.isEmptyString(that.myData[section][id].data[voice]))
 					{
@@ -964,6 +1016,7 @@ $.extend(APP.interactiveMap,
 				checkVoice('description', 'text');
 				checkVoice('length', 'ov-icage', {image: that.icons['length'], voiceResult: "features"});
 				checkVoice('altitude_gap', 'ov-icage', {image: that.icons.altitude_gap, voiceResult: "features"});
+				checkVoice('heightsprofilepath', 'c3chart', {chartType: 'line'});
 				checkVoice('modes', 'ov-descriptionWithInlineImages', {values: APP.config.localConfig.path_mode, label: 'mode', icon: "icon", voiceResult: "features", description: APP.i18n.translate('transportation_types')});
 				checkVoice('reason', 'text');
 				checkVoice('period_schedule', 'text');
@@ -1017,7 +1070,7 @@ $.extend(APP.interactiveMap,
 			blueimp.Gallery(videos, {
 				container: videosContainer,
 				carousel: false,
-			});
+			});			
 		});
 		
 		myModal.on('hidden.bs.modal', function()
@@ -2764,7 +2817,7 @@ $.extend(APP.interactiveMap,
 			that.getData({});
 			that.getMedia({});
 			
-			//that.getDstruct("area");
+			//that.getDstruct("highlitingarea");
 			//that.getDstruct("path");
 			that.getDstruct("highlitingpoi");
 			$.each(that.arrEverytypeGeometries, function(i,v)

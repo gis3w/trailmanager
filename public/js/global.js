@@ -4,6 +4,7 @@ var APP = {
 	config: {},
 	map: {},
 	interactiveMap: {},
+	adminMap: {},
 	filter: {},
 	modals: {},
 	fileuploader: {},

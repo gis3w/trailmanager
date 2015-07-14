@@ -9,7 +9,8 @@ return array(
     	'../modules/underscore-min.js',
     	'../modules/backbone-min.js',
 		'../modules/jquery-ui-1.10.3/ui/minified/jquery-ui.min.js',
-    	
+    	'../modules/d3/d3.min.js',
+    	'../modules/c3-0.4.10/c3.min.js',
 		'../modules/tinymce/tinymce.min.js',
 		//'../modules/tinymce/jquery.tinymce.min.js',
 		//'../modules/AnimatedContentMenu/js/AnimatedContentMenu.js',
@@ -93,6 +94,7 @@ return array(
 		'anagrafica2.js',
 		'multifields.js',
 		'map.js',
+    	'adminMap.js',
 		'interactiveMap.js',
 		//'home.js',
 		'main.js'

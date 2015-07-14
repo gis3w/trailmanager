@@ -706,9 +706,20 @@ $.extend(APP.config,{
 		}
 		$.each(that.localConfig.menu, function(i, v){
 			var button = $("#"+v.id+"Button");
-			var callBack = (i === "logout")? function(){ location.href = v.url; } : function(){
-				tinymce.remove(".textEditor");
-				that.insertContent($(this), v.id);
+			var callBack = null;
+			switch(i)
+			{
+				case "logout":
+					callBack = function(){ location.href = v.url; };
+					break;
+				case "home":
+					callBack = function(){ APP.adminMap.start(); };
+					break;
+				default:
+					callBack = function(){
+						tinymce.remove(".textEditor");
+						that.insertContent($(this), v.id);
+					};
 			}
 			button.click(callBack);
 		});
