@@ -3,6 +3,7 @@
 $.extend(APP.map,
 {
 	globalData: {},
+	previousMapId: null,
 	currentMapId: null,
 	sidebar: {
 		div: null,
@@ -55,6 +56,15 @@ $.extend(APP.map,
 		});
 		this.globalData = {};
 		this.currentMapId = null;
+		this.previousMapId = null;
+	},
+	
+	reverseMap: function()
+	{
+		var that = this;
+		that.globalData[that.currentMapId].map.remove();
+		that.currentMapId = that.previousMapId;
+		that.previousMapId = null;
 	},
 	
 	/*
@@ -113,11 +123,6 @@ $.extend(APP.map,
 			alert("Geolocation is not supported by this browser.");
 	},
 	*/
-	
-	getMap: function()
-	{
-		return this.globalData[this.currentMapId].map;
-	},
 	
 	getCurrentMap: function()
 	{
@@ -421,7 +426,8 @@ $.extend(APP.map,
 	
 	changeMap: function(newMapId)
 	{
-		this.currentMapId = (APP.utils.isset(this.globalData[newMapId]))? newMapId : null;
+		this.previousMapId = (APP.utils.isset(this.globalData[this.currentMapId]))? this.currentMapId : this.previousMapId;
+		this.currentMapId = (APP.utils.isset(this.globalData[newMapId]))? newMapId : this.currentMapId;
 	},
 	
 	updateLayerGroups: function(groupId, mapId, items)

@@ -215,7 +215,7 @@ $.extend(APP.anagrafica,
 		if (!this.sections.hasOwnProperty(section))
 		{
 			this.sections[section] = APP.utils.setBaseStructure(params.title, section);
-			this.getStructure(APP.config.localConfig.urls['dStruct']+"?tb="+this.sections[section].resource, section, filterString, params.loadCallback);
+			this.getStructure(APP.config.localConfig.urls['dStruct']+"?tb="+this.sections[section].resource, section, filterString, true, params.loadCallback);
 		}
 		else
 			this.loadData(APP.config.localConfig.urls[section]+filterString, that.sections[section], params.loadCallback);
@@ -229,7 +229,46 @@ $.extend(APP.anagrafica,
 			return false;
 	},
 	
-	getStructure: function(u, section, filterString, callback)
+	getStructure: function(u, section, filterString, bLoad, callback)
+	{
+		var that = this;
+		
+		$.ajax({
+			type: 'GET',
+			url: u,
+			dataType: 'json',
+			success: function(data)
+			{
+				if (!APP.utils.checkError(data.error, null))
+				{
+					that.loadStructure(data, that.sections[section]);
+					if (!bLoad)
+					{
+						if (APP.utils.isset(callback) && $.isFunction(callback))
+							callback();
+						return;
+					}
+					if (!APP.utils.isset(APP.config.localConfig.urls[section]))
+					{
+						alert("Inserire nel CONFIG l'url per la sezione "+section);
+						return;
+					}
+					else
+						that.loadData(APP.config.localConfig.urls[section]+filterString, that.sections[section], callback);
+				}
+				else
+				{
+					APP.utils.showErrMsg(data);
+				}
+			},
+			error: function(result)
+			{
+				APP.utils.showErrMsg(result);
+			}
+		});
+	},
+	
+	getStructure_old: function(u, section, filterString, callback)
 	{
 		var that = this;
 		
@@ -1672,7 +1711,7 @@ $.extend(APP.anagrafica,
 						if (!that.sections.hasOwnProperty(v.datastruct))
 						{
 							that.sections[v.datastruct] = APP.utils.setBaseStructure(v.datastruct, v.datastruct);
-							that.getStructure(APP.config.localConfig.urls['dStruct']+"?tb="+v.datastruct, v.datastruct, "", function(){ getFilteredItems()});
+							that.getStructure(APP.config.localConfig.urls['dStruct']+"?tb="+v.datastruct, v.datastruct, "",true, function(){ getFilteredItems()});
 						}
 						else
 							getFilteredItems();

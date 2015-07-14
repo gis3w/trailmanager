@@ -4,6 +4,7 @@ $.extend(APP.interactiveMap,
 	bQrCode: false,
 	bEverytypeGeometries: true,
 	arrEverytypeGeometries: ["poi","path","area"],
+	frontPrefix: "front_",
 	previousSection: null,
 	currentSection: null,
 	currentItinerary: null,
@@ -68,11 +69,11 @@ $.extend(APP.interactiveMap,
 		switch(type)
 		{
 			case "marker":
-				return "poi";
+				return "highlitingpoi";
 			case "polyline":
-				return "path";
+				return "highlitingpath";
 			case "polygon":
-				return "area";
+				return "highlitingarea";
 			default:
 				return null;
 		}
@@ -114,7 +115,7 @@ $.extend(APP.interactiveMap,
 	{
 		var that = this;
 		
-		var body = APP.anagrafica.createFormTemplate(id, null, APP.anagrafica.sections["front_"+section], "front_"+section, []);
+		var body = APP.anagrafica.createFormTemplate(id, null, APP.anagrafica.sections[that.frontPrefix+section], that.frontPrefix+section, []);
 		
 		var footerDiv = $(	'<div>\
 								<button type="button" class="btn btn-success"><i class="icon icon-ok"></i> '+APP.i18n.translate('save')+'</button>\
@@ -138,7 +139,7 @@ $.extend(APP.interactiveMap,
 			template.features.push(layer.toGeoJSON());
 			tg.val(JSON.stringify(template));
 			
-			APP.anagrafica.formSubmit(id, "front_"+section, function(){
+			APP.anagrafica.formSubmit(id, that.frontPrefix+section, function(){
 				myModal.modal("hide");
 				if (APP.utils.isset(onSave) && $.isFunction(onSave))
 					onSave();
@@ -190,7 +191,7 @@ $.extend(APP.interactiveMap,
 		marker.addTo(map);
 		
 		setTimeout(function(){
-			that.openEditModal("poi", null, marker);
+			that.openEditModal("highlitingpoi", null, marker);
 		},250);
 	},
 	
@@ -1695,7 +1696,7 @@ $.extend(APP.interactiveMap,
 	{
 		var that = this;
 		
-		var map = APP.map.getMap();
+		var map = APP.map.getCurrentMap();
 		
 		if (v.geoJSON.type === "Point")
 		{
@@ -2431,7 +2432,7 @@ $.extend(APP.interactiveMap,
 		
 		footer.find(".btn-success").click(function()
 		{
-			var s = (APP.config.checkLoggedUser())? "front_userdata" : "front_registration";
+			var s = (APP.config.checkLoggedUser())? that.frontPrefix+"userdata" : that.frontPrefix+"registration";
 		
 			if (!APP.utils.isset(APP.config.localConfig.urls[s]))
 				return;
@@ -2452,7 +2453,7 @@ $.extend(APP.interactiveMap,
 		
 		that.getDstruct("registration", function()
 		{
-			var registrationForm = APP.anagrafica.createFormTemplate(null, null, APP.anagrafica.sections["front_registration"], "front_registration", []);
+			var registrationForm = APP.anagrafica.createFormTemplate(null, null, APP.anagrafica.sections[that.frontPrefix+"registration"], that.frontPrefix+"registration", []);
 			body.append(registrationForm);
 			APP.utils.setLookForm(registrationForm, null);
 		});
@@ -2535,7 +2536,7 @@ $.extend(APP.interactiveMap,
 		if (!APP.utils.isset(section))
 			return false;
 		
-		var s = "front_"+section;
+		var s = that.frontPrefix+section;
 		if (!APP.anagrafica.hasOwnProperty("sections"))
 			APP.anagrafica.sections = {};
 		//if (!APP.anagrafica.sections.hasOwnProperty(s)) // forzo il reset perch� in questo progetto i datastruct possono cambiare dinamicamente
@@ -2733,12 +2734,12 @@ $.extend(APP.interactiveMap,
 		that.mySidebar.div = APP.map.sidebar.div;
 		that.mySidebar.control = APP.map.sidebar.control;
 		that.getPage("info", false);
-		APP.map.getMap().on('click',function(){			
+		APP.map.getCurrentMap().on('click',function(){			
 			that.resetHighlightLayer();
 		});
-		APP.map.getMap().on('zoomend', function()
+		APP.map.getCurrentMap().on('zoomend', function()
 		{			
-			var map = APP.map.getMap();
+			var map = APP.map.getCurrentMap();
 			var scale = that.getScale(APP.map.globalData[APP.map.currentMapId].map);
 			$.each(APP.map.globalData[APP.map.currentMapId].addedLayers, function(i,v)
 			{
@@ -2757,15 +2758,15 @@ $.extend(APP.interactiveMap,
 		if (that.bEverytypeGeometries)
 		{
 			that.getGeo({callback: function(){
-				var map = APP.map.getMap();
+				var map = APP.map.getCurrentMap();
 				map.fire("zoomend");
 			}});
 			that.getData({});
 			that.getMedia({});
 			
-			that.getDstruct("area");
-			that.getDstruct("path");
-			that.getDstruct("poi");
+			//that.getDstruct("area");
+			//that.getDstruct("path");
+			that.getDstruct("highlitingpoi");
 			$.each(that.arrEverytypeGeometries, function(i,v)
 			{
 				var btn = that.body.find("#"+v+"Button");
@@ -2777,7 +2778,7 @@ $.extend(APP.interactiveMap,
 		{
 			that.body.find("#everytypeButton").parent().hide();
 			that.getGeo({section: "poi", callback: function(){
-				var map = APP.map.getMap();
+				var map = APP.map.getCurrentMap();
 				map.fire("zoomend");
 			}});
 			that.getData({section: "poi"});
@@ -2799,7 +2800,7 @@ $.extend(APP.interactiveMap,
 				return false;
 			$.ajax({
 				type: 'GET',
-				url: APP.config.localConfig.urls["front_"+that.currentSection]+"/"+APP.config.localConfig.authuser.id,
+				url: APP.config.localConfig.urls[that.frontPrefix+that.currentSection]+"/"+APP.config.localConfig.authuser.id,
 				dataType: 'json',
 				success: function(data)
 				{
