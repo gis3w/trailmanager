@@ -26,6 +26,7 @@ class Controller_Ajax_Config extends Controller_Ajax_Main{
 //        $this->_set_authuser();
         $this->_set_i18n();
         $this->_set_typologies();
+        $this->_set_highliting_typologies();
         $this->_set_path_modes();
 //        $this->_set_timezone();
 //        $this->_set_menu();
@@ -111,6 +112,17 @@ class Controller_Ajax_Config extends Controller_Ajax_Main{
             $typologies['marker'] =(isset($typologies['marker']) AND $typologies['marker'] != '') ? $this->_marker_uri.$typologies['marker'] : NULL;
         }
         
+    }
+
+    protected function _set_highliting_typologies()
+    {
+        $this->_get_table('Highliting_Typology');
+        foreach($this->config->typology as &$typologies)
+        {
+            $typologies['icon'] =(isset($typologies['icon']) AND $typologies['icon'] != '') ? $this->_icon_uri.$typologies['icon'] : NULL;
+            $typologies['marker'] =(isset($typologies['marker']) AND $typologies['marker'] != '') ? $this->_marker_uri.$typologies['marker'] : NULL;
+        }
+
     }
 
 

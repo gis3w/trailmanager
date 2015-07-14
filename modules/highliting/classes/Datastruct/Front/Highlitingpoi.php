@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Datastruct_Front_Highlitingpoi extends Datastruct_Highlitingpoi {
+class Datastruct_Front_Highlitingpoi extends Datastruct_Highliting_Poi {
 
     public $filter = FALSE;
     public $unsetColumns = array('the_geom','highliting_state_id','publish');
@@ -9,7 +9,7 @@ class Datastruct_Front_Highlitingpoi extends Datastruct_Highlitingpoi {
         array(
             'name' => 'poi-data',
             'position' => 'block',
-            'fields' => array('id','name','surname','email','comune','frazione','via','subject','typology_id','description','front_image_poi','the_geom'),
+            'fields' => array('id','name','surname','email','comune','frazione','via','subject','highliting_typology_id','description','front_image_poi','the_geom'),
         ),
     ); 
     

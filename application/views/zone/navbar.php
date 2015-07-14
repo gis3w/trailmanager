@@ -9,7 +9,8 @@
             <span class="icon-bar"></span>
       </button>
         <?php if($frontend AND $logo_navbar_frontend):?>
-            <a class="navbar-brand" href="#" style="padding: 0px"><?php echo Html::image($img_path.$logo_navbar_frontend,array('alt'=>'TuristicGIS', 'class'=>'img-responsive')); ?></a>
+            <a class="navbar-brand"  href="#" style="padding: 0px;"><?php echo Html::image($img_path.$logo_navbar_frontend,array('alt'=>'TuristicGIS', 'class'=>'img-responsive','style'=>'display:inline')); ?>
+            </a>
         <?php else: ?>
         <a class="navbar-brand" href="#" style="padding: 0px"><?php echo Html::image($img_path.$logo_navbar,array('alt'=>'TuristicGIS', 'class'=>'img-responsive')); ?></a>
         <?php endif ?>
