@@ -152,7 +152,7 @@ $.extend(APP.fileuploader,{
 							onFileRemoved();
 						}
 						else
-							that.showErrMsg(data);
+							APP.utils.showErrMsg(data);
 					},
 					error: function(result)
 					{ 

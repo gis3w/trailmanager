@@ -1862,8 +1862,9 @@ $.extend(APP.anagrafica,
 		//if (form.find(".jquery_fileupload"))
 			//form.attr("enctype","multipart/form-data");
 		
-		if (form.attr("enctype") == "multipart/form-data")
+		if (form.find(".fileupload").length > 0)
 		{
+			form.attr("enctype","multipart/form-data");
 			$.each(form.find(".fileupload"), function()
 			{
 				var n = $(this).attr("name");
