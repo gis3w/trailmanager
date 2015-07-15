@@ -4,12 +4,13 @@ class Datastruct_Front_Highlitingpoi extends Datastruct_Highliting_Poi {
 
     public $filter = FALSE;
     public $unsetColumns = array('the_geom','highliting_state_id','publish');
+
     
     public $groups = array(
         array(
             'name' => 'poi-data',
             'position' => 'block',
-            'fields' => array('id','name','surname','email','comune','frazione','via','subject','highliting_typology_id','description','front_image_poi','the_geom'),
+            'fields' => array('id','name','surname','email','comune','frazione','via','subject','highliting_typology_id','description','front_image_highliting_poi','the_geom'),
         ),
     ); 
     
