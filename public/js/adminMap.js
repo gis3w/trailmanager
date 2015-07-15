@@ -1,29 +1,41 @@
 $.extend(APP.adminMap, 
 {
-	thisSection: "home",
-	body: null,
 	map: null,
 	featureGroup: null,
-	reportings: null,
+	
+	reportings: null,	// Backbone collection
+	
 	reportingsUrl: "jx/admin/highlitingpoi",
 	reportingsId: "id",
 	reportingsTitle: "subject",
+	
+	thisSection: "home",
+	body: null,
 	myModal: null,
 	
 	layout: $(	'<div class="container-fluid" style="height: 100%">\
 					<div class="row">\
 						<div class="col-md-12"></div>\
 					</div>\
-					<div class="row"  style="height: 100%">\
+					<div class="row" style="height: 100%">\
 						<div class="col-md-8 map" style="height: 100%"></div>\
 						<div class="col-md-4 reportings list-group" style="height: 100%"></div>\
 					</div>\
 				</div>'),
 				
-	popup: $(	'<div class="container-fluid">\
-					<div class="row">\
-						<div class="col-md-4 image"></div>\
-						<div class="col-md-8 description"></div>\
+	popup: $(	'<div class="media">\
+					<div class="media-left">\
+					    <a href="#">\
+					      <img class="media-object" src="" alt="">\
+					    </a>\
+				  	</div>\
+					<div class="media-body">\
+						<h4 class="media-heading"></h4>\
+						<div>\
+							<button type="button" class="btn btn-default btn-sm popupDetailsBtn" style="margin-top: 10px">\
+								<i class="icon icon-search"></i> Vedi scheda\
+							</button>\
+						</div>\
 					</div>\
 				</div>'),
 				
@@ -57,38 +69,52 @@ $.extend(APP.adminMap,
 		that.reportings.get(id).set('layer',layer);
 	},
 	
-	initPopup: function(layer)
+	setMapBounds: function(bounds)
 	{
 		var that = this;
 		
-		var reporting = that.reportings.get(layer.options.reportingId);
-		var popup = layer.getPopup();
-		
-		var puc = $(popup.getContent());
-		puc.find(".image").html('<img src="'+reporting['image']+'" alt="" style="width:100%;height:100%">');
-		puc.find(".description").html('<p></p>');
-		
-		popup.setContent(puc.html());
-	},
-	
-	onLayerSelect: function(layer)
-	{
-		var that = this;
-		
-		var myId = layer.options.reportingId;
-		//that.initPopup(layer);
-		
-		that.myModal.modal("show");
-	},
-	
-	setMapBounds: function()
-	{
-		var that = this;
-		
-		var bounds = that.featureGroup.getBounds();
+		bounds = (bounds)? bounds : that.featureGroup.getBounds();
 		that.map.fitBounds(bounds);
 	},
 	
+	initPopup: function(id)
+	{
+		var that = this;
+		
+		var model = that.reportings.get(id);
+		
+		model.set('popup', L.popup({}, model.get('layer')));
+	},
+	
+	emptyDomReportings: function()
+	{
+		var that = this;
+		
+		that.layout.find(".reportings").empty();
+	},
+	
+	setDomReportings: function(obj)
+	{
+		var that = this;
+		
+		var anchor = $('<a href="#" id="reporting_'+obj[that.reportingsId]+'" class="list-group-item"></a>');
+		anchor.data(that.reportingsId, obj[that.reportingsId]);
+		anchor.click(function(){
+			that.onReportingSelect($(this).data(that.reportingsId));
+		});
+		anchor.append(obj[that.reportingsTitle]);
+		that.layout.find(".reportings").append(anchor);
+	},
+	
+	selectDomReporting: function(id)
+	{
+		var that = this;
+		
+		var list = that.layout.find(".reportings");
+		list.find(".active").removeClass("active");
+		list.find("#reporting_"+id).addClass("active");
+	},
+
 	setReportings: function()
 	{
 		var that = this;		
@@ -97,6 +123,7 @@ $.extend(APP.adminMap,
 			model: Backbone.Model.extend({
 				idAttribute: that.reportingsId,
 				layer: null,
+				popup: null,
 			}),
 			parse: function(response) {
 			    return response.data.items;
@@ -110,41 +137,85 @@ $.extend(APP.adminMap,
 			that.reportings = new rc();
 	},
 	
-	getReportings: function()
+	getReportings: function(callback)
 	{
 		var that = this;
 		
 		that.reportings.fetch({
 			success: function(collection, response, options)
 			{
-				that.layout.find(".reportings").empty();
+				that.emptyDomReportings();
+				
 				$.each(response.data.items, function(i,v)
 				{
-					var anchor = $('<a href="#" class="list-group-item"></a>');
-					anchor.append(v[that.reportingsTitle]);
-					if (i == 0)
-						anchor.addClass("active");
-					that.layout.find(".reportings").append(anchor);
-					//that.addMarker(v[that.reportingsTitle], L.GeoJSON.coordsToLatLng(v.the_geom.coordinates));
+					that.setDomReportings(v);
+					
 					L.geoJson(v.the_geom, {
+						pointToLayer: function(feature, latlng)
+						{
+							return L.circleMarker(latlng);
+						},
 						onEachFeature: function(feature, layer)
 						{
-							L.setOptions(layer, {
-								"reportingId": v[that.reportingsId]
-							});
-							//layer.bindPopup(that.popup.clone());
+							var opts = {};
+							opts[that.reportingsId] = v[that.reportingsId];
+							L.setOptions(layer, opts);
 							layer.on('click', function()
 							{
-								that.onLayerSelect(this);
+								that.onReportingSelect(layer.options[that.reportingsId]);
 							});
 							that.addLayer(v[that.reportingsId], layer);
 						}
 					});
-					
 				});
-				that.setMapBounds();
+				if (callback && $.isFunction(callback))
+					callback();
 			}
 		});
+	},
+	
+	openReportingDetail: function(id)
+	{
+		var that = this;
+		
+		var model = that.reportings.get(id);
+		
+		that.myModal.find(".modal-header").find(".lead").text(model.get(that.reportingsTitle));
+		
+		that.myModal.modal("show");
+	},
+	
+	onReportingSelect: function(id)
+	{
+		var that = this;
+		
+		var model = that.reportings.get(id);
+		var center = null;
+		
+		if (model.has('extent'))
+		{
+			var e = model.get('extent').split(",");
+			var extent = L.latLngBounds([L.latLng(e[1], e[0]),L.latLng(e[3], e[2])]);
+			that.setMapBounds(extent);
+			center = extent.getCenter();
+		}
+		
+		if (!model.get('popup'))
+			that.initPopup(id);
+		if (center)
+			model.get('popup').setLatLng(center);
+		if (!model.get('popup').getContent())
+		{
+			var domPopup = that.popup.clone();
+			//domPopup.find(".media-object").attr('src');
+			domPopup.find(".media-heading").text(model.get(that.reportingsTitle));
+			domPopup.find(".popupDetailsBtn").click(function(){
+				that.openReportingDetail(id);
+			});
+			model.get('popup').setContent(domPopup[0]);
+		}
+		
+		model.get('popup').openOn(that.map);
 	},
 	
 	createModal: function()
@@ -184,6 +255,8 @@ $.extend(APP.adminMap,
 		that.createMap();
 		that.createFeatureGroup();
 		that.setReportings();
-		that.getReportings();
+		that.getReportings(function(){
+			that.setMapBounds();
+		});
 	},
 });
