@@ -9,7 +9,6 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
          'image_poi' => 'image',
          'image_path' => 'image',
          'image_area' => 'image',
-         'image_highliting_poi' => 'image'
      );
      
      protected  $_subformToSave = array(
@@ -17,7 +16,6 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
                 'video_path' => 'Video_Path',
                 'video_area' => 'Video_Area',
                 'image_poi' => 'Image_Poi',
-                'image_highliting_poi' => 'Image_Highliting_Poi',
                 'image_path' => 'Image_Path',
                 'image_area' => 'Image_Area'
     );

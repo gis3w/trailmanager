@@ -9,8 +9,8 @@ return array(
     'logo_main' => 'logo_trail_50h.png',
     'logo_navbar' => 'logo_trail_40h.png',
     'logo_navbar_frontend' => 'logo_metauro_puro_title_h46.png',
-    'logo_print' => 'logo_trail_50h.png',
-    'logo_email' => 'logo_trail_30h.png',
+    'logo_print' => 'logo_metauro_puro.png',
+    'logo_email' => 'logo_metauro_puro.png',
     'css_compile' => FALSE,
     'css_path' => 'public/css/',
     'css_base' => array(

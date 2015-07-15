@@ -128,6 +128,7 @@ class Kohana_Mail{
         // costruzione html del body mediante template
         $html_body_template = View::factory($this->_main_body_template);
         $layout = Kohana::$config->load('layout');
+        $html_body_template->layout = $layout;
         $logo_email_absolute = APPPATH."../public/img/".$layout['logo_email'];
         $html_body_template->logo_email_absolute = $this->embed($logo_email_absolute);
         $html_body_template->body_content = $content;
@@ -144,7 +145,6 @@ class Kohana_Mail{
 
     public function send(){
         $this->_mailer->send($this->_message);
-        error_log($this->_logger->dump());
     }
 
 }

@@ -26,6 +26,12 @@ class Datastruct extends Kohana_Formstruct{
     public $filter = FALSE;
     
     public $primary_key = 'id';
+
+    public $setCapabilities = TRUE;
+
+    public $unsetColumns = array();
+
+    public $formLyoutType = 'form-horizontal';
     
     /**
      * Parametri che indicano la lingua co cui deve essere reso il datastruct
@@ -136,8 +142,9 @@ class Datastruct extends Kohana_Formstruct{
         
         //si inizialza i menu se ci sono
         $this->_get_menu_items();
-        
-        $this->_set_capabilities();
+
+        if($this->setCapabilities)
+            $this->_set_capabilities();
          
         //si impostano anche i campi da salvare
         $this->_get_fields_to_save();
@@ -199,7 +206,9 @@ class Datastruct extends Kohana_Formstruct{
 
 
         foreach($table_columns as $name => $colData)
-        {            
+        {
+            if(in_array($name, $this->unsetColumns))
+                continue;
             $_column = $this->_columnStruct;
             $_column['label'] = isset($this->_labelsORM[$name]) ? $this->_labelsORM[$name] : ucfirst($name);
             if(isset($this->_descriptionsORM[$name]))
@@ -272,6 +281,7 @@ class Datastruct extends Kohana_Formstruct{
         
             
         $toRes = array(
+            'form_layout_type' => $this->formLyoutType,
             'title' => $this->title,
             'enctype' => $this->enctype,
             'fields' => $columns,

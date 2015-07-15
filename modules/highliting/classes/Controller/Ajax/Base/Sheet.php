@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 
-class Controller_Ajax_Base_Sheet extends Controller_Ajax_Admin_Sheet_Base{
+class   Controller_Ajax_Base_Sheet extends Controller_Ajax_Admin_Highliting_Sheet_Base{
     
     protected $_exeLogin = FALSE;
     
@@ -73,8 +73,7 @@ class Controller_Ajax_Base_Sheet extends Controller_Ajax_Admin_Sheet_Base{
     
     protected function _validation()
     {
-        // oltre alla non empty di dpi e mansioni è necessario
-        // validare gli indroci per unità produttiva che non si devono sovrapporre ??? chiedere
+
         $this->_vorm = Validation::factory($_POST);
 
         // si aggiungono le validazioni dell'orm

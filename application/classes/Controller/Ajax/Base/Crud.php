@@ -455,6 +455,85 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
             }
             
     }
+
+    /**
+     * Save data from multi files upload system
+     * JUST WORK WITH NAME OF FILE TO UPDATE SYSTEM, BUT I DON'T KNOWN IF IS RIGHT WAY!!
+     */
+    protected function _save_files_1XN()
+    {
+        foreach($this->_multiFilesToSave as $name_field => $name_orm)
+        {
+            if(isset($_POST[$name_field]))
+            {
+                $multiFilesDatas = json_decode($_POST[$name_field]);
+                foreach($multiFilesDatas as $norder => $fd)
+                {
+                    $fd = (array)$fd;
+                    $fd[$this->_table_rid.'_id'] = $this->_orm->id;
+                    $subformOrm = ORM::factory($name_orm)
+                        ->where('file','=',$fd['name'])
+                        ->find();
+                    $subformOrm->norder = $norder;
+
+                    $fd['file'] = $fd['name'];
+                    unset($fd['name']);
+                    if(!isset($fd['stato']))
+                        $fd['stato'] = NULL;
+                    switch($fd['stato'])
+                    {
+                        case "I":
+                        case "U":
+                            if($fd['stato'] == 'I')
+                            {
+                                $fd['data_mod'] =$fd['data_ins'] = time();
+                            }
+                            else
+                            {
+                                $fd['data_mod'] = time();
+                                unset($fd['data_ins']);
+                                // si tenta leliminazione del precedente
+                                if(isset($subformOrm->file) AND isset($this->_upload_path[$name_subform]) AND $subformOrm->file != $fd['file'])
+                                {
+                                    $path_to_delete = APPPATH."../".$this->_upload_path[$name_subform].$subformOrm->file;
+                                    @unlink($path_to_delete);
+                                    // anche le thimbnails
+                                    $path_to_delete_thimb = APPPATH."../".$this->_upload_path[$name_subform].'thumbnail/'.$subformOrm->file;
+                                    @unlink($path_to_delete_thimb);
+                                }
+                            }
+                            $subformOrm->values($fd)->save();
+                            break;
+
+                        case "D":
+                            if(isset($subformOrm->file))
+                                $fileToDelete = $subformOrm->file;
+                            $subformOrm->delete();
+                            if(isset($fileToDelete) and isset($this->_upload_path[$name_subform]))
+                            {
+                                $path_to_delete = APPPATH."../".$this->_upload_path[$name_subform].$fileToDelete;
+                                @unlink($path_to_delete);
+                                // anche le thimbnails
+                                $path_to_delete_thimb = APPPATH."../".$this->_upload_path[$name_subform].'thumbnail/'.$fileToDelete;
+                                @unlink($path_to_delete_thimb);
+                            }
+
+
+                            break;
+
+                        // caso in cui non ci sia lo stato ma si modifica l'ordine
+                        default:
+                            if(in_array('norder', array_keys($subformOrm->table_columns())))
+                            {
+                                $subformOrm->norder = $norder;
+                                $subformOrm->save();
+                            }
+
+                    }
+                }
+            }
+        }
+    }
     
     protected function _save_subforms_1XN()
     {
