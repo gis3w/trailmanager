@@ -270,7 +270,7 @@ $.extend(APP.map,
 			[parseFloat(extent.maxy), parseFloat(extent.maxx)]
 		]);
 		
-		this.globalData[this.currentMapId].map.invalidateSize(true);
+		//this.globalData[this.currentMapId].map.invalidateSize(true);
 	},
 	
 	addLayer: function(obj)

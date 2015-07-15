@@ -1717,7 +1717,8 @@ $.extend(APP.interactiveMap,
 									destination[cs][v.id] = {};
 								destination[cs][v.id].geo = v;
 								that.sendGeojsonLayerToMap(v, cs);
-								APP.map.setGlobalExtent(destination[cs][v.id].geo.extent);
+								if (APP.config.localConfig.use_default_extent === "0")
+									APP.map.setGlobalExtent(destination[cs][v.id].geo.extent);
 							}
 							else
 							{
@@ -1727,7 +1728,8 @@ $.extend(APP.interactiveMap,
 										destination[cs][k.id] = {};
 									destination[cs][k.id].geo = k;
 									that.sendGeojsonLayerToMap(k, cs);
-									APP.map.setGlobalExtent(destination[cs][k.id].geo.extent);
+									if (APP.config.localConfig.use_default_extent === "0")
+										APP.map.setGlobalExtent(destination[cs][k.id].geo.extent);
 								});
 								that.checkIfsectionCompleted(cs);
 								bSectionCompleted = false;
