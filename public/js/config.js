@@ -488,10 +488,18 @@ $.extend(APP.config,{
 		}
 		else
 		{
-			if (APP.config.serverSide)
-				APP.anagrafica_ss.start(button, label, section, $("#"+divId));
-			else
-				APP.anagrafica.start(button, label, section, $("#"+divId));
+			switch(section)
+			{
+				case "home":
+					APP.adminMap.start();
+					break;
+				default:
+					if (APP.config.serverSide)
+						APP.anagrafica_ss.start(button, label, section, $("#"+divId));
+					else
+						APP.anagrafica.start(button, label, section, $("#"+divId));
+			}
+			
 		}
 	},
 	
@@ -711,9 +719,6 @@ $.extend(APP.config,{
 			{
 				case "logout":
 					callBack = function(){ location.href = v.url; };
-					break;
-				case "home":
-					callBack = function(){ APP.adminMap.start(); };
 					break;
 				default:
 					callBack = function(){
