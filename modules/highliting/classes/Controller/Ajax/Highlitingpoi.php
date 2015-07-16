@@ -9,5 +9,7 @@ class Controller_Ajax_Highlitingpoi extends Controller_Ajax_Base_Sheet{
 
     protected $_url_multifield_foreignkey = 'highliting_poi_id';
 
+    protected $_inheritDatastructName = 'highliting_poi';
+
 
 }

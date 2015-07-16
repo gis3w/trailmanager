@@ -33,7 +33,8 @@ class   Controller_Ajax_Base_Sheet extends Controller_Ajax_Admin_Highliting_Shee
         // we set highliting state
         $_POST['highliting_state_id'] = HSTATE_IN_ACCETTAZIONE;
         // erase front from datastructname
-        $this->_inheritDatastructName = substr($this->_datastructName, 6);
+        if(!isset($this->_inheritDatastructName))
+            $this->_inheritDatastructName = substr($this->_datastructName, 6);
     }
 
     

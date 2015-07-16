@@ -117,7 +117,7 @@
                 settings: {
                     consenttype: "implicit",
                     hideallsitesbutton: true,
-                    hideprivacysettingstab: false,
+                    hideprivacysettingstab: true,
                     //testmode:'accept'
                 }
             });

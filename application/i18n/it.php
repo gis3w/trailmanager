@@ -197,7 +197,12 @@ return array(
     'Landascape values' => 'Valori paesaggistici',
     'Natural emergency' => 'Emergenze naturali',
     'History cultural evidences' => 'Evidenze storico culturali',
-    
+
+    'highliting_typology_id' => 'Tipo di segnalazione',
+    'Highliting_typology_id' => 'Tipo di segnalazione',
+    'Subject' => 'Soggetto',
+
+
     'Images to upload' => 'Immagini da caricare',
     'Videos to embed' => 'Video da incorporare',
    

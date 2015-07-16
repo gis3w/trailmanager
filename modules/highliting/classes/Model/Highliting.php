@@ -37,6 +37,7 @@ class Model_Highliting extends ORMGIS {
     protected $_has_one = array(
         'anonimous_data' => array(
             'model'   => 'Anonimous_Highlitings_Data',
+
         ),
     );
     
