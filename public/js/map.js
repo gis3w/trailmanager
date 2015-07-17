@@ -238,14 +238,19 @@ $.extend(APP.map,
 		});
 	},
 	
-	preserialize: function(name)
+	preserialize: function(name, geojsonString)
 	{
 		var value = "";
-
-		if (APP.utils.isset(this.globalData[this.currentMapId].drawnItems) && this.globalData[this.currentMapId].drawnItems.getLayers().length>0)
+		
+		if (geojsonString)
+			value = geojsonString;
+		else
 		{
-			var gj = this.globalData[this.currentMapId].drawnItems.toGeoJSON();
-			value = JSON.stringify(gj);
+			if (this.globalData && this.currentMapId && this.globalData[this.currentMapId] && this.globalData[this.currentMapId].drawnItems && this.globalData[this.currentMapId].drawnItems.getLayers().length>0)
+			{
+				var gj = this.globalData[this.currentMapId].drawnItems.toGeoJSON();
+				value = JSON.stringify(gj);
+			}
 		}
 		
 		return {"name": name, "value": value};

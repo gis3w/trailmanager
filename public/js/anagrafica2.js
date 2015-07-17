@@ -1542,21 +1542,26 @@ $.extend(APP.anagrafica,
 						<input type="hidden" name="csrf_token" class="tokenInput" value="'+APP.config.getToken(sectionTarget.resource)+'">\
 						<div class="row">\
 							<div class="col-md-12">\
-								<div id="formButtons" class="well well-sm" style="text-align: center"></div>\
+								<div id="formButtons" class="well well-sm" style="text-align: center; display:none"></div>\
 							</div>\
 						</div>\
 					</form>');
 			
 		var fb = form.find("#formButtons");
-		$.each(buttons, function(i, v)
+		if (buttons.length>0)
 		{
-			var str = $(v.htmlString);
-			//str.tooltip();
-			str.css("margin", "3px");
-			//fb.append("&nbsp;");
-			str.click(function(){ v.onClick($(this)); });
-			fb.append(str);
-		});
+			fb.show();
+			$.each(buttons, function(i, v)
+			{
+				var str = $(v.htmlString);
+				//str.tooltip();
+				str.css("margin", "3px");
+				//fb.append("&nbsp;");
+				str.click(function(){ v.onClick($(this)); });
+				fb.append(str);
+			});
+		}
+		
 		if (APP.utils.isset(APP.config.localConfig.crud_menu))
 		{
 			var hDistance = 4;
@@ -1916,7 +1921,7 @@ $.extend(APP.anagrafica,
 				var index = APP.utils.getIndexFromField(d, "name", name);
 				if (index === -1)
 					return true;
-				d[index] = APP.map.preserialize(name);
+				d[index] = APP.map.preserialize(name, $(v).val());
 			});
 		}
 		
@@ -2001,7 +2006,7 @@ $.extend(APP.anagrafica,
 			'yes': function(){ sendNow(); },
 			'no': null,
 		};
-		var saveConfirmMsg = (APP.utils.isset(that.sections[section].messages) && APP.utils.isset(that.sections[section].messages['save_confirm']))? that.sections[section].messages['save_confirm'] : APP.i18n.translate("save_confirm");
+		var saveConfirmMsg = (APP.utils.isset(that.sections[section]) && APP.utils.isset(that.sections[section].messages) && APP.utils.isset(that.sections[section].messages['save_confirm']))? that.sections[section].messages['save_confirm'] : APP.i18n.translate("save_confirm");
 		APP.utils.confirmMsg(saveConfirmMsg, labels, callbacks);
 	},
 	
