@@ -1,7 +1,7 @@
 $.extend(APP.interactiveMap, 
 {
 	leafletHash: null,
-	bCurrentLayers: true, //visualizza la lista degli elementi in base ai layers visibili sulla mappa
+	bCurrentLayers: false, //visualizza la lista degli elementi in base ai layers visibili sulla mappa
 	bQrCode: false,
 	bEverytypeGeometries: true,
 	arrEverytypeGeometries: ["poi","path","area"],
@@ -1209,7 +1209,7 @@ $.extend(APP.interactiveMap,
 					var header = $('<h3 style="vertical-align: middle; border-radius:0px">\
 										<span class="pull-left iconImage" style="margin-right: 5px"></span>\
 										'+this.name+'\
-										<span class="checkboxSpan pull-right" style="margin-left: 5px"><i class="icon-check"></i></span>\
+										<!--<span class="checkboxSpan pull-right" style="margin-left: 5px"><i class="icon-check"></i></span>-->\
 										<span class="badge pull-right">0</span>\
 									</h3>');
 					
