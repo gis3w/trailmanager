@@ -124,6 +124,61 @@ $.extend(APP.map,
 	},
 	*/
 	
+	getCurrentViewLayers: function(map)
+	{
+		var that = this;
+		
+		var bounds = map.getBounds();
+				
+		$.each(that.globalData[that.currentMapId].addedLayers, function(i, v)
+		{
+			var l = v.layer;
+			if ($.isFunction(l.getBounds))
+			{
+				var  lb = l.getBounds();
+				if (bounds.intersects(lb))
+				{
+					$('#leafletSidebar').find("#item_"+i).show();
+				}
+				else
+				{
+					$('#leafletSidebar').find("#item_"+i).hide();
+				}
+			}
+			else
+			{
+				if ($.isFunction(l.getLatLng))
+				{
+					var  lb = l.getLatLng();
+					if (bounds.contains(lb))
+					{
+						$('#leafletSidebar').find("#item_"+i).show();
+						
+					}
+					else
+					{
+						$('#leafletSidebar').find("#item_"+i).hide();
+						
+					}
+				}
+			}			
+		});
+		var uiac = $('#leafletSidebar').find(".ui-accordion-content");
+		$.each(uiac, function(i,v)
+		{
+			var anchors = $(v).find("a.list-group-item");
+			var length = 0;
+			$.each(anchors, function(j,k)
+			{
+				var display = $(k).css("display");
+				if (display!="none")
+					length++;
+			});
+			var header = $(v).prev();
+			header.find(".badge").text(length);
+		});
+	},
+	
 	getCurrentMap: function()
 	{
 		return this.globalData[this.currentMapId].map;

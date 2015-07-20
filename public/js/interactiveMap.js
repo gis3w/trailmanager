@@ -1,6 +1,7 @@
 $.extend(APP.interactiveMap, 
 {
 	leafletHash: null,
+	bCurrentLayers: true, //visualizza la lista degli elementi in base ai layers visibili sulla mappa
 	bQrCode: false,
 	bEverytypeGeometries: true,
 	arrEverytypeGeometries: ["poi","path","area"],
@@ -1205,11 +1206,39 @@ $.extend(APP.interactiveMap,
 				
 				$.each(APP.config.localConfig.typology, function()
 				{
-					var header = $('<h4 style="vertical-align: middle; border-radius:0px">\
+					var header = $('<h3 style="vertical-align: middle; border-radius:0px">\
 										<span class="pull-left iconImage" style="margin-right: 5px"></span>\
 										'+this.name+'\
+										<span class="checkboxSpan pull-right" style="margin-left: 5px"><i class="icon-check"></i></span>\
 										<span class="badge pull-right">0</span>\
-									</h4>');
+									</h3>');
+					
+					header.find(".checkboxSpan").click(function(e){
+						var checkIcon = $(this).find("i");
+						if (checkIcon.hasClass('icon-check'))
+						{
+							checkIcon.removeClass().addClass('icon-check-empty');
+							var items = header.next().find("a.list-group-item");
+							$.each(items, function(j,k){
+								k = $(k);
+								var kId = k.attr("id");
+								var kIdSplitted = kId.split("item_")[1];
+								APP.map.hideLayer(kIdSplitted);
+							});
+						}
+						else
+						{
+							checkIcon.removeClass().addClass('icon-check');
+							var items = header.next().find("a.list-group-item");
+							$.each(items, function(j,k){
+								k = $(k);
+								var kId = k.attr("id");
+								var kIdSplitted = kId.split("item_")[1];
+								APP.map.showLayer(kIdSplitted);
+							});
+						}
+						return false;
+					});
 									
 					var content = $('<div id="collapse_'+section+"_"+this.id+'" class="list-group list-group-wo-radius" style="padding: 0px; margin-bottom: 0px; border-radius:0px"></div>');
 					
@@ -1236,7 +1265,7 @@ $.extend(APP.interactiveMap,
 											<img class="media-object img-responsive img-rounded" src="'+(APP.utils.isset(v.data.thumb_main_image)? v.data.thumb_main_image : APP.config.localConfig.default_overview_image)+'" alt="'+APP.i18n.translate('no_image')+'" style="width: 60px; height: 60px">\
 										  </a>\
 										  <div class="media-body">\
-											<h5 class="media-heading">'+that.getObjectTitle(k, v.data.id)+'</h5>\
+											<h6 class="media-heading">'+that.getObjectTitle(k, v.data.id)+'</h6>\
 										  </div>\
 										</div>');					
 						
@@ -1322,6 +1351,7 @@ $.extend(APP.interactiveMap,
 			heightStyle: "content",
 			collapsible: true,
 			active: false,
+			header: "h3"
 		});
 		
 		if (APP.utils.isset(callback) && $.isFunction(callback))
@@ -2798,6 +2828,11 @@ $.extend(APP.interactiveMap,
 		that.getPage("info", false);
 		APP.map.getCurrentMap().on('click',function(){			
 			that.resetHighlightLayer();
+		});
+		APP.map.getCurrentMap().on('move', function()
+		{
+			if (that.bCurrentLayers)
+				APP.map.getCurrentViewLayers(APP.map.getCurrentMap());
 		});
 		APP.map.getCurrentMap().on('zoomend', function()
 		{			

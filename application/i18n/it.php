@@ -73,6 +73,7 @@ return array(
 	'not_found' => 'Non trovato',
 	'Elements' => 'Luoghi da visitare',
 	'Zoom to default extent' => 'Ritorna all\'estensione iniziale della mappa',
+	'Video_poi' => 'Video',
  
     'Close' => 'Chiudi',    
     'close' => 'Chiudi',
