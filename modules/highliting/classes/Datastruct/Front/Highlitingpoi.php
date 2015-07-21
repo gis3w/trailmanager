@@ -10,7 +10,7 @@ class Datastruct_Front_Highlitingpoi extends Datastruct_Highliting_Poi {
         array(
             'name' => 'poi-data',
             'position' => 'block',
-            'fields' => array('id','name','surname','email','comune','frazione','via','subject','highliting_typology_id','description','front_image_highliting_poi','the_geom'),
+            'fields' => array('id','name','surname','email','comune','frazione','via','subject','highliting_path_id','highliting_typology_id','description','front_image_highliting_poi','the_geom'),
         ),
     ); 
     
@@ -56,6 +56,27 @@ class Datastruct_Front_Highlitingpoi extends Datastruct_Highliting_Poi {
                        ),  
                 'label' => __('Images to upload'),
              )
+        );
+
+        $fct['highliting_path_id'] = array_replace($this->_columnStruct, array(
+                'data_type' => 'integer',
+                'description' => __('Select the path'),
+                'label' => _('Path'),
+                'form_input_type' => self::SELECT,
+                'foreign_mode' => self::SINGLESELECT,
+                'foreign_toshow' => '$1',
+                'foreign_toshow_params' => array(
+                    '$1' => 'title',
+                ),
+                'url_values' => SAFE::setBaseUrl('jx/pathsclose/$1/$2'),
+                'slave_of' => 'the_geom',
+                'url_values_params' => array(
+                    '$1' => 'lon',
+                    '$2' => 'lat'
+                ),
+                "table_show" => TRUE,
+                'editable' => TRUE,
+            )
         );
          
         
