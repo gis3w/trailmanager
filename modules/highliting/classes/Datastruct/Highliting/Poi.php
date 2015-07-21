@@ -25,7 +25,7 @@ class Datastruct_Highliting_Poi extends Datastruct {
        array(
             'name' => 'highliting-poi-foreign-data',
             'position' => 'right',
-            'fields' => array('highliting_typology_id','the_geom','image_highliting_poi'),
+            'fields' => array('highliting_typology_id','highliting_path_id','the_geom','image_highliting_poi'),
         ),
         array(
             'name' => 'highliting-poi-ending',
@@ -192,6 +192,28 @@ class Datastruct_Highliting_Poi extends Datastruct {
                 "table_show" => FALSE,
                 'label' => __('Note'),
              )
+        );
+
+        // we add a note filed for insert only
+        $fct['highliting_path_id'] = array_replace($this->_columnStruct, array(
+                'data_type' => 'integer',
+                'description' => __('Select the path'),
+                'label' => _('Path'),
+                'form_input_type' => self::SELECT,
+                'foreign_mode' => self::SINGLESELECT,
+                'foreign_toshow' => '$1',
+                'foreign_toshow_params' => array(
+                    '$1' => 'title',
+                ),
+                'url_values' => SAFE::setBaseUrl('jx/pathsclose/$1/$2'),
+                'slave_of' => 'the_geom',
+                'url_values_params' => array(
+                        '$1' => 'lon',
+                        '$2' => 'lat'
+                    ),
+                "table_show" => TRUE,
+                'editable' => TRUE,
+            )
         );
          
         
