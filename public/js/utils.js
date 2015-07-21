@@ -767,7 +767,10 @@ $.extend(APP.utils,{
 			{
 				if (APP.utils.isset(par))
 				{
-					urlV = that.replaceAll(i, par, urlV);
+					if ($.isPlainObject(par))
+						urlV = that.replaceAll(i, par[v], urlV);
+					else
+						urlV = that.replaceAll(i, par, urlV);
 				}
 				else
 				{
@@ -1270,11 +1273,23 @@ $.extend(APP.utils,{
 				
 				if (that.isset(v.slave_of))
 				{
-					var parVal = (form.find("#APP-"+v.slave_of).length > 0)? form.find("#APP-"+v.slave_of).val() : "";
+					var parVal = "";
+					var iinnddeexx = APP.utils.getIndexFromField(sectionTarget.columns, "name", v.slave_of);
+					if (sectionTarget.columns[iinnddeexx].form_input_type == "mapbox")
+					{
+						parVal = (obj[v.slave_of] && $.isArray(obj[v.slave_of].coordinates))? {
+							lon: obj[v.slave_of].coordinates[0],
+							lat: obj[v.slave_of].coordinates[1]
+						} : "";
+					}
+					else
+					{
+						parVal = (form.find("#APP-"+v.slave_of).length > 0)? form.find("#APP-"+v.slave_of).val() : "";
+					}
 					
 					if (that.isset(parVal) && !that.isEmptyString(parVal))
 					{
-						if (v.data_type === "integer")
+						if (v.data_type === "integer" && sectionTarget.columns[iinnddeexx].form_input_type != "mapbox")
 							parVal = parseInt(parVal);
 						inp.append(this.getOptionsSelect(valore, v.name, obj, sectionTarget, parVal));
 					}

@@ -24,8 +24,13 @@ $.extend(APP.adminMap,
 						<div class="col-md-12"></div>\
 					</div>\
 					<div class="row" style="height: 100%">\
-						<div class="col-md-9 map" style="height: 100%"></div>\
-						<div class="col-md-3 reportings list-group" style="height: 100%"></div>\
+						<div class="col-md-6 map" style="height: 100%"></div>\
+						<div class="col-md-6 table-responsive" style="height: 100%; margin-bottom:0px; padding-top: 20px">\
+							<table id="reportingsTable" class="table table-hover table-striped">\
+								<thead><tr><th>'+APP.i18n.translate('name')+'</th></tr></thead>\
+								<tbody class="reportings"></tbody>\
+							</table>\
+						</div>\
 					</div>\
 				</div>'),
 				
@@ -37,7 +42,7 @@ $.extend(APP.adminMap,
 				  	</div>\
 					<div class="media-body">\
 						<h4 class="media-heading"></h4>\
-						<div>\
+						<div class="text-center">\
 							<button type="button" class="btn btn-default btn-sm popupDetailsBtn" style="margin-top: 10px">\
 								<i class="icon icon-search"></i> '+APP.i18n.translate('Edit')+'\
 							</button>\
@@ -212,6 +217,11 @@ $.extend(APP.adminMap,
 	{
 		var that = this;
 		
+		var table = that.layout.find("#reportingsTable");
+		if ($.fn.DataTable.fnIsDataTable( table[0] ))
+		{
+			table.dataTable().fnDestroy();
+		}
 		that.layout.find(".reportings").empty();
 	},
 	
@@ -219,12 +229,11 @@ $.extend(APP.adminMap,
 	{
 		var that = this;
 		
-		var anchor = $('<a href="#" id="reporting_'+obj[that.reportingsId]+'" class="list-group-item"></a>');
+		var anchor = $('<tr id="reporting_'+obj[that.reportingsId]+'"><td>'+obj[that.reportingsTitle]+'</td></tr>');
 		anchor.data(that.reportingsId, obj[that.reportingsId]);
 		anchor.click(function(){
 			that.onReportingSelect($(this).data(that.reportingsId));
 		});
-		anchor.append(obj[that.reportingsTitle]);
 		that.layout.find(".reportings").append(anchor);
 	},
 	
@@ -416,12 +425,26 @@ $.extend(APP.adminMap,
 		that.body.css(h100);
 		var mc = that.body.find("#mainContent");
 		mc.css(h100);
-		mc.find("#"+that.thisSection+"Container").css(h100).html(that.layout);
+		mc.css({
+			"padding": 0,
+			"margin": 0,
+			"padding-top": that.body.find('#main_navbar_admin').height(),
+		});
+		mc.find("#"+that.thisSection+"Container").css({
+			"padding":0,
+			"margin": 0,
+			"height":"100%",
+		}).html(that.layout);
 		
 		that.createMap();
 		that.createFeatureGroup();
 		that.initReportings();
 		that.getReportings(function(){
+			that.layout.find("#reportingsTable").dataTable({
+				"sPaginationType": "full_numbers",
+				"oLanguage": APP.utils.getDataTableLanguage(),
+			});			
+			
 			that.getReportingsDatastruct();
 			that.setMapBounds();
 			that.setDefaultExtent();
