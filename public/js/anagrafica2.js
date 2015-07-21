@@ -427,6 +427,12 @@ $.extend(APP.anagrafica,
 				arr.push({
 					htmlString: '<a id="button_cancel" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("cancel")+'" class="btn btn-default btn-lg tooltipElement" href="#"><i class="icon-arrow-left"></i></a>',
 					onClick: function(){
+						if (APP.config.backUrl)
+						{
+							APP.config.workSpace.navigate(APP.config.backUrl, {trigger: true, replace: true});
+							APP.config.backUrl = null;
+							return false;
+						}
 						APP.config.bBack = true;
 						APP.config.queue.pop();
 						if (APP.config.bDirectUrl && APP.config.queue.length>0)

@@ -193,9 +193,14 @@ $.extend(APP.adminMap,
 			//domPopup.find(".media-object").attr('src');
 			domPopup.find(".media-heading").text(model.get(that.reportingsTitle));
 			domPopup.find(".popupDetailsBtn").click(function(){
+				//APP.config.bBack = true;
+				APP.config.backUrl = "home";
+				APP.config.workSpace.navigate("highliting_poi/"+id, {trigger: true, replace: true});
+				/*
 				that.openEditModal(id, model.get('layer'), function(){
 			    	that.start();
 			    });
+			    */
 			});
 			model.get('popup').setContent(domPopup[0]);
 		}

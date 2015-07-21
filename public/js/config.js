@@ -34,6 +34,11 @@ $.extend(APP.config,{
 			$("#mainContent").html(w);
 			
 			var ff = (query)? "/"+query : "";
+			if (sec == "home")
+			{
+				APP.adminMap.start();
+				return false;
+			}
 			APP.anagrafica.start(button, secTitle, sec, w, ff, function()
 			{
 				if (!query)
@@ -156,6 +161,9 @@ $.extend(APP.config,{
 		that.backboneRouter = Backbone.Router.extend({
 
 			  routes: {
+				"home": "home",
+				"highliting_poi/:query": "highliting_poi",
+				"highliting_poi": "highliting_poi",
 			    "path/:query": "path",
 			    "path": "path",
 			    "poi/:query": "poi",
@@ -168,6 +176,14 @@ $.extend(APP.config,{
 			    "area": "area",
 			    
 			    "search/:query/p:page": "search"   // #search/kiwis/p7
+			  },
+			  
+			  home: function(){
+				  workNow("home", "Segnalazioni su Mappa", null);
+			  },
+			  
+			  highliting_poi: function(query) {
+			  	workNow("highliting_poi", "Segnalazioni", query);
 			  },
 
 			  path: function(query) {
