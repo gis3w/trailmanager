@@ -6,7 +6,7 @@
         <placeholders>
             <header>
                 <div class="head">
-                    <img src="dir:/amazon-logo.jpg" />
+                    <img src="/home/www/new_turisticgisamazon-logo.jpg" />
                     <div>
                         <h1>Amazon Simple Storage service <span>(Version 2006-03-01)</span></h1>
                         <h2 width="40%" float="left">Quick Reference Card</h2>
