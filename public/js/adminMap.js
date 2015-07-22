@@ -427,7 +427,8 @@ $.extend(APP.adminMap,
 		mc.css(h100);
 		mc.css({
 			"padding": 0,
-			"margin": 0,
+			"margin":  0,
+			"padding-bottom": that.body.find('#main_navbar_admin').parents('.navbar').outerHeight()-that.body.find('#main_navbar_admin').height(),
 			"padding-top": that.body.find('#main_navbar_admin').height(),
 		});
 		mc.find("#"+that.thisSection+"Container").css({

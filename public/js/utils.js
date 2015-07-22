@@ -1275,7 +1275,7 @@ $.extend(APP.utils,{
 				{
 					var parVal = "";
 					var iinnddeexx = APP.utils.getIndexFromField(sectionTarget.columns, "name", v.slave_of);
-					if (sectionTarget.columns[iinnddeexx].form_input_type == "mapbox")
+					if (iinnddeexx > -1 && sectionTarget.columns[iinnddeexx].form_input_type == "mapbox")
 					{
 						parVal = (obj[v.slave_of] && $.isArray(obj[v.slave_of].coordinates))? {
 							lon: obj[v.slave_of].coordinates[0],
