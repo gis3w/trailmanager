@@ -6,14 +6,28 @@ $.extend(APP.adminMap,
 		draw: null,
 		scale: null,
 	},
-	geometries: ['polyline','polygon','rectangle','circle','marker'],
+	geometries: ['polyline','polygon','rectangle','circle','marker'], //leaflet.draw
 	bCircleMarker: true,
-	reportingsResource: "highliting_poi",
-	reportingsId: "id",
-	reportingsTitle: "subject",
 	
-	reportingsDatastruct: null,
-	reportings: null,	// Backbone collection	
+	datastruct: {},
+	info: {
+		'reportings': {
+			'resource': "highliting_poi",
+			'idAttribute': "id",
+			'titleAttribute': "subject",
+			'tableId': "reportingsTable",
+		},
+		'trails': {
+			'resource': "path",
+			'idAttribute': "id",
+			'titleAttribute': "title",
+			'tableId': null,
+		}
+	},
+
+	reportings: null,	// Backbone collection
+	trails: null, // Backbone collection
+	
 	body: null,
 	myModal: null,
 	map: null,
@@ -26,10 +40,6 @@ $.extend(APP.adminMap,
 					<div class="row" style="height: 100%">\
 						<div class="col-md-6 map" style="height: 100%"></div>\
 						<div class="col-md-6 table-responsive" style="height: 100%; margin-bottom:0px; padding-top: 20px">\
-							<table id="reportingsTable" class="table table-hover table-striped">\
-								<thead><tr><th>'+APP.i18n.translate('name')+'</th></tr></thead>\
-								<tbody class="reportings"></tbody>\
-							</table>\
 						</div>\
 					</div>\
 				</div>'),
@@ -112,18 +122,14 @@ $.extend(APP.adminMap,
 					    }
 					    
 					    that.featureGroup.addLayer(layer);
+					    /*
 					    that.openEditModal(null, layer, function(){
 					    	that.start();
 					    });
+					    */
 					});
 					
 					that.map.on('draw:edited', function (e) {
-					    var layers = e.layers;
-					    layers.eachLayer(function (layer) {
-					    	that.openEditModal(layer.options[that.reportingsId], layer, function(){
-						    	that.start();
-						    });
-					    });
 					    
 					});
 					break;
@@ -143,12 +149,12 @@ $.extend(APP.adminMap,
 		that.featureGroup.addTo(that.map);
 	},
 	
-	addLayer: function(id, layer)
+	addLayer: function(id, layer, target)
 	{
 		var that = this;
 
 		that.featureGroup.addLayer(layer);
-		that.reportings.get(id).set('layer',layer);
+		target.get(id).set('layer',layer);
 	},
 	
 	setMapBounds: function(bounds)
@@ -172,14 +178,14 @@ $.extend(APP.adminMap,
 		}
 	},
 	
-	openPopup: function(id)
+	openPopup: function(id, target, targetInfo)
 	{
 		var that = this;
 		
 		if (!id)
 			return false;
 		
-		var model = that.reportings.get(id);
+		var model = target.get(id);
 		
 		if (!model.get('popup'))
 			model.set('popup', L.popup({}, model.get('layer')));
@@ -188,19 +194,22 @@ $.extend(APP.adminMap,
 			model.get('popup').setLatLng(model.get('layer').getLatLng());
 		else
 		{
-			if ($.isFunction(model.get('layer').getBounds))	// vector layers
-				model.get('popup').setLatLng(model.get('layer').getBounds().getCenter());
+			if ($.isFunction(model.get('layer').getLatLngs))// vector layers
+			{
+				var ll = model.get('layer').getLatLngs()[0];
+				var num = parseInt(ll.length/2);
+				model.get('popup').setLatLng(ll[num]);
+			}
 		}
 		
 		if (!model.get('popup').getContent())
 		{
 			var domPopup = that.popup.clone();
 			//domPopup.find(".media-object").attr('src');
-			domPopup.find(".media-heading").text(model.get(that.reportingsTitle));
+			domPopup.find(".media-heading").text(model.get(targetInfo.titleAttribute));
 			domPopup.find(".popupDetailsBtn").click(function(){
-				//APP.config.bBack = true;
-				APP.config.backUrl = "home";
-				APP.config.workSpace.navigate("highliting_poi/"+id, {trigger: true, replace: true});
+				APP.config.backUrl = that.thisSection;
+				APP.config.workSpace.navigate(targetInfo.resource+"/"+id, {trigger: true, replace: true});
 				/*
 				that.openEditModal(id, model.get('layer'), function(){
 			    	that.start();
@@ -213,114 +222,20 @@ $.extend(APP.adminMap,
 		model.get('popup').openOn(that.map);
 	},
 	
-	emptyDomReportings: function()
-	{
-		var that = this;
-		
-		var table = that.layout.find("#reportingsTable");
-		if ($.fn.DataTable.fnIsDataTable( table[0] ))
-		{
-			table.dataTable().fnDestroy();
-		}
-		that.layout.find(".reportings").empty();
-	},
-	
-	setDomReportings: function(obj)
-	{
-		var that = this;
-		
-		var anchor = $('<tr id="reporting_'+obj[that.reportingsId]+'"><td>'+obj[that.reportingsTitle]+'</td></tr>');
-		anchor.data(that.reportingsId, obj[that.reportingsId]);
-		anchor.click(function(){
-			that.onReportingSelect($(this).data(that.reportingsId));
-		});
-		that.layout.find(".reportings").append(anchor);
-	},
-	
-	selectDomReporting: function(id)
-	{
-		var that = this;
-		
-		var list = that.layout.find(".reportings");
-		list.find(".active").removeClass("active");
-		list.find("#reporting_"+id).addClass("active");
-	},
-
-	initReportings: function()
-	{
-		var that = this;		
-		
-		var rc = Backbone.Collection.extend({
-			model: Backbone.Model.extend({
-				idAttribute: that.reportingsId,
-				layer: null,
-				popup: null,
-			}),
-			parse: function(response) {
-			    return response.data.items;
-			},
-			url: APP.config.localConfig.urls[that.reportingsResource],
-		});
-		
-		if (that.reportings)
-			that.reportings.reset();
-		else
-			that.reportings = new rc();
-	},
-	
-	getReportings: function(callback)
-	{
-		var that = this;
-		
-		that.reportings.fetch({
-			success: function(collection, response, options)
-			{
-				that.emptyDomReportings();
-				
-				$.each(response.data.items, function(i,v)
-				{
-					that.setDomReportings(v);
-					
-					var gjo = {
-						onEachFeature: function(feature, layer)
-						{
-							var opts = {};
-							opts[that.reportingsId] = v[that.reportingsId];
-							L.setOptions(layer, opts);
-							layer.on('click', function()
-							{
-								that.onReportingSelect(layer.options[that.reportingsId]);
-							});
-							that.addLayer(v[that.reportingsId], layer);
-						}
-					};
-					
-					if (that.bCircleMarker)
-					{
-						gjo.pointToLayer = function(feature, latlng){
-							return L.circleMarker(latlng);
-						};
-					}
-					
-					L.geoJson(v.the_geom, gjo);
-				});
-				if (callback && $.isFunction(callback))
-					callback();
-			}
-		});
-	},
-
 	openEditModal: function(id, layer, onSave, onCancel)
 	{
 		var that = this;
+		
+		var target = that.reportings;
+		var targetInfo = that.info['reportings'];
 				
-		var modalTitle = (id)? that.reportings.get(id).get(that.reportingsTitle) : APP.utils.capitalize(APP.i18n.translate("New report"));
+		var modalTitle = (id)? target.get(id).get(targetInfo.titleAttribute) : APP.utils.capitalize(APP.i18n.translate("New report"));
 		
 		var dataObj = null;
 		if (layer && $.isFunction(layer.getLatLng))
 			dataObj = {"the_geom": {"coordinates": [layer.getLatLng().lng, layer.getLatLng().lat]}};
 		
-		var modalBody = APP.anagrafica.createFormTemplate(id, dataObj, that.reportingsDatastruct, that.reportingsResource, []);
+		var modalBody = APP.anagrafica.createFormTemplate(id, dataObj, that.datastruct[targetInfo.resource], targetInfo.resource, []);
 		
 		var footerDiv = $(	'<div>\
 								<button type="button" class="btn btn-success"><i class="icon icon-ok"></i> '+APP.i18n.translate('save')+'</button>\
@@ -344,7 +259,7 @@ $.extend(APP.adminMap,
 			template.features.push(layer.toGeoJSON());
 			tg.val(JSON.stringify(template));
 			
-			APP.anagrafica.formSubmit(id, that.reportingsResource, function(){
+			APP.anagrafica.formSubmit(id, targetInfo.resource, function(){
 				that.setDefaultExtent();
 				that.myModal.modal("hide");
 				if (APP.utils.isset(onSave) && $.isFunction(onSave))
@@ -377,11 +292,148 @@ $.extend(APP.adminMap,
 		that.myModal.modal("show");
 	},
 	
-	onReportingSelect: function(id)
+	emptyDomItems: function(targetInfo)
 	{
 		var that = this;
 		
-		var model = that.reportings.get(id);
+		var table = that.layout.find("#"+targetInfo.tableId);
+		if ($.fn.DataTable.fnIsDataTable( table[0] ))
+		{
+			table.dataTable().fnClearTable(true);
+		}
+		else
+			table.find("tbody").empty();
+	},
+	
+	setDomItems: function(target, targetInfo, obj)
+	{
+		var that = this;
+		
+		var anchor = $('<tr id="item_'+obj[targetInfo.idAttribute]+'"><td>'+obj[targetInfo.titleAttribute]+'</td></tr>');
+		anchor.data(targetInfo.idAttribute, obj[targetInfo.idAttribute]);
+		anchor.click(function(){
+			that.onItemSelect($(this).data(targetInfo.idAttribute), target, targetInfo);
+		});
+		that.layout.find("#"+targetInfo.tableId).find("tbody").append(anchor);
+	},
+	
+	setDomTable: function(targetInfo)
+	{
+		var that = this;
+		
+		var table = that.layout.find('#'+targetInfo.tableId);
+		if (table.length>0)
+		{
+			if ($.fn.DataTable.fnIsDataTable( table[0] ))
+			{
+				table.dataTable().fnDestroy(true);
+			}
+		}
+		
+		if (targetInfo.tableId)
+		{
+			table = $(	'<table id="'+targetInfo.tableId+'" class="table table-hover table-striped" style="margin-bottom: 15px">\
+							<caption>'+APP.i18n.translate(targetInfo.resource)+'</caption>\
+							<thead><tr><th>'+APP.i18n.translate('name')+'</th></tr></thead>\
+							<tbody></tbody>\
+						</table>');
+			that.layout.find(".table-responsive").append(table);
+		}
+	},
+	
+	datatablize: function(targetInfo)
+	{
+		var that = this;
+		
+		var table = that.layout.find("#"+targetInfo.tableId);
+		if (table.length==0)
+			return false;
+		
+		if ($.fn.DataTable.fnIsDataTable( table[0] ))
+		{
+			table.dataTable().fnDestroy(true);
+		}
+		
+		table.dataTable({
+			"sPaginationType": "full_numbers",
+			"oLanguage": APP.utils.getDataTableLanguage(),
+		});
+	},
+	
+	initItems: function(target, targetInfo)
+	{
+		var that = this;
+		
+		that.setDomTable(targetInfo);
+		
+		var rc = Backbone.Collection.extend({
+			model: Backbone.Model.extend({
+				idAttribute: targetInfo.idAttribute,
+				layer: null,
+				popup: null,
+			}),
+			parse: function(response) {
+			    return response.data.items;
+			},
+			url: APP.config.localConfig.urls[targetInfo.resource],
+		});
+		
+		if (target)
+			target.reset();
+		else
+			target = new rc();
+		
+		return target;
+	},
+	
+	getItems: function(target, targetInfo, callback)
+	{
+		var that = this;
+		
+		target.fetch({
+			success: function(collection, response, options)
+			{
+				that.emptyDomItems(targetInfo);
+				
+				$.each(response.data.items, function(i,v)
+				{ 
+					that.setDomItems(target, targetInfo, v);
+					
+					var gjo = {
+						onEachFeature: function(feature, layer)
+						{
+							var opts = {};
+							opts[targetInfo.idAttribute] = v[targetInfo.idAttribute];
+							L.setOptions(layer, opts);
+							layer.on('click', function()
+							{
+								that.onItemSelect(layer.options[targetInfo.idAttribute], target, targetInfo);
+							});
+							layer.bindLabel(v[targetInfo.titleAttribute],{ noHide: true });
+							that.addLayer(v[targetInfo.idAttribute], layer, target);
+						}
+					};
+					
+					if (that.bCircleMarker)
+					{
+						gjo.pointToLayer = function(feature, latlng){
+							return L.circleMarker(latlng);
+						};
+					}
+					
+					L.geoJson(v.the_geom, gjo);
+				});
+				if (callback && $.isFunction(callback))
+					callback();
+			}
+		});
+	},
+	
+	onItemSelect: function(id, target, targetInfo)
+	{
+		var that = this;
+		
+		var model = target.get(id);
 		
 		if (model.has('extent'))
 		{
@@ -390,24 +442,24 @@ $.extend(APP.adminMap,
 			that.setMapBounds(extent);
 		}
 		
-		that.openPopup(id);
+		that.openPopup(id, target, targetInfo);
 	},
 	
-	getReportingsDatastruct: function()
+	getItemsDatastruct: function(target, targetInfo)
 	{
 		var that = this;
 		
-		that.reportingsDatastruct = APP.utils.setBaseStructure(that.reportingsResource, that.reportingsResource);
+		that.datastruct[targetInfo.resource] = APP.utils.setBaseStructure(targetInfo.resource, targetInfo.resource);
 		
 		$.ajax({
 			type: 'GET',
-			url: APP.config.localConfig.urls['dStruct']+"?tb="+that.reportingsResource,
+			url: APP.config.localConfig.urls['dStruct']+"?tb="+targetInfo.resource,
 			success: function(data)
 			{
 				if (!APP.utils.checkError(data.error, null))
 				{
-					APP.anagrafica.loadStructure(data, that.reportingsDatastruct);
-					that.reportingsDatastruct.values = that.reportings.toJSON();
+					APP.anagrafica.loadStructure(data, that.datastruct[targetInfo.resource]);
+					that.datastruct[targetInfo.resource].values = target.toJSON();
 				}
 				else
 					APP.utils.showErrMsg(data);
@@ -429,32 +481,28 @@ $.extend(APP.adminMap,
 		that.body.parents("html").css(h100);
 		that.body.css(h100);
 		var mc = that.body.find("#mainContent");
-		mc.css(h100);
-		mc.css({
-			"padding": 0,
-			"margin":  0,
-			"padding-bottom": that.body.find('#main_navbar_admin').parents('.navbar').outerHeight()-that.body.find('#main_navbar_admin').height(),
-			"padding-top": that.body.find('#main_navbar_admin').height(),
-		});
+		mc.css(h100).css({"padding":0,"margin":0});
 		mc.find("#"+that.thisSection+"Container").css({
 			"padding":0,
 			"margin": 0,
 			"height":"100%",
+			"padding-top": that.body.find('#main_navbar_admin').parents('.navbar').height(),
+			"padding-bottom": that.body.find('#main_navbar_admin').parents('.navbar').outerHeight()-that.body.find('#main_navbar_admin').height(),
 		}).html(that.layout);
 		
 		that.createMap();
 		that.createFeatureGroup();
-		that.initReportings();
-		that.getReportings(function(){
-			that.layout.find("#reportingsTable").dataTable({
-				"sPaginationType": "full_numbers",
-				"oLanguage": APP.utils.getDataTableLanguage(),
-			});			
-			
-			that.getReportingsDatastruct();
+		that.reportings = that.initItems(that.reportings, that.info['reportings']);
+		that.getItems(that.reportings, that.info['reportings'], function(){
+			that.datatablize(that.info['reportings']);			
+			that.getItemsDatastruct(that.reportings, that.info['reportings']);
 			that.setMapBounds();
 			that.setDefaultExtent();
 			that.addMapControls();
+		});
+		that.trails = that.initItems(that.trails, that.info['trails']);
+		that.getItems(that.trails, that.info['trails'], function(){
+			that.datatablize(that.info['trails']);
 		});
 	},
 });

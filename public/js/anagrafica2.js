@@ -20,6 +20,7 @@ $.extend(APP.anagrafica,
 		this.selectedItem = null;
 		this.tmpSelectedItem = el;
 		this.mainDiv = APP.utils.isset(div)? div : $("#"+section+"Container");
+		$("#mainContent").css("padding", "60px 15px 60px 15px");
 		
 		$("body").one("table_shown", function(){
 			

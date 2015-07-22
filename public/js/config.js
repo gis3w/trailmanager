@@ -525,6 +525,8 @@ $.extend(APP.config,{
 		this.removeActiveClasses($(".navbar"), "li");
 		button.closest("li").addClass("active");
 		
+		//$("#mainContent").css("padding", "60px 15px 60px 15px");
+		
 		var prevDiv = $("#mainContent").find("#"+this.currentConfigSection+"Container");
 		if (prevDiv.length > 0)
 		{
