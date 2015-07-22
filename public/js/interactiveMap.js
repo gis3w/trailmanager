@@ -116,7 +116,11 @@ $.extend(APP.interactiveMap,
 	{
 		var that = this;
 		
-		var body = APP.anagrafica.createFormTemplate(id, null, APP.anagrafica.sections[that.frontPrefix+section], that.frontPrefix+section, []);
+		var dataObj = null;
+		if (layer && $.isFunction(layer.getLatLng))
+			dataObj = {"the_geom": {"coordinates": [layer.getLatLng().lng, layer.getLatLng().lat]}};
+		
+		var body = APP.anagrafica.createFormTemplate(id, dataObj, APP.anagrafica.sections[that.frontPrefix+section], that.frontPrefix+section, []);
 		
 		var footerDiv = $(	'<div>\
 								<button type="button" class="btn btn-success"><i class="icon icon-ok"></i> '+APP.i18n.translate('save')+'</button>\

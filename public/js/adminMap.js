@@ -315,7 +315,12 @@ $.extend(APP.adminMap,
 		var that = this;
 				
 		var modalTitle = (id)? that.reportings.get(id).get(that.reportingsTitle) : APP.utils.capitalize(APP.i18n.translate("New report"));
-		var modalBody = APP.anagrafica.createFormTemplate(id, null, that.reportingsDatastruct, that.reportingsResource, []);
+		
+		var dataObj = null;
+		if (layer && $.isFunction(layer.getLatLng))
+			dataObj = {"the_geom": {"coordinates": [layer.getLatLng().lng, layer.getLatLng().lat]}};
+		
+		var modalBody = APP.anagrafica.createFormTemplate(id, dataObj, that.reportingsDatastruct, that.reportingsResource, []);
 		
 		var footerDiv = $(	'<div>\
 								<button type="button" class="btn btn-success"><i class="icon icon-ok"></i> '+APP.i18n.translate('save')+'</button>\
