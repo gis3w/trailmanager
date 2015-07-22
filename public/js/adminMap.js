@@ -149,12 +149,47 @@ $.extend(APP.adminMap,
 		that.featureGroup.addTo(that.map);
 	},
 	
-	addLayer: function(id, layer, target)
+	addLayer: function(obj)//layer,target,id,onClick,options
 	{
 		var that = this;
-
-		that.featureGroup.addLayer(layer);
-		target.get(id).set('layer',layer);
+		
+		var layerResult = null;
+		var feature = obj.layer.feature.geometry;
+		
+		var setOtherOptions = function(l)
+		{
+			if (obj.onClick && $.isFunction(obj.onClick))
+				l.on('click',obj.onClick);
+			
+			if (obj.label)
+				l.bindLabel(obj.label);
+			
+			if (obj.options && $.isPlainObject(obj.options))
+				L.setOptions(l, obj.options);
+		};
+		
+		switch(feature.type)
+		{
+			case "MultiLineString":
+				$.each(feature.coordinates, function(i,v){
+					var l = L.polyline(L.GeoJSON.coordsToLatLngs(v));
+					setOtherOptions(l);
+					l.addTo(that.featureGroup);
+				});
+				break
+			case "MultiPolygon": 
+				$.each(feature.coordinates, function(i,v){
+					var l = L.polygon(L.GeoJSON.coordsToLatLngs(v,1));
+					setOtherOptions(l);
+					l.addTo(that.featureGroup);
+				});
+				break;
+			default:
+				setOtherOptions(obj.layer);
+				obj.layer.addTo(that.featureGroup);
+		}
+		
+		obj.target.get(obj.id).set('layer',obj.layer);
 	},
 	
 	setMapBounds: function(bounds)
@@ -199,6 +234,14 @@ $.extend(APP.adminMap,
 				var ll = model.get('layer').getLatLngs()[0];
 				var num = parseInt(ll.length/2);
 				model.get('popup').setLatLng(ll[num]);
+			}
+			else
+			{
+				if ($.isFunction(model.get('layer').getBounds))// featureGroup
+				{
+					var ll = model.get('layer').getBounds().getCenter();
+					model.get('popup').setLatLng(ll);
+				}
 			}
 		}
 		
@@ -404,13 +447,19 @@ $.extend(APP.adminMap,
 						{
 							var opts = {};
 							opts[targetInfo.idAttribute] = v[targetInfo.idAttribute];
-							L.setOptions(layer, opts);
-							layer.on('click', function()
-							{
-								that.onItemSelect(layer.options[targetInfo.idAttribute], target, targetInfo);
+							
+							that.addLayer({
+								'id': v[targetInfo.idAttribute],
+								'layer': layer,
+								'target': target,
+								'options': opts,
+								'label': v[targetInfo.titleAttribute],
+								'onClick': function()
+								{
+									var y = this;
+									that.onItemSelect(this.options[targetInfo.idAttribute], target, targetInfo);
+								}
 							});
-							layer.bindLabel(v[targetInfo.titleAttribute],{ noHide: true });
-							that.addLayer(v[targetInfo.idAttribute], layer, target);
 						}
 					};
 					

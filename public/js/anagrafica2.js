@@ -1928,7 +1928,8 @@ $.extend(APP.anagrafica,
 				var index = APP.utils.getIndexFromField(d, "name", name);
 				if (index === -1)
 					return true;
-				d[index] = APP.map.preserialize(name, $(v).val());
+
+				d[index] = APP.map.preserialize(name);
 			});
 		}
 		

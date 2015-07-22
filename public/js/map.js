@@ -297,15 +297,10 @@ $.extend(APP.map,
 	{
 		var value = "";
 		
-		if (geojsonString)
-			value = geojsonString;
-		else
+		if (this.globalData && this.currentMapId && this.globalData[this.currentMapId] && this.globalData[this.currentMapId].drawnItems && this.globalData[this.currentMapId].drawnItems.getLayers().length>0)
 		{
-			if (this.globalData && this.currentMapId && this.globalData[this.currentMapId] && this.globalData[this.currentMapId].drawnItems && this.globalData[this.currentMapId].drawnItems.getLayers().length>0)
-			{
-				var gj = this.globalData[this.currentMapId].drawnItems.toGeoJSON();
-				value = JSON.stringify(gj);
-			}
+			var gj = this.globalData[this.currentMapId].drawnItems.toGeoJSON();
+			value = JSON.stringify(gj);
 		}
 		
 		return {"name": name, "value": value};
