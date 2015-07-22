@@ -293,7 +293,7 @@ $.extend(APP.map,
 		});
 	},
 	
-	preserialize: function(name, geojsonString)
+	preserialize: function(name)
 	{
 		var value = "";
 		

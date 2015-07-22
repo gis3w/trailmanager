@@ -20,7 +20,7 @@ $.extend(APP.config,{
 	{
 		var that = this;
 		
-		var workNow = function(sec, secTitle, query)
+		var workNow = function(sec, secTitle, query, bAdd)
 		{	
 			that.bDirectUrl = true;
 			
@@ -58,8 +58,10 @@ $.extend(APP.config,{
 								APP.anagrafica.onSelectTableRow(t, sec, tw);
 							}
 						};
-					
-					APP.anagrafica.showTable(obj);
+					if (bAdd)
+						APP.anagrafica.addItem(null, prevw, tw, "highliting_poi");
+					else
+						APP.anagrafica.showTable(obj);
 				}
 				else
 				{
@@ -164,6 +166,7 @@ $.extend(APP.config,{
 				"home": "home",
 				"highliting_poi/:query": "highliting_poi",
 				"highliting_poi": "highliting_poi",
+				"new_highliting_poi": "new_highliting_poi",
 			    "path/:query": "path",
 			    "path": "path",
 			    "poi/:query": "poi",
@@ -180,6 +183,10 @@ $.extend(APP.config,{
 			  
 			  home: function(){
 				  workNow("home", "Segnalazioni su Mappa", null);
+			  },
+			  
+			  new_highliting_poi: function(query) {
+				  workNow("highliting_poi", "Nuova segnalazione", null, true);
 			  },
 			  
 			  highliting_poi: function(query) {

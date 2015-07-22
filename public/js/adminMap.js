@@ -102,6 +102,8 @@ $.extend(APP.adminMap,
 						},
 						edit: {
 					        featureGroup: that.featureGroup,
+					        edit: false,
+					        remove: false
 					    }
 					};
 					
@@ -127,6 +129,8 @@ $.extend(APP.adminMap,
 					    	that.start();
 					    });
 					    */
+					    APP.config.backUrl = that.thisSection;
+						APP.config.workSpace.navigate("new_highliting_poi", {trigger: true, replace: true});
 					});
 					
 					that.map.on('draw:edited', function (e) {
