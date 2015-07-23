@@ -881,8 +881,15 @@ $.extend(APP.anagrafica,
 					htmlString: '<a id="button_save" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("save")+'" class="btn btn-lg btn-success tooltipElement" href="#"><i class="icon-ok icon-white"></i></a>',
 					onClick: function(){
 						that.formSubmit(null, section, function(){
+							if (APP.config.backUrl)
+							{
+								APP.config.workSpace.navigate(APP.config.backUrl, {trigger: true, replace: true});
+								APP.config.backUrl = null;
+								return false;
+							}
 							that.finish();
-							that.selectedItem.click();
+							if (that.selectedItem && $.isFunction(that.selectedItem.click))
+								that.selectedItem.click();
 						});  
 					}
 				});
@@ -910,8 +917,15 @@ $.extend(APP.anagrafica,
 					htmlString: '<a id="button_save" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("save")+'" class="btn btn-lg btn-success tooltipElement" href="#"><i class="icon-ok icon-white"></i></a>',
 					onClick: function(){ 
 						that.formSubmit(null, section, function(){
+							if (APP.config.backUrl)
+							{
+								APP.config.workSpace.navigate(APP.config.backUrl, {trigger: true, replace: true});
+								APP.config.backUrl = null;
+								return false;
+							}
 							that.finish();
-							that.selectedItem.click();
+							if (that.selectedItem && $.isFunction(that.selectedItem.click))
+								that.selectedItem.click();
 						});  
 					}
 				});
