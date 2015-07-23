@@ -15,6 +15,7 @@ $.extend(APP.config,{
 	serverSide: false,
 	workSpace: null,
 	backboneRouter: null,
+	parameters: {},
 	
 	setBackboneRouting: function()
 	{
@@ -59,9 +60,10 @@ $.extend(APP.config,{
 							}
 						};
 					if (bAdd)
-						APP.anagrafica.addItem(null, prevw, tw, "highliting_poi");
+						APP.anagrafica.addItem(APP.config.parameters, prevw, tw, "highliting_poi");
 					else
 						APP.anagrafica.showTable(obj);
+					APP.config.parameters = {};
 				}
 				else
 				{
@@ -74,6 +76,7 @@ $.extend(APP.config,{
 				if (APP.config.queue.length==0)
 					APP.config.bDirectUrl = false;
 				APP.config.bBack = false;
+				
 			});
 			
 			/*

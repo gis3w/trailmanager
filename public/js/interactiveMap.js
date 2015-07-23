@@ -166,7 +166,7 @@ $.extend(APP.interactiveMap,
 		var myModal = APP.modals.create({
 			container: that.body,
 			id: modalId,
-			//size: "lg",
+			size: "lg",
 			keyboard: 'false',
 			backdrop: "static",
 			bTopCloseButton: false,

@@ -130,6 +130,7 @@ $.extend(APP.adminMap,
 					    });
 					    */
 					    APP.config.backUrl = that.thisSection;
+					    APP.config.parameters['the_geom'] = layer.toGeoJSON();
 						APP.config.workSpace.navigate("new_highliting_poi", {trigger: true, replace: true});
 					});
 					
@@ -236,7 +237,7 @@ $.extend(APP.adminMap,
 			if ($.isFunction(model.get('layer').getLatLngs))// vector layers
 			{
 				var ll = model.get('layer').getLatLngs()[0];
-				var num = parseInt(ll.length/2);
+				var num = Math.floor(ll.length/2);
 				model.get('popup').setLatLng(ll[num]);
 			}
 			else
@@ -356,7 +357,7 @@ $.extend(APP.adminMap,
 	{
 		var that = this;
 		
-		var anchor = $('<tr id="item_'+obj[targetInfo.idAttribute]+'"><td>'+obj[targetInfo.titleAttribute]+'</td></tr>');
+		var anchor = $('<tr style="cursor: pointer" id="item_'+obj[targetInfo.idAttribute]+'"><td>'+obj[targetInfo.titleAttribute]+'</td></tr>');
 		anchor.data(targetInfo.idAttribute, obj[targetInfo.idAttribute]);
 		anchor.click(function(){
 			that.onItemSelect($(this).data(targetInfo.idAttribute), target, targetInfo);
