@@ -130,7 +130,8 @@ $.extend(APP.adminMap,
 					    });
 					    */
 					    APP.config.backUrl = that.thisSection;
-					    APP.config.parameters['the_geom'] = layer.toGeoJSON();
+					    var gj = layer.toGeoJSON();
+					    APP.config.parameters['the_geom'] = gj.geometry;
 						APP.config.workSpace.navigate("new_highliting_poi", {trigger: true, replace: true});
 					});
 					
