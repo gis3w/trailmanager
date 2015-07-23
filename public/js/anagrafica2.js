@@ -428,6 +428,7 @@ $.extend(APP.anagrafica,
 				arr.push({
 					htmlString: '<a id="button_cancel" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("cancel")+'" class="btn btn-default btn-lg tooltipElement" href="#"><i class="icon-arrow-left"></i></a>',
 					onClick: function(){
+						APP.config.queue.pop();
 						if (APP.config.backUrl)
 						{
 							APP.config.workSpace.navigate(APP.config.backUrl, {trigger: true, replace: true});
@@ -435,7 +436,6 @@ $.extend(APP.anagrafica,
 							return false;
 						}
 						APP.config.bBack = true;
-						APP.config.queue.pop();
 						if (APP.config.bDirectUrl && APP.config.queue.length>0)
 						{
 							var ssss = APP.config.queue[APP.config.queue.length-1];
@@ -881,6 +881,7 @@ $.extend(APP.anagrafica,
 					htmlString: '<a id="button_save" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("save")+'" class="btn btn-lg btn-success tooltipElement" href="#"><i class="icon-ok icon-white"></i></a>',
 					onClick: function(){
 						that.formSubmit(null, section, function(){
+							APP.config.queue.pop();
 							if (APP.config.backUrl)
 							{
 								APP.config.workSpace.navigate(APP.config.backUrl, {trigger: true, replace: true});
@@ -903,6 +904,7 @@ $.extend(APP.anagrafica,
 					that.tmpSelectedItem = that.selectedItem;
 					that.destroyWindow();
 					that.selectedItem = APP.config.bc_getLastSrcElement();
+					APP.config.queue.pop();
 					if (APP.config.backUrl)
 					{
 						APP.config.bMustNullBackUrl = true;
@@ -917,6 +919,7 @@ $.extend(APP.anagrafica,
 					htmlString: '<a id="button_save" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("save")+'" class="btn btn-lg btn-success tooltipElement" href="#"><i class="icon-ok icon-white"></i></a>',
 					onClick: function(){ 
 						that.formSubmit(null, section, function(){
+							APP.config.queue.pop();
 							if (APP.config.backUrl)
 							{
 								APP.config.workSpace.navigate(APP.config.backUrl, {trigger: true, replace: true});
