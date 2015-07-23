@@ -6,7 +6,7 @@
         <placeholders>
             <header>
                 <div class="head">
-                    <img src="/home/www/new_turisticgisamazon-logo.jpg" />
+                    <img src="http://www.gis3w.it/sites/default/files/logo_gis3w_0.png" />
                     <div>
                         <h1>Amazon Simple Storage service <span>(Version 2006-03-01)</span></h1>
                         <h2 width="40%" float="left">Quick Reference Card</h2>
