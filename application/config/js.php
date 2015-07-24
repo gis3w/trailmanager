@@ -64,6 +64,7 @@ return array(
 		'../modules/noty-master/js/noty/layouts/topCenter.js',
 		'../modules/noty-master/js/noty/layouts/topRight.js',
 		'../modules/noty-master/js/noty/layouts/topLeft.js',
+    	'../modules/noty-master/js/noty/layouts/center.js',
 		'../modules/noty-master/js/noty/themes/default.js',
 		'../modules/DataTables-1.9.4/media/js/jquery.dataTables.min.js',
 		'../modules/jquery-timepicker/jquery.timepicker.min.js',

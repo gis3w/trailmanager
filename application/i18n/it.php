@@ -234,7 +234,8 @@ return array(
     'area-data' => 'Dati generali dell\'area',
     'area-foreign-data' =>'Collegamenti',
     'area-block-data' => 'Altri dati accessori',
-
+	
+	'Path' => 'Sentiero',
     'Path segment' => 'Tratta',
     'Path segments' => 'Tratte',
 
@@ -249,11 +250,7 @@ return array(
     'path-base-data-current' => '<b>STATO ATTUALE</b>',
     'path-base-data-data' => 'Attributi sentiero',
     'path-base-data-poi' => 'Punti notevoli',
-    'path-base-data-path-segment' => 'Tratte',
-
-
-    
-    
+    'path-base-data-path-segment' => 'Tratte',    
     
     'for'=> 'per',
   

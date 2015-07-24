@@ -115,7 +115,14 @@ $.extend(APP.utils,{
 			text: "<strong>"+obj.title+"</strong><br>"+obj.content,
 			type: obj.type,
 			dismissQueue: true,
-			layout: 'topCenter',
+			animation: {
+		        open: {height: 'toggle'}, // or Animate.css class names like: 'animated bounceInLeft'
+		        close: {height: 'toggle'}, // or Animate.css class names like: 'animated bounceOutLeft'
+		        easing: 'swing',
+		        speed: 200 // opening & closing animation speed
+		    },
+			modal: this.isset(obj.modal)? obj.modal : false,
+			layout: this.isset(obj.layout)? obj.layout : 'topCenter',
 			timeout: this.isset(obj.timeout)? obj.timeout : 3000,
 			buttons: this.isset(obj.buttons)? obj.buttons : false,
 		});
@@ -492,10 +499,39 @@ $.extend(APP.utils,{
 	confirmMsg: function(text, btnLabels, callbacks)
 	{
 		var that = this;
+		
+		APP.utils.showNoty({
+			layout: 'center',
+			modal: true,
+			title: APP.i18n.translate("Confirm"),
+			content: text,
+			type: 'confirm',
+			timeout: false,
+			buttons: [{
+				addClass: 'btn btn-success',
+				text: btnLabels['yes'],
+				onClick: function($noty) {
+					$noty.close();
+					if (that.isset(callbacks['yes']) && $.isFunction(callbacks['yes']))
+						callbacks['yes']();
+				}
+			},
+			{
+				addClass: 'btn btn-default',
+				text: btnLabels['no'],
+				onClick: function($noty) {
+					$noty.close();
+					if (that.isset(callbacks['no']) && $.isFunction(callbacks['no']))
+						callbacks['no']();
+				}
+			}]
+		});
+		
+		/*
 		var confirm = $("body").find("#confirmModal");
 		if (confirm.length > 0)
 			confirm.remove();
-			
+				
 		confirm = $('<div id="confirmModal" class="modal fade" role="dialog">\
 							<div class="modal-dialog">\
 								<div class="modal-content">\
@@ -513,7 +549,7 @@ $.extend(APP.utils,{
 								</div>\
 							</div>\
 						</div>');
-	
+		
 		
 		confirm.find(".btn-success").click(function()
 		{
@@ -527,8 +563,9 @@ $.extend(APP.utils,{
 			if (that.isset(callbacks['no']) && $.isFunction(callbacks['no']))
 				callbacks['no']();
 		});
-		$("body").append(confirm);
+		$("body").prepend(confirm);
 		confirm.modal('show');
+		*/
 	},
 	
 	

@@ -1422,7 +1422,7 @@ $.extend(APP.anagrafica,
 				else
 					spanValues = (APP.utils.isset(position) && position === "blockColForm")? [2, 9, 1] : [2, 9, 1];
 				
-				var myFieldLabel = (APP.utils.isset(v.label))? v.label+":" : null;
+				var myFieldLabel = (APP.utils.isset(v.label))? APP.i18n.translate(v.label)+":" : null;
 				if (!myFieldLabel)
 				{
 					spanValues[1] = spanValues[0]+spanValues[1];
@@ -2039,35 +2039,47 @@ $.extend(APP.anagrafica,
 	{
 		var that = this;
 		
-		var btns = $('<button class="btn btn-primary" type="button">'+APP.i18n.translate("yes")+'</button><button class="btn btn-default" data-dismiss="modal" aria-hidden="true">'+APP.i18n.translate("no")+'</button>');
-		var yesBtn = $(btns[0]);
-		yesBtn.click(function()
-		{
-			$.ajax({
-				type: "DELETE",
-				url: APP.config.localConfig.urls[params.section]+"/"+id,
-				data: params.contentDiv.find("#fm_"+params.section).serializeArray(),
-				success: function(data)
-				{
-					if (!APP.utils.checkError(data.error, null))
-					{
-						params.callback();
-						//that.loadData(APP.config.localConfig.urls[params.section], that.sections[params.section]);
-					}
-					else
-						APP.utils.showErrMsg(data);
-				},
-				error: function(result){ APP.utils.showErrMsg(result); },
-			});
-			
-			$(this).parents(".modal").first().modal('hide');
-		});		
-		
 		var deleteConfirmMsg = (APP.utils.isset(that.sections[params.section].messages) && APP.utils.isset(that.sections[params.section].messages['delete_confirm']))? that.sections[params.section].messages['delete_confirm'] : APP.i18n.translate("remove_confirm");
-		APP.utils.showMsg({
+		
+		APP.utils.showNoty({
 			title: APP.i18n.translate("warning"),
 			content: deleteConfirmMsg,
-			buttons: btns
+			type: 'confirm',
+			modal: true,
+			layout: 'center',
+			timeout: false,
+			buttons: [
+			{
+				addClass: 'btn btn-primary',
+				text: APP.i18n.translate("yes"),
+				onClick: function($noty) {
+					$noty.close();
+					$.ajax({
+						type: "DELETE",
+						url: APP.config.localConfig.urls[params.section]+"/"+id,
+						data: params.contentDiv.find("#fm_"+params.section).serializeArray(),
+						success: function(data)
+						{
+							if (!APP.utils.checkError(data.error, null))
+							{
+								params.callback();
+								//that.loadData(APP.config.localConfig.urls[params.section], that.sections[params.section]);
+							}
+							else
+								APP.utils.showErrMsg(data);
+						},
+						error: function(result){ APP.utils.showErrMsg(result); },
+					});
+				}
+			},
+			{
+				addClass: 'btn btn-default',
+				text: APP.i18n.translate("no"),
+				onClick: function($noty) {
+					$noty.close();
+				}
+			}
+			],
 		});
 	},
 });
