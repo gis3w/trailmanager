@@ -21,7 +21,7 @@ $.extend(APP.adminMap,
 			'resource': "path",
 			'idAttribute': "id",
 			'titleAttribute': "title",
-			'tableId': null,
+			'tableId': "trailsTable",
 		}
 	},
 
@@ -257,6 +257,7 @@ $.extend(APP.adminMap,
 			//domPopup.find(".media-object").attr('src');
 			domPopup.find(".media-heading").text(model.get(targetInfo.titleAttribute));
 			domPopup.find(".popupDetailsBtn").click(function(){
+				APP.config.bBack = true;
 				APP.config.backUrl = that.thisSection;
 				APP.config.workSpace.navigate(targetInfo.resource+"/"+id, {trigger: true, replace: true});
 				/*

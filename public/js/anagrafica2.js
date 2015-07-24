@@ -371,7 +371,7 @@ $.extend(APP.anagrafica,
 		}
 		
 		APP.config.currentUrl = subSection+'/'+t[that.sections[subSection].primary_key];
-		if (!APP.config.bBack)
+		//if (!APP.config.bBack)
 			APP.config.queue.push(APP.config.currentUrl);
 		console.log(APP.config.queue);
 		
@@ -400,7 +400,14 @@ $.extend(APP.anagrafica,
 					{
 						htmlString: '<a id="button_save" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("save")+'" class="btn btn-lg btn-success tooltipElement" href="#"><i class="icon-ok icon-white"></i></a>',
 						onClick: function(){ 
-							that.formSubmit(t[that.sections[subSection].primary_key], subSection, function(){ 
+							that.formSubmit(t[that.sections[subSection].primary_key], subSection, function(){
+								APP.config.queue.pop();
+								if (APP.config.backUrl)
+								{
+									APP.config.workSpace.navigate(APP.config.backUrl, {trigger: true, replace: true});
+									APP.config.backUrl = null;
+									return false;
+								}
 								that.finish();
 								that.selectedItem.click();
 							});  }
@@ -412,6 +419,13 @@ $.extend(APP.anagrafica,
 					arr.push({
 						htmlString: '<a id="button_remove" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("remove")+'" class="btn btn-lg btn-danger tooltipElement" href="#"><i class="icon-remove icon-trash"></i></a>',
 						onClick: function(){ that.removeItem(t[that.sections[subSection].primary_key], {'section': subSection, 'contentDiv': contentDiv, 'callback': function(){
+							APP.config.queue.pop();
+							if (APP.config.backUrl)
+							{
+								APP.config.workSpace.navigate(APP.config.backUrl, {trigger: true, replace: true});
+								APP.config.backUrl = null;
+								return false;
+							}
 							that.selectedItem.click();
 						}});  }
 					});
@@ -469,6 +483,13 @@ $.extend(APP.anagrafica,
 						onClick: function(){ 
 							that.formSubmit(t[that.sections[subSection].primary_key], subSection, function(){
 								//$("body").find(".navbar").first().find(".navbar-inner").first().find("ul").first().find("li.active").find("a").first().click();
+								APP.config.queue.pop();
+								if (APP.config.backUrl)
+								{
+									APP.config.workSpace.navigate(APP.config.backUrl, {trigger: true, replace: true});
+									APP.config.backUrl = null;
+									return false;
+								}
 								that.finish();
 								that.selectedItem.click();
 							});  
@@ -491,6 +512,13 @@ $.extend(APP.anagrafica,
 					arr.push({
 						htmlString: '<a id="button_remove" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("remove")+'" class="btn btn-lg btn-danger tooltipElement" href="#"><i class="icon-remove icon-trash"></i></a>',
 						onClick: function(){ that.removeItem(t[that.sections[subSection].primary_key], {'section': subSection, 'contentDiv': contentDiv, 'callback': function(){
+							APP.config.queue.pop();
+							if (APP.config.backUrl)
+							{
+								APP.config.workSpace.navigate(APP.config.backUrl, {trigger: true, replace: true});
+								APP.config.backUrl = null;
+								return false;
+							}
 							that.selectedItem.click();
 						}});  }
 					});
@@ -1013,6 +1041,13 @@ $.extend(APP.anagrafica,
 					arr.push({
 						htmlString: '<a id="button_save" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("save")+'" class="btn btn-lg btn-success tooltipElement" href="#"><i class="icon-ok icon-white"></i></a>',
 						onClick: function(){ that.formSubmit(data[that.sections[section].primary_key], section, function(){
+							APP.config.queue.pop();
+							if (APP.config.backUrl)
+							{
+								APP.config.workSpace.navigate(APP.config.backUrl, {trigger: true, replace: true});
+								APP.config.backUrl = null;
+								return false;
+							}
 							that.selectedItem = APP.config.bc_getLastSrcElement();
 							that.destroyWindow();
 							if (that.windows.length === 1)
@@ -1027,6 +1062,13 @@ $.extend(APP.anagrafica,
 					arr.push({
 						htmlString: '<a id="button_remove" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("remove")+'" class="btn btn-lg btn-danger tooltipElement" href="#"><i class="icon-remove icon-trash"></i></a>',
 						onClick: function(){ that.removeItem(data[that.sections[section].primary_key], {'section': section, 'contentDiv': contentDiv, 'callback': function(){
+							APP.config.queue.pop();
+							if (APP.config.backUrl)
+							{
+								APP.config.workSpace.navigate(APP.config.backUrl, {trigger: true, replace: true});
+								APP.config.backUrl = null;
+								return false;
+							}
 							that.selectedItem = APP.config.bc_getLastSrcElement();
 							that.destroyWindow();
 							if (that.windows.length === 1)
@@ -2051,7 +2093,7 @@ $.extend(APP.anagrafica,
 			buttons: [
 			{
 				addClass: 'btn btn-primary',
-				text: APP.i18n.translate("yes"),
+				text: APP.i18n.translate("Yes"),
 				onClick: function($noty) {
 					$noty.close();
 					$.ajax({
@@ -2074,7 +2116,7 @@ $.extend(APP.anagrafica,
 			},
 			{
 				addClass: 'btn btn-default',
-				text: APP.i18n.translate("no"),
+				text: APP.i18n.translate("No"),
 				onClick: function($noty) {
 					$noty.close();
 				}
