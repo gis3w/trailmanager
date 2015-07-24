@@ -21,7 +21,7 @@ $.extend(APP.adminMap,
 			'resource': "path",
 			'idAttribute': "id",
 			'titleAttribute': "title",
-			'tableId': "trailsTable",
+			'tableId': null,
 		}
 	},
 

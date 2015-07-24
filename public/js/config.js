@@ -753,7 +753,7 @@ $.extend(APP.config,{
 		{
 			APP.interactiveMap.start();
 			return;
-		}
+		}			
 		$.each(that.localConfig.menu, function(i, v){
 			var button = $("#"+v.id+"Button");
 			var callBack = null;
@@ -770,6 +770,7 @@ $.extend(APP.config,{
 			}
 			button.click(callBack);
 		});
+		$(".navbar-nav:first").find("a:first").click();
 	},
 		
 	setMainContent: function()
@@ -955,7 +956,7 @@ $.extend(APP.config,{
 		this.setCreditsButton();
 		this.setMenu();
 		this.setBackboneRouting();
-		//$(".navbar-nav:first").find("a:first").click();
+
 		return;
 	}
 });
