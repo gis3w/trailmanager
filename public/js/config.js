@@ -770,7 +770,10 @@ $.extend(APP.config,{
 			}
 			button.click(callBack);
 		});
-		$(".navbar-nav:first").find("a:first").click();
+		setTimeout(function(){
+			$(".navbar-nav:first").find("a:first").click();
+		},250);
+		
 	},
 		
 	setMainContent: function()
@@ -954,8 +957,8 @@ $.extend(APP.config,{
 		this.setMainContent();
 		this.setFilterDialogsDiv();
 		this.setCreditsButton();
-		this.setMenu();
 		this.setBackboneRouting();
+		this.setMenu();
 
 		return;
 	}
