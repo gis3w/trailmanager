@@ -60,7 +60,7 @@ $.extend(APP.config,{
 							}
 						};
 					if (bAdd)
-						APP.anagrafica.addItem(APP.config.parameters, prevw, tw, "highliting_poi");
+						APP.anagrafica.addItem(APP.config.parameters, prevw, tw, sec);
 					else
 						APP.anagrafica.showTable(obj);
 					APP.config.parameters = {};
@@ -170,6 +170,7 @@ $.extend(APP.config,{
 				"highliting_poi/:query": "highliting_poi",
 				"highliting_poi": "highliting_poi",
 				"new_highliting_poi": "new_highliting_poi",
+				"new_path": "new_path",
 			    "path/:query": "path",
 			    "path": "path",
 			    "poi/:query": "poi",
@@ -178,6 +179,7 @@ $.extend(APP.config,{
 			    "itinerary": "itinerary",
 			    "pathsegment/:query": "pathsegment",
 			    "pathsegment": "pathsegment",
+			    "new_area": "new_area",
 			    "area/:query": "area",
 			    "area": "area",
 			    
@@ -195,6 +197,10 @@ $.extend(APP.config,{
 			  highliting_poi: function(query) {
 			  	workNow("highliting_poi", "Segnalazioni", query);
 			  },
+			  
+			  new_path: function(query) {
+				  workNow("path", "Nuovo sentiero", null, true);
+			  },
 
 			  path: function(query) {
 				  workNow("path", "Sentieri", query);
@@ -210,6 +216,14 @@ $.extend(APP.config,{
 			  
 			  pathsegment: function(query) {
 				  workNow("path_segment", "Tratte", query);
+			  },
+			  
+			  new_area: function(query) {
+				  workNow("area", "Nuova area", null, true);
+			  },
+			  
+			  area: function(query) {
+				  workNow("area", "Aree", query);
 			  },
 
 			  search: function(query, page) {

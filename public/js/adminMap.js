@@ -130,9 +130,24 @@ $.extend(APP.adminMap,
 					    });
 					    */
 					    APP.config.backUrl = that.thisSection;
+					    					    
 					    var gj = layer.toGeoJSON();
-					    APP.config.parameters['the_geom'] = gj.geometry;
-						APP.config.workSpace.navigate("new_highliting_poi", {trigger: true, replace: true});
+					    APP.config.parameters['the_geom'] = gj;
+					    var resource = null;
+					    switch (gj.geometry.type)
+					    {
+						    case "Point":
+						    	resource = "new_highliting_poi";
+						    	break;
+						    case "Polygon":
+						    	resource = "new_area";
+						    	break;
+						    case "LineString":
+						    	resource = "new_path";
+						    	break;
+					    }
+					    if (resource)
+					    	APP.config.workSpace.navigate(resource, {trigger: true, replace: true});
 					});
 					
 					that.map.on('draw:edited', function (e) {
