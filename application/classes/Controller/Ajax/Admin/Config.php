@@ -34,6 +34,7 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
         $this->_set_global_configs();
         $this->_set_states();
         $this->_set_crud_menu();
+        $this->_set_icons_data();
 
         
         
@@ -270,6 +271,14 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
         }
 
 
+    }
+
+    protected function _set_icons_data()
+    {
+        $this->config->icon_data = array(
+            'width' => SVG2PNGPinmap::$dim_pin[0],
+            'height' => SVG2PNGPinmap::$dim_pin[1],
+        );
     }
 
 
