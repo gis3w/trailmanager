@@ -7,7 +7,7 @@ $.extend(APP.adminMap,
 		scale: null,
 	},
 	geometries: ['polyline','polygon','rectangle','circle','marker'], //leaflet.draw
-	bCircleMarker: true,
+	bCircleMarker: false,
 	
 	datastruct: {},
 	info: {
@@ -24,6 +24,8 @@ $.extend(APP.adminMap,
 			'tableId': null,
 		}
 	},
+	
+	markerIconBaseUrl: '/download/mappin/index/',
 
 	reportings: null,	// Backbone collection
 	trails: null, // Backbone collection
@@ -187,6 +189,9 @@ $.extend(APP.adminMap,
 			
 			if (obj.options && $.isPlainObject(obj.options))
 				L.setOptions(l, obj.options);
+			
+			if (l.setStyle && obj.style && $.isPlainObject(obj.style))
+				l.setStyle(obj.style);
 		};
 		
 		switch(feature.type)
@@ -244,10 +249,18 @@ $.extend(APP.adminMap,
 		var model = target.get(id);
 		
 		if (!model.get('popup'))
-			model.set('popup', L.popup({}, model.get('layer')));
+		{
+			var popupParams = {};
+			if ($.isFunction(model.get('layer').getLatLng) && !that.bCircleMarker)
+				popupParams.offset = L.point(0, -33);
+			model.set('popup', L.popup(popupParams, model.get('layer')));
+		}
 		
 		if ($.isFunction(model.get('layer').getLatLng))	// marker
-			model.get('popup').setLatLng(model.get('layer').getLatLng());
+		{
+			var latlng = model.get('layer').getLatLng();
+			model.get('popup').setLatLng(latlng);
+		}
 		else
 		{
 			if ($.isFunction(model.get('layer').getLatLngs))// vector layers
@@ -465,32 +478,58 @@ $.extend(APP.adminMap,
 					that.setDomItems(target, targetInfo, v);
 					
 					var gjo = {
+						pointToLayer: function(feature, latlng)
+						{
+							if (that.bCircleMarker)
+							{
+								return L.circleMarker(latlng);
+							}
+							
+							var markerParams = {};
+							if (v.highliting_typology_id && v.highliting_state_id)
+							{
+								markerParams.icon = L.icon({
+									iconUrl: that.markerIconBaseUrl+'hs'+v.highliting_state_id+'tp'+v.highliting_typology_id+'.png',
+									//iconRetinaUrl: 'my-icon@2x.png',
+									iconSize: [APP.config.localConfig.icon_data.width, APP.config.localConfig.icon_data.height],
+									iconAnchor: [APP.config.localConfig.icon_data.width / 2, APP.config.localConfig.icon_data.height],
+									popupAnchor: [0, -APP.config.localConfig.icon_data.height],
+									//shadowUrl: '/public/img/pin_shadow.png',
+									//shadowRetinaUrl: 'my-icon-shadow@2x.png',
+									shadowSize: [55, 51],
+									shadowAnchor: [28, 48]
+								});
+							}
+							
+							return L.marker(latlng, markerParams);
+						},
 						onEachFeature: function(feature, layer)
 						{
 							var opts = {};
 							opts[targetInfo.idAttribute] = v[targetInfo.idAttribute];
 							
-							that.addLayer({
+							var params = {
 								'id': v[targetInfo.idAttribute],
 								'layer': layer,
 								'target': target,
 								'options': opts,
+								'style': {},
 								'label': v[targetInfo.titleAttribute],
 								'onClick': function()
 								{
 									var y = this;
 									that.onItemSelect(this.options[targetInfo.idAttribute], target, targetInfo);
 								}
-							});
+							};
+							
+							if (v['color'])
+								params.style.color = v['color'];
+							if (v['width'])
+								params.style.weight = v['width'];
+							
+							that.addLayer(params);
 						}
 					};
-					
-					if (that.bCircleMarker)
-					{
-						gjo.pointToLayer = function(feature, latlng){
-							return L.circleMarker(latlng);
-						};
-					}
 					
 					L.geoJson(v.the_geom, gjo);
 				});

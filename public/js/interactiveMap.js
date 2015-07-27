@@ -2534,13 +2534,13 @@ $.extend(APP.interactiveMap,
 				return;
 			var id = (APP.config.checkLoggedUser())? APP.config.localConfig.authuser.id : null;
 			that.registrationModal.find("form").attr('id','fm_'+s);
-			var finalOperation = function()
-			{
-				APP.anagrafica.formSubmit(id, s, function(){
-					that.registrationModal.modal("hide");
-				}, false);
-			};
-			APP.config.getToken(s, that.registrationModal.find("form .tokenInput"), function(){ finalOperation(); });
+			
+			var tk = APP.config.getToken(s);
+			if (tk)
+				that.registrationModal.find("form .tokenInput").val(tk);
+			APP.anagrafica.formSubmit(id, s, function(){
+				that.registrationModal.modal("hide");
+			}, false);
 		});
 		footer.find(".btn-default").click(function()
 		{
