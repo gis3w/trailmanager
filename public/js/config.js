@@ -346,6 +346,96 @@ $.extend(APP.config,{
 		return stringTemplate;
 	},
 	
+	getControlLayers: function()
+	{
+		var that = this;
+		
+		var baseLayers = {};
+		var overlays = {};
+		var layers = [];
+		var defLayName = null;
+		var defLayUrl = null;
+		var defaultLayer = null;
+		var defaultOverlays = [];
+		if (APP.utils.isset(that.localConfig))
+		{
+			$.each(that.localConfig.background_layer, function(i,v)
+			{
+				var l = null;
+				switch(v.source)
+				{
+					case "GOOGLE":
+						l = new L.Google();
+						break;
+					case "BING":
+						l = new L.BingLayer();
+						break;					
+					default:
+						switch(v.layer_type)
+						{
+							case "tilelayer":
+								l = new L.tileLayer(v.url, {/*minZoom: 5, maxZoom: 19,*/ attribution: v.description});
+								break;
+							case "tilelayer.wms":
+								l = new L.tileLayer.wms(v.url, {
+										layers: v.layers,
+										version: v.version,
+										styles: v.styles,
+										format: v.format,
+										transparent:  v.transparent,
+										attribution: v.description,
+										tileSize:1024
+									});
+								break;
+						}
+				}
+				layers.push(l);
+				if (v.def)
+				{
+					
+					if (!v.transparent)
+					{
+						defLayUrl = v.url;
+						defaultLayer = l;
+						defLayName = v.name;
+						baseLayers[v.name] = l;
+					}
+					else
+					{
+						var nlg = new L.LayerGroup();
+						l.addTo(nlg);
+						defaultOverlays.push(nlg);
+						overlays[v.name] = l;
+					}
+				}
+				else
+				{
+					if (v.transparent)
+						overlays[v.name] = l;
+					else
+						baseLayers[v.name] = l;
+				}
+			});
+		}
+		else
+		{
+			defLayUrl = "http://{s}.tile.osm.org/{z}/{x}/{y}.png";
+			defaultLayer = new L.tileLayer(defLayUrl, {/*minZoom: 3, maxZoom: 18,*/ attribution: "Mappa stradale"});
+			defLayName = "Openstreetmap";
+		}
+		
+		var initialLayers = [defaultLayer];
+		$.each(defaultOverlays, function(i,v){
+			initialLayers.push(v);
+		});
+		
+		return {
+			baselayers: baseLayers,
+			overlays: overlays,
+			initialLayers: initialLayers
+		};
+	},
+	
 	createTabs: function(div, menu)
 	{
 		var that = this;

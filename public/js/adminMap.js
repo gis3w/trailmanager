@@ -4,6 +4,7 @@ $.extend(APP.adminMap,
 	mapControls: {
 		defaultextent: null,
 		draw: null,
+		layers: null,
 		scale: null,
 	},
 	geometries: ['polyline','polygon','rectangle','circle','marker'], //leaflet.draw
@@ -155,6 +156,10 @@ $.extend(APP.adminMap,
 					that.map.on('draw:edited', function (e) {
 					    
 					});
+					break;
+				case "layers":
+					var bgl = APP.config.getControlLayers();
+					that.mapControls[i] = L.control.layers(bgl.baselayers, bgl.overlays);
 					break;
 				case "scale":
 					that.mapControls[i] = L.control.scale();
