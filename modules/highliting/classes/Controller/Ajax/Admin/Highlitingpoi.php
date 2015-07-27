@@ -7,17 +7,9 @@ class Controller_Ajax_Admin_Highlitingpoi extends Controller_Ajax_Admin_Base_Hig
     
     protected $_datastruct = "Highliting_Poi";
 
-    protected function _data_edit()
-    {
-        Filter::emptyPostDataToNULL();
+    protected $_url_multifield_foreignkey = 'highliting_poi_id';
 
-        $this->_set_the_geom_edit();
-        $this->_orm->values($_POST);
-        $this->_orm->save();
 
-        $this->_save_subforms_1XN();
-
-    }
     
   
 }

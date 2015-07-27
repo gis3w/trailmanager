@@ -5,6 +5,8 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
     
     public $config;
 
+    protected $_highliting_typology_icon_uri ="download/highlitingtypologyicon/index/";
+
     public function before()
     {
         parent::before();
@@ -23,6 +25,7 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
         $this->_set_i18n();
         $this->_set_timezone();
         $this->_set_background_layer();
+        $this->_set_highliting_typologies();
         $this->_set_menu();
         $this->_set_url();
         $this->_set_path_modes();
@@ -31,6 +34,7 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
         $this->_set_global_configs();
         $this->_set_states();
         $this->_set_crud_menu();
+
         
         
         /**
@@ -129,6 +133,16 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
         $this->config->$name  = $toRes;
         
         
+    }
+
+    protected function _set_highliting_typologies()
+    {
+        $this->_get_table('Highliting_Typology');
+        foreach($this->config->highliting_typology as &$typologies)
+        {
+            $typologies['icon'] =(isset($typologies['icon']) AND $typologies['icon'] != '') ? $this->_highliting_typology_icon_uri.$typologies['icon'] : NULL;
+        }
+
     }
     
     protected function _set_background_layer()

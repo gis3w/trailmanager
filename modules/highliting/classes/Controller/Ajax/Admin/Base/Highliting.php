@@ -23,6 +23,72 @@ class Controller_Ajax_Admin_Base_Highliting extends Controller_Ajax_Admin_Sheet_
     }
 
     /**
+     * Method to set reporter
+     */
+    protected function _insert_reporter()
+    {
+        $capability = 'admin-'.strtolower($this->_datastructName).'-insert';
+        if(isset($this->user)
+            AND $this->user->main_role_id != ROLE_REPORTER
+            AND $this->user->allow_capa($capability)
+            AND !isset($this->_orm->highliting_user_id)
+            AND !isset($this->_orm->anonimous_data)
+        )
+            $this->_orm->highliting_user_id = $this->user->id;
+
+    }
+
+    protected function _data_edit()
+    {
+        Filter::emptyPostDataToNULL();
+
+        $this->from_state = $this->_orm->highliting_state_id;
+
+        $this->_insert_reporter();
+
+        $this->_set_the_geom_edit();
+
+        $this->_orm->values($_POST);
+        if(!isset($this->_orm->id))
+        {
+            $this->_orm->data_ins = $this->_orm->data_mod = time();
+        }
+        else
+        {
+            $this->_orm->data_mod = time();
+        }
+        $this->_orm->data_mod = time();
+        $this->_orm->save();
+
+        $this->_save_subforms_1XN();
+
+        $this->_save_state_passage();
+
+        #$this->_send_email();
+
+
+    }
+
+    /**
+     * To save passages state and note if present
+     */
+    protected function _save_state_passage()
+    {
+        $data = array(
+            $this->_url_multifield_foreignkey => $this->_orm->id,
+            'user_id' => $this->user->id,
+            'from_state_id' => $this->from_state,
+            'to_state_id' => $_POST['highliting_state_id'],
+            'date' =>time(),
+        );
+
+        if(isset($_POST['note']) AND $_POST['note'] != '')
+            $data['note'] = $_POST['note'];
+
+        $this->_orm->states->values($data)->save();
+    }
+
+    /**
      * Set the old notes to show inside sheet
      * @param type $tores
      * @param type $orm

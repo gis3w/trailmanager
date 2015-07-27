@@ -92,6 +92,14 @@ class Datastruct_Path extends Datastruct {
             ),
         ),
 
+        array(
+            'name' => 'path-highlitingpoi',
+            'position' => 'block',
+            'fields' => array(
+                'highlitingpoi_path',
+            ),
+        ),
+
     );
 
     public $tabs = array(
@@ -114,7 +122,13 @@ class Datastruct_Path extends Datastruct {
             'name' => 'tab-path-segment',
             'icon' => 'location-arrow',
             'groups' => array('path-base-data-path-segment'),
+        ),
+        array(
+            'name' => 'tab-path-highlitingpoi',
+            'icon' => 'map-marker',
+            'groups' => array('path-highlitingpoi'),
         )
+
     );
     
     public $title = array(
@@ -412,6 +426,22 @@ class Datastruct_Path extends Datastruct {
                 'url_values_params' => array(
                     '$1' => 'se',
                     '$2' => 'id'
+                ),
+                'datatable' => FALSE,
+                'form_show' => array(
+                    'insert' => FALSE,
+                    'update' => TRUE,
+                ),
+                'ajax_mode' => self::AJAX_MODE_HTML
+            )
+        );
+
+        $fct['highlitingpoi_path'] = array_replace($this->_columnStruct, array(
+                "data_type" => self::SUBTABLE,
+                "table_show" => FALSE,
+                'url_values' => '/jx/admin/subtablehighlitingpoi?filter=highliting_path_id:$1',
+                'url_values_params' => array(
+                    '$1' => 'id'
                 ),
                 'datatable' => FALSE,
                 'form_show' => array(

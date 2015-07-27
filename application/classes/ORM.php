@@ -58,30 +58,67 @@ class ORM extends Kohana_ORM {
         
         
     }
-    
-    
-     public function get($column) {
-       
-         if(substr($column, 0,5) == 'orig_')
-                 return parent::get(substr($column, 5));
-         // per la internazionalizzazione recuperiamo il dato tradotto se c'è
-         $lang = Session::instance()->get('lang');
-         $lang_config = Kohana::$config->load('lang');
-         $lang_default = $lang_config['default'];
-         if($lang != $lang_default AND 
-                 in_array($this->_table_name,array_keys($lang_config['tables_to_translate'])) 
-                 AND (!isset($lang_config['tables_to_translate'][$this->_table_name]['columns_to_exlude']) OR (isset($lang_config['tables_to_translate'][$this->_table_name]['columns_to_exlude']) AND !in_array($column,$lang_config['tables_to_translate'][$this->_table_name]['columns_to_exlude']) )))
-         {
-             // si controlla che la la colonna e la tabella ci siano nella tabella di traduzione per la lingua scelta
-             // nel caso i assenza si invia il dato non tradotto
-             $value = $this->getTranslate($lang,$column);
-             return $value ? $value : parent::get($column);
-         }
-         else
-         {
-             return parent::get($column);
-         }
-        
+
+
+    public function get($column) {
+
+
+
+        if(substr($column, 0,5) == 'orig_')
+            return parent::get(substr($column, 5));
+        // per la internazionalizzazione recuperiamo il dato tradotto se c'è
+        $lang = Session::instance()->get('lang');
+        $lang_config = Kohana::$config->load('lang');
+        $lang_default = $lang_config['default'];
+        if($lang != $lang_default AND
+            in_array($this->_table_name,array_keys($lang_config['tables_to_translate']))
+            AND (!isset($lang_config['tables_to_translate'][$this->_table_name]['columns_to_exlude']) OR (isset($lang_config['tables_to_translate'][$this->_table_name]['columns_to_exlude']) AND !in_array($column,$lang_config['tables_to_translate'][$this->_table_name]['columns_to_exlude']) )))
+        {
+            // si controlla che la la colonna e la tabella ci siano nella tabella di traduzione per la lingua scelta
+            // nel caso i assenza si invia il dato non tradotto
+            $value = $this->getTranslate($lang,$column);
+            return $value ? $value : parent::get($column);
+        }
+        else
+        {
+            switch($column)
+            {
+                case 'date':
+                case "data_ins":
+                case "data_mod":
+                    $value = parent::get($column);
+                    if(isset($value) AND $value !== '')
+                    {
+                        $value = date(SAFE::datehour_mode(),$value);
+                    }
+                    else
+                    {
+                        $value = '';
+                    }
+                    break;
+
+                case 'dataora_date':
+                case "dataora_ins":
+                case "dataora_mod":
+                    $column = preg_replace("/dataora/", "data", $column);
+                    $value = parent::get($column);
+
+                    if(isset($value) AND $value !== '')
+                    {
+                        $value = date(SAFE::datehour_mode(),$value);
+                    }
+                    else
+                    {
+                        $value = '';
+                    }
+                    break;
+
+                default:
+                    $value = parent::get($column);
+            }
+            return $value;
+        }
+
     }
     
     public function getTranslate($lang,$column,$returnORM = FALSE)
