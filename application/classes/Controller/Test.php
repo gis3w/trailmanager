@@ -1,23 +1,26 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-        
-//        use Symfony\Component\EventDispatcher\EventDispatcher;
-//        use Symfony\Component\EventDispatcher\Event;
+
 
 class Controller_Test extends Controller{
-    
+
     public function action_index(){
 
-        //echo floatval('10,3456');
-        $ORMType = 'ORM';
-        $sd = ORMGIS::factory('Highliting_Poi');
-        var_dump($sd);
-        //var_dump($sd->considerable_points->find_all());
+        #$poi = ORMGIS::factory('Poi',867);
+        #$poi->getLonLat(3857);
+        #$map = new Mapserver(10000,array($poi->x,$poi->y));
+        $printConfig = Kohana::$config->load('print');
 
-        //$sd = ORMGIS::factory('Considerable_Point')->find();
-        //var_dump($sd);
+        $map = new Mapserver($printConfig['mapfile'],$printConfig['mappath'],$printConfig['tmp_dir']);
+        $map->makeMap();
+        #echo $map->imageURL;
+        # Mapserver::makePoisSymbols();
+        exit;
+
+
+
     }
-    
-    
-            
+
+
+
 }

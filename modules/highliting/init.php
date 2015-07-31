@@ -7,3 +7,9 @@ Route::set('jx/pathsclose', 'jx/pathsclose/<lon>/<lat>', array('lon' => '[\d]+(|
     'controller' => 'pathsclose',
     'action'	 => 'index',
 ));
+
+Route::set('confirmregistration', 'confirmregistration/<hash_registration>')
+    ->defaults(array(
+        'controller' => 'confirmregistration',
+        'action'     => 'index',
+    ));

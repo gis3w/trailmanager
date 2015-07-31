@@ -291,9 +291,18 @@ public function  __set($column,  $value) {
      }
   }
   
-  public function getLonLat()
+  public function getLonLat($srid = NULL)
   {
-      $res = DB::select(array(DB::expr("ST_X(the_geom)"),'x'), array(DB::expr("ST_Y(the_geom)"),'y'))
+      $sqlX = "ST_X(the_geom)";
+      $sqlY = "ST_Y(the_geom)";
+      if(isset($srid))
+      {
+          $sqlX = "ST_X(ST_Transform(the_geom,".$srid."))";
+          $sqlY = "ST_Y(ST_Transform(the_geom,".$srid."))";
+      }
+
+
+      $res = DB::select(array(DB::expr($sqlX),'x'), array(DB::expr($sqlY),'y'))
         ->from($this->_table_name)
         ->where($this->_primary_key, '=', $this->pk())
         ->execute($this->_db);

@@ -126,6 +126,57 @@ class Model_User extends Model_Auth_User {
         return $value;
         
     }
+
+    /**
+     * Return kohana model rules array for registration form data
+     * @return array
+     */
+    public function registration_rules()
+    {
+        return array(
+            'username' => array(
+                array('not_empty'),
+                array('max_length', array(':value', 32)),
+                array(array($this, 'unique'), array('username', ':value')),
+            ),
+            'password' => array(
+                array('not_empty'),
+            ),
+            'confirm_password' => array(
+                array('not_empty'),
+                array('matches', array(':validation', ':field', 'password')),
+            ),
+            'email' => array(
+                array('not_empty'),
+            ),
+        );
+    }
+
+    /**
+     * Metodo privato per la costruzione di una hash univoca
+     * @return string
+     */
+    public  function build_hash_registration()
+    {
+
+        while (TRUE)
+        {
+            // Create a random token
+            $hash_registration = sha1(Text::random('alnum', 32));
+
+            // Make sure the token does not already exist
+            $count = DB::select('id')
+                ->where('hash_registration', '=', $hash_registration)
+                ->from($this->_table_name)
+                ->execute($this->_db)
+                ->count();
+            if ($count === 0)
+            {
+                // A unique hash_inscription has been found
+                return $hash_registration;
+            }
+        }
+    }
        
     
   

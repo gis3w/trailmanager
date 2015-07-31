@@ -78,8 +78,10 @@ class Controller_Ajax_Registration extends Controller_Ajax_Admin_User{
             // send email for confirm registration
             $email = new Email_Confirmregistration($this->_orm);
             $email->send();
-            $this->after_save();
+
         }
+
+        $this->after_save();
         
         
     }

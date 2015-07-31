@@ -1,0 +1,101 @@
+MAP
+size 740 760
+extent -20037508 -20037508 20037508 20037508
+RESOLUTION 96
+DEBUG TRUE
+shapepath "./"
+
+
+ OUTPUTFORMAT   ### 24 bit PNG
+   NAME 'agg_png'
+   DRIVER AGG/PNG
+   IMAGEMODE RGB
+ END
+
+OUTPUTFORMAT
+   NAME 'geojson'
+   DRIVER 'TEMPLATE'
+   FORMATOPTION "FILE=myTemplate.json"
+ END
+
+ Symbol
+   Name 'circle'
+   Type ELLIPSE
+   Filled TRUE
+   Points
+     1 1
+   END
+ END
+
+LAYER
+    NAME 'AREAS'
+    TYPE POLYGON
+    OPACITY 50
+    STATUS OFF
+    CONNECTIONTYPE POSTGIS
+    DATA "the_geom from (select * from areas where publish is TRUE) as p using unique id"
+    PROJECTION
+        "init=epsg:3004"
+    END
+    CLASS
+        Name 'Areas'
+        STYLE
+            COLOR [color]
+        END
+    END
+END
+
+LAYER
+    NAME 'PATHS'
+    TYPE LINE
+    #OPACITY 50
+    STATUS OFF
+    CONNECTIONTYPE POSTGIS
+    DATA "the_geom from (select * from paths where publish is TRUE) as p using unique id"
+    PROJECTION
+        "init=epsg:3004"
+    END
+    CLASS
+        Name 'Paths'
+        STYLE
+            COLOR [color]
+            WIDTH [width]
+        END
+    END
+END
+
+
+LAYER
+    NAME 'POIS'
+    TYPE POINT
+    STATUS OFF
+    CONNECTIONTYPE POSTGIS
+    DATA "the_geom from (select * from pois where publish is TRUE) as p using unique id"
+    PROJECTION
+        "init=epsg:3004"
+    END
+    CLASS
+        Name 'Pois'
+        STYLE
+            SYMBOL [typology_id]
+        END
+    END
+END
+
+UNITS meters
+
+
+PROJECTION
+  "init=epsg:3857"
+END
+
+
+WEB
+    IMAGEPATH "/home/www/tmp/"
+    IMAGEURL "/tmp/"
+END  # Web
+
+
+
+
+END

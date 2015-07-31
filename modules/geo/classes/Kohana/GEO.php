@@ -12,7 +12,7 @@ class Kohana_GEO extends geoPHP{
     public static function instance() {
         
         // Load the configuration for this type
-        $config = Kohana::config('geophp');
+        $config = Kohana::$config->load('geophp');
 
         if ( ! $type = $config->get('driver'))
         {

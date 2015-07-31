@@ -9,7 +9,7 @@
  * @license    http://kohanaframework.org/license
  */
 
-abstract class Controller_Print_Base extends Controller_Auth_Strict {
+abstract class Controller_Print_Base extends Controller_Base_Main {
     
     public $PHPPdf;
     protected $_pdfContent;
@@ -18,37 +18,35 @@ abstract class Controller_Print_Base extends Controller_Auth_Strict {
     public $filename = "doc.pdf";
 
     protected $_xmlContentView;
+    protected $_xmlHeader1View = 'print/header/header1';
     protected $_xmlCssView = 'print/stylesheet';
     public $xmlContent;
     public $xmlCss = NULL;
-    
-    protected function _ACL()
-    {
-        if(!$this->user->role->allow_capa('print-pdf'))
-                    throw HTTP_Exception::factory(403,SAFE::message('capability','default',NULL,'print-pdf'));
-        
-         // recuper del controller
-        $controller = preg_replace("/_/", "-",strtolower($this->request->controller())); ;
-        $directory = preg_replace("/\//", "-",strtolower($this->request->directory()));
 
-        $controller = $directory."-".$controller;
-        
-         if(!$this->user->role->allow_capa($controller))
-                    throw HTTP_Exception::factory(403,SAFE::message('capability','default',NULL,$controller));
+    protected $_mapFile;
+    protected $_mapPath;
+    protected $_tmp_dir;
+
+    public function action_index()
+    {
+        // set the header
+        View::set_global('header1',View::factory($this->_xmlHeader1View)
+            ->set('background_color','#FF0000'));
+
+        $printConfig = Kohana::$config->load('print');
+        $this->_mapFile => $printConfig['mapfile'];
+        $this->_mapPath => $printConfig['mappath'];
+        $this->_tmp_dir => $printConfig['tmp_dir'];
 
     }
+    
+    protected function _initialize()
+    {
+        $this->PHPPdf =PHPPdf\Core\FacadeBuilder::create()
+            ->build();
 
-
-    public function before() {
-        parent::before();
-        
-        $this->_ACL();
-        
-        $this->PHPPdf =PHPPdf\Core\FacadeBuilder::create()                                             
-                                               ->build();
-        
         $this->_pdfTemplate = APPPATH."../public/pdf/".$this->_pdfTemplate;
-        
+
         $this->_xmlContentView = View::factory($this->_xmlContentView);
         $this->_xmlContentView->template = $this->_pdfTemplate;
         if(isset($this->_xmlCssView))
@@ -60,6 +58,13 @@ abstract class Controller_Print_Base extends Controller_Auth_Strict {
         try
         {
             $this->xmlContent = $this->_xmlContentView->render();
+            if(Kohana::$environment === Kohana::DEVELOPMENT)
+            {
+                $_file_dev = APPPATH."cache/print_xml_.".$_SERVER['REMOTE_ADDR'].".html";
+                $_file_res = fopen($_file_dev, "wr");
+                fwrite ($_file_res, $this->xmlContent);
+                fclose ($_file_res);
+            }
             if(isset($this->_xmlCssView))
                 $this->xmlCss = $this->_xmlCssView->render();
 

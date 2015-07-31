@@ -38,6 +38,7 @@ class Kohana_SAFE extends Kohana_Core
         $res = array();
         $connection = Kohana::$config->load('database.default');
         $connection = $connection['connection'];
+
         
         // estrazione del dns
         list($type,$params) = preg_split("/:/", $connection['dsn']);

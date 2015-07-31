@@ -137,6 +137,7 @@ Kohana::modules(array(
                 'tree'  => MODPATH.'tree',  // tree data sctructure
                 'pagination' => MODPATH.'pagination',
     'highliting' => MODPATH.'highliting',
+    'print' => MODPATH.'print',
 	));
 
 /**
@@ -144,25 +145,6 @@ Kohana::modules(array(
  * defaults for the URI.
  */
 
-//Route::set('print', 'print/(<controller>(/<action>(/<id>)))')
-//	->defaults(array(
-//                    'directory' => 'print',
-//                    'controller' => 'home',
-//                    'action'     => 'index',
-//	));
-
-Route::set('print', 'print/<directory>/<controller>(/<type>(/<id>))')
-                        ->filter(function($route, $params, $request)
-                        {
-                            $params['directory'] = 'Print/'.$params['directory'];
-                            if(isset($params['type']))
-                                $params['controller'] .= "_".ucfirst($params['type']);
-                            return $params; 
-                        })
-	->defaults(array(
-                        'controller' => 'home',
-                        'action'     => 'index',
-	));
 
 Route::set('jx/upload', 'jx/upload(/<controller>(/<id>))')
 	->defaults(array(

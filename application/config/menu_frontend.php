@@ -70,6 +70,14 @@ return array(
             'capability' => NULL,
             'icon' => 'plus',
         ),
+        'login' => array(
+            'id' =>'login',
+            'name' => __('Login'),
+            'url' => NULL,
+            'capability' => NULL,
+            'icon' => 'user',
+            'display' => FALSE,
+        ),
     ),
     
 );
