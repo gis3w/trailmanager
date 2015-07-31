@@ -1511,8 +1511,7 @@ $.extend(APP.utils,{
 			else
 				$(inp).attr("disabled", true);
 		}*/
-		
-		
+				
 		if (that.isset(v.slave_of) && v.form_input_type !== "combobox")
 		{
 			var parent = form.find("#APP-"+v.slave_of);
@@ -1524,7 +1523,7 @@ $.extend(APP.utils,{
 				inp.attr("disabled", true);
 		}
 		
-		var globalDiv = $('<div></div>');
+		var globalDiv = $('<div></div>');		
 		
 		if (this.isset(v.prefix) || this.isset(v.suffix))
 		{
@@ -1553,6 +1552,27 @@ $.extend(APP.utils,{
 		}
 		else
 			globalDiv.append(inp);
+				
+		if (v.form_input_type == "combobox" && v.routing)
+		{
+			var rtBtn = $('<button type="button" class="btn btn-default btn-sm" data-routing="'+v.routing+'">'+APP.i18n.translate("show")+'</button>');
+			rtBtn.click(function(){
+				var b = $(this);
+				var routingString = b.attr("data-routing");
+				if (that.isEmptyString(routingString))
+					return false;
+				//APP.config.bBack = true;
+				//APP.config.backUrl = v.name;
+				APP.config.workSpace.navigate(routingString, {trigger: true, replace: true});
+			});
+			globalDiv.addClass("row");
+			var newInp = $('<div class="col-lg-11 col-md-11 col-sm-11 col-xs-11"></div>');
+			inp.appendTo(newInp);
+			globalDiv.append(newInp);
+			var btnDiv = $('<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>');
+			btnDiv.append(rtBtn);
+			globalDiv.append(btnDiv);
+		}
 		
 		return globalDiv;
 	},
