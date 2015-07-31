@@ -1555,7 +1555,15 @@ $.extend(APP.utils,{
 				
 		if (v.form_input_type == "combobox" && v.routing)
 		{
-			var rtBtn = $('<button type="button" class="btn btn-default btn-sm" data-routing="'+v.routing+'">'+APP.i18n.translate("show")+'</button>');
+			var rStr = v.routing;
+			if (v.routing_values)
+			{
+				$.each(v.routing_values, function(j,k){
+					rStr = that.replaceAll(j, obj[k], rStr);
+				});
+			}
+			
+			var rtBtn = $('<button type="button" class="btn btn-default btn-sm" data-routing="'+rStr+'">'+APP.i18n.translate("show")+'</button>');
 			rtBtn.click(function(){
 				var b = $(this);
 				var routingString = b.attr("data-routing");
