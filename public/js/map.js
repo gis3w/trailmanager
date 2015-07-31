@@ -541,6 +541,23 @@ $.extend(APP.map,
 		
 		L.control.layers(bgl.baselayers,bgl.overlays).addTo(that.globalData[id].map);
 
+		//MOUSE COORDINATES
+		if (APP.utils.isset(L.control.coordinates))
+		{
+			L.control.coordinates({
+			    position:"bottomleft", //optional default "bootomright"
+			    //decimals:2, //optional default 4
+			    //decimalSeperator:".", //optional default "."
+			    //labelTemplateLat:"Latitude: {y}", //optional default "Lat: {y}"
+			    //labelTemplateLng:"Longitude: {x}", //optional default "Lng: {x}"
+			    //enableUserInput:true, //optional default true
+			    //useDMS:false, //optional default false
+			    //useLatLngOrder: true, //ordering of labels, default false-> lng-lat
+			    //markerType: L.marker, //optional default L.marker
+			    //markerProps: {} //optional default {}
+			}).addTo(that.globalData[id].map);
+		}
+		
 		that.setMapControls();
 		
 		if (APP.utils.isset(L.Hash))
@@ -578,19 +595,7 @@ $.extend(APP.map,
 			that.sidebar.control.addTo(that.globalData[id].map);
 		}
 		
-		//MOUSE COORDINATES
-		if (APP.utils.isset(L.control.coordinates))
-		{
-			L.control.coordinates({
-				position:"bottomleft", //optional default "bootomright"
-				//decimals:2, //optional default 4
-				//decimalSeperator:".", //optional default "."
-				//labelTemplateLat:"Latitude: {y}", //optional default "Lat: {y}"
-				//labelTemplateLng:"Longitude: {x}", //optional default "Lng: {x}"
-				//enableUserInput:true, //optional default true,
-				//useDMS:false //optional default false
-			}).addTo(that.globalData[id].map);
-		}
+		
 		
 		//MINIMAP
 		if (APP.utils.isset(L.Control.MiniMap))

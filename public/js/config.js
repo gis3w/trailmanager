@@ -860,9 +860,13 @@ $.extend(APP.config,{
 			}
 			button.click(callBack);
 		});
+		
 		setTimeout(function(){
-			$(".navbar-nav:first").find("a:first").click();
+			var cf = Backbone.history.getFragment();
+			if (APP.utils.isEmptyString(cf))
+				$(".navbar-nav:first").find("a:first").click();
 		},250);
+		
 		
 	},
 		

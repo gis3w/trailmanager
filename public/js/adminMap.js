@@ -2,6 +2,7 @@ $.extend(APP.adminMap,
 {
 	thisSection: "home",
 	mapControls: {
+		coordinates: null,
 		defaultextent: null,
 		draw: null,
 		layers: null,
@@ -86,7 +87,18 @@ $.extend(APP.adminMap,
 			switch(i)
 			{
 				case "coordinates":
-					that.mapControls[i] = L.control.coordinates({});
+					that.mapControls[i] = L.control.coordinates({
+						position:"bottomleft", //optional default "bootomright"
+					    //decimals:2, //optional default 4
+					    //decimalSeperator:".", //optional default "."
+					    //labelTemplateLat:"Latitude: {y}", //optional default "Lat: {y}"
+					    //labelTemplateLng:"Longitude: {x}", //optional default "Lng: {x}"
+					    //enableUserInput:true, //optional default true
+					    //useDMS:false, //optional default false
+					    //useLatLngOrder: true, //ordering of labels, default false-> lng-lat
+					    //markerType: L.marker, //optional default L.marker
+					    //markerProps: {} //optional default {}
+					});
 					break;
 				case "defaultextent":
 					that.mapControls[i] = L.control.defaultExtent({
