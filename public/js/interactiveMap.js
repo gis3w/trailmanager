@@ -721,8 +721,6 @@ $.extend(APP.interactiveMap,
 					return false;
 				}
 			});
-			
-			//location.href = printUrl;
 		});
 				
 		if (!APP.utils.isset(that.myData[section][id].media) || !APP.utils.isset(that.myData[section][id].media.images) || !$.isArray(that.myData[section][id].media.images) || that.myData[section][id].media.images.length === 0)

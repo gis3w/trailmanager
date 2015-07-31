@@ -101,7 +101,8 @@ return array(
     'Alphanumeric ID' => 'Identificativo alfanumerico',
     'Body' => 'Corpo pagina',
     
-    
+    'print' => 'Stampa',
+	'show' => 'Mostra',
     
     //TRADUZIONI DELLE VALIDAZIONI
     ':field must not be empty' => ':field non deve essere vuoto',
