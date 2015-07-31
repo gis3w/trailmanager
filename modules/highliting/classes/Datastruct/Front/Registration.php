@@ -47,6 +47,7 @@ class Datastruct_Front_Registration extends Datastruct_User {
         
         $cls['username']['required'] = TRUE;
         $cls['password']['required'] = TRUE;
+        $cls['email']['required'] = TRUE;
         unset($cls['password']['default_value']);
         
         $cls['id']['form_input_type'] = self::HIDDEN;

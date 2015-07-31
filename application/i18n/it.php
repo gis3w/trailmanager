@@ -74,6 +74,9 @@ return array(
 	'Elements' => 'Luoghi da visitare',
 	'Zoom to default extent' => 'Ritorna all\'estensione iniziale della mappa',
 	'Video_poi' => 'Video',
+
+    'Confirm password' => 'Conferma password',
+    'confirm_password' => 'Conferma password',
  
     'Close' => 'Chiudi',    
     'close' => 'Chiudi',
@@ -201,6 +204,7 @@ return array(
 
     'highliting_typology_id' => 'Tipo di segnalazione',
     'Highliting_typology_id' => 'Tipo di segnalazione',
+    'Current highliting state' => 'Stato corrente',
     'Subject' => 'Soggetto',
 
 
@@ -226,6 +230,8 @@ return array(
     'path-data' => 'Dati generali del sentiero',
     'path-foreign-data' =>'Dati accessori',
     'path-block-data' => 'Altri dati accessori',
+    'path-highlitingpoi' => 'Segnalazioni dei sentieri',
+    'Subject' => 'Oggetto',
     
     'poi-data' => 'Dati generali del punto',
     'poi-foreign-data' =>'Dati accessori',
@@ -245,6 +251,7 @@ return array(
     'tab-poi' => '<b>PUNTI INTERESSE</b> correlati',
     'tab-path-segment' => '<b>TRATTE</b> correlate',
     'tab-path-segment-path' => '<b>SENTIERI</b> relativi',
+    'tab-path-highlitingpoi' => '<b>Segnalazioni</b> relative',
     'path-base-data-path' => 'Dati identificativi sentiero',
     'path-base-data-geo' => 'Geo dati',
     'path-base-data-current' => '<b>STATO ATTUALE</b>',

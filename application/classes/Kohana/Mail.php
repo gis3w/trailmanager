@@ -123,14 +123,14 @@ class Kohana_Mail{
         }
     }
     
-    protected function _html_body($content)
+       protected function _html_body($content)
     {
         // costruzione html del body mediante template
         $html_body_template = View::factory($this->_main_body_template);
         $layout = Kohana::$config->load('layout');
         $html_body_template->layout = $layout;
-        $logo_email_absolute = APPPATH."../public/img/".$layout['logo_email'];
-        $html_body_template->logo_email_absolute = $this->embed($logo_email_absolute);
+        $global_data = Kohana::$config->load('global');
+        $html_body_template->global_data = $global_data;
         $html_body_template->body_content = $content;
         return $html_body_template->render();
 
@@ -145,6 +145,7 @@ class Kohana_Mail{
 
     public function send(){
         $this->_mailer->send($this->_message);
+        error_log($this->_logger->dump());
     }
 
 }
