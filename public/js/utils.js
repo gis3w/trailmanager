@@ -1314,10 +1314,20 @@ $.extend(APP.utils,{
 					var iinnddeexx = APP.utils.getIndexFromField(sectionTarget.columns, "name", v.slave_of);
 					if (iinnddeexx > -1 && sectionTarget.columns[iinnddeexx].form_input_type == "mapbox")
 					{
-						parVal = (obj[v.slave_of] && $.isArray(obj[v.slave_of].coordinates))? {
-							lon: obj[v.slave_of].coordinates[0],
-							lat: obj[v.slave_of].coordinates[1]
-						} : "";
+						if (identifier) 
+						{
+							parVal = (obj[v.slave_of] && $.isArray(obj[v.slave_of].coordinates))? {
+								lon: obj[v.slave_of].coordinates[0],
+								lat: obj[v.slave_of].coordinates[1]
+							} : "";
+						}
+						else
+						{
+							parVal = (obj[v.slave_of] && $.isArray(obj[v.slave_of].geometry.coordinates))? {
+								lon: obj[v.slave_of].geometry.coordinates[0],
+								lat: obj[v.slave_of].geometry.coordinates[1]
+							} : "";
+						}
 					}
 					else
 					{
