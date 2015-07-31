@@ -701,11 +701,29 @@ $.extend(APP.interactiveMap,
 								<div class="paragraphes text-justify"></div>\
 							  </div>\
 							  <div class="modal-footer">\
+								<button type="button" class="btn btn-warning btnPrint">'+APP.i18n.translate('print')+'</button>\
 								<button type="button" data-dismiss="modal" class="btn btn-primary">'+APP.i18n.translate('close')+'</button>\
 							  </div>\
 							</div>\
 						</div>\
 					</div>');
+		
+		myModal.find('.btnPrint').click(function(){
+			var printUrl = '/print/'+section+'/sheet'+id+'?background_layer_id=';
+			
+			var m = APP.map.globalData[APP.map.currentMapId].map;
+			
+			m.eachLayer(function (layer)
+			{
+				if (layer.options && layer.options.tileLayerId)
+				{
+					location.href=printUrl+layer.options.tileLayerId;
+					return false;
+				}
+			});
+			
+			//location.href = printUrl;
+		});
 				
 		if (!APP.utils.isset(that.myData[section][id].media) || !APP.utils.isset(that.myData[section][id].media.images) || !$.isArray(that.myData[section][id].media.images) || that.myData[section][id].media.images.length === 0)
 		{
