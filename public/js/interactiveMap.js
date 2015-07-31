@@ -2338,7 +2338,10 @@ $.extend(APP.interactiveMap,
 		});
 		footerPage.find("#form_login").click(function(){
 			if (!APP.utils.isset(APP.config.localConfig.urls.login))
-				return;
+			{
+				console.log("Inserire nel CONFIG l'url login");
+				return false;
+			}
 			htmlPage.find(".help-block").remove();
 			htmlPage.find(".has-error").removeClass("has-error");
 			$.ajax({
@@ -2396,7 +2399,10 @@ $.extend(APP.interactiveMap,
 		});
 		footerPage.find("#form_resetpassword").click(function(){
 			if (!APP.utils.isset(APP.config.localConfig.urls.reset_password))
-				return;
+			{
+				console.log("Inserire nel CONFIG l'url reset_password");
+				return false;
+			}
 			htmlPage.find(".help-block").remove();
 			htmlPage.find(".has-error").removeClass("has-error");
 			$.ajax({
