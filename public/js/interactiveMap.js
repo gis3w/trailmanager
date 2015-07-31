@@ -117,8 +117,8 @@ $.extend(APP.interactiveMap,
 		var that = this;
 		
 		var dataObj = null;
-		if (layer && $.isFunction(layer.getLatLng))
-			dataObj = {"the_geom": {"coordinates": [layer.getLatLng().lng, layer.getLatLng().lat]}};
+		if (layer && $.isFunction(layer.toGeoJSON))
+			dataObj = {"the_geom": layer.toGeoJSON()};
 		
 		var body = APP.anagrafica.createFormTemplate(id, dataObj, APP.anagrafica.sections[that.frontPrefix+section], that.frontPrefix+section, []);
 		
