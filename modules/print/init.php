@@ -12,7 +12,7 @@ Route::set('print', 'print/<directory>/<controller>(/<type>(/<id>))')
     {
         $params['directory'] = 'Print/'.$params['directory'];
         if(isset($params['type']))
-        $params['controller'] .= "_".ucfirst($params['type']);
+            $params['controller'] .= "_".ucfirst($params['type']);
         return $params;
     })
     ->defaults(array(

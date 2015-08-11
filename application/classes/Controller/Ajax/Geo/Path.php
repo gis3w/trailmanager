@@ -13,6 +13,7 @@ class Controller_Ajax_Geo_Path extends Controller_Ajax_Geo_Base{
         return $this->_get_geo_base_data_from_orm($orm);
         
     }
+
   
     
 }

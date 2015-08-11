@@ -14,6 +14,5 @@ class Controller_Ajax_Data_Poi extends Controller_Ajax_Data_Base{
         return $this->_get_base_data_from_orm($orm);
         
     }
-  
-    
+
 }

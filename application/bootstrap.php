@@ -120,24 +120,25 @@ require_once APPPATH.'../vendor/autoload.php';
  * Enable modules. Modules are referenced by a relative or absolute path.
  */
 Kohana::modules(array(
-	 'auth'       => MODPATH.'auth',       // Basic authentication
+    'auth'       => MODPATH.'auth',       // Basic authentication
 	'cache'      => MODPATH.'cache',      // Caching with multiple backends
 	// 'codebench'  => MODPATH.'codebench',  // Benchmarking tool
 	 'database'   => MODPATH.'database',   // Database access
 	'image'      => MODPATH.'image',      // Image manipulation
 	'minion'     => MODPATH.'minion',     // CLI Tasks
-	 'orm'        => MODPATH.'orm',        // Object Relationship Mapping
-                'ormgis'        => MODPATH.'ormgis',        // Object Relationship Mapping for Postgis table
-                'geo'        => MODPATH.'geo',        // Geo funaction helper
+    'orm'        => MODPATH.'orm',        // Object Relationship Mapping
+    'ormgis'        => MODPATH.'ormgis',        // Object Relationship Mapping for Postgis table
+    'geo'        => MODPATH.'geo',        // Geo funaction helper
 	// 'unittest'   => MODPATH.'unittest',   // Unit testing
 	'userguide'  => MODPATH.'userguide',  // User guide and API documentation
-                'formo'  => MODPATH.'formo',  
-                'gis3w' => MODPATH.'gis3w',
-                'restapi'  => MODPATH.'restapi',  // REST api systems
-                'tree'  => MODPATH.'tree',  // tree data sctructure
-                'pagination' => MODPATH.'pagination',
+    'formo'  => MODPATH.'formo',
+    'gis3w' => MODPATH.'gis3w',
+    'restapi'  => MODPATH.'restapi',  // REST api systems
+    'tree'  => MODPATH.'tree',  // tree data sctructure
+    'pagination' => MODPATH.'pagination',
     'highliting' => MODPATH.'highliting',
     'print' => MODPATH.'print',
+    'geoexport' => MODPATH.'geoexport',
 	));
 
 /**
