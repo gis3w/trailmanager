@@ -275,7 +275,7 @@ class Kohana_Mapserver {
         {
             $newExtent = $exent;
         }
-        $this->_mapObj->setExtent($newExtent['minx'],$newExtent['miny'],$newExtent['maxx'],$newExtent['maxy']);
+            $this->_mapObj->setExtent($newExtent['minx'],$newExtent['miny'],$newExtent['maxx'],$newExtent['maxy']);
     }
 
     protected function _setScalebar()

@@ -3,5 +3,6 @@
 return array(
     'mappath' => MODPATH.'print/mapserver/',
     'mapfile' => 'print.map',
-    'tmp_dir' => APPPATH.'../public/map/'
+    'tmp_dir' => APPPATH.'../public/map/',
+    'image_base_url' => '/public/map/',
     );

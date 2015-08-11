@@ -26,6 +26,7 @@ abstract class Controller_Print_Base extends Controller_Base_Main {
     protected $_mapFile;
     protected $_mapPath;
     protected $_tmp_dir;
+    protected $_image_base_url;
 
     public function action_index()
     {
@@ -34,9 +35,10 @@ abstract class Controller_Print_Base extends Controller_Base_Main {
             ->set('background_color','#FF0000'));
 
         $printConfig = Kohana::$config->load('print');
-        $this->_mapFile => $printConfig['mapfile'];
-        $this->_mapPath => $printConfig['mappath'];
-        $this->_tmp_dir => $printConfig['tmp_dir'];
+        $this->_mapFile = $printConfig['mapfile'];
+        $this->_mapPath = $printConfig['mappath'];
+        $this->_tmp_dir = $printConfig['tmp_dir'];
+        $this->_image_base_url = $printConfig['image_base_url'];
 
     }
     

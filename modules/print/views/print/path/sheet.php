@@ -4,9 +4,8 @@
 <pdf>
     <dynamic-page>
         <?php echo $header1 ?>
-        <h1>Title</h1>
         <div class="map">
-            <img src="<?php echo $mapURL ?>" />
+            <img src="<?php echo $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['SERVER_NAME'].$mapURL ?>" />
         </div>
         <div>content</div>
     </dynamic-page>

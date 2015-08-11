@@ -15,9 +15,17 @@ class Controller_Print_Path_Sheet extends Controller_Print_Base_Auth_Nostrict
         $path = ORMGIS::factory('Path',$this->request->param('id'));
 
         $geo = GEO_Postgis::instance();
-        $newExtent = $geo->bboxFromToSRS(array_values($path->bbox),$path->epsg_out,$path->epsg_db);
+        $extent = [
+            $path->bbox['minx'],
+            $path->bbox['miny'],
+            $path->bbox['maxx'],
+            $path->bbox['maxy']
+        ];
 
-        $map = new Mapserver(NULL,NULL,$newExtent);
+        $newExtent = $geo->bboxFromToSRS($extent,$path->epsg_out,3857);
+
+        $map = new Mapserver($this->_mapFile,$this->_mapPath,$this->_tmp_dir,$this->_image_base_url,NULL,NULL,$newExtent);
+        $map->makeMap();
         $this->_xmlContentView->mapURL = $map->imageURL;
     }
 }
