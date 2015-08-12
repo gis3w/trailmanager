@@ -4,7 +4,7 @@ $.extend(APP.modals,{
 	create: function(o)
 	{
 		var that = this;
-		
+
 		var myModal = null;
 		if (o.container && o.id)
 			myModal = o.container.find("#"+o.id);

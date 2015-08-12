@@ -62,12 +62,13 @@ class Kohana_GPXF
     
     protected function _init()
     {
+        $confGeoexport = Kohana::$config->load('geoexport');
        $this->_gpx = '<?xml version="1.0" encoding="'.$this->encoding.'"?>
             <gpx
                     version="1.1"
-                    creator="trackoid"
+                    '.$confGeoexport['creator'].'
                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                    xmlns:trackoid="http://trackoid.net/ns"
+                    '.$confGeoexport['xmlns'].'
                     xmlns="http://www.topografix.com/GPX/1/1"
                     xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">';
         

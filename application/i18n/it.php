@@ -211,6 +211,8 @@ return array(
 
     'Images to upload' => 'Immagini da caricare',
     'Videos to embed' => 'Video da incorporare',
+
+    'Heightsprofilepath' => 'Profilo altimetrico',
    
     'global-typology-data' => 'Tipologia',
     'global-page-data' => 'Pagina da inserire/modificare',

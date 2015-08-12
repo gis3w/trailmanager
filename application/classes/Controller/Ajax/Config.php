@@ -179,7 +179,9 @@ class Controller_Ajax_Config extends Controller_Ajax_Main{
     protected function _set_url()
     {
         $this->config->urls =  array(
-            'logout'=> '/login/out',
+            'login' => 'jx/login',
+            'logout'=> 'jx/logout',
+            'reset_password' => 'jx/resetpassword',
             'i18n'=>  '/jx/i18n/', //language
             'token' => 'jx/token',
             'config'=> '/jx/config', // i18n

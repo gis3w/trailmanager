@@ -695,7 +695,7 @@ abstract class Kohana_Controller_Api_Main extends Kohana_Controller_REST{
      * Metodo per formattare in risposta di validazione
      * @param ORM_Validation_Exception $e
      */
-    protected function _validation_error($e,$code = 10000)
+    protected function _validation_error($e,$code = 10000,$errmsg = NULL)
     {
         $this->jres->status = 0;
         
@@ -707,10 +707,13 @@ abstract class Kohana_Controller_Api_Main extends Kohana_Controller_REST{
         // 2) BASE 20000 ERRORI DI VALIDAZIONE/CONFERMA PER DELETE
         
         switch($code)
-        {                
+        {
             default:
                 $this->jres->error->errmsg = 'Errori di validazione';
         }
+
+        if(isset($errmsg))
+            $this->jres->error->errmsg = $errmsg;
         
 
         // riscostruzione dell'array errore per possibili casi external validation

@@ -701,7 +701,8 @@ $.extend(APP.interactiveMap,
 								<div class="paragraphes text-justify"></div>\
 							  </div>\
 							  <div class="modal-footer">\
-								<button type="button" class="btn btn-warning btnPrint">'+APP.i18n.translate('print')+'</button>\
+							  	<button type="button" class="btn btn-warning btnExportGPX"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> '+APP.i18n.translate('Download GPX')+'</button>\
+								<button type="button" class="btn btn-warning btnPrint"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> '+APP.i18n.translate('print')+'</button>\
 								<button type="button" data-dismiss="modal" class="btn btn-primary">'+APP.i18n.translate('close')+'</button>\
 							  </div>\
 							</div>\
@@ -709,7 +710,7 @@ $.extend(APP.interactiveMap,
 					</div>');
 		
 		myModal.find('.btnPrint').click(function(){
-			var printUrl = '/print/'+section+'/sheet'+id+'?background_layer_id=';
+			var printUrl = '/print/'+section+'/sheet/'+id+'?background_layer_id=';
 			
 			var m = APP.map.globalData[APP.map.currentMapId].map;
 			
@@ -721,6 +722,10 @@ $.extend(APP.interactiveMap,
 					return false;
 				}
 			});
+		});
+		myModal.find('.btnExportGPX').click(function(){
+			location.href = '/export/gpx/'+section+'/'+id;
+			return false;
 		});
 				
 		if (!APP.utils.isset(that.myData[section][id].media) || !APP.utils.isset(that.myData[section][id].media.images) || !$.isArray(that.myData[section][id].media.images) || that.myData[section][id].media.images.length === 0)
@@ -2242,9 +2247,9 @@ $.extend(APP.interactiveMap,
 		
 		var body = $('<p>'+APP.i18n.translate('you_are_not_logged_in')+'</p>');
 		var footer = $('<div>\
-							<button type="button" class="btn btn-success" id="loginMsg_login">'+APP.i18n.translate('Login')+'</button>\
-							<button type="button" class="btn btn-primary" id="loginMsg_register">'+APP.i18n.translate('Register')+'</button>\
-							<button type="button" class="btn btn-default pull-right" id="loginMsg_close">'+APP.i18n.translate('Skip')+'</button>\
+							<button type="button" class="btn btn-success" id="loginMsg_login"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> '+APP.i18n.translate('Login')+'</button>\
+							<button type="button" class="btn btn-primary" id="loginMsg_register"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> '+APP.i18n.translate('Register')+'</button>\
+							<button type="button" class="btn btn-default pull-right" id="loginMsg_close"><span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> '+APP.i18n.translate('Skip')+'</button>\
 						</div>');
 		
 		footer.find("#loginMsg_login").click(function(){
@@ -2344,8 +2349,8 @@ $.extend(APP.interactiveMap,
 		
 		var footerPage = $('<div>\
 								<button id="backToLoginBtn" type="button" class="btn btn-default pull-left fg_forgot_password" style="display:none"><i class="icon icon-undo"></i> '+APP.i18n.translate("Back")+'</button>\
-								<button id="form_login" type="button" class="btn btn-default fg_login">'+APP.i18n.translate("Login")+'</button>\
-								<button id="form_register" type="button" class="btn btn-primary fg_login">'+APP.i18n.translate("Register")+'</button>\
+								<button id="form_login" type="button" class="btn btn-default fg_login"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> '+APP.i18n.translate("Login")+'</button>\
+								<button id="form_register" type="button" class="btn btn-primary fg_login"> <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> '+APP.i18n.translate("Register")+'</button>\
 								<button id="form_resetpassword" type="button" class="btn btn-success fg_forgot_password" style="display:none"><i class="icon icon-ok"></i> '+APP.i18n.translate("Send email")+'</button>\
 							</div>');
 		
