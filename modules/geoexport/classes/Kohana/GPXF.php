@@ -30,14 +30,21 @@ class Kohana_GPXF
     protected $_file_res_trk;
 
 
-    public $extension_namespace = 'trackoid';
+    public $extension_namespace = 'trailmanager';
 
-    public function __construct($mode = self::MODE_PHP) {
+    public function __construct($mode = self::MODE_PHP, $file_dev = NULL) {
         $this->mode = $mode;
         
         if($this->mode === self::MODE_FILE)
         {
-            $this->_file_dev = APPPATH."cache/file_dev_gpx_".time().".gpx";
+            if(isset($file_dev))
+            {
+                $this->_file_dev = APPPATH."cache/".$file_dev;
+            }
+            else
+            {
+                $this->_file_dev = APPPATH . "cache/file_dev_gpx_" . time() . ".gpx";
+            }
             $this->_file_res = fopen($this->_file_dev, "wr");
             
             $this->_file_dev_wpt = APPPATH."cache/file_dev_wpt_".time().".tmp";
@@ -55,9 +62,9 @@ class Kohana_GPXF
     }
 
 
-    public static function factory($mode = self::MODE_PHP)
+    public static function factory($mode = self::MODE_PHP,$file_dev = NULL)
     {
-        return new self($mode);
+        return new self($mode,$file_dev);
     }
     
     protected function _init()

@@ -9,16 +9,21 @@ class Controller_Export_Base_Gpx extends Controller_Export_Base_Auth_Nostrict{
 
     public function after()
     {
+
         if(isset($this->file))
         {
             $this->response->send_file($this->file,NULL,array('delete' => TRUE));
         }
-        
-        $this->response->headers('Content-Type','text/xml');
-//        $this->response->headers('Content-Disposition','attachment;filename="'.$this->filename.'"');
-        $this->response->headers('Cache-Control','max-age=0');
-        
-        $this->response->body($this->gpx->render());
+        else
+        {
+            $this->response->headers('Content-Type','text/xml');
+            if(isset($this->filename))
+                $this->response->headers('Content-Disposition','attachment;filename="'.$this->filename.'"');
+            $this->response->headers('Cache-Control','max-age=0');
+
+            $this->response->body($this->gpx->render());
+        }
+
         
     }
     

@@ -39,9 +39,6 @@ class Controller_Export_Main extends Controller_Auth_Strict
          if(!$this->user->role->allow_capa('access-export'))
                 throw HTTP_Exception::factory(403,TRK::message('capability','default',NULL,'access-export'));
     }
-    
-    public function after() {
-        
-    }
+
    
 }

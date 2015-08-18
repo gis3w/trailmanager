@@ -12,7 +12,9 @@ class Controller_Export_Path_Gpx extends Controller_Export_Base_Gpx{
         if(!$this->_path->publish)
             throw new HTTP_Exception_500('Sorry Path id not disponibled');
         #star GPXF Obeject
-        $this->gpx = GPXF::factory(GPXF::MODE_FILE);
+        //set the filename
+        $this->filename = 'Path_'.Inflector::underscore($this->_path->title).'_'.time().'.gpx';
+        $this->gpx = GPXF::factory(GPXF::MODE_FILE,$this->filename);
 
         $waypoints = $this->_path->getWaypoints();
 
@@ -34,6 +36,8 @@ class Controller_Export_Path_Gpx extends Controller_Export_Base_Gpx{
         if(!empty($this->global_bounds))
             $this->gpx->addBounds(NULL,$this->global_bounds);
         $this->file = $this->gpx->render();
+
+
     }
 
 

@@ -6,6 +6,7 @@ class Controller_Print_Path_Sheet extends Controller_Print_Base_Auth_Nostrict
     protected $_xmlContentView = 'print/path/sheet';
     protected $_xmlCssView = 'print/csstest2';
     protected $_pdfPageSize = "a4";
+    public $filename = "Path_";
 
 
     public function action_index()
@@ -31,5 +32,8 @@ class Controller_Print_Path_Sheet extends Controller_Print_Base_Auth_Nostrict
         $map->size = [$size['width'],$size['height']];
         $map->makeMap(NULL,$path->id,NULL);
         $this->_xmlContentView->mapURL = $map->imageURL;
+
+        // set filename
+        $this->filename .= Inflector::underscore($path->title).'_'.time().'.pdf';
     }
 }

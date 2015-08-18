@@ -12,7 +12,8 @@ class Controller_Export_Itinerary_Gpx extends Controller_Export_Base_Gpx{
         #get the sepcific path
         $this->_itinerary = ORM::factory('Itinerary', $this->request->param('id'));
         #star GPXF Obeject
-        $this->gpx = GPXF::factory(GPXF::MODE_FILE);
+        $this->filename = 'Itinerary_'.Inflector::underscore($this->_itinerary->name).'_'.time().'.gpx';
+        $this->gpx = GPXF::factory(GPXF::MODE_FILE,$this->filename);
 
         #get all path from itineraries
         $this->_paths = $this->_itinerary->paths->where('publish','IS',DB::expr('true'))->find_all();
