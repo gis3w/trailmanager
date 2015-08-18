@@ -66,14 +66,17 @@ class Kohana_Mapserver {
 
     }
 
-    public function makeMap()
+    public function makeMap($poi_id = NULL, $path_id = NULL, $area_id = NULL)
     {
         $this->_makePoisSymbols();
 
         $this->addBaseLayer(MS_ON);
-        $this->addAreas(MS_ON);
-        $this->addPaths(MS_ON);
-        $this->addPois(MS_ON);
+        if(isset($area_id))
+            $this->addAreas(MS_ON,$area_id);
+        if(isset($path_id))
+            $this->addPaths(MS_ON,$path_id);
+        if(isset($poi_id))
+            $this->addPois(MS_ON,$poi_id);
 
         $this->_calculateExtent();
 
@@ -99,6 +102,9 @@ class Kohana_Mapserver {
             case "center":
                 $this->_center = $value;
             break;
+            case "size":
+                $this->_mapObj->setSize($value[0],$value[1]);
+            break;
             default:
                 $this->{$name} = $value;
         }
@@ -114,6 +120,7 @@ class Kohana_Mapserver {
                 return parent::__get($param);
         }
     }
+
 
     public function setTmpDir($tmp_dir)
     {
@@ -221,19 +228,45 @@ class Kohana_Mapserver {
     }
 
 
-    public function addPaths($status)
+    public function addPaths($status,$path_id = NULL)
     {
         $this->_pathsLayerObj = $this->_mapObj->getLayerByName('PATHS');
         $this->_setMapfileConnectionDb($this->_pathsLayerObj);
+        if(isset($path_id))
+        {
+            if(is_array($path_id))
+            {
+                $this->_pathsLayerObj->set("data", "the_geom from (select * from paths where publish is TRUE and id IN (".implode(',',$path_id).")) as p using unique id");
+            }
+            else
+            {
+                $this->_pathsLayerObj->set("data","the_geom from (select * from paths where publish is TRUE and id = ".$path_id.") as p using unique id");
+            }
+
+        }
+
+
         $this->_pathsLayerObj->set('status',$status);
         $this->_orderLayers[] = $this->_pathsLayerObj->index;
 
     }
 
-    public function addPois($status)
+    public function addPois($status,$poi_id = NULL)
     {
         $this->_poisLayerObj = $this->_mapObj->getLayerByName('POIS');
         $this->_setMapfileConnectionDb($this->_poisLayerObj);
+        if(isset($poi_id))
+        {
+            if(is_array($poi_id))
+            {
+                $this->_pathsLayerObj->set("data", "the_geom from (select * from pois where publish is TRUE and id IN (".implode(',',$poi_id).")) as p using unique id");
+            }
+            else
+            {
+                $this->_pathsLayerObj->set("data","the_geom from (select * from pois where publish is TRUE and id = ".$poi_id.") as p using unique id");
+            }
+
+        }
         $this->_poisLayerObj->set('status',$status);
         $class = $this->_poisLayerObj->getClass(0);
         $style = $class->getStyle(0);
@@ -241,10 +274,22 @@ class Kohana_Mapserver {
         $this->_orderLayers[] = $this->_poisLayerObj->index;
     }
 
-    public function addAreas($status)
+    public function addAreas($status, $area_id = NULL)
     {
         $this->_areasLayerObj = $this->_mapObj->getLayerByName('AREAS');
         $this->_setMapfileConnectionDb($this->_areasLayerObj);
+        if(isset($area_id))
+        {
+            if(is_array($area_id))
+            {
+                $this->_pathsLayerObj->set("data", "the_geom from (select * from areas where publish is TRUE and id IN (".implode(',',$area_id).")) as p using unique id");
+            }
+            else
+            {
+                $this->_pathsLayerObj->set("data","the_geom from (select * from areas where publish is TRUE and id = ".$area_id.") as p using unique id");
+            }
+
+        }
         $this->_areasLayerObj->set('status',$status);
         $this->_orderLayers[] = $this->_areasLayerObj->index;
     }

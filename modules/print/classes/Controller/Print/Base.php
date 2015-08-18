@@ -27,6 +27,7 @@ abstract class Controller_Print_Base extends Controller_Base_Main {
     protected $_mapPath;
     protected $_tmp_dir;
     protected $_image_base_url;
+    protected $_pdf_map_size;
 
     public function action_index()
     {
@@ -38,6 +39,7 @@ abstract class Controller_Print_Base extends Controller_Base_Main {
         $this->_mapFile = $printConfig['mapfile'];
         $this->_mapPath = $printConfig['mappath'];
         $this->_tmp_dir = $printConfig['tmp_dir'];
+        $this->_pdf_map_size = $printConfig['pdf_map_size'];
         $this->_image_base_url = $printConfig['image_base_url'];
 
     }

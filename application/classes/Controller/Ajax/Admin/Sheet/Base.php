@@ -4,6 +4,8 @@
 class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
     
     protected $_typologies = array();
+
+    protected $_itineraries = array();
     
      protected $_upload_path = array(
          'image_poi' => 'image',
@@ -81,6 +83,17 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
                 $this->_orm->setManyToMany($alias,$this->$var);
             }
     }
+
+    protected function _set_itineraries_edit()
+    {
+        foreach(array('itineraries') as $alias)
+        {
+            $var = "_".$alias;
+            if(isset($_POST[$alias]))
+                $this->$var = $_POST[$alias];
+            $this->_orm->setManyToMany($alias,$this->$var);
+        }
+    }
     
     protected function _data_edit()
     {
@@ -91,6 +104,8 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
          $this->_orm->save();
 
          $this->_set_typologies_edit();
+        if(isset($this->_orm->itineraries))
+            $this->_set_itineraries_edit();
          
          $this->_save_subforms_1XN();
          
@@ -231,9 +246,12 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
         
         $this->_unset_ORMGIS_geofield($toRes);
         $this->_set_typologies($toRes, $orm);
+        $this->_set_itineraries($toRes,$orm);
         $this->_set_the_geom($toRes, $orm);
         $this->_set_urls($toRes,$orm);
-       
+
+
+
         return $toRes;
     }
     
@@ -267,7 +285,24 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
            }
         }
     }
-    
+
+    protected function _set_itineraries(&$toRes ,$orm)
+    {
+        foreach(array('itineraries') as $alias)
+        {
+            if(!isset($orm->$alias))
+                continue;
+            $datas = $orm->$alias->find_all();
+            foreach($datas as $data)
+            {
+                $toRes[$alias][] = array(
+                    "id" => $data->id,
+                );
+            }
+        }
+    }
+
+
     protected function _set_the_geom(&$toRes, $orm)
     {
         if($orm instanceof ORMGIS)

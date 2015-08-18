@@ -122,4 +122,24 @@ class Model_Path extends ORMGIS {
         
     }
 
+    public function getWaypoints()
+    {
+        #get vertexs of line
+        $dumpPoints = DB::select(
+            [DB::expr('ST_DumpPoints(the_geom)'), 'dp']
+        )
+            ->from('paths')
+            ->where('id', '=', $this->id);
+
+
+        return DB::select(
+            [DB::expr('(dp).path[1]'), 'edge_id'],
+            [DB::expr('ST_X(ST_Transform((dp).geom,' . $this->epsg_out . '))'), 'lon'],
+            [DB::expr('ST_Y(ST_Transform((dp).geom,' . $this->epsg_out . '))'), 'lat']
+        )
+            ->from([$dumpPoints, 'foo'])
+            ->execute();
+
+    }
+
 }

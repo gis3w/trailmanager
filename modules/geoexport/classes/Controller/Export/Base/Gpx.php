@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Controller_Export_Base_Gpx extends Controller_Export_Main{
+class Controller_Export_Base_Gpx extends Controller_Export_Base_Auth_Nostrict{
 
     public $file;
     public $gpx;
@@ -40,5 +40,15 @@ class Controller_Export_Base_Gpx extends Controller_Export_Main{
                  $bounds['maxlat'] = (float)$lat;
              if(!isset($bounds['maxlon']) OR $lon > $bounds['maxlon'])
                  $bounds['maxlon'] = (float)$lon;
+    }
+
+    /**
+     * Remove special chars and html tags for xml
+     * @param $text string
+     * @return string
+     */
+    protected function _cleanText($text)
+    {
+        return html_entity_decode(strip_tags($text));
     }
 }

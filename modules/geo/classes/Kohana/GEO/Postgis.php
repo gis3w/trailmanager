@@ -55,4 +55,17 @@ class Kohana_GEO_Postgis extends GEO{
 
         return $arr;
     }
+
+    public function pointFromToSRS(array $point, $fromEPSG, $toEPSG)
+    {
+        $query = DB::query(Database::SELECT, "SELECT ST_X(the_geom) as x, ST_Y(the_geom) as y FROM (SELECT ST_Transform(ST_SetSRID(ST_POINT(:x,:y),:fromepsg),:toepsg) as the_geom) as foo");
+        $query->param(':x', $point[0])
+            ->param(':y', $point[1])
+            ->param(':fromepsg', $fromEPSG)
+            ->param(':toepsg', $toEPSG);
+
+        $res = $query->execute();
+        $arr = [(float)$res[0]['x'],(float)$res[0]['y']];
+        return $arr;
+    }
 }

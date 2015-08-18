@@ -17,7 +17,7 @@ class Datastruct_Area extends Datastruct {
        array(
             'name' => 'area-foreign-data',
             'position' => 'right',
-            'fields' => array('typology_id','typologies','the_geom','color','width','image_area','video_area'),
+            'fields' => array('itineraries','typology_id','typologies','the_geom','color','width','image_area','video_area'),
         ),
         array(
             'name' => 'area-block-data',
@@ -183,6 +183,20 @@ class Datastruct_Area extends Datastruct {
             "table_show" => FALSE,
             
         ));
+
+          $fct['itineraries']  = array_replace($this->_columnStruct,array(
+              'data_type' => 'integer',
+              'form_input_type' => self::SELECT,
+              'foreign_mode' => self::MULTISELECT,
+              'foreign_toshow' => '$1',
+              'foreign_toshow_params' => array(
+                  '$1' => 'name',
+              ),
+              'url_values' => '/jx/admin/itinerary',
+              'label' => __('Itineraries'),
+              'description' => __('Select one or more itineraries'),
+              "table_show" => FALSE,
+          ));
         
       
         return $fct;
