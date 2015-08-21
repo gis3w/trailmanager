@@ -2415,6 +2415,7 @@
       <column name="version" sqlType="varchar" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
       <column name="crs" sqlType="varchar" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
       <column name="format" sqlType="varchar" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
+      <column name="mapproxy_layer" sqlType="varchar" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
       <primary-key name="pkbackground_layers" columns="id"/>
       <foreign-key name="fk_background_layers_layer_types" columns="layer_type_id" ref-table="layer_types" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
       <exported-key name="fk_sections_background_layers_background_layers" table="sections_background_layers" schema="public" catalog="dev_trail" columns="background_layer_id"/>

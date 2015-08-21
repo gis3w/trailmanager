@@ -16,5 +16,8 @@ return array(
                 'height' => 540
             ]
         ]
+    ],
+    'mapping_trailmanager_mapproxy' => [
+
     ]
     );

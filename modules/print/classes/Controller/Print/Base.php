@@ -23,6 +23,8 @@ abstract class Controller_Print_Base extends Controller_Base_Main {
     public $xmlContent;
     public $xmlCss = NULL;
 
+    protected $_background_layer_id = NULL;
+
     protected $_mapFile;
     protected $_mapPath;
     protected $_tmp_dir;
@@ -38,6 +40,9 @@ abstract class Controller_Print_Base extends Controller_Base_Main {
         // set the header
         View::set_global('header1',View::factory($this->_xmlHeader1View)
             ->set('background_color','#dd4814'));
+
+        if(isset($_GET['background_layer_id']))
+            $this->_background_layer_id = (int)$_GET['background_layer_id'];
 
 
     }
@@ -91,6 +96,10 @@ abstract class Controller_Print_Base extends Controller_Base_Main {
         }
         
         $this->_pdfContent = $this->PHPPdf->render($this->xmlContent, $this->xmlCss);
+
+        // si elimina il file del grafico
+        if(isset($this->_xmlContentView->heights_profile_img))
+            @unlink($this->_xmlContentView->heights_profile_img);
 
         $this->response->headers('Content-Type', 'application/pdf');
         $this->response->headers('Content-Disposition','attachment; filename=\''.$this->filename.'\'');

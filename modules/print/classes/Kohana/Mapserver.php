@@ -66,7 +66,7 @@ class Kohana_Mapserver {
 
     }
 
-    public function makeMap($poi_id = NULL, $path_id = NULL, $area_id = NULL)
+    public function makeMap($poi_id = NULL, $path_id = NULL, $area_id = NULL,$base_layer_id = NULL)
     {
         $this->_makePoisSymbols();
 
@@ -75,7 +75,7 @@ class Kohana_Mapserver {
         $this->_poisLayerObj = $this->_mapObj->getLayerByName('POIS');
 
 
-        $this->addBaseLayer(MS_ON);
+        $this->addBaseLayer(MS_ON,$base_layer_id);
         if(isset($area_id))
         {
             $this->addAreas(MS_ON,$area_id);
@@ -233,8 +233,10 @@ class Kohana_Mapserver {
         $layerObj->set('connection',$connection);
     }
 
-    public function addBaseLayer($status)
+    public function addBaseLayer($status,$base_layer_id = NULL)
     {
+        if(isset($base_layer_id))
+            $bl = ORM::factory('Background_Layer',$base_layer_id);
         $this->_baseLayerObj = new LayerObj($this->_mapObj);
         $this->_baseLayerObj->set('type',MS_LAYER_RASTER);
         $this->_baseLayerObj->set('status',$status);
@@ -243,7 +245,15 @@ class Kohana_Mapserver {
         $this->_baseLayerObj->setProjection("init=epsg:3857");
 
         $this->_baseLayerObj->setMetaData('DESCRIPTION','OSM layer');
-        $this->_baseLayerObj->setMetaData('wms_name','osm_cyclemap');
+        if(isset($bl) AND isset($bl->mapproxy_layer))
+        {
+            $wms_name = $bl->mapproxy_layer;
+        }
+        else
+        {
+             $wms_name = 'osm_cyclemap';
+        }
+        $this->_baseLayerObj->setMetaData('wms_name',$wms_name);
         $this->_baseLayerObj->setMetaData('wms_server_version','1.1.1');
         $this->_baseLayerObj->setMetaData('wms_format','image/png');
 
