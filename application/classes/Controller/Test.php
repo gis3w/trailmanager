@@ -1,5 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
+use CpChart\Services\pChartFactory;
 
 
 class Controller_Test extends Controller{
@@ -34,10 +35,13 @@ class Controller_Test extends Controller{
         echo $map->imageURL;
         # Mapserver::makePoisSymbols();
 
-        */
+
 
         $path = ORMGIS::factory('Path',26);
         $pt = $geo->pointFromToSRS([(int)$path->coordxini,(int)$path->coordyini],3004,3857);
+         */
+
+       $path = ORMGIS::factory('Path',26);
         exit;
 
 

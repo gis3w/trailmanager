@@ -49,6 +49,7 @@ class Controller_Download_Image extends Controller_Download_Base {
         $this->response->headers('content-type', $image->mime);
         
         $this->response->body($image->render());
+
     }
     
 }

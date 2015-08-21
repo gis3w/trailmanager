@@ -28,19 +28,17 @@ abstract class Controller_Print_Base extends Controller_Base_Main {
     protected $_tmp_dir;
     protected $_image_base_url;
     protected $_pdf_map_size;
+    protected $_pdf_page_size = 'A4';
+    protected $_pdf_page_orientation = 'P';
+
+    protected $_img_base_dir = 'upload/image';
 
     public function action_index()
     {
         // set the header
         View::set_global('header1',View::factory($this->_xmlHeader1View)
-            ->set('background_color','#FF0000'));
+            ->set('background_color','#dd4814'));
 
-        $printConfig = Kohana::$config->load('print');
-        $this->_mapFile = $printConfig['mapfile'];
-        $this->_mapPath = $printConfig['mappath'];
-        $this->_tmp_dir = $printConfig['tmp_dir'];
-        $this->_pdf_map_size = $printConfig['pdf_map_size'];
-        $this->_image_base_url = $printConfig['image_base_url'];
 
     }
     
@@ -51,10 +49,24 @@ abstract class Controller_Print_Base extends Controller_Base_Main {
 
         $this->_pdfTemplate = APPPATH."../public/pdf/".$this->_pdfTemplate;
 
+        $printConfig = Kohana::$config->load('print');
+        $this->_mapFile = $printConfig['mapfile'];
+        $this->_mapPath = $printConfig['mappath'];
+        $this->_tmp_dir = $printConfig['tmp_dir'];
+        $this->_pdf_map_size = $printConfig['pdf_map_size'];
+        $this->_image_base_url = $printConfig['image_base_url'];
+
         $this->_xmlContentView = View::factory($this->_xmlContentView);
         $this->_xmlContentView->template = $this->_pdfTemplate;
         if(isset($this->_xmlCssView))
             $this->_xmlCssView = View::factory($this->_xmlCssView);
+        // set pdf page properti sieze, orentation ecc..
+        $this->_xmlContentView->pdf_page_size = strtolower($this->_pdf_page_size);
+        if(isset($this->_pdf_page_orientation) AND $this->_pdf_page_orientation == 'L')
+            $this->_xmlContentView->pdf_page_size .= "-landscape";
+        $this->_xmlContentView->tmp_dir = APPPATH.'..';
+
+        $this->_xmlContentView->img_base_dir = $this->_img_base_dir;
     }
     
     public function after() {
@@ -83,5 +95,25 @@ abstract class Controller_Print_Base extends Controller_Base_Main {
         $this->response->headers('Content-Type', 'application/pdf');
         $this->response->headers('Content-Disposition','attachment; filename=\''.$this->filename.'\'');
         echo $this->_pdfContent;
+    }
+
+    protected function _setImageMapSize($map)
+    {
+        $size = $this->_pdf_map_size[$this->_pdf_page_size]['L'];
+        $map->size = [$size['width'],$size['height']];
+    }
+
+    protected function _calculateExtentWithBuffer(ORMGIS $obj, $percBuffer,$epsgOut)
+    {
+
+        $geo = GEO_Postgis::instance();
+        $extent = [
+            $obj->bbox['minx'] - ($obj->bbox['maxx']-$obj->bbox['minx']) * $percBuffer,
+            $obj->bbox['miny'] - ($obj->bbox['maxy']-$obj->bbox['miny']) * $percBuffer,
+            $obj->bbox['maxx'] + ($obj->bbox['maxx']-$obj->bbox['minx']) * $percBuffer,
+            $obj->bbox['maxy'] + ($obj->bbox['maxy']-$obj->bbox['miny']) * $percBuffer
+        ];
+
+        return $geo->bboxFromToSRS($extent,$obj->epsg_out,$epsgOut);
     }
 }

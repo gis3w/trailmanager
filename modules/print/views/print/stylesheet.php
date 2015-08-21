@@ -1,22 +1,18 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php echo '<?xml version="1.0" encoding="UTF-8"?>' ?>
 <stylesheet>
-    <any>
-            <td border.color="gray" border.type="left+top+right" padding="5px"></td>
-            <table border.color="gray" border.type="bottom"></table>
-    </any>
-    <td>
-        <h3 margin="0px 0px 0px 0px"></h3>
-    </td>
-    <td class="title-section-1" background.color="#87CEFA"></td>
-    <td class="title-section-2" background.color="#FFFF66"></td>
-    <td class="title-section-3" background.color="#66FF99"></td>
-    <td class="checklist-headers" background.color="#d2d2d2"></td>
-    <td class="checklist-question" width="400px"></td>
-    <td class="checklist-result" width="100px"></td>
-    <h3 class="section-title" text-align="center"></h3>
-    <dynamic-page margin="70px 40px 40px 40px "></dynamic-page>
-    <any class="red" color="#FA603D"></any>
-    <any class="bold" font-style="bold"></any>
-    
+    <page margin = "2.5cm 2.5cm"></page>
+    <h2 color="gray" border-type="bottom" border-color="gray" border-size="0.5px" padding-bottom="10px" font-size="24px"></h2>
+    <div class="header1" height="60px" width="100%"></div>
+    <div class="header1-logo"  text-align="center" width="100%"></div>
+    <div class="footer1" color="gray" padding-top="10px"  height="30px" border-type="top" border-color="gray" border-size="0.5px"></div>
+    <div class="map-image" margin-top="10px"></div>
+    <header margin-bottom="10px"></header>
+    <div class="image-container" float="left" width="210px" margin-right="10px" padding="3px 3px 3px 3px" border-color="#eaeaea" border-radius="3px"></div>
+    <img class="image-image" width="210px"/>
+    <div class="box" float="left" border-color="#eaeaea" border-radius="4px">
+        <h3 background.color="#eaeaea" border-color="#eaeaea" border-radius="4px" margin-top="0px" color="gray" padding="3px 3px 3px 3px"></h3>
+    </div>
+    <div class="category" width="268px" margin-right="20px"></div>
+    <div class="characteristics" width="400px"></div>
 </stylesheet>

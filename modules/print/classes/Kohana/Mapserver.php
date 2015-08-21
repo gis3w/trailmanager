@@ -70,13 +70,39 @@ class Kohana_Mapserver {
     {
         $this->_makePoisSymbols();
 
+        $this->_areasLayerObj = $this->_mapObj->getLayerByName('AREAS');
+        $this->_pathsLayerObj = $this->_mapObj->getLayerByName('PATHS');
+        $this->_poisLayerObj = $this->_mapObj->getLayerByName('POIS');
+
+
         $this->addBaseLayer(MS_ON);
         if(isset($area_id))
+        {
             $this->addAreas(MS_ON,$area_id);
+        }
+        else
+        {
+            $this->_orderLayers[] = $this->_areasLayerObj->index;
+        }
+
         if(isset($path_id))
+        {
             $this->addPaths(MS_ON,$path_id);
+        }
+        else
+        {
+            $this->_orderLayers[] = $this->_pathsLayerObj->index;
+        }
+
         if(isset($poi_id))
+        {
             $this->addPois(MS_ON,$poi_id);
+        }
+        else
+        {
+            $this->_orderLayers[] = $this->_poisLayerObj->index;
+        }
+
 
         $this->_calculateExtent();
 
@@ -188,9 +214,9 @@ class Kohana_Mapserver {
     {
 
         //$this->_orderLayers = array_reverse($this->_orderLayers);
-        var_dump($this->_orderLayers);
         $this->_mapObj->setLayersDrawingOrder($this->_orderLayers);
-        var_dump($this->_mapObj->getLayersDrawingOrder());
+        error_log(print_r($this->_orderLayers,true));
+
     }
 
     public function generateImg()
@@ -230,7 +256,8 @@ class Kohana_Mapserver {
 
     public function addPaths($status,$path_id = NULL)
     {
-        $this->_pathsLayerObj = $this->_mapObj->getLayerByName('PATHS');
+        if(!isset($this->_pathsLayerObj))
+            $this->_pathsLayerObj = $this->_mapObj->getLayerByName('PATHS');
         $this->_setMapfileConnectionDb($this->_pathsLayerObj);
         if(isset($path_id))
         {
@@ -253,17 +280,18 @@ class Kohana_Mapserver {
 
     public function addPois($status,$poi_id = NULL)
     {
-        $this->_poisLayerObj = $this->_mapObj->getLayerByName('POIS');
+        if(!isset($this->_poisLayerObj))
+            $this->_poisLayerObj = $this->_mapObj->getLayerByName('POIS');
         $this->_setMapfileConnectionDb($this->_poisLayerObj);
         if(isset($poi_id))
         {
             if(is_array($poi_id))
             {
-                $this->_pathsLayerObj->set("data", "the_geom from (select * from pois where publish is TRUE and id IN (".implode(',',$poi_id).")) as p using unique id");
+                $this->_poisLayerObj->set("data", "the_geom from (select * from pois where publish is TRUE and id IN (".implode(',',$poi_id).")) as p using unique id");
             }
             else
             {
-                $this->_pathsLayerObj->set("data","the_geom from (select * from pois where publish is TRUE and id = ".$poi_id.") as p using unique id");
+                $this->_poisLayerObj->set("data","the_geom from (select * from pois where publish is TRUE and id = ".$poi_id.") as p using unique id");
             }
 
         }
@@ -276,17 +304,18 @@ class Kohana_Mapserver {
 
     public function addAreas($status, $area_id = NULL)
     {
-        $this->_areasLayerObj = $this->_mapObj->getLayerByName('AREAS');
+        if(!isset($this->_areasLayerObj))
+            $this->_areasLayerObj = $this->_mapObj->getLayerByName('AREAS');
         $this->_setMapfileConnectionDb($this->_areasLayerObj);
         if(isset($area_id))
         {
             if(is_array($area_id))
             {
-                $this->_pathsLayerObj->set("data", "the_geom from (select * from areas where publish is TRUE and id IN (".implode(',',$area_id).")) as p using unique id");
+                $this->_areasLayerObj->set("data", "the_geom from (select * from areas where publish is TRUE and id IN (".implode(',',$area_id).")) as p using unique id");
             }
             else
             {
-                $this->_pathsLayerObj->set("data","the_geom from (select * from areas where publish is TRUE and id = ".$area_id.") as p using unique id");
+                $this->_areasLayerObj->set("data","the_geom from (select * from areas where publish is TRUE and id = ".$area_id.") as p using unique id");
             }
 
         }

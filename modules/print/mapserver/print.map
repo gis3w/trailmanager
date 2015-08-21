@@ -28,22 +28,22 @@ OUTPUTFORMAT
  END
 
 LAYER
-    NAME 'AREAS'
-    TYPE POLYGON
-    OPACITY 50
+    NAME 'POIS'
+    TYPE POINT
     STATUS OFF
     CONNECTIONTYPE POSTGIS
-    DATA "the_geom from (select * from areas where publish is TRUE) as p using unique id"
+    DATA "the_geom from (select * from pois where publish is TRUE) as p using unique id"
     PROJECTION
         "init=epsg:3004"
     END
     CLASS
-        Name 'Areas'
+        Name 'Pois'
         STYLE
-            COLOR [color]
+            SYMBOL [typology_id]
         END
     END
 END
+
 
 LAYER
     NAME 'PATHS'
@@ -66,18 +66,19 @@ END
 
 
 LAYER
-    NAME 'POIS'
-    TYPE POINT
+    NAME 'AREAS'
+    TYPE POLYGON
+    OPACITY 50
     STATUS OFF
     CONNECTIONTYPE POSTGIS
-    DATA "the_geom from (select * from pois where publish is TRUE) as p using unique id"
+    DATA "the_geom from (select * from areas where publish is TRUE) as p using unique id"
     PROJECTION
-        "init=epsg:3004"
+        "init=epsg:4326"
     END
     CLASS
-        Name 'Pois'
+        Name 'Areas'
         STYLE
-            SYMBOL [typology_id]
+            COLOR [color]
         END
     END
 END

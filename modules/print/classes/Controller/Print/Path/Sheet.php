@@ -1,39 +1,88 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
+use CpChart\Services\pChartFactory;
+
 class Controller_Print_Path_Sheet extends Controller_Print_Base_Auth_Nostrict
 {
 
     protected $_xmlContentView = 'print/path/sheet';
-    protected $_xmlCssView = 'print/csstest2';
-    protected $_pdfPageSize = "a4";
     public $filename = "Path_";
+    public $path;
 
 
     public function action_index()
     {
         parent::action_index();
         // get the map extent for path
-        $path = ORMGIS::factory('Path',$this->request->param('id'));
+        $this->path = ORMGIS::factory('Path',$this->request->param('id'));
 
-        $extBuffer = 0.1;
-
-        $geo = GEO_Postgis::instance();
-        $extent = [
-            $path->bbox['minx'] - ($path->bbox['maxx']-$path->bbox['minx']) * $extBuffer,
-            $path->bbox['miny'] - ($path->bbox['maxy']-$path->bbox['miny']) * $extBuffer,
-            $path->bbox['maxx'] + ($path->bbox['maxx']-$path->bbox['minx']) * $extBuffer,
-            $path->bbox['maxy'] + ($path->bbox['maxy']-$path->bbox['miny']) * $extBuffer
-        ];
-
-        $newExtent = $geo->bboxFromToSRS($extent,$path->epsg_out,3857);
-        $size = $this->_pdf_map_size['A4']['L'];
+        $newExtent = $this->_calculateExtentWithBuffer($this->path,0.1,3857);
 
         $map = new Mapserver($this->_mapFile,$this->_mapPath,$this->_tmp_dir,$this->_image_base_url,NULL,NULL,$newExtent);
-        $map->size = [$size['width'],$size['height']];
-        $map->makeMap(NULL,$path->id,NULL);
+        $this->_setImageMapSize($map);
+        $map->makeMap(NULL,$this->path->id,NULL);
         $this->_xmlContentView->mapURL = $map->imageURL;
+        $this->_xmlContentView->path = $this->path;
+
+        $this->_buildAltitudeGapChart();
+
 
         // set filename
-        $this->filename .= Inflector::underscore($path->title).'_'.time().'.pdf';
+        $this->filename .= Inflector::underscore($this->path->title).'_'.time().'.pdf';
+    }
+    
+    protected function _buildAltitudeGapChart()
+    {
+        $heights_profile_data = $this->path->heights_profile->find_all();
+        if(count($heights_profile_data) == 0)
+            return;
+        $x = $z = [];
+        foreach ($heights_profile_data as $height)
+        {
+            $z[] = (float)$height->z;
+            $x[] = round((float)$height->cds2d,1);
+        }
+
+        $factory = new pChartFactory();
+
+        // create and populate the pData class
+        $myData = $factory->newData($z, "Heights");
+        $myData->setAxisName(0,__('Heights').'(m)');
+        $serieSettings = array("R"=>229,"G"=>11,"B"=>11,"Alpha"=>80);
+        $myData->setPalette("Heights",$serieSettings);
+
+
+
+        $myData->addPoints($x, "Distances");
+        $myData->setSerieDescription("Distances",__("Distance(m)"));
+        $myData->setAbscissa("Distances");
+        $myData->setAbscissaName(__("Distance(m)"));
+
+        // create the image and set the data
+        $myPicture = $factory->newImage(700, 300, $myData);
+        $myPicture->setGraphArea(60, 60, 640, 240);
+        $myPicture->setFontProperties(
+            array(
+                "FontName" => "verdana.ttf",
+                "FontSize" => 9
+            )
+        );
+
+        // creating a pie chart - notice that you specify the type of chart, not class name.
+        // not all charts need to be created through this method (ex. the bar chart),
+        // some are created via the pImage class (check the documentation before drawing).
+        $pieChart = $factory->newChart("pie", $myPicture, $myData);
+
+        // do the drawing
+        $myPicture->drawScale(array("DrawSubTicks"=>FALSE,"DrawSubTicks"=>FALSE,"LabelSkip"=>50));
+        $myPicture->drawAreaChart("");
+        $imgTmp = APPPATH."../public/imgtmp/".time().".png";
+        $myPicture->render($imgTmp);
+        #$myPicture->Stroke();
+        $this->_xmlContentView->heights_profile_img = $imgTmp;
+
+
+
+
     }
 }

@@ -1,13 +1,14 @@
 {
 	"require": {
 		"phpunit/phpunit": "3.7.*",
-                                    "swiftmailer/swiftmailer": "*",
-                                    "psliwa/php-pdf": "dev-master",
-                                    "knplabs/knp-snappy": "dev-master",
-                                    "h4cc/wkhtmltopdf-amd64": "0.11.0-RC1",
-                                    "h4cc/wkhtmltoimage-amd64": "0.11.0-RC1",
-                                    "symfony/event-dispatcher": "2.4.*@dev",
-                                    "nesbot/Carbon": "*",
-                                    "endroid/qrcode": "1.*@dev"
+        "swiftmailer/swiftmailer": "*",
+        "psliwa/php-pdf": "dev-master",
+        "knplabs/knp-snappy": "dev-master",
+        "h4cc/wkhtmltopdf-amd64": "0.11.0-RC1",
+        "h4cc/wkhtmltoimage-amd64": "0.11.0-RC1",
+        "symfony/event-dispatcher": "2.4.*@dev",
+        "nesbot/Carbon": "*",
+        "endroid/qrcode": "1.*@dev",
+        "szymach/c-pchart": "1.*"
 	}
 }

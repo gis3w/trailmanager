@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/endroid/qrcode" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/h4cc/wkhtmltoimage-amd64" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/h4cc/wkhtmltopdf-amd64" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/knplabs/knp-snappy" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/nesbot/carbon" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpunit/php-code-coverage" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpunit/php-file-iterator" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpunit/php-text-template" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpunit/php-timer" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpunit/php-token-stream" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpunit/phpunit" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpunit/phpunit-mock-objects" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/psliwa/php-pdf" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/swiftmailer/swiftmailer" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/event-dispatcher" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/translation" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/yaml" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/zendframework/zend-cache" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/zendframework/zend-eventmanager" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/zendframework/zend-json" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/zendframework/zend-math" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/zendframework/zend-memory" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/zendframework/zend-serializer" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/zendframework/zend-servicemanager" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/zendframework/zend-stdlib" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/zendframework/zendpdf" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library">
+      <library name="PHARS">
+        <CLASSES>
+          <root url="phar://$MODULE_DIR$/composer.phar" />
+        </CLASSES>
+        <SOURCES>
+          <root url="phar://$MODULE_DIR$/composer.phar" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+  </component>
+</module>
