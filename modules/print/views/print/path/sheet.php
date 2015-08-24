@@ -35,20 +35,8 @@
             <p><?php echo $path->description ?></p>
         </div>
 
-        <!--IMAGES-->
-        <div>
-            <h2><?php echo __('Pictures') ?></h2>
-            <?php $images = $path->images->find_all() ?>
-            <?php foreach ($images as $image): ?>
-                <div class="image-container">
-                    <img class="image-image" src="<?php echo APPPATH.'../'.$img_base_dir.'/'.$image->file ?>" />
-                    <?php if(isset($image->description) AND $image->description !=''): ?>
-                        <p class="image-description"><?php echo $image->description ?></p>
-                    <?php endif ?>
-                </div>
-            <?php endforeach; ?>
 
-        </div>
+        <?php echo $images_sheet ?>
 
 
     </dynamic-page>

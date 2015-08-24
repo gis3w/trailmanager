@@ -20,6 +20,7 @@ abstract class Controller_Print_Base extends Controller_Base_Main {
     protected $_xmlContentView;
     protected $_xmlHeader1View = 'print/header/header1';
     protected $_xmlCssView = 'print/stylesheet';
+    protected $_imagesSheetView = 'print/modules/images/sheet';
     public $xmlContent;
     public $xmlCss = NULL;
 
@@ -34,6 +35,7 @@ abstract class Controller_Print_Base extends Controller_Base_Main {
     protected $_pdf_page_orientation = 'P';
 
     protected $_img_base_dir = 'upload/image';
+    protected $_img_resized = [];
 
     public function action_index()
     {
@@ -71,7 +73,9 @@ abstract class Controller_Print_Base extends Controller_Base_Main {
             $this->_xmlContentView->pdf_page_size .= "-landscape";
         $this->_xmlContentView->tmp_dir = APPPATH.'..';
 
+        // for images
         $this->_xmlContentView->img_base_dir = $this->_img_base_dir;
+        $this->_xmlContentView->bind('images_resized',$this->_img_resized);
     }
     
     public function after() {
@@ -97,9 +101,12 @@ abstract class Controller_Print_Base extends Controller_Base_Main {
         
         $this->_pdfContent = $this->PHPPdf->render($this->xmlContent, $this->xmlCss);
 
-        // si elimina il file del grafico
+        // ERASE IMAGE TMP CHART
         if(isset($this->_xmlContentView->heights_profile_img))
             @unlink($this->_xmlContentView->heights_profile_img);
+        // ERASE IMAGES SHEET RESIZED
+        foreach($this->_img_resized as $file)
+            @unlink($file);
 
         $this->response->headers('Content-Type', 'application/pdf');
         $this->response->headers('Content-Disposition','attachment; filename=\''.$this->filename.'\'');
@@ -124,5 +131,34 @@ abstract class Controller_Print_Base extends Controller_Base_Main {
         ];
 
         return $geo->bboxFromToSRS($extent,$obj->epsg_out,$epsgOut);
+    }
+
+    /**
+     * Resize the image for print pdf
+     * @param ORM $orm
+     */
+    protected function _resizeImage(ORM $orm)
+    {
+        # get all image
+        $images = $orm->images->find_all();
+
+        foreach($images as $image)
+        {
+            $imgObj = Image::factory(APPPATH.'../'.$this->_img_base_dir.'/'.$image->file);
+            $imgObj->resize('210',NULL);
+            $newImgFileName = APPPATH.'../public/imgtmp/'.$this->filename.$image->file;
+            $imgObj->save($newImgFileName);
+            $this->_img_resized[$image->file] = $newImgFileName;
+
+        }
+
+    }
+
+    protected function _printImagesSheet($orm)
+    {
+        $imagesView = View::factory($this->_imagesSheetView);
+        $imagesView->images = $orm->images->find_all();
+        $imagesView->images_resized = $this->_img_resized;
+        $this->_xmlContentView->images_sheet = $imagesView->render();
     }
 }
