@@ -493,7 +493,7 @@ $.extend(APP.utils,{
 		cgd.addClass("has-error");
 		var span = '<span class="help-block"><small>'+v+'</small></span>';
 		var hi = cgd.find(".help-block");
-		(hi.length > 0)? hi.html(span) : cgd.find(".controls").append(span);
+		(hi.length > 0)? hi.html(span) : el.parent().append(span);
 	},
 	
 	confirmMsg: function(text, btnLabels, callbacks)

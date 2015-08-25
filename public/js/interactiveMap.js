@@ -2453,7 +2453,7 @@ $.extend(APP.interactiveMap,
 		that.loginModal = APP.modals.create({
 			container: that.body,
 			id: "loginModal",
-			size: "sm",
+			size: "md",
 			bTopCloseButton: true,
 			header: header,
 			body: htmlPage,
@@ -2832,6 +2832,9 @@ $.extend(APP.interactiveMap,
 						APP.utils.showNoty({title: APP.i18n.translate("error"), type: "error", content: APP.i18n.translate("Default extent not found")});
 					APP.map.setGlobalExtent(APP.config.localConfig.default_extent);
 					APP.map.setExtent(APP.config.localConfig.default_extent);
+					break;
+				case "login":  case "logout":
+					that.toggleGeometry(false, false);
 					break;
 				default:
 					that.toggleGeometry(false, false);
