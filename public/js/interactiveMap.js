@@ -1870,6 +1870,31 @@ $.extend(APP.interactiveMap,
 					});
 				}
 			});
+			$.each(['pt_start','pt_end'], function(k,tag){
+				if (v[tag])
+				{
+					var myObj = {
+						title: ((tag === 'pt_start')? "Inizio" : "Fine")+"  "+v.title
+					};
+					if (APP.config.localConfig.typology[tag] && APP.config.localConfig.typology[tag].marker)
+					{
+						myObj.icon = L.icon({
+							iconUrl: APP.config.localConfig.typology[tag].marker,
+							//iconRetinaUrl: 'my-icon@2x.png',
+							//iconSize: [38, 95],
+							iconAnchor: [16, 37],
+							//popupAnchor: [-3, -76],
+							//shadowUrl: 'my-icon-shadow.png',
+							//shadowRetinaUrl: 'my-icon-shadow@2x.png',
+							//shadowSize: [68, 95],
+							//shadowAnchor: [22, 94]
+						});
+					}
+					var title = myObj.title;
+					APP.map.addLayer({layer: new L.Marker([v[tag].coordinates[1],v[tag].coordinates[0]], myObj).bindPopup(title), id: tag+" "+v.id});
+				}
+			});
+			
 			if (!APP.map.globalData[APP.map.currentMapId].map.hasLayer(layer))
 				APP.map.addLayer({layer: layer, id: section+"_"+v.id, max_scale: v.max_scale});
 		}
@@ -2453,7 +2478,7 @@ $.extend(APP.interactiveMap,
 		that.loginModal = APP.modals.create({
 			container: that.body,
 			id: "loginModal",
-			size: "md",
+			size: "sm",
 			bTopCloseButton: true,
 			header: header,
 			body: htmlPage,
@@ -2827,17 +2852,12 @@ $.extend(APP.interactiveMap,
 					break;
 				case "to_default_extent":
 					btn.parents("li:first").removeClass("active");
-					that.toggleGeometry(false, false);
 					if (!APP.utils.isset(APP.config.localConfig.default_extent))
 						APP.utils.showNoty({title: APP.i18n.translate("error"), type: "error", content: APP.i18n.translate("Default extent not found")});
 					APP.map.setGlobalExtent(APP.config.localConfig.default_extent);
 					APP.map.setExtent(APP.config.localConfig.default_extent);
 					break;
-				case "login":  case "logout":
-					that.toggleGeometry(false, false);
-					break;
 				default:
-					that.toggleGeometry(false, false);
 					var arr = (that.bEverytypeGeometries && section == "everytype")? that.arrEverytypeGeometries : [section];
 					that.showItems(section, arr);
 			}
