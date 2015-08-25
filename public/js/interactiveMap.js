@@ -2827,12 +2827,14 @@ $.extend(APP.interactiveMap,
 					break;
 				case "to_default_extent":
 					btn.parents("li:first").removeClass("active");
+					that.toggleGeometry(false, false);
 					if (!APP.utils.isset(APP.config.localConfig.default_extent))
 						APP.utils.showNoty({title: APP.i18n.translate("error"), type: "error", content: APP.i18n.translate("Default extent not found")});
 					APP.map.setGlobalExtent(APP.config.localConfig.default_extent);
 					APP.map.setExtent(APP.config.localConfig.default_extent);
 					break;
 				default:
+					that.toggleGeometry(false, false);
 					var arr = (that.bEverytypeGeometries && section == "everytype")? that.arrEverytypeGeometries : [section];
 					that.showItems(section, arr);
 			}
