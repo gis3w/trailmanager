@@ -2851,13 +2851,18 @@ $.extend(APP.interactiveMap,
 					that.safeExecution(callbackFun);
 					break;
 				case "to_default_extent":
+					that.toggleGeometry(false, false);
 					btn.parents("li:first").removeClass("active");
 					if (!APP.utils.isset(APP.config.localConfig.default_extent))
 						APP.utils.showNoty({title: APP.i18n.translate("error"), type: "error", content: APP.i18n.translate("Default extent not found")});
 					APP.map.setGlobalExtent(APP.config.localConfig.default_extent);
 					APP.map.setExtent(APP.config.localConfig.default_extent);
 					break;
+				case "login": case "logout":
+					that.toggleGeometry(false, false);
+					break;
 				default:
+					that.toggleGeometry(false, false);
 					var arr = (that.bEverytypeGeometries && section == "everytype")? that.arrEverytypeGeometries : [section];
 					that.showItems(section, arr);
 			}
