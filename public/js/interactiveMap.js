@@ -953,14 +953,20 @@ $.extend(APP.interactiveMap,
 							that.heightsprofileCharts[c3c.attr("name")] = c3.generate({
 								bindto: c3c[0],
 								size: {
-								  width: 300,
+								  width: 310,
 								  height: 150
+								},
+								padding: {
+									right: 15
 								},
 							    data: {
 							    	x: 'x',
+							    	axes: ax,
 							        columns: result,
-							        type: "area",
-							        axes: ax
+							        color: function (color, d) { 
+							        	return "#966F33";
+							        },
+							        type: "area"
 							    },
 							    zoom: {
 							        enabled: false//true
@@ -975,7 +981,7 @@ $.extend(APP.interactiveMap,
 							                position: 'outer-center'
 							            },
 							            tick: {
-							                format: function (x) { return Number((x).toFixed(1)); },
+							                format: function (x) { return parseInt(Number((x))); },
 							                count: 5,
 							            }
 							        },
@@ -990,6 +996,8 @@ $.extend(APP.interactiveMap,
 							        show: false
 							    }
 							});
+							
+							c3c.find(".c3-area").css({"opacity":0.1});
 						}
 					});
 					return;					
