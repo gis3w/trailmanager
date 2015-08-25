@@ -36,6 +36,7 @@ $.extend(APP.interactiveMap,
 	pages: {},
 	eventObj: $(document),
 	leafletSaveMapPluginDir: '/public/modules/leaflet-save-map/',
+	heightsprofileCharts: {},
 	
 	insertRowAlphabetically: function(container, row, selector, offset)
 	{
@@ -679,7 +680,7 @@ $.extend(APP.interactiveMap,
 									<div class="row thumbnailsRow" style="padding: 20px; vertical-align: middle"></div>\
 								</div>\
 								<div class="row">\
-									<div class="col-md-4">\
+									<div class="col-md-3">\
 										<div class="panel panel-default categories" style="display: none">\
 											<div class="panel-heading">\
 												<h3 class="panel-title">'+APP.i18n.translate('categories')+'</h3>\
@@ -688,7 +689,7 @@ $.extend(APP.interactiveMap,
 											</div>\
 										</div>\
 									</div>\
-									<div class="col-md-8">\
+									<div class="col-md-4">\
 										<div class="panel panel-default features" style="display: none">\
 											<div class="panel-heading">\
 												<h3 class="panel-title">'+APP.i18n.translate('features')+'</h3>\
@@ -697,6 +698,15 @@ $.extend(APP.interactiveMap,
 											</div>\
 										</div>\
 									</div>\
+									<div class="col-md-5">\
+									<div class="panel panel-default heightsprofilepath" style="display: none">\
+										<div class="panel-heading">\
+											<h3 class="panel-title">'+APP.i18n.translate('Heightsprofilepath')+'</h3>\
+										</div>\
+										<div class="panel-body">\
+										</div>\
+									</div>\
+								</div>\
 								</div>\
 								<div class="paragraphes text-justify"></div>\
 							  </div>\
@@ -922,24 +932,29 @@ $.extend(APP.interactiveMap,
 					break;
 				case "c3chart":
 					var c3c = $('<div id="APP-'+voice+'" name="'+voice+'" class="c3chart" data-chartType="'+moreParams.chartType+'"></div>');
-					div.append(c3c);
+					overviewToAppend[moreParams.voiceResult] = [];
+					overviewToAppend[moreParams.voiceResult].push(c3c);
 					
 					$.ajax({
 						type: 'GET',
 						url: APP.config.localConfig.urls[voice]+id,
 						dataType: 'json',
+						async: false,
 						success: function(data)
 						{
 							var result = data.data;
 							
 							var ax = {};
 							ax['data-'+id] = 'y';
-														
-							var chart = c3.generate({
-								bindto: "#"+c3c.attr("id"),
+							
+							if (that.heightsprofileCharts[c3c.attr("id")])
+								that.heightsprofileCharts[c3c.attr("id")].destroy();
+							
+							that.heightsprofileCharts[c3c.attr("name")] = c3.generate({
+								bindto: c3c[0],
 								size: {
-								  width: 858,
-								  height: 320
+								  width: 300,
+								  height: 150
 								},
 							    data: {
 							    	x: 'x',
@@ -948,7 +963,7 @@ $.extend(APP.interactiveMap,
 							        axes: ax
 							    },
 							    zoom: {
-							        enabled: true
+							        enabled: false//true
 							    },
 							    legend: {
 							        show: false
@@ -961,7 +976,7 @@ $.extend(APP.interactiveMap,
 							            },
 							            tick: {
 							                format: function (x) { return Number((x).toFixed(1)); },
-							                count: 9,
+							                count: 5,
 							            }
 							        },
 							        y: {
@@ -977,8 +992,7 @@ $.extend(APP.interactiveMap,
 							});
 						}
 					});
-					
-					break;						
+					return;					
 				case "url":
 					if (APP.utils.isset(that.myData[section][id].data[voice]) && !APP.utils.isEmptyString(that.myData[section][id].data[voice]))
 					{
@@ -1049,7 +1063,7 @@ $.extend(APP.interactiveMap,
 				checkVoice('description', 'text');
 				checkVoice('length', 'ov-icage', {image: that.icons['length'], voiceResult: "features"});
 				checkVoice('altitude_gap', 'ov-icage', {image: that.icons.altitude_gap, voiceResult: "features"});
-				checkVoice('heightsprofilepath', 'c3chart', {chartType: 'line'});
+				checkVoice('heightsprofilepath', 'c3chart', {chartType: 'line',voiceResult: "heightsprofilepath"});
 				checkVoice('modes', 'ov-descriptionWithInlineImages', {values: APP.config.localConfig.path_mode, label: 'mode', icon: "icon", voiceResult: "features", description: APP.i18n.translate('transportation_types')});
 				checkVoice('reason', 'text');
 				checkVoice('period_schedule', 'text');
