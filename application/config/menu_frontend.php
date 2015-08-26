@@ -42,27 +42,7 @@ return array(
             'capability' => NULL,
             'icon' => 'location-arrow',
         ),
-        'poi' => array(
-            'id' =>'poi',
-            'name' => __('Points of interest'),
-            'url' => NULL,
-            'capability' => NULL,
-            'icon' => 'map-marker',
-        ),
-        'path' => array(
-            'id' =>'path',
-            'name' => __('Paths'),
-            'url' => NULL,
-            'capability' => NULL,
-            'icon' => 'location-arrow',
-        ),
-         'area' => array(
-            'id' =>'area',
-            'name' => __('Areas of interest'),
-            'url' => NULL,
-            'capability' => NULL,
-            'icon' => 'crop',
-        ),
+
         'addGeometries' => array(
             'id' =>'addGeometries',
             'name' => __('New Report'),
