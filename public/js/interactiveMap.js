@@ -1896,22 +1896,10 @@ $.extend(APP.interactiveMap,
 				if (v[tag])
 				{
 					var myObj = {
-						title: ((tag === 'pt_start')? "Inizio" : "Fine")+"  "+v.title
+						title: ((tag === 'pt_start')? "Inizio" : "Fine")+"  "+v.title,
+						icon:  (tag === 'pt_start')? APP.map.startIcon : APP.map.stopIcon
 					};
-					if (APP.config.localConfig.typology[tag] && APP.config.localConfig.typology[tag].marker)
-					{
-						myObj.icon = L.icon({
-							iconUrl: APP.config.localConfig.typology[tag].marker,
-							//iconRetinaUrl: 'my-icon@2x.png',
-							//iconSize: [38, 95],
-							iconAnchor: [16, 37],
-							//popupAnchor: [-3, -76],
-							//shadowUrl: 'my-icon-shadow.png',
-							//shadowRetinaUrl: 'my-icon-shadow@2x.png',
-							//shadowSize: [68, 95],
-							//shadowAnchor: [22, 94]
-						});
-					}
+					
 					var title = myObj.title;
 					APP.map.addLayer({layer: new L.Marker([v[tag].coordinates[1],v[tag].coordinates[0]], myObj).bindPopup(title), id: tag+" "+v.id});
 				}

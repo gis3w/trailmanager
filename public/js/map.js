@@ -22,13 +22,15 @@ $.extend(APP.map,
 	}),
 	
 	startIcon: L.icon({
-		iconUrl: '/public/img/map/start.png',
+		iconUrl: '/public/img/start.png',
 		iconAnchor: [16, 37],
+		popupAnchor: [0, -32],
 	}),
 	
 	stopIcon: L.icon({
-		iconUrl: '/public/img/map/finish.png',
+		iconUrl: '/public/img/finish.png',
 		iconAnchor: [16, 37],
+		popupAnchor: [0, -32],
 	}),
 	
 	selectedMarker: L.icon({
