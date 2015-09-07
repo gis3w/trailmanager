@@ -100,8 +100,18 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
         Filter::emptyPostDataToNULL();
         
         $this->_set_the_geom_edit();
-         $this->_orm->values($_POST);
-         $this->_orm->save();
+        $this->_orm->values($_POST);
+
+        if(isset($this->_orm->{$this->_orm->primary_key()}))
+        {
+            $this->_orm->data_mod = time();
+        }
+        else
+        {
+            $this->_orm->data_ins = $this->_orm->data_mod = time();
+        }
+
+        $this->_orm->save();
 
          $this->_set_typologies_edit();
         if(isset($this->_orm->itineraries))
@@ -112,6 +122,7 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
          $this->_save_url_multifiled();
                   
     }
+
     
     /**
      * Save th eurl motifield values

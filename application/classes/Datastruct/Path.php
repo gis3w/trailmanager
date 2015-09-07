@@ -12,7 +12,7 @@ class Datastruct_Path extends Datastruct {
         array(
             'name' => 'path-data',
             'position' => 'left',
-            'fields' => array('id','title','publish','description','length','altitude_gap','reason','period_schedule','general_features','accessibility','inquiry','pdf_print_qrcode'),
+            'fields' => array('id','data_ins','data_mod','title','publish','description','length','altitude_gap','accessibility','inquiry','pdf_print_qrcode','pdf_print_sheet'),
         ),
        array(
             'name' => 'path-foreign-data',
@@ -106,12 +106,20 @@ class Datastruct_Path extends Datastruct {
         array(
             'name' => 'tab-main',
             'icon' => 'globe',
-            'groups' => array('path-data','path-foreign-data','path-block-data'),
+            'groups' => array(
+                'path-data',
+                'path-foreign-data',
+                'path-base-data-current',
+                'path-block-data'
+            ),
         ),
         array(
             'name' => 'tab-base-data',
             'icon' => 'mobile-phone',
-            'groups' => array('path-base-data-path','path-base-data-geo','path-base-data-current','path-base-data-data'),
+            'groups' => array(
+                'path-base-data-path',
+                'path-base-data-geo',
+                'path-base-data-data'),
         ),
         array(
             'name' => 'tab-poi',
@@ -153,21 +161,23 @@ class Datastruct_Path extends Datastruct {
          );
         
             return array(
+                "data_ins" => array(
+                    'editable' => FALSE,
+                    'table_show' => TRUE,
+                    'label' => __('Insert date'),
+                ),
+                "data_mod" => array(
+                    'editable' => FALSE,
+                    'table_show' => TRUE,
+                    'label' => __('Update date'),
+                ),
                 "description" => array(
                     'form_input_type' => self::TEXTAREA,
                     'editor' => TRUE,
                 ),
-                 "reason" => array(
-                    'form_input_type' => self::TEXTAREA,
-                     'editor' => TRUE,
-                ),
                  "accessibility" => array(
                     'form_input_type' => self::TEXTAREA,
                      'editor' => TRUE,
-                ),
-                "general_features" => array(
-                    'form_input_type' => self::TEXTAREA,
-                    'editor' => TRUE,
                 ),
                 "color" => array(
                     "form_input_type" => self::MAPBOX_COLOR,
@@ -175,10 +185,6 @@ class Datastruct_Path extends Datastruct {
                 ),
                  "width" => array(
                     "default_value" => 3,
-                ),
-                 "period_schedule" => array(
-                    'form_input_type' => self::TEXTAREA,
-                    'editor' => TRUE,
                 ),
                  "the_geom" => array(
                     'form_input_type' => self::MAPBOX,
@@ -210,7 +216,7 @@ class Datastruct_Path extends Datastruct {
                     'url_values' => '/jx/typology',
                     'label' => __('Main typology'),
                      'description' => __('Select the main typology  for this point of interest'),
-                     "table_show" => TRUE,
+                     "table_show" => FALSE,
                 ),
                 "nome" => array(
                     'editable' => FALSE,
@@ -402,6 +408,25 @@ class Datastruct_Path extends Datastruct {
                 )
         );
 
+        $fct['pdf_print_sheet']  = array_replace($this->_columnStruct,array(
+                'form_input_type' => self::BUTTON,
+                'input_class' => 'default',
+                'data_type' => 'pdf_print',
+                'url_values' => '/print/path/sheet/$1',
+                'url_values_params' => array(
+                    '$1' => 'id',
+                ),
+                'description' => __('Print path sheet'),
+                'table_show' => FALSE,
+                'label' => __(''),
+                'icon' => 'print',
+                'form_show' => array(
+                    self::STATE_INSERT => FALSE,
+                    self::STATE_UPDATE =>TRUE
+                ),
+            )
+        );
+
         $fct['pois_path'] = array_replace($this->_columnStruct, array(
                 "data_type" => self::SUBTABLE,
                 "table_show" => FALSE,
@@ -453,6 +478,7 @@ class Datastruct_Path extends Datastruct {
         );
 
         $fct['heights_profile_path'] = array_replace($this->_columnStruct, array(
+                "form_show" => FALSE,
                 "data_type" => self::C3CHART,
                 "c3chart_type" => self::C3CHART_TYPE_LINECHART,
                 "c3chart_x_axis" => 'cds2d',

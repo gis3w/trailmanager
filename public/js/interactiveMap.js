@@ -103,6 +103,14 @@ $.extend(APP.interactiveMap,
 			return APP.config.localConfig.typology[index];
 		return false;
 	},
+
+	getTypologyByName: function(typologyName)
+	{
+		var index = APP.utils.getIndexFromField(APP.config.localConfig.typology, "name", typologyName);
+		if (index > -1 && APP.utils.isset(APP.config.localConfig.typology[index]))
+			return APP.config.localConfig.typology[index];
+		return false;
+	},
 	
 	resize: function()
 	{
@@ -1898,10 +1906,11 @@ $.extend(APP.interactiveMap,
 					var myObj = {
 						title: ((tag === 'pt_start')? "Inizio" : "Fine")+"  "+v.title
 					};
-					if (APP.config.localConfig.typology[tag] && APP.config.localConfig.typology[tag].marker)
+					var typologyObj = that.getTypologyByName(tag)
+					if (typologyObj && typologyObj.marker)
 					{
 						myObj.icon = L.icon({
-							iconUrl: APP.config.localConfig.typology[tag].marker,
+							iconUrl: typologyObj.marker,
 							//iconRetinaUrl: 'my-icon@2x.png',
 							//iconSize: [38, 95],
 							iconAnchor: [16, 37],

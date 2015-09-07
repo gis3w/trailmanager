@@ -10,6 +10,14 @@ class Controller_Ajax_Admin_Poi extends Controller_Ajax_Admin_Sheet_Base{
     protected $_url_multifield_postname = 'url_poi';
     protected $_url_multifield_nameORM = 'Url_Poi';
     protected $_url_multifield_foreignkey = 'poi_id';
+
+    /**
+     * Set the typologies and main typology
+     */
+    protected function _set_typologies_by_fields()
+    {
+
+    }
     
   
 }

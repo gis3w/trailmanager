@@ -13,12 +13,55 @@ class Datastruct_Poi extends Datastruct {
         array(
             'name' => 'poi-data',
             'position' => 'left',
-            'fields' => array('id','publish','title','description','reason','period_schedule','accessibility','inquiry','pdf_print_qrcode'),
+            'fields' => array(
+                'id',
+                'data_ins',
+                'data_mod',
+                'publish',
+                'title',
+                'description',
+                'accessibility',
+                'inquiry',
+                'pdf_print_qrcode',
+                'pdf_print_sheet'),
         ),
        array(
             'name' => 'poi-foreign-data',
             'position' => 'right',
-            'fields' => array('itineraries','typology_id','typologies','the_geom','max_scale','image_poi','video_poi'),
+            'fields' => array(
+                'itineraries',
+                'typology_id',
+                'typologies',
+                'the_geom',
+                'max_scale',
+                'image_poi',
+                'video_poi'),
+        ),
+        array(
+            'name' => 'poi-poi-data',
+            'position' => 'left',
+            'fields' => array(
+                'pt_inter_current',
+                'strut_ric_current',
+                'aree_attr_current',
+                'insediam_current',
+                'pt_acqua_current',
+                'pt_socc_current'),
+        ),
+        array(
+            'name' => 'poi-poi-segna',
+            'position' => 'right',
+            'fields' => array(
+                'tipo_segna_current',
+                'stato_segna_current',
+                'nuov_segna_current'),
+        ),
+        array(
+            'name' => 'poi-poi-degr',
+            'position' => 'right',
+            'fields' => array(
+                'fatt_degr_current',
+               ),
         ),
         array(
             'name' => 'poi-block-data',
@@ -45,14 +88,7 @@ class Datastruct_Poi extends Datastruct {
                 'quota',
             ),
         ),
-        array(
-            'name' => 'path-base-data-current',
-            'position' => 'right',
-            'fields' => array(
-                'stato_segn_current',
-                'fatt_degr_current',
-            ),
-        ),
+
         array(
             'name' => 'poi-base-data-survey',
             'position' => 'left',
@@ -74,12 +110,12 @@ class Datastruct_Poi extends Datastruct {
                 'aree_attr',
                 'insediam',
                 'pt_acqua',
+                'prio_int',
                 'tipo_segna',
                 'stato_segn',
                 'fatt_degr',
                 'pt_socc',
                 'coin_in_fi',
-                'prio_int',
                 'nuov_segna'
             ),
         ),
@@ -98,12 +134,22 @@ class Datastruct_Poi extends Datastruct {
         array(
             'name' => 'tab-main',
             'icon' => 'globe',
-            'groups' => array('poi-data','poi-foreign-data','poi-block-data'),
+            'groups' => array(
+                'poi-data',
+                'poi-foreign-data',
+                'poi-poi-data',
+                'poi-poi-segna',
+                'poi-poi-degr',
+                'poi-block-data'),
         ),
         array(
             'name' => 'tab-base-data',
             'icon' => 'mobile-phone',
-            'groups' => array('poi-base-data-poi','poi-base-data-geo','poi-base-data-survey','path-base-data-current','poi-base-data-data'),
+            'groups' => array(
+                'poi-base-data-poi',
+                'poi-base-data-geo',
+                'poi-base-data-survey',
+                'poi-base-data-data'),
         ),
         array(
             'name' => 'tab-path',
@@ -135,21 +181,23 @@ class Datastruct_Poi extends Datastruct {
             );
         
             return array(
+                "data_ins" => array(
+                    'editable' => FALSE,
+                    'table_show' => TRUE,
+                    'label' => __('Insert date'),
+                ),
+                "data_mod" => array(
+                    'editable' => FALSE,
+                    'table_show' => TRUE,
+                    'label' => __('Update date'),
+                ),
                 "description" => array(
                     'form_input_type' => self::TEXTAREA,
-                    'editor' => TRUE,
-                ),
-                 "reason" => array(
-                    'form_input_type' => self::TEXTAREA,
-                    'editor' => TRUE,
+                    'editable' => TRUE,
                 ),
                  "accessibility" => array(
                     'form_input_type' => self::TEXTAREA,
-                    'editor' => TRUE,
-                ),
-                "period_schedule" => array(
-                    'form_input_type' => self::TEXTAREA,
-                    'editor' => TRUE,
+                    'editable' => TRUE,
                 ),
                 "the_geom" => array(
                     'form_input_type' => self::MAPBOX,
@@ -170,135 +218,218 @@ class Datastruct_Poi extends Datastruct {
                     ),
                     'url_values' => '/jx/typology',
                      'description' => __('Select the main typology  for this point of interest'),
-                     "table_show" => TRUE,
+                     "table_show" => FALSE,
+                     "editable" => FALSE,
                 ),
                 "inquiry" => array(
                     'form_input_type' => self::TEXTAREA,
-                    'editor' => TRUE,
+                    'editable' => TRUE,
                 ),
                 "max_scale" => array(
                     'prefix' => '1:',
                     'table_show' => FALSE,
                 ),
+                "se" => array(
+                    'editable' => FALSE,
+                ),
                 "bike" => array(
                     'editable' => FALSE,
+                    "table_show" => FALSE,
                 ),
                 "ip" => array(
                     'editable' => FALSE,
+                    "table_show" => FALSE,
                 ),
                 "cod_f1" => array(
                     'editable' => FALSE,
+                    "table_show" => FALSE,
                 ),
                 "cod_f2" => array(
                     'editable' => FALSE,
+                    "table_show" => FALSE,
                 ),
                 "data_ril" => array(
                     'editable' => FALSE,
+                    'label' => __('Survey date'),
                 ),
                 "condmeteo" => array(
                     'editable' => FALSE,
+                    "table_show" => FALSE,
+                    'label' => __('Weather state'),
                 ),
                 "rilev" => array(
                     'editable' => FALSE,
+                    'label' => __('Data collector'),
                 ),
-                "qual_ril" => array(
+                "photo" => array(
+                    'table_show' => FALSE,
                     'editable' => FALSE,
+                    'label' => __('Photo'),
+                ),
+                "note" => array(
+                    'table_show' => FALSE,
+                    'editable' => FALSE,
+                    'label' => __('Note'),
+                ),
+                "quali_ril" => array(
+                    'editable' => FALSE,
+                    "table_show" => FALSE,
+                    'label' => __('Quality survey'),
                 ),
 
                 "class_ril" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'class_ril_segment',
                     'label' => __('Survey class'),
                     'foreign_value_field' => 'class',
+                    "table_show" => FALSE,
+                    'editable' => FALSE
                 )),
 
                 "pt_inter" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'pt_inter_poi',
                     'label' => __('Point of interest class'),
+                    'editable' => FALSE,
                 )),
 
                 "strut_ric" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'strut_ric_poi',
                     'label' => __('Accomodation building class'),
+                    'editable' => FALSE,
                 )),
 
                 "aree_attr" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'aree_attr_poi',
                     'label' => __('Equip area class'),
+                    'editable' => FALSE,
                 )),
 
                 "insediam" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'insediam_poi',
                     'label' => __('Village class'),
+                    'editable' => FALSE,
                 )),
 
                 "pt_acqua" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'pt_acqua_poi',
                     'label' => __('Water point class'),
+                    'editable' => FALSE,
                 )),
 
                 "tipo_segna" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'tipo_segna_poi',
                     'label' => __('Signage type class'),
+                    'editable' => FALSE,
                 )),
 
                 "stato_segn" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'stato_segn_poi',
                     'label' => __('Signage state class'),
+                    'editable' => FALSE,
                 )),
 
                 "fatt_degr" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'fatt_degr_poi',
                     'label' => __('Degeneration cause class'),
+                    'editable' => FALSE,
                 )),
 
                 "pt_socc" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'pt_socc_poi',
                     'label' => __('Rescue point class'),
+                    'editable' => FALSE,
                 )),
 
                 "coin_in_fi" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'coin_in_fi_poi',
                     'label' => __('Start-end coincidence class'),
+                    'editable' => FALSE,
                 )),
 
                 "prio_int" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'prio_int_poi',
                     'label' => __('Priority intervention class'),
+                    'editable' => FALSE,
                 )),
 
                 "nuov_segna" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'nuov_segna_poi',
                     'label' => __('New signage'),
+                    'editable' => FALSE,
                 )),
 
                 "quota" => array(
                     'editable' => FALSE,
                     'suffix' => 'm',
                     'label' => __('Altitude'),
+                    'table_show' => FALSE,
                 ),
                 "coord_x" => array(
                     'editable' => FALSE,
                     'suffix' => 'm',
                     'label' => __('X coordinate'),
+                    "table_show" => FALSE,
                 ),
                 "coord_y" => array(
                     'editable' => FALSE,
                     'suffix' => 'm',
                     'label' => __('Y coordinate'),
+                    "table_show" => FALSE,
                 ),
 
                 /* Fields current can be update
                * =============================
                */
 
+                "pt_inter_current" => array_replace($baseSingleSelectField,array(
+                    'foreign_key' => 'pt_inter_poi',
+                    'label' => __('Point of interest class'),
+
+                )),
+
+                "strut_ric_current" => array_replace($baseSingleSelectField,array(
+                    'foreign_key' => 'strut_ric_poi',
+                    'label' => __('Accomodation building class'),
+
+                )),
+
+                "aree_attr_current" => array_replace($baseSingleSelectField,array(
+                    'foreign_key' => 'aree_attr_poi',
+                    'label' => __('Equip area class'),
+
+                )),
+
+                "insediam_current" => array_replace($baseSingleSelectField,array(
+                    'foreign_key' => 'insediam_poi',
+                    'label' => __('Village class'),
+
+                )),
+
+                "pt_acqua_current" => array_replace($baseSingleSelectField,array(
+                    'foreign_key' => 'pt_acqua_poi',
+                    'label' => __('Water point class'),
+                )),
+
+                "pt_socc_current" => array_replace($baseSingleSelectField,array(
+                    'foreign_key' => 'pt_socc_poi',
+                    'label' => __('Rescue point class'),
+                )),
+
+                "tipo_segna_current" => array_replace($baseSingleSelectField,array(
+                    'foreign_key' => 'tipo_segna_poi',
+                    'label' => __('Signage type class'),
+                )),
+
+
                 "stato_segn_current" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'stato_segn_poi',
                     'label' => __('Current signage state class'),
+                    "table_show" => FALSE,
                 )),
 
                 "fatt_degr_current" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'fatt_degr_poi',
                     'label' => __('Current degeneration cause class'),
+                    "table_show" => FALSE,
                 )),
 
 
@@ -372,6 +503,25 @@ class Datastruct_Poi extends Datastruct {
                 )
         );
 
+        $fct['pdf_print_sheet']  = array_replace($this->_columnStruct,array(
+                'form_input_type' => self::BUTTON,
+                'input_class' => 'default',
+                'data_type' => 'pdf_print',
+                'url_values' => '/print/poi/sheet/$1',
+                'url_values_params' => array(
+                    '$1' => 'id',
+                ),
+                'description' => __('Print poi sheet'),
+                'table_show' => FALSE,
+                'label' => __(''),
+                'icon' => 'print',
+                'form_show' => array(
+                    self::STATE_INSERT => FALSE,
+                    self::STATE_UPDATE =>TRUE
+                ),
+            )
+        );
+
         $fct['paths_poi'] = array_replace($this->_columnStruct, array(
                 "data_type" => self::SUBTABLE,
                 "table_show" => FALSE,
@@ -408,6 +558,7 @@ class Datastruct_Poi extends Datastruct {
             'label' => __('Typologies'),
              'description' => __('Select one or more typology  for this point of interest'),
              "table_show" => FALSE,
+             "editable" => FALSE,
         ));
         
         $fct['url_poi'] = array_replace($this->_columnStruct,array(

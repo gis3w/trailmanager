@@ -1025,6 +1025,7 @@ $.extend(APP.config,{
 								Web <a href="http://www.gis3w.it" target="_blank" class="btn btn-link">www.gis3w.it</a>\
 							</address>\
 						</p>\
+						<div>Icons made by <a href="http://www.flaticon.com/authors/scott-de-jonge" title="Scott de Jonge">Scott de Jonge</a>, <a href="http://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>\
 					</div>'
 		});
 		
