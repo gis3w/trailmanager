@@ -719,6 +719,7 @@ $.extend(APP.interactiveMap,
 								<div class="paragraphes text-justify"></div>\
 							  </div>\
 							  <div class="modal-footer">\
+							  	<button type="button" class="btn btn-warning btnExportKML"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> '+APP.i18n.translate('Download KML')+'</button>\
 							  	<button type="button" class="btn btn-warning btnExportGPX"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> '+APP.i18n.translate('Download GPX')+'</button>\
 								<button type="button" class="btn btn-warning btnPrint"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> '+APP.i18n.translate('print')+'</button>\
 								<button type="button" data-dismiss="modal" class="btn btn-primary">'+APP.i18n.translate('close')+'</button>\
@@ -743,6 +744,10 @@ $.extend(APP.interactiveMap,
 		});
 		myModal.find('.btnExportGPX').click(function(){
 			location.href = '/export/gpx/'+section+'/'+id;
+			return false;
+		});
+		myModal.find('.btnExportKML').click(function(){
+			location.href = '/export/kml/'+section+'/'+id;
 			return false;
 		});
 				

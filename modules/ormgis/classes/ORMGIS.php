@@ -350,10 +350,20 @@ public function  __set($column,  $value) {
       
       return (bool)$res[0]['st_isvalid'];
   }
+
+    public function getKML()
+    {
+        return DB::select(DB::expr('ST_AsKML(the_geom)'))
+            ->from($this->_table_name)
+            ->where($this->_primary_key, '=', $this->pk())
+            ->execute($this->_db)[0]['st_askml'];
+    }
   
   public function __destruct() {
       $this->_db->setConfig('column_primary_key','id');
   }
+
+
 }
 
 

@@ -9,25 +9,52 @@
  * @copyright  (c) 2015 Gis3W
  */
 
-class Kohana_KMLF
+class Kohana_KMLF extends Kohana_XMLF
 {
-    protected $_kml;
-    public function __construct()
+    protected function __construct()
     {
         $this->_init();
     }
 
     protected function _init()
     {
-        $this->_kml = '<?xml version="1.0" encoding="UTF-8"?>
+        $this->_xml = '<?xml version="1.0" encoding="UTF-8"?>
                        <kml xmlns="http://www.opengis.net/kml/2.2">';
 
-        $this->_kml .= "</kml>";
-        $this->_kml= simplexml_load_string($this->_kml);
+        $this->_xml .= "</kml>";
+        $this->_xml= simplexml_load_string($this->_xml);
+    }
+
+    public function addDocument($params)
+    {
+        $documentNode = $this->_xml->addChild('Document');
+        foreach($params as $param)
+            $this->_addSimpleNode($documentNode,$param);
+
+        return $documentNode;
+    }
+
+    public function addPlaceMark($parent,$params)
+    {
+        $placemarkNode = $parent->addChild('Placemark');
+        foreach($params as $param)
+            $this->_addSimpleNode($placemarkNode,$param);
+        return $placemarkNode;
+    }
+
+    public function addKMLString($parent,$kmlString)
+    {
+        if(is_string($kmlString))
+            $this->sxml_append($parent, new SimpleXMLElement($kmlString));
     }
 
     public function render()
     {
-        return $this->_kml->asXML();
+        return $this->_xml->asXML();
+    }
+
+    public static function factory()
+    {
+        return new self();
     }
 }
