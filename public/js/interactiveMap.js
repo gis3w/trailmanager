@@ -1890,6 +1890,18 @@ $.extend(APP.interactiveMap,
 					if (v.color)
 						oo.color = v.color;
 					oo.weight = APP.utils.isset(v.width)? v.width : 7;
+
+					if (v.geoJSON.type === "MultiLineString" || v.geoJSON.type === "LineString"){
+						switch (v.diff){
+							case "E":
+								oo.dashArray = 4*oo.weight+', '+2*oo.weight;
+							break;
+
+							case "EE":
+								oo.dashArray = 1*oo.weight+', '+oo.weight;
+							break;
+						}
+					}
 						
 					return oo;
 				},

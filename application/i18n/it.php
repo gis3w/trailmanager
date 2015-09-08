@@ -230,6 +230,14 @@ return array(
     'End Y coordinate' => 'Coordinata y finale',
     'Start X coordinate' => 'Coordinata x iniziale',
     'Start Y coordinate' => 'Coordinata y iniziale',
+    'Start quota' => 'Quota iniziale',
+    'End quota' => 'Quota finale',
+    'Travel time' => 'Tempo di percorrenza',
+    'Back travel time' => 'Tempo di ritorno',
+    'Cross places' => 'Località attraversate',
+    'Reduction walkable path segment' => 'Riduzione di percorribilità',
+    'Works and equipment on the path' => 'Rilevatori e attrezzatura',
+
 
 
    
@@ -262,6 +270,9 @@ return array(
     'poi-base-data-survey' => 'Dati rilievo sul campo',
     'poi-base-data-data' => 'Caratteristiche punto rilevate',
     'poi-base-data-paths' => 'Sentieri correlati',
+    'poi-poi-data' => 'Caratteristiche punto',
+    'poi-poi-segna' => 'Segnaletica',
+    'poi-poi-degr' => 'Stato degradazione',
     
     'area-data' => 'Dati generali dell\'area',
     'area-foreign-data' =>'Collegamenti',

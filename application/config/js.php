@@ -31,7 +31,7 @@ return array(
 		//'../modules/bootstrap-modal/js/bootstrap-modal.js',
 		//'../modules/pikachoose/lib/jquery.jcarousel.min.js',
 		//'../modules/pikachoose/lib/jquery.pikachoose.min.js',
-		'../modules/leaflet-0.7.3/leaflet.js',
+		'../modules/leaflet-0.7.5/leaflet.js',
 		//'../modules/leaflet-hash/leaflet-hash.js',
     	'../modules//Leaflet.Coordinates/dist/Leaflet.Coordinates-0.1.4.min.js',
     	'../modules/Leaflet.label/dist/leaflet.label.js',

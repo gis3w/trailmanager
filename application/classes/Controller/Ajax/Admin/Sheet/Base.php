@@ -113,7 +113,7 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
 
         $this->_orm->save();
 
-         $this->_set_typologies_edit();
+        $this->_set_typologies_edit();
         if(isset($this->_orm->itineraries))
             $this->_set_itineraries_edit();
          

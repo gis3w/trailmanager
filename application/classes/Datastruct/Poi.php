@@ -53,7 +53,7 @@ class Datastruct_Poi extends Datastruct {
             'position' => 'right',
             'fields' => array(
                 'tipo_segna_current',
-                'stato_segna_current',
+                'stato_segn_current',
                 'nuov_segna_current'),
         ),
         array(
@@ -103,7 +103,7 @@ class Datastruct_Poi extends Datastruct {
         ),
         array(
             'name' => 'poi-base-data-data',
-            'position' => 'block',
+            'position' => 'right',
             'fields' => array(
                 'pt_inter',
                 'strut_ric',
@@ -422,13 +422,18 @@ class Datastruct_Poi extends Datastruct {
 
                 "stato_segn_current" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'stato_segn_poi',
-                    'label' => __('Current signage state class'),
+                    'label' => __('Signage state class'),
                     "table_show" => FALSE,
+                )),
+
+                "nuov_segna_current" => array_replace($baseSingleSelectField,array(
+                    'foreign_key' => 'nuov_segna_poi',
+                    'label' => __('New signage'),
                 )),
 
                 "fatt_degr_current" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'fatt_degr_poi',
-                    'label' => __('Current degeneration cause class'),
+                    'label' => __('Degeneration cause class'),
                     "table_show" => FALSE,
                 )),
 
