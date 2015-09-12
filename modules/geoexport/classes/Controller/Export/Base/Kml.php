@@ -20,7 +20,12 @@ class Controller_Export_Base_Kml extends Controller_Export_Base_Auth_Nostrict{
     $dom->preserveWhiteSpace = false;
     $dom->formatOutput = true;
     $dom->loadXML(html_entity_decode($this->kml->render()));
-
+        /*
+    if (!$dom->schemaValidate(__DIR__.'/kml22gx.xsd')) {
+        print '<b>DOMDocument::schemaValidate() Generated Errors!</b>';
+        exit;
+    }
+        */
     $this->response->body($dom->saveXML());
 
         

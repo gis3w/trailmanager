@@ -453,7 +453,7 @@ $.extend(APP.map,
 			
 			if (this.globalData[mapId].drawControl)
 				this.globalData[mapId].map.removeControl(this.globalData[mapId].drawControl); 
-			
+
 			this.globalData[mapId].drawControl = new L.Control.Draw(options);
 			this.globalData[mapId].map.addControl(this.globalData[mapId].drawControl);
 		}
@@ -550,7 +550,7 @@ $.extend(APP.map,
 			    //decimalSeperator:".", //optional default "."
 			    //labelTemplateLat:"Latitude: {y}", //optional default "Lat: {y}"
 			    //labelTemplateLng:"Longitude: {x}", //optional default "Lng: {x}"
-			    //enableUserInput:true, //optional default true
+			    enableUserInput:false, //optional default true
 			    //useDMS:false, //optional default false
 			    //useLatLngOrder: true, //ordering of labels, default false-> lng-lat
 			    //markerType: L.marker, //optional default L.marker

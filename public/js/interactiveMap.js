@@ -1084,6 +1084,7 @@ $.extend(APP.interactiveMap,
 				checkVoice('description', 'text');
 				checkVoice('length', 'ov-icage', {image: that.icons['length'], voiceResult: "features"});
 				checkVoice('altitude_gap', 'ov-icage', {image: that.icons.altitude_gap, voiceResult: "features"});
+				checkVoice('q_init', 'ov-icage', {voiceResult: "features"});
 				checkVoice('heightsprofilepath', 'c3chart', {chartType: 'line',voiceResult: "heightsprofilepath"});
 				checkVoice('modes', 'ov-descriptionWithInlineImages', {values: APP.config.localConfig.path_mode, label: 'mode', icon: "icon", voiceResult: "features", description: APP.i18n.translate('transportation_types')});
 				checkVoice('reason', 'text');
@@ -1905,6 +1906,10 @@ $.extend(APP.interactiveMap,
 							case "EE":
 								oo.dashArray = 1*oo.weight+', '+oo.weight;
 							break;
+
+							case "EEA":
+								oo.weight = 0;
+							break;
 						}
 					}
 						
@@ -1917,11 +1922,21 @@ $.extend(APP.interactiveMap,
 					});
 				}
 			});
+			if (v.geoJSON.type === "MultiLineString" || v.geoJSON.type === "LineString"){
+				switch (v.diff){
+					case "EEA":
+						layer.setText('+', {repeat: true,
+							offset: 0,
+							attributes: {fill: v.color,'font-size':'20','font-weight':'bold'}});
+					break;
+				}
+			}
 			$.each(['pt_start','pt_end'], function(k,tag){
 				if (v[tag])
 				{
 					var myObj = {
-						title: ((tag === 'pt_start')? "Inizio" : "Fine")+"  "+v.title
+						title: ((tag === 'pt_start')? "Inizio" : "Fine")+"  "+v.title,
+						zIndexOffset: 1000
 					};
 					var typologyObj = that.getTypologyByName(tag)
 					if (typologyObj && typologyObj.marker)

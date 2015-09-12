@@ -200,6 +200,8 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
             'video_area' => 'jx/admin/videoarea',
             'highliting_poi' => '/jx/admin/highlitingpoi',
             'image_highliting_poi' => 'jx/admin/imagehighlitingpoi',
+            'highliting_path' => '/jx/admin/highlitingpath',
+            'image_highliting_path' => 'jx/admin/imagehighlitingpath',
             'theme' => 'jx/admin/settheme'
             
             

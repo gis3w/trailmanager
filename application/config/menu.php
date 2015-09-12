@@ -20,7 +20,7 @@ return array(
      'dropdown_highliting' => array(
              'id' => 'dropdown_highliting',
              'capability' => 'access-highliting',
-             'name' => __('Highlitings'),
+             'name' => __('Highlitings').'/'.__('Manintenances'),
              'icon' => 'plus'
          ),
      'dropdown_user' => array(
@@ -45,6 +45,14 @@ return array(
             'capability' => 'access-admin-highlitingpoi',
             'dropdown' => 'dropdown_highliting',
             'icon' => 'map-marker',
+        ),
+        'highliting_path' => array(
+            'id' =>'highliting_path',
+            'name' => __('Highliting path'),
+            'url' => '/jx/admin/highlitingpath',
+            'capability' => 'access-admin-highlitingpath',
+            'dropdown' => 'dropdown_highliting',
+            'icon' => 'location-arrow',
         ),
          'itinerary' => array(
             'id' =>'itinerary',

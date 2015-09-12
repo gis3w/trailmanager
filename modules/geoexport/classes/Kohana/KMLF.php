@@ -11,6 +11,22 @@
 
 class Kohana_KMLF extends Kohana_XMLF
 {
+
+    /**
+     * From RGB string color retunr KMl collor string
+     * @param $rgbColor string rgb
+     * @param string $opacity km color
+     */
+    public static function fromRGB2KMLColor($rgbColor,$opacity = 'ff')
+    {
+        $R = substr($rgbColor,0,2);
+        $G = substr($rgbColor,2,2);
+        $B = substr($rgbColor,4,2);
+
+        return strtolower($opacity.$B.$G.$R);
+
+    }
+
     protected function __construct()
     {
         $this->_init();
@@ -32,6 +48,37 @@ class Kohana_KMLF extends Kohana_XMLF
             $this->_addSimpleNode($documentNode,$param);
 
         return $documentNode;
+    }
+
+    public function addStyle($parent,$idStyle)
+    {
+        $styleNode = $parent->addChild('Style');
+        $styleNode->addAttribute('id',$idStyle);
+        return $styleNode;
+    }
+
+    public function addLineStyle($parent,$params)
+    {
+        $lineStyleNode = $parent->addChild('LineStyle');
+        foreach($params as $param)
+            $this->_addSimpleNode($lineStyleNode,$param);
+        return $lineStyleNode;
+    }
+
+    public function addIconStyle($parent,$params)
+    {
+        $iconStyleNode = $parent->addChild('IconStyle');
+        foreach($params as $param)
+            $this->_addSimpleNode($iconStyleNode,$param);
+        return $iconStyleNode;
+    }
+
+    public function addIcon($parent,$params)
+    {
+        $iconNode = $parent->addChild('Icon');
+        foreach($params as $param)
+            $this->_addSimpleNode($iconNode,$param);
+        return $iconNode;
     }
 
     public function addPlaceMark($parent,$params)

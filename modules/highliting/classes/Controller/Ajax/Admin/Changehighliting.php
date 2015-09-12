@@ -52,14 +52,14 @@ class Controller_Ajax_Admin_Changehighliting extends Controller_Ajax_Auth_Strict
                  'id' => $user->id,
                  'nome' => $user->user_data->nome,
                  'cognome' => $user->user_data->cognome,
-                 'offices' => implode(',',  array_keys ($user->offices->find_all()->as_array('name'))),
+                 #'offices' => implode(',',  array_keys ($user->offices->find_all()->as_array('name'))),
              );
              
         $toRes['disabled'] = array('value' => FALSE);
         $toRes['value']['default_value'] = array();
         $toRes['value']['value_field'] = 'id';
-        $toRes['value']['label_toshow'] = '$1 $2 ($3)';
-        $toRes['value']['label_toshow_params'] = array('$1'=>'nome','$2' => 'cognome','$3'=>'offices');
+        $toRes['value']['label_toshow'] = '$1 $2';
+        $toRes['value']['label_toshow_params'] = array('$1'=>'nome','$2' => 'cognome');
 
         unset($this->jres->data->items);
         $this->jres->data = array(

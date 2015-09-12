@@ -237,6 +237,7 @@ return array(
     'Cross places' => 'Località attraversate',
     'Reduction walkable path segment' => 'Riduzione di percorribilità',
     'Works and equipment on the path' => 'Rilevatori e attrezzatura',
+    'Notes history' => 'Storico note',
 
 
 
@@ -295,6 +296,13 @@ return array(
     'path-base-data-data' => 'Attributi sentiero',
     'path-base-data-poi' => 'Punti notevoli',
     'path-base-data-path-segment' => 'Tratte',
+
+    'highliting-poi-abstract' => 'Riassunto',
+    'highliting-poi-data' => 'Dati generali del punto',
+    'highliting-poi-foreign-data' => 'Geodati/Tipologia',
+    'highliting-poi-ending' => 'Esiti',
+    'highliting-poi-note' => 'Note di processo',
+
 
     
     'for'=> 'per',
