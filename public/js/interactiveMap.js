@@ -2482,7 +2482,7 @@ $.extend(APP.interactiveMap,
 						{
 							that.loginModal.modal("hide");
 							APP.config.localConfig.authuser = data.data.authuser;
-							$.each(["poi","path","area"], function(i, v)
+							$.each(["highlitingpoi"], function(i, v)
 							{
 								that.getDstruct(v, function(){
 									if (that.body.find("#loginButton").parent().is(":visible"))
@@ -2589,7 +2589,7 @@ $.extend(APP.interactiveMap,
 					if (!APP.utils.checkError(data.error, null))
 					{
 						delete APP.config.localConfig.authuser;
-						$.each(["poi","path","area"], function(i, v)
+						$.each(["highlitingpoi"], function(i, v)
 						{
 							that.getDstruct(v, function(){
 								if (that.body.find("#loginButton").parent().is(":hidden"))
