@@ -1,9 +1,11 @@
 $.extend(APP.interactiveMap, 
 {
 	leafletHash: null,
+	bCurrentLayers: false, //visualizza la lista degli elementi in base ai layers visibili sulla mappa
 	bQrCode: false,
 	bEverytypeGeometries: true,
-	arrEverytypeGeometries: ["poi","area"],
+	arrEverytypeGeometries: ["poi","path","area"],
+	frontPrefix: "front_",
 	previousSection: null,
 	currentSection: null,
 	currentItinerary: null,
@@ -16,6 +18,9 @@ $.extend(APP.interactiveMap,
 	},
 	infoDelay: 1000,
 	searchModal: null,
+	registrationModal: null,
+	loginMsgModal: null,
+	loginModal: null,
 	itemsOnSidebar: true,
 	mySidebar: {
 		control: null,
@@ -30,6 +35,8 @@ $.extend(APP.interactiveMap,
 	searchUrl: '/jx/search?tofind=',
 	pages: {},
 	eventObj: $(document),
+	leafletSaveMapPluginDir: '/public/modules/leaflet-save-map/',
+	heightsprofileCharts: {},
 	
 	insertRowAlphabetically: function(container, row, selector, offset)
 	{
@@ -48,6 +55,30 @@ $.extend(APP.interactiveMap,
 			row.insertBefore(node);
 		else
 			that.insertRowAlphabetically(container, row, selector, offset+1);
+	},
+	
+	insertMediaImage: function(src, media)
+	{
+		var that = this;
+		if (!APP.utils.isset(src) && !that.bDefaultImage)
+			return;
+		var img = $('<img class="media-object img-responsive img-rounded" src="'+(APP.utils.isset(src)? src : APP.config.localConfig.default_overview_image)+'" alt="" style="max-width: 60px; max-height: 60px">')
+		media.find("a:first").append(img);
+	},
+	
+	getSectionFromLayerType: function(type)
+	{
+		switch(type)
+		{
+			case "marker":
+				return "highlitingpoi";
+			case "polyline":
+				return "highlitingpath";
+			case "polygon":
+				return "highlitingarea";
+			default:
+				return null;
+		}
 	},
 	
 	getObjectTitle: function(section, id)
@@ -72,6 +103,14 @@ $.extend(APP.interactiveMap,
 			return APP.config.localConfig.typology[index];
 		return false;
 	},
+
+	getTypologyByName: function(typologyName)
+	{
+		var index = APP.utils.getIndexFromField(APP.config.localConfig.typology, "name", typologyName);
+		if (index > -1 && APP.utils.isset(APP.config.localConfig.typology[index]))
+			return APP.config.localConfig.typology[index];
+		return false;
+	},
 	
 	resize: function()
 	{
@@ -80,6 +119,205 @@ $.extend(APP.interactiveMap,
 		var x = this.body.find(".centerImage");
 		x.css("width","100%");
 		x.centerImage();
+	},
+	
+	openEditModal: function(section, id, layer, onSave, onCancel)
+	{
+		var that = this;
+		
+		var dataObj = null;
+		if (layer && $.isFunction(layer.toGeoJSON))
+			dataObj = {"the_geom": layer.toGeoJSON()};
+		
+		var body = APP.anagrafica.createFormTemplate(id, dataObj, APP.anagrafica.sections[that.frontPrefix+section], that.frontPrefix+section, []);
+		
+		var footerDiv = $(	'<div>\
+								<button type="button" class="btn btn-success"><i class="icon icon-ok"></i> '+APP.i18n.translate('save')+'</button>\
+								<button type="button" class="btn btn-default"><i class="icon icon-remove"></i> '+APP.i18n.translate('cancel')+'</button>\
+							</div>');
+		
+		footerDiv.find(".btn-success").click(function()
+		{
+			var tg = body.find("#APP-the_geom");
+			if (tg.length === 0)
+			{
+				tg = $('<input id="APP-the_geom" name="the_geom" type="hidden">');
+				body.append(tg);
+			}
+			
+			var template = {
+				"type":"FeatureCollection",
+				"features":[]
+			};
+			
+			template.features.push(layer.toGeoJSON());
+			tg.val(JSON.stringify(template));
+			
+			APP.anagrafica.formSubmit(id, that.frontPrefix+section, function(){
+				myModal.modal("hide");
+				if (APP.utils.isset(onSave) && $.isFunction(onSave))
+					onSave();
+			}, true);
+		});
+		footerDiv.find(".btn-default").click(function(){
+			myModal.modal("hide");
+			if (myModal.find(".mapboxDiv").length > 0)
+				APP.map.reverseMap();
+			var map = APP.map.getCurrentMap();
+			map.removeLayer(layer);
+			
+			if (APP.utils.isset(onCancel) && $.isFunction(onCancel))
+				onCancel();
+		});
+		
+		var modalId = "newGeometry";
+		
+		var myModal = APP.modals.create({
+			container: that.body,
+			id: modalId,
+			size: "lg",
+			keyboard: 'false',
+			backdrop: "static",
+			bTopCloseButton: false,
+			header: APP.utils.capitalize(APP.i18n.translate("New report")),
+			body: body,
+			footer: footerDiv,
+			onShown: function(){
+				var f = that.body.find("#"+modalId+" form");
+				APP.utils.setLookForm(f, null);
+			},
+			onHidden: function(){ 
+				
+			}
+		});
+		
+		if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
+			that.mySidebar.control.hide();
+		
+		myModal.modal("show");
+	},
+	
+	addMarker: function(latlng)
+	{
+		var that = this;
+		var map = APP.map.getCurrentMap();
+		var marker = L.marker(latlng);
+		marker.addTo(map);
+		
+		setTimeout(function(){
+			that.openEditModal("highlitingpoi", null, marker);
+		},250);
+	},
+	
+	toggleDrawEditor: function(bDraw, geometries)
+	{
+		var that = this;
+		
+		if (!APP.utils.isset(APP.map.globalData[APP.map.currentMapId].drawnItems))
+			APP.map.globalData[APP.map.currentMapId].drawnItems = new L.FeatureGroup();
+		if (!APP.map.globalData[APP.map.currentMapId].map.hasLayer(APP.map.globalData[APP.map.currentMapId].drawnItems))
+			APP.map.globalData[APP.map.currentMapId].map.addLayer(APP.map.globalData[APP.map.currentMapId].drawnItems);
+		var options = {
+			position: 'topleft',
+			draw: {
+				polyline: false,
+				polygon: false,
+				rectangle: false,
+				circle: false,
+				marker: false
+			},
+			edit: {
+				featureGroup: APP.map.globalData[APP.map.currentMapId].drawnItems,
+				edit: false,
+				remove: false
+			}
+		};
+		if (!APP.utils.isset(geometries) || !$.isArray(geometries) || geometries.length===0)
+		{
+			geometries = ['marker'];
+			/*
+			if (APP.config.checkLoggedUser())
+			{
+				geometries.push('polyline');
+				geometries.push('polygon');
+			}
+			*/
+		}				
+		$.each(geometries, function(i, v){
+			delete options.draw[v];
+		});				
+		APP.map.toggleDrawEditor(APP.map.currentMapId, bDraw, options);
+		if (bDraw)
+		{
+			APP.utils.showNoty({title: APP.i18n.translate("Information"), type: "information", content: APP.i18n.translate("use_left_buttons_to_draw_geometries"), timeout: 2000});
+			APP.map.globalData[APP.map.currentMapId].map.on('draw:drawstart', function (e)
+			{
+				//alert(e.layerType);
+			});
+			
+			APP.map.globalData[APP.map.currentMapId].map.on('draw:created', function (e)
+			{
+				APP.map.globalData[APP.map.currentMapId].map.addLayer(e.layer);
+				
+				var key = that.getSectionFromLayerType(e.layerType);
+				that.openEditModal(key, null, e.layer);
+			});
+			
+			/*
+			APP.map.globalData[APP.map.currentMapId].map.on('draw:edited', function (e) {
+				var layers = e.layers;
+				layers.eachLayer(function (layer) {
+					//do whatever you want, most likely save back to db
+				});
+			});
+			*/
+		}
+		else
+		{
+			APP.map.globalData[APP.map.currentMapId].map.off('draw:drawstart');
+			APP.map.globalData[APP.map.currentMapId].map.off('draw:created');
+			//APP.map.globalData[APP.map.currentMapId].map.off('draw:edited');
+		}
+	},
+	
+	toggleGeometry: function(b, bAskLogin)
+	{
+		var that = this;
+		
+		if (b && bAskLogin)
+		{
+			if (!APP.utils.isset(APP.config.localConfig.authuser))
+			{
+				if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
+					that.mySidebar.control.hide();
+				that.loginMsgModal.modal("show");
+				return false;
+			}			
+		}
+		
+		that.bAddGeometry = APP.utils.isset(b)? b : !that.bAddGeometry;
+		
+		if (APP.config.isMobileVersion())
+		{
+			if (that.currentNoty)
+				that.currentNoty.close();
+			if (that.bAddGeometry)
+				that.currentNoty = APP.utils.showNoty({content: '<p>'+APP.i18n.translate("Click to map to place marker")+'.</p>', title: APP.i18n.translate("Information"), type: "information", timeout: false});
+			else
+				that.currentNoty = null;
+		}
+		else
+		{
+			that.toggleDrawEditor(that.bAddGeometry);
+		}		
+		if (that.bAddGeometry)
+		{
+			if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
+				that.mySidebar.control.hide();
+			that.navbars.top.find("#addGeometriesButton").parent().addClass("active");
+		}
+		else
+			that.navbars.top.find("#addGeometriesButton").parent().removeClass("active");
 	},
 	
 	checkVideoUrl: function(url)
@@ -450,7 +688,7 @@ $.extend(APP.interactiveMap,
 									<div class="row thumbnailsRow" style="padding: 20px; vertical-align: middle"></div>\
 								</div>\
 								<div class="row">\
-									<div class="col-md-4">\
+									<div class="col-md-3">\
 										<div class="panel panel-default categories" style="display: none">\
 											<div class="panel-heading">\
 												<h3 class="panel-title">'+APP.i18n.translate('categories')+'</h3>\
@@ -459,7 +697,7 @@ $.extend(APP.interactiveMap,
 											</div>\
 										</div>\
 									</div>\
-									<div class="col-md-8">\
+									<div class="col-md-4">\
 										<div class="panel panel-default features" style="display: none">\
 											<div class="panel-heading">\
 												<h3 class="panel-title">'+APP.i18n.translate('features')+'</h3>\
@@ -468,15 +706,50 @@ $.extend(APP.interactiveMap,
 											</div>\
 										</div>\
 									</div>\
+									<div class="col-md-5">\
+									<div class="panel panel-default heightsprofilepath" style="display: none">\
+										<div class="panel-heading">\
+											<h3 class="panel-title">'+APP.i18n.translate('Heightsprofilepath')+'</h3>\
+										</div>\
+										<div class="panel-body">\
+										</div>\
+									</div>\
+								</div>\
 								</div>\
 								<div class="paragraphes text-justify"></div>\
 							  </div>\
 							  <div class="modal-footer">\
+							  	<button type="button" class="btn btn-warning btnExportKML"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> '+APP.i18n.translate('Download KML')+'</button>\
+							  	<button type="button" class="btn btn-warning btnExportGPX"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> '+APP.i18n.translate('Download GPX')+'</button>\
+								<button type="button" class="btn btn-warning btnPrint"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> '+APP.i18n.translate('print')+'</button>\
 								<button type="button" data-dismiss="modal" class="btn btn-primary">'+APP.i18n.translate('close')+'</button>\
 							  </div>\
 							</div>\
 						</div>\
 					</div>');
+		
+		myModal.find('.btnPrint').click(function(){
+			var printUrl = '/print/'+section+'/sheet/'+id+'?background_layer_id=';
+			
+			var m = APP.map.globalData[APP.map.currentMapId].map;
+			
+			m.eachLayer(function (layer)
+			{
+				if (layer.options && layer.options.tileLayerId)
+				{
+					location.href=printUrl+layer.options.tileLayerId;
+					return false;
+				}
+			});
+		});
+		myModal.find('.btnExportGPX').click(function(){
+			location.href = '/export/gpx/'+section+'/'+id;
+			return false;
+		});
+		myModal.find('.btnExportKML').click(function(){
+			location.href = '/export/kml/'+section+'/'+id;
+			return false;
+		});
 				
 		if (!APP.utils.isset(that.myData[section][id].media) || !APP.utils.isset(that.myData[section][id].media.images) || !$.isArray(that.myData[section][id].media.images) || that.myData[section][id].media.images.length === 0)
 		{
@@ -670,6 +943,77 @@ $.extend(APP.interactiveMap,
 						div.append(ul);
 					}
 					break;
+				case "c3chart":
+					var c3c = $('<div id="APP-'+voice+'" name="'+voice+'" class="c3chart" data-chartType="'+moreParams.chartType+'"></div>');
+					overviewToAppend[moreParams.voiceResult] = [];
+					overviewToAppend[moreParams.voiceResult].push(c3c);
+					
+					$.ajax({
+						type: 'GET',
+						url: APP.config.localConfig.urls[voice]+id,
+						dataType: 'json',
+						async: false,
+						success: function(data)
+						{
+							var result = data.data;
+							
+							var ax = {};
+							ax['data-'+id] = 'y';
+							
+							if (that.heightsprofileCharts[c3c.attr("id")])
+								that.heightsprofileCharts[c3c.attr("id")].destroy();
+							
+							that.heightsprofileCharts[c3c.attr("name")] = c3.generate({
+								bindto: c3c[0],
+								size: {
+								  width: 310,
+								  height: 150
+								},
+								padding: {
+									right: 15
+								},
+							    data: {
+							    	x: 'x',
+							    	axes: ax,
+							        columns: result,
+							        color: function (color, d) { 
+							        	return "#966F33";
+							        },
+							        type: "area"
+							    },
+							    zoom: {
+							        enabled: false//true
+							    },
+							    legend: {
+							        show: false
+							    },
+							    axis: {
+							    	x: {
+							            label: {
+							                text: 'Distanza (m)',
+							                position: 'outer-center'
+							            },
+							            tick: {
+							                format: function (x) { return parseInt(Number((x))); },
+							                count: 5,
+							            }
+							        },
+							        y: {
+							            label: {
+							                text: 'Altitudine (m)',
+							                position: 'outer-middle'
+							            }
+							        },
+							    },
+							    point: {
+							        show: false
+							    }
+							});
+							
+							c3c.find(".c3-area").css({"opacity":0.1});
+						}
+					});
+					return;					
 				case "url":
 					if (APP.utils.isset(that.myData[section][id].data[voice]) && !APP.utils.isEmptyString(that.myData[section][id].data[voice]))
 					{
@@ -740,6 +1084,8 @@ $.extend(APP.interactiveMap,
 				checkVoice('description', 'text');
 				checkVoice('length', 'ov-icage', {image: that.icons['length'], voiceResult: "features"});
 				checkVoice('altitude_gap', 'ov-icage', {image: that.icons.altitude_gap, voiceResult: "features"});
+				checkVoice('q_init', 'ov-icage', {voiceResult: "features"});
+				checkVoice('heightsprofilepath', 'c3chart', {chartType: 'line',voiceResult: "heightsprofilepath"});
 				checkVoice('modes', 'ov-descriptionWithInlineImages', {values: APP.config.localConfig.path_mode, label: 'mode', icon: "icon", voiceResult: "features", description: APP.i18n.translate('transportation_types')});
 				checkVoice('reason', 'text');
 				checkVoice('period_schedule', 'text');
@@ -793,7 +1139,7 @@ $.extend(APP.interactiveMap,
 			blueimp.Gallery(videos, {
 				container: videosContainer,
 				carousel: false,
-			});
+			});			
 		});
 		
 		myModal.on('hidden.bs.modal', function()
@@ -921,11 +1267,39 @@ $.extend(APP.interactiveMap,
 				
 				$.each(APP.config.localConfig.typology, function()
 				{
-					var header = $('<h4 style="vertical-align: middle; border-radius:0px">\
+					var header = $('<h3 style="vertical-align: middle; border-radius:0px">\
 										<span class="pull-left iconImage" style="margin-right: 5px"></span>\
 										'+this.name+'\
+										<!--<span class="checkboxSpan pull-right" style="margin-left: 5px"><i class="icon-check"></i></span>-->\
 										<span class="badge pull-right">0</span>\
-									</h4>');
+									</h3>');
+					
+					header.find(".checkboxSpan").click(function(e){
+						var checkIcon = $(this).find("i");
+						if (checkIcon.hasClass('icon-check'))
+						{
+							checkIcon.removeClass().addClass('icon-check-empty');
+							var items = header.next().find("a.list-group-item");
+							$.each(items, function(j,k){
+								k = $(k);
+								var kId = k.attr("id");
+								var kIdSplitted = kId.split("item_")[1];
+								APP.map.hideLayer(kIdSplitted);
+							});
+						}
+						else
+						{
+							checkIcon.removeClass().addClass('icon-check');
+							var items = header.next().find("a.list-group-item");
+							$.each(items, function(j,k){
+								k = $(k);
+								var kId = k.attr("id");
+								var kIdSplitted = kId.split("item_")[1];
+								APP.map.showLayer(kIdSplitted);
+							});
+						}
+						return false;
+					});
 									
 					var content = $('<div id="collapse_'+section+"_"+this.id+'" class="list-group list-group-wo-radius" style="padding: 0px; margin-bottom: 0px; border-radius:0px"></div>');
 					
@@ -952,7 +1326,7 @@ $.extend(APP.interactiveMap,
 											<img class="media-object img-responsive img-rounded" src="'+(APP.utils.isset(v.data.thumb_main_image)? v.data.thumb_main_image : APP.config.localConfig.default_overview_image)+'" alt="'+APP.i18n.translate('no_image')+'" style="width: 60px; height: 60px">\
 										  </a>\
 										  <div class="media-body">\
-											<h5 class="media-heading">'+that.getObjectTitle(k, v.data.id)+'</h5>\
+											<h6 class="media-heading">'+that.getObjectTitle(k, v.data.id)+'</h6>\
 										  </div>\
 										</div>');					
 						
@@ -1038,6 +1412,7 @@ $.extend(APP.interactiveMap,
 			heightStyle: "content",
 			collapsible: true,
 			active: false,
+			header: "h3"
 		});
 		
 		if (APP.utils.isset(callback) && $.isFunction(callback))
@@ -1205,7 +1580,7 @@ $.extend(APP.interactiveMap,
 		"poi": false,
 		"path": false,
 		"area": false,
-		"itinerary": false
+		//"itinerary": false
 	},
 	
 	checkIfsectionCompleted: function(section)
@@ -1433,7 +1808,8 @@ $.extend(APP.interactiveMap,
 									destination[cs][v.id] = {};
 								destination[cs][v.id].geo = v;
 								that.sendGeojsonLayerToMap(v, cs);
-								APP.map.setGlobalExtent(destination[cs][v.id].geo.extent);
+								if (APP.config.localConfig.use_default_extent === "0")
+									APP.map.setGlobalExtent(destination[cs][v.id].geo.extent);
 							}
 							else
 							{
@@ -1443,7 +1819,8 @@ $.extend(APP.interactiveMap,
 										destination[cs][k.id] = {};
 									destination[cs][k.id].geo = k;
 									that.sendGeojsonLayerToMap(k, cs);
-									APP.map.setGlobalExtent(destination[cs][k.id].geo.extent);
+									if (APP.config.localConfig.use_default_extent === "0")
+										APP.map.setGlobalExtent(destination[cs][k.id].geo.extent);
 								});
 								that.checkIfsectionCompleted(cs);
 								bSectionCompleted = false;
@@ -1472,7 +1849,7 @@ $.extend(APP.interactiveMap,
 	{
 		var that = this;
 		
-		var map = APP.map.getMap();
+		var map = APP.map.getCurrentMap();
 		
 		if (v.geoJSON.type === "Point")
 		{
@@ -1519,6 +1896,22 @@ $.extend(APP.interactiveMap,
 					if (v.color)
 						oo.color = v.color;
 					oo.weight = APP.utils.isset(v.width)? v.width : 7;
+
+					if (v.geoJSON.type === "MultiLineString" || v.geoJSON.type === "LineString"){
+						switch (v.diff){
+							case "E":
+								oo.dashArray = 4*oo.weight+', '+2*oo.weight;
+							break;
+
+							case "EE":
+								oo.dashArray = 1*oo.weight+', '+oo.weight;
+							break;
+
+							case "EEA":
+								oo.weight = 0;
+							break;
+						}
+					}
 						
 					return oo;
 				},
@@ -1529,6 +1922,42 @@ $.extend(APP.interactiveMap,
 					});
 				}
 			});
+			if (v.geoJSON.type === "MultiLineString" || v.geoJSON.type === "LineString"){
+				switch (v.diff){
+					case "EEA":
+						layer.setText('+', {repeat: true,
+							offset: 0,
+							attributes: {fill: v.color,'font-size':'20','font-weight':'bold'}});
+					break;
+				}
+			}
+			$.each(['pt_start','pt_end'], function(k,tag){
+				if (v[tag])
+				{
+					var myObj = {
+						title: ((tag === 'pt_start')? "Inizio" : "Fine")+"  "+v.title,
+						zIndexOffset: 1000
+					};
+					var typologyObj = that.getTypologyByName(tag)
+					if (typologyObj && typologyObj.marker)
+					{
+						myObj.icon = L.icon({
+							iconUrl: typologyObj.marker,
+							//iconRetinaUrl: 'my-icon@2x.png',
+							//iconSize: [38, 95],
+							iconAnchor: [16, 37],
+							//popupAnchor: [-3, -76],
+							//shadowUrl: 'my-icon-shadow.png',
+							//shadowRetinaUrl: 'my-icon-shadow@2x.png',
+							//shadowSize: [68, 95],
+							//shadowAnchor: [22, 94]
+						});
+					}
+					var title = myObj.title;
+					APP.map.addLayer({layer: new L.Marker([v[tag].coordinates[1],v[tag].coordinates[0]], myObj).bindPopup(title), id: tag+" "+v.id});
+				}
+			});
+			
 			if (!APP.map.globalData[APP.map.currentMapId].map.hasLayer(layer))
 				APP.map.addLayer({layer: layer, id: section+"_"+v.id, max_scale: v.max_scale});
 		}
@@ -1897,6 +2326,486 @@ $.extend(APP.interactiveMap,
 		}
 	},
 	
+	setLoginMsg: function()
+	{
+		var that = this;
+		var callback = function(){ 
+			that.toggleGeometry(true, false);
+		};
+		
+		var body = $('<p>'+APP.i18n.translate('you_are_not_logged_in')+'</p>');
+		var footer = $('<div>\
+							<button type="button" class="btn btn-success" id="loginMsg_login"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> '+APP.i18n.translate('Login')+'</button>\
+							<button type="button" class="btn btn-primary" id="loginMsg_register"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> '+APP.i18n.translate('Register')+'</button>\
+							<button type="button" class="btn btn-default pull-right" id="loginMsg_close"><span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> '+APP.i18n.translate('Skip')+'</button>\
+						</div>');
+		
+		footer.find("#loginMsg_login").click(function(){
+			that.bWouldAddGeometry = true;
+			//that.loginMsgModal.modal("hide");
+			if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
+				that.mySidebar.control.hide();
+			that.loginModal.modal("show");
+			that.changeLoginModalPage("login");
+		});
+		footer.find("#loginMsg_register").click(function(){
+			//that.loginMsgModal.modal("hide");
+			/*
+			that.registrationModal.on('hidden.bs.modal', function(){
+				that.registrationModal.off('hidden.bs.modal');
+				if (APP.utils.isset(callback) && $.isFunction(callback))
+					callback();
+			});
+			*/
+			if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
+				that.mySidebar.control.hide();
+			that.registrationModal.modal("show");
+			that.navbars.top.find("li").removeClass("active");
+		});
+		footer.find("#loginMsg_close").click(function(){
+			that.loginMsgModal.modal("hide");
+			if (APP.utils.isset(callback) && $.isFunction(callback))
+				callback();
+		});
+		
+		that.loginMsgModal = APP.modals.create({
+			container: that.body,
+			id: "loginMsgModal",
+			size: "sm",
+			keyboard: 'false',
+			backdrop: "static",
+			bTopCloseButton: true,
+			header: APP.i18n.translate("Notice"),
+			body: body,
+			footer: footer,
+			/*
+			onShown: function(){
+				
+			},
+			onHidden: function(){ 
+				
+			}
+			*/
+		});
+	},
+	
+	changeLoginModalPage: function(page)
+	{
+		var that = this;
+		switch(page)
+		{
+			case "forgot_password":
+				that.loginModal.find(".fg_login").hide();
+				that.loginModal.find(".fg_forgot_password").show();
+				break;
+			case "login":
+				that.loginModal.find(".fg_forgot_password").hide();
+				that.loginModal.find(".fg_login").show();
+				break;
+			default:
+				console.log("aggiungere page: "+page);
+				break;
+		}
+		
+	},
+	
+	setLoginModal: function()
+	{
+		var that = this;
+		
+		var htmlPage = $(	'<form role="form">\
+								<div class="form-group fg_login">\
+									<label class="control-label" for="APP-username">'+APP.i18n.translate("Username")+'</label>\
+									<input type="text" class="form-control" id="APP-username" name="username" placeholder="'+APP.i18n.translate("Enter username")+'">\
+								</div>\
+								<div class="form-group fg_forgot_password" style="display:none">\
+									<label class="control-label" for="APP-email">'+APP.i18n.translate("Email")+'</label>\
+									<input type="email" class="form-control" id="APP-email" name="email" placeholder="'+APP.i18n.translate("Enter email")+'">\
+								</div>\
+								<div class="form-group fg_login">\
+									<label class="control-label" for="APP-password">'+APP.i18n.translate("Password")+'</label>\
+									<input type="password" class="form-control" id="APP-password" name="password" placeholder="'+APP.i18n.translate("Enter password")+'">\
+								</div>\
+								<div class="form-group fg_login">\
+									<button type="button" class="btn btn-link">'+APP.i18n.translate("Forgot password")+'?</button>\
+								</div>\
+							</form>');
+		
+		htmlPage.find(".btn-link").click(function(){
+			that.changeLoginModalPage("forgot_password");
+		});
+		
+		var footerPage = $('<div>\
+								<button id="backToLoginBtn" type="button" class="btn btn-default pull-left fg_forgot_password" style="display:none"><i class="icon icon-undo"></i> '+APP.i18n.translate("Back")+'</button>\
+								<button id="form_login" type="button" class="btn btn-default fg_login"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> '+APP.i18n.translate("Login")+'</button>\
+								<button id="form_register" type="button" class="btn btn-primary fg_login"> <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> '+APP.i18n.translate("Register")+'</button>\
+								<button id="form_resetpassword" type="button" class="btn btn-success fg_forgot_password" style="display:none"><i class="icon icon-ok"></i> '+APP.i18n.translate("Send email")+'</button>\
+							</div>');
+		
+		footerPage.find("#backToLoginBtn").click(function(){
+			that.changeLoginModalPage("login");
+		});
+		footerPage.find("#form_login").click(function(){
+			if (!APP.utils.isset(APP.config.localConfig.urls.login))
+			{
+				console.log("Inserire nel CONFIG l'url login");
+				return false;
+			}
+			htmlPage.find(".help-block").remove();
+			htmlPage.find(".has-error").removeClass("has-error");
+			$.ajax({
+				type: 'POST',
+				url: APP.config.localConfig.urls.login,
+				dataType: 'json',
+				data: htmlPage.find(".fg_login :input").serializeArray(),
+				success: function(data)
+				{
+					if (!APP.utils.checkError(data.error, that.loginModal.find("form")))
+					{
+						if (APP.utils.isset(data.data.authuser))
+						{
+							that.loginModal.modal("hide");
+							APP.config.localConfig.authuser = data.data.authuser;
+							$.each(["poi","path","area"], function(i, v)
+							{
+								that.getDstruct(v, function(){
+									if (that.body.find("#loginButton").parent().is(":visible"))
+										that.body.find("#loginButton").parent().hide();
+									if (that.body.find("#logoutButton").parent().is(":hidden"))
+										that.body.find("#logoutButton").parent().show();
+									if (that.body.find("#mydatadropdownButton").parent().is(":hidden"))
+										that.body.find("#mydatadropdownButton").parent().show();
+									if (that.body.find("#addPathButton").parent().hasClass("disabled"))
+										that.body.find("#addPathButton").parent().removeClass("disabled");
+									if (that.body.find("#addAreaButton").parent().hasClass("disabled"))
+										that.body.find("#addAreaButton").parent().removeClass("disabled");
+								});
+							});
+							if (that.bAddGeometry || that.bWouldAddGeometry)
+							{
+								that.toggleGeometry(false,false);
+								that.toggleGeometry(true,false);
+							}
+						}
+						else
+							APP.utils.showErrMsg(data);
+					}
+					else
+						APP.utils.showErrMsg(data);
+				},
+				error: function(result)
+				{
+					APP.utils.showErrMsg(result);
+				}
+			});
+		});
+		footerPage.find("#form_register").click(function(){
+			//that.loginModal.modal("hide");
+			if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
+				that.mySidebar.control.hide();
+			that.registrationModal.modal("show");
+			//setTimeout(function(){that.registrationModal.modal("show");},600);
+		});
+		footerPage.find("#form_resetpassword").click(function(){
+			if (!APP.utils.isset(APP.config.localConfig.urls.reset_password))
+			{
+				console.log("Inserire nel CONFIG l'url reset_password");
+				return false;
+			}
+			htmlPage.find(".help-block").remove();
+			htmlPage.find(".has-error").removeClass("has-error");
+			$.ajax({
+				type: 'POST',
+				url: APP.config.localConfig.urls.reset_password,
+				dataType: 'json',
+				data: htmlPage.find(".fg_forgot_password :input").serializeArray(),
+				success: function(data)
+				{
+					if (!APP.utils.checkError(data.error, that.loginModal.find("form")))
+					{
+						that.loginModal.modal("hide");
+						APP.utils.showNoty({title: APP.i18n.translate("success"), type: "success", content: APP.i18n.translate("email_sent")});
+					}
+					else
+						APP.utils.showErrMsg(data);
+				},
+				error: function(result)
+				{
+					APP.utils.showErrMsg(result);
+				}
+			});
+		});
+		
+		var header = $('<span><span class="fg_login">'+APP.utils.capitalize(APP.i18n.translate("login"))+'</span><span class="fg_forgot_password" style="display:none">'+APP.utils.capitalize(APP.i18n.translate("reset_password"))+'</span></span>');
+		
+		that.loginModal = APP.modals.create({
+			container: that.body,
+			id: "loginModal",
+			size: "sm",
+			bTopCloseButton: true,
+			header: header,
+			body: htmlPage,
+			footer: footerPage,
+			/*
+			onShown: function(){
+				
+			},*/
+			onHidden: function(){
+				that.bWouldAddGeometry = false;
+			}			
+		});
+		
+		that.body.find("#loginButton").click(function(){
+			if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
+				that.mySidebar.control.hide();
+			that.loginModal.modal("show");
+			that.changeLoginModalPage("login");
+		}).parent().removeClass("disabled");
+		
+		that.body.find("#logoutButton").click(function(){
+			$.ajax({
+				type: 'POST',
+				url: APP.config.localConfig.urls.logout,
+				dataType: 'json',
+				data: APP.config.localConfig.authuser,
+				success: function(data)
+				{
+					if (!APP.utils.checkError(data.error, null))
+					{
+						delete APP.config.localConfig.authuser;
+						$.each(["poi","path","area"], function(i, v)
+						{
+							that.getDstruct(v, function(){
+								if (that.body.find("#loginButton").parent().is(":hidden"))
+									that.body.find("#loginButton").parent().show();
+								if (that.body.find("#logoutButton").parent().is(":visible"))
+									that.body.find("#logoutButton").parent().hide();
+								if (that.body.find("#mydatadropdownButton").parent().is(":visible"))
+									that.body.find("#mydatadropdownButton").parent().hide();
+							});
+						});
+						if (!APP.config.isMobileVersion() && that.bAddGeometry)
+						{
+							that.toggleGeometry(false,false);
+							that.toggleGeometry(true,false);
+						}
+					}
+					else
+						APP.utils.showErrMsg(data);
+					
+				},
+				error: function(result)
+				{
+					APP.utils.showErrMsg(result);
+				}
+			});
+		}).parent().removeClass("disabled");
+		
+		if (APP.utils.isset(APP.config.localConfig.authuser))
+		{
+			that.body.find("#loginButton").parent().hide();
+			that.body.find("#mydatadropdownButton").parent().show();
+			that.body.find("#logoutButton").parent().show();
+		}
+		else
+		{
+			that.body.find("#loginButton").parent().show();
+			that.body.find("#mydatadropdownButton").parent().hide();
+			that.body.find("#logoutButton").parent().hide();
+		}
+	},
+	
+	openRegistrationModal: function(data)
+	{
+		var that = this;
+		if (!APP.utils.isset(that.registrationModal))
+			that.setRegistrationModal();
+		if (data && data.items && data.items.length > 0)
+		{
+			$.each(data.items[0], function(i,v){
+				that.registrationModal.find("#APP-"+i).val(v);
+			});
+		}
+		if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
+			that.mySidebar.control.hide();
+		that.registrationModal.modal('show');
+	},
+	
+	setRegistrationModal: function()
+	{
+		var that = this;
+		var body = $('<div></div>');
+		
+		var footer = $('<div>\
+							<button type="button" class="btn btn-success"><i class="icon icon-ok"></i> '+APP.i18n.translate('send')+'</button>\
+							<button type="button" class="btn btn-default"><i class="icon icon-remove"></i> '+APP.i18n.translate('cancel')+'</button>\
+						</div>');
+		
+		footer.find(".btn-success").click(function()
+		{
+			var s = (APP.config.checkLoggedUser())? that.frontPrefix+"userdata" : that.frontPrefix+"registration";
+		
+			if (!APP.utils.isset(APP.config.localConfig.urls[s]))
+				return;
+			var id = (APP.config.checkLoggedUser())? APP.config.localConfig.authuser.id : null;
+			that.registrationModal.find("form").attr('id','fm_'+s);
+			
+			var tk = APP.config.getToken(s);
+			if (tk)
+				that.registrationModal.find("form .tokenInput").val(tk);
+			APP.anagrafica.formSubmit(id, s, function(){
+				that.registrationModal.modal("hide");
+			}, false);
+		});
+		footer.find(".btn-default").click(function()
+		{
+			that.registrationModal.modal("hide");
+		});
+		
+		that.getDstruct("registration", function()
+		{
+			var registrationForm = APP.anagrafica.createFormTemplate(null, null, APP.anagrafica.sections[that.frontPrefix+"registration"], that.frontPrefix+"registration", []);
+			body.append(registrationForm);
+			APP.utils.setLookForm(registrationForm, null);
+		});
+		
+		that.registrationModal = APP.modals.create({
+			container: that.body,
+			id: "registrationModal",
+			size: "lg",
+			keyboard: 'false',
+			backdrop: "static",
+			bTopCloseButton: false,
+			header: APP.i18n.translate("Register"),
+			body: body,
+			footer: footer,
+			onShown: function(){
+				var title = (APP.config.checkLoggedUser())? APP.i18n.translate("User's data") : APP.i18n.translate("Register");
+				that.registrationModal.find(".modal-header .lead").text(title);
+			},
+			onHidden: function(){
+				var f = that.registrationModal.find("form");
+				APP.utils.resetFormErrors(f);
+				f[0].reset();
+			}
+		});
+	},
+	
+	manipulateCanvasFunction: function(savedMap)
+	{
+		var that = this;
+		dataURL = savedMap.toDataURL("image/png");
+		dataURL = dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+		$.post(that.leafletSaveMapPluginDir+"saveMap.php", { savedMap: dataURL }, function(data) {
+			console.log('Image Saved to : ' + data);
+		});
+	},
+	
+	printPage: function()
+	{
+		var that = this;
+		
+		that.body.append('<div class="mapMap"></div>');
+		that.body.append('<div class="svgMap"></div>');
+		
+		
+		html2canvas($('#mainContent'),{
+			//allowTaint: true,
+			background: undefined,
+			//height: null,
+			//letterRendering: true,
+			//logging: true,
+			proxy: that.leafletSaveMapPluginDir+"proxy.php",
+			taintTest: false,
+			//timeout: 0,
+			//width: null,
+			//useCORS: true,
+		}).then(function(canvas){
+			that.body.find(".svgMap").append(canvas);
+		});
+		
+		html2canvas($('#mainContent'),{
+			allowTaint: true,
+			background: undefined,
+			//height: null,
+			//letterRendering: true,
+			//logging: true,
+			proxy: that.leafletSaveMapPluginDir+"proxy.php",
+			//taintTest: false,
+			//timeout: 0,
+			//width: null,
+			//useCORS: true,
+		}).then(function(canvas){
+			that.body.find(".mapMap").append(canvas);
+		});
+	},
+	
+	getDstruct: function(section, callback)
+	{
+		var that = this;
+		
+		if (!APP.utils.isset(section))
+			return false;
+		
+		var s = that.frontPrefix+section;
+		if (!APP.anagrafica.hasOwnProperty("sections"))
+			APP.anagrafica.sections = {};
+		//if (!APP.anagrafica.sections.hasOwnProperty(s)) // forzo il reset perchï¿½ in questo progetto i datastruct possono cambiare dinamicamente
+			APP.anagrafica.sections[s] = APP.utils.setBaseStructure(s, s);
+		APP.anagrafica.getStructure(APP.config.localConfig.urls.dStruct+"?tb="+s, s, null, false, callback);
+	},
+	
+	updateMyData: function(end, myCallback)
+	{
+		var that = this;
+		APP.map.removeAllLayers();
+		that.myData = {};
+		
+		that.eventObj.off('all_sections_completed').on('all_sections_completed', function()
+		{
+			if (APP.utils.isset(myCallback) && $.isFunction(myCallback))
+				myCallback();
+		});
+		
+		that.getGeo({url: BASE_URL+"jx/geo/"+end});
+		that.getData({url: BASE_URL+"jx/data/"+end});
+		that.getMedia({url: BASE_URL+"jx/media/"+end});
+	},
+	
+	closeHighlightingsdata: function(callback)
+	{
+		var that = this;
+		that.bMyReportView = false;
+		if (APP.utils.isset(that.currentNoty))
+		{
+			that.currentNoty.close();
+			that.currentNoty = null;
+		}
+		
+		if (that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
+			that.mySidebar.control.hide();
+		
+		that.updateMyData("", callback);
+	},
+	
+	safeExecution: function(callback)
+	{
+		var that = this;
+		
+		if (that.bMyReportView)
+		{
+			if (that.currentSection == "highlightingsdata")
+				that.updateMyData("my", callback);
+			else
+				that.closeHighlightingsdata(callback);
+		}
+		else
+		{
+			if (APP.utils.isset(callback) && $.isFunction(callback))
+				callback();
+		}
+	},
+	
 	start: function()
 	{
 		var that = this;
@@ -1996,19 +2905,35 @@ $.extend(APP.interactiveMap,
 			that.currentSection = section;
 			switch(section)
 			{
+				case "addGeometries":
+					var callbackFun = function(){
+						that.navbars.top.find("li").removeClass("active");
+						that.toggleGeometry(!that.bAddGeometry, true);
+					};
+					
+					that.safeExecution(callbackFun);
+					break;
 				case "to_default_extent":
+					that.toggleGeometry(false, false);
 					btn.parents("li:first").removeClass("active");
 					if (!APP.utils.isset(APP.config.localConfig.default_extent))
 						APP.utils.showNoty({title: APP.i18n.translate("error"), type: "error", content: APP.i18n.translate("Default extent not found")});
 					APP.map.setGlobalExtent(APP.config.localConfig.default_extent);
 					APP.map.setExtent(APP.config.localConfig.default_extent);
 					break;
+				case "login": case "logout":
+					that.toggleGeometry(false, false);
+					break;
 				default:
+					that.toggleGeometry(false, false);
 					var arr = (that.bEverytypeGeometries && section == "everytype")? that.arrEverytypeGeometries : [section];
 					that.showItems(section, arr);
 			}
 		});
 		that.navbars.top.find("#to_default_extentButton").parent().removeClass("disabled");
+		that.setRegistrationModal();
+		that.setLoginMsg();
+		that.setLoginModal();
 		that.setSearchModal();
 		
 		$("#mainContent").css({"height":"100%","width":"100%","margin-bottom":"0px"});		
@@ -2025,12 +2950,17 @@ $.extend(APP.interactiveMap,
 		that.mySidebar.div = APP.map.sidebar.div;
 		that.mySidebar.control = APP.map.sidebar.control;
 		that.getPage("info", false);
-		APP.map.getMap().on('click',function(){			
+		APP.map.getCurrentMap().on('click',function(){			
 			that.resetHighlightLayer();
 		});
-		APP.map.getMap().on('zoomend', function()
+		APP.map.getCurrentMap().on('move', function()
+		{
+			if (that.bCurrentLayers)
+				APP.map.getCurrentViewLayers(APP.map.getCurrentMap());
+		});
+		APP.map.getCurrentMap().on('zoomend', function()
 		{			
-			var map = APP.map.getMap();
+			var map = APP.map.getCurrentMap();
 			var scale = that.getScale(APP.map.globalData[APP.map.currentMapId].map);
 			$.each(APP.map.globalData[APP.map.currentMapId].addedLayers, function(i,v)
 			{
@@ -2049,11 +2979,15 @@ $.extend(APP.interactiveMap,
 		if (that.bEverytypeGeometries)
 		{
 			that.getGeo({callback: function(){
-				var map = APP.map.getMap();
+				var map = APP.map.getCurrentMap();
 				map.fire("zoomend");
 			}});
 			that.getData({});
 			that.getMedia({});
+			
+			//that.getDstruct("highlitingarea");
+			//that.getDstruct("path");
+			that.getDstruct("highlitingpoi");
 			$.each(that.arrEverytypeGeometries, function(i,v)
 			{
 				var btn = that.body.find("#"+v+"Button");
@@ -2065,7 +2999,7 @@ $.extend(APP.interactiveMap,
 		{
 			that.body.find("#everytypeButton").parent().hide();
 			that.getGeo({section: "poi", callback: function(){
-				var map = APP.map.getMap();
+				var map = APP.map.getCurrentMap();
 				map.fire("zoomend");
 			}});
 			that.getData({section: "poi"});
@@ -2081,10 +3015,41 @@ $.extend(APP.interactiveMap,
 		that.getData({section: "itinerary"});
 		that.getMedia({section: "itinerary"});
 		
+		that.body.find("#addGeometriesButton").parent().removeClass("disabled");
+		that.body.find("#userdataButton").click(function(){
+			if (!APP.utils.isset(APP.config.localConfig.authuser))
+				return false;
+			$.ajax({
+				type: 'GET',
+				url: APP.config.localConfig.urls[that.frontPrefix+that.currentSection]+"/"+APP.config.localConfig.authuser.id,
+				dataType: 'json',
+				success: function(data)
+				{
+					if (!APP.utils.checkError(data.error, null))
+					{
+						that.openRegistrationModal(data.data);
+					}
+					else
+						APP.utils.showErrMsg(data);
+				},
+				error: function(result)
+				{
+					APP.utils.showErrMsg(result);
+				}
+			});
+		}).parent().removeClass("disabled").show();
+		that.body.find("#highlightingsdataButton").click(function(){
+			//APP.map.hideAllLayers();
+		}).parent().removeClass("disabled").show();
+		
 		that.body.find("#helpButton").click(function(){
 			that.closeItems();
 			that.getPage('help', true);
 		});
+		
+		that.body.find("#printButton").click(function(){
+			that.printPage();
+		})
 		
 		if (!that.leafletHash && !that.navbars.top.parents(".navbar").find(".navbar-toggle").is(":visible"))
 		{
