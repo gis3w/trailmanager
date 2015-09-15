@@ -1892,11 +1892,12 @@ $.extend(APP.anagrafica,
 		return form;
 	},
 	
-	formSubmit: function(id, section, endCallBack)
+	formSubmit: function(id, section, endCallBack, bConfirm)
 	{
 		var form = $("#fm_"+section);
 		APP.utils.resetFormErrors(form);
 		var that = this;
+		bConfirm = APP.utils.isset(bConfirm)? bConfirm : true;
 		
 		var mtype = APP.utils.isset(id)? 'POST' : 'PUT';
 		var queue = APP.utils.isset(id)? "/"+id : "";
@@ -1989,94 +1990,118 @@ $.extend(APP.anagrafica,
 				var index = APP.utils.getIndexFromField(d, "name", name);
 				if (index === -1)
 					return true;
-
 				d[index] = APP.map.preserialize(name);
 			});
 		}
 		
 		var sendNow = function()
 		{
-			$.ajax({
-				type: mtype,
-				url: APP.config.localConfig.urls[section]+queue,
-				data: d,
-				success: function(data)
-				{
-					if (!APP.utils.checkError(data.error, form))
-					{
-						APP.utils.showNoty({title: APP.i18n.translate("success"), type: "success", content: APP.i18n.translate("operation_success")});
-						
-						if (APP.utils.isset(data.data.actions))
+			if (APP.utils.isset(APP.config.localConfig.urls[section]))
+			{
+				$.ajax({
+					type: mtype,
+					url: APP.config.localConfig.urls[section]+queue,
+					data: d,
+					success: function(data)
+					{						
+						if (!APP.utils.checkError(data.error, form))
 						{
-							$.each(data.data.actions, function(j,k)
+							if (!APP.utils.isset(data.data.actions) || !APP.utils.isset(data.data.actions.message))
+								APP.utils.showNoty({title: APP.i18n.translate("success"), type: "success", content: APP.i18n.translate("operation_success")});
+							
+							var onceFinished = function()
 							{
-								switch(j)
+								if (APP.utils.isset(endCallBack) && $.isFunction(endCallBack))
+									endCallBack();
+								else
+									that.selectedItem.click();
+							};
+							
+							if (APP.utils.isset(data.data.actions))
+							{
+								$.each(data.data.actions, function(j,k)
 								{
-									case "reinsert":
-										var labels = {
-											'yes': APP.i18n.translate("Yes"),
-											'no': '<i class="icon icon-remove"></i> '+APP.i18n.translate("No")
-										};
-										var callbacks = {
-											'yes': function()
-											{												
-												var newDiv = null;
-												var oldDiv = null;
-												that.destroyWindow();
-												if (that.windows[that.windows.length-1].find("#subMainTableDiv").length>0)
-												{
-													newDiv = that.windows[that.windows.length-1].find("#subMainTableDiv").first();
-													oldDiv = that.windows[that.windows.length-1];
-												}
-												else
-												{
-													that.createWindow();
-													newDiv = that.windows[that.windows.length-1];
-													oldDiv = (that.windows.length-2 < 0)? 0 : that.windows.length-2;
-												}
-												
-												that.addItem(k, newDiv, oldDiv, section);
-											},
-											'no': function(){
-												defaultCallback();
-											},
-										};
-										APP.utils.confirmMsg(APP.i18n.translate("reinsert_question"), labels, callbacks);
-										break;
-									default:
-										break;
-								}
-							});
+									switch(j)
+									{
+										case "reinsert":
+											var labels = {
+												'yes': APP.i18n.translate("Yes"),
+												'no': '<i class="icon icon-remove"></i> '+APP.i18n.translate("No")
+											};
+											var callbacks = {
+												'yes': function()
+												{												
+													var newDiv = null;
+													var oldDiv = null;
+													that.destroyWindow();
+													if (that.windows[that.windows.length-1].find("#subMainTableDiv").length>0)
+													{
+														newDiv = that.windows[that.windows.length-1].find("#subMainTableDiv").first();
+														oldDiv = that.windows[that.windows.length-1];
+													}
+													else
+													{
+														that.createWindow();
+														newDiv = that.windows[that.windows.length-1];
+														oldDiv = (that.windows.length-2 < 0)? 0 : that.windows.length-2;
+													}
+													
+													that.addItem(k, newDiv, oldDiv, section);
+												},
+												'no': function(){
+													defaultCallback();
+												},
+											};
+											APP.utils.confirmMsg(APP.i18n.translate("reinsert_question"), labels, callbacks);
+											break;
+										case 'message':
+											var notyObj = {
+												type: k.type,
+												title: k.title,
+												content: k.content
+											};
+											if (APP.utils.isset(k.timeout))
+												notyObj.timeout = k.timeout;
+											if (APP.utils.isset(k.buttons))
+												notyObj.buttons = k.buttons;
+											APP.utils.showNoty(notyObj);
+											onceFinished();
+											break;
+										default:
+											break;
+									}
+								});
+							}
+							else
+								onceFinished();
 						}
 						else
-						{
-							if (APP.utils.isset(endCallBack) && $.isFunction(endCallBack))
-								endCallBack();
-							else
-							{
-								that.selectedItem.click();
-							}
-						}
+							APP.utils.showErrMsg(data);
+					},
+					error: function(result)
+					{ 
+						APP.utils.showErrMsg(result);
 					}
-					else
-						APP.utils.showErrMsg(data);
-				},
-				error: function(result)
-				{ 
-					APP.utils.showErrMsg(result);
-				}
-			});
+				});
+			}
+			else
+				APP.utils.showNoty({title: APP.i18n.translate("error"), type: "error", content: APP.i18n.translate("url_not_found")+": "+section});
 		};
-		var labels = {
-			'yes': APP.i18n.translate("save"),
-			'no': APP.i18n.translate("cancel")
-		};
-		var callbacks = {
-			'yes': function(){ sendNow(); },
-			'no': null,
-		};
-		var saveConfirmMsg = (APP.utils.isset(that.sections[section]) && APP.utils.isset(that.sections[section].messages) && APP.utils.isset(that.sections[section].messages['save_confirm']))? that.sections[section].messages['save_confirm'] : APP.i18n.translate("save_confirm");
-		APP.utils.confirmMsg(saveConfirmMsg, labels, callbacks);
+		if (bConfirm)
+		{
+			var labels = {
+				'yes': APP.i18n.translate("save"),
+				'no': APP.i18n.translate("cancel")
+			};
+			var callbacks = {
+				'yes': function(){ sendNow(); },
+				'no': null,
+			};
+			var saveConfirmMsg = (APP.utils.isset(that.sections[section].messages) && APP.utils.isset(that.sections[section].messages['save_confirm']))? that.sections[section].messages['save_confirm'] : APP.i18n.translate("save_confirm");
+			APP.utils.confirmMsg(saveConfirmMsg, labels, callbacks);
+		}
+		else
+			sendNow();
 	},
 	
 	removeItem: function(id, params)
