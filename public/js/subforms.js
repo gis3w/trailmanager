@@ -30,7 +30,10 @@ $.extend(APP.subforms,
 		if ($.inArray("delete", that.sectionTarget.subforms[subformName].capabilities) > -1)
 			str.append("<button type='button' id='remove_"+i+"' data-subformname='"+subformName+"' name='remove' class='btn btn-danger' ><i class='icon-trash'></i></button>");
 		if (that.sectionTarget.subforms[subformName].enctype == "multipart/form-data")
+		{
 			str.append("<button type='button' id='download_"+i+"' data-subformname='"+subformName+"' name='download' class='btn btn-warning' ><i class='icon-download'></i></button>");
+			str.append("<button type='button' id='file_preview_"+i+"' data-subformname='"+subformName+"' name='file_preview' class='btn btn-default' ><i class='icon-eye-open'></i></button>");
+		}
 		//str.find("button").data({subformName: subformName});
 		return str.html();
 	},
@@ -507,6 +510,30 @@ $.extend(APP.subforms,
 				$.fileDownload(dUrl)
 				.fail(function () {
 					APP.utils.showNoty({title: APP.i18n.translate("error"), type: "error", content: APP.i18n.translate("download_failure")});
+				});
+				return;
+			case "file_preview":
+				var dUrl = "";
+				$.each(that.sectionTarget.subforms[data.subformname].columns,function(i,v)
+				{
+					if (v.data_type=="file")
+					{
+						if (v.urls.download)
+						{
+							dUrl = v.urls.download;
+							if (v.urls.download_options)
+							{
+								$.each(v.urls.download_options, function(i1,v1){
+									dUrl = APP.utils.replaceAll(i1,data[v1],dUrl);
+								});
+							}
+						}
+						return false;
+					}
+				});
+				APP.utils.showMsg({
+					title: "Anteprima",
+					content: '<iframe src="'+dUrl+'" style="border: 0px; width: 100%; height: 350px"> </iframe>',
 				});
 				return;
 			default:
