@@ -11,12 +11,15 @@ class Controller_Ajax_Geo_Base extends Controller_Ajax_Data_Base{
         
         $toRes['id'] = (int)$orm->id;
         $toRes['title'] = $orm->title;
-        $toRes['typology_id'] = (int)$orm->typology_id;
+        $toRes['typology_id'] = $this->_get_main_typology($orm);
         if($this->request->controller() == 'Path' OR $this->request->controller() == 'Area')
         {
             $toRes['color'] = $orm->color;
             $toRes['width'] = $orm->width;
         }
+
+        if($this->request->controller() == 'Path')
+            $toRes['diff'] = $orm->diff_current;
         
         //adding centroids
         $toRes['centroids'] = array();
@@ -34,6 +37,11 @@ class Controller_Ajax_Geo_Base extends Controller_Ajax_Data_Base{
         $toRes['extent'] = $orm->bbox;
         
         return $toRes;
+    }
+
+    protected function _get_main_typology($orm)
+    {
+        return (int)$orm->typology_id;
     }
     
 }

@@ -20,7 +20,7 @@ class Controller_Print_Poi_Sheet extends Controller_Print_Base_Auth_Nostrict
         $this->_xmlContentView->mapURL = $map->imageURL;
         $this->_xmlContentView->poi = $poi;
 
-        $this->_resizeImage($this->poi);
+        $this->_resizeImage($poi);
 
 
         // set filename

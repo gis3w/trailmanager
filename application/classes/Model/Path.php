@@ -42,13 +42,11 @@ class Model_Path extends ORMGIS {
             "altitude_gap" => __("Altitude gap"),
             "general_features" => __("General features"),
             "accessibility" => __("Accessibility"),
-            "reason" => __("Reasons"),
             "length" =>__("Length"),
             "accessibility" => __("Accessibility"),
             "information_url" => __("Information url"),
             "publish" => __("Published"),
             "typology_id" => __("Main typology"),
-            "period_schedule" => __("Period schedule"),
             "color" => __("Color"),
             "width" => __("Width"),
             "inquiry" => __('Request informations'),
@@ -71,9 +69,6 @@ class Model_Path extends ORMGIS {
                     array('numeric')
             ),
             'publish' =>array(
-                    array('not_empty'),
-            ),
-            'typology_id' =>array(
                     array('not_empty'),
             ),
             'the_geom' =>array(

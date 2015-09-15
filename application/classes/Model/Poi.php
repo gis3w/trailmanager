@@ -32,12 +32,8 @@ class Model_Poi extends ORMGIS {
         return array(
             "title" => __("Title"),
             "description" => __("Description"),
-            "reason" => __("Reasons"),
-            "accessibility" => __("Accessibility"),
-            "information_url" => __("Information url"),
             "publish" => __("Published"),
             "typology_id" => __("Main typology"),
-            "period_schedule" => __("Period schedule"),
             "inquiry" => __('Request informations'),
             "max_scale" => __('Max scale'),
         );
@@ -51,9 +47,6 @@ class Model_Poi extends ORMGIS {
                     array('not_empty'),
             ),
             'publish' =>array(
-                    array('not_empty'),
-            ),
-            'typology_id' =>array(
                     array('not_empty'),
             ),
              'max_scale' =>array(

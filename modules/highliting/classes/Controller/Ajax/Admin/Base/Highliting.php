@@ -8,6 +8,21 @@ class Controller_Ajax_Admin_Base_Highliting extends Controller_Ajax_Admin_Sheet_
         'image_highliting_area' => 'Image_Highliting_Area'
     );
 
+    protected $_noValidation = [
+        'image_highliting_poi',
+        'image_highliting_path'
+    ];
+
+    protected function _role_SUPERVISOR_filters($orm)
+    {
+        $orm->where('supervisor_user_id','=',$this->user->id);
+    }
+
+    protected function _role_EXECUTOR_filters($orm)
+    {
+        $orm->where('executor_user_id','=',$this->user->id);
+    }
+
     protected function _single_request_row($orm) {
         $toRes = Controller_Ajax_Base_Crud::_single_request_row($orm);
 
@@ -38,6 +53,55 @@ class Controller_Ajax_Admin_Base_Highliting extends Controller_Ajax_Admin_Sheet_
 
     }
 
+    /**
+     * Method to set supervisor
+     */
+    protected function _insert_supervisor()
+    {
+        $capability = 'admin-'.strtolower($this->_datastructName).'-insert';
+        if($this->user->main_role_id == ROLE_SUPERVISOR
+            AND $this->user->allow_capa($capability)
+            AND !isset($this->_orm->supervisor_user_id)
+        )
+            $this->_orm->supervisor_user_id = $this->user->id;
+
+    }
+
+    protected function _edit()
+    {
+        try
+        {
+
+            //test per geo
+            Database::instance()->begin();
+
+
+            $this->_validation();
+
+            $this->_data_edit();
+
+            Database::instance()->commit();
+        }
+        catch (Database_Exception $e)
+        {
+            Database::instance()->rollback();
+            throw $e;
+        }
+        catch (ORM_Validation_Exception $e)
+        {
+            Database::instance()->rollback();
+
+            $this->_validation_error($e);
+        }
+        catch (Validation_Exception $e)
+        {
+            Database::instance()->rollback();
+
+            $this->_validation_error($this->vErrors);
+
+        }
+    }
+
     protected function _data_edit()
     {
         Filter::emptyPostDataToNULL();
@@ -45,6 +109,7 @@ class Controller_Ajax_Admin_Base_Highliting extends Controller_Ajax_Admin_Sheet_
         $this->from_state = $this->_orm->highliting_state_id;
 
         $this->_insert_reporter();
+        $this->_insert_supervisor();
 
         $this->_set_the_geom_edit();
 
@@ -66,6 +131,39 @@ class Controller_Ajax_Admin_Base_Highliting extends Controller_Ajax_Admin_Sheet_
 
         #$this->_send_email();
 
+
+    }
+
+    protected function _validation()
+    {
+        // oltre alla non empty di dpi e mansioni è necessario
+        // validare gli indroci per unità produttiva che non si devono sovrapporre ??? chiedere
+
+        $this->_vorm = Validation::factory($_POST);
+
+        // si aggiungono le validazioni dell'orm
+        foreach ($this->_orm->rules() as $col => $rule)
+            $this->_vorm->rules($col, $rule);
+
+        // if state if ASSEGNATA SUPERVISOR / PROGRAMMATA
+        if(isset($_POST['highliting_state_id']) AND in_array($_POST['highliting_state_id'],array(HSTATE_ASSEGNATA_SUPERVISOR,HSTATE_PROGRAMMATA)))
+            $this->_vorm->rule('supervisor_user_id','not_empty');
+
+        // if state if IN ESECUZIONE
+        if(isset($_POST['highliting_state_id']) AND in_array($_POST['highliting_state_id'],array(HSTATE_IN_ESECUZIONE)))
+            $this->_vorm->rule('executor_user_id','not_empty');
+
+
+
+        // si aggiungono anche le labels
+        $this->_vorm->labels($this->_orm->labels());
+
+
+        if(!$this->_vorm->check())
+            $this->vErrors = Arr::push ($this->vErrors,$this->_vorm->errors('validation'));
+
+        if(!empty($this->vErrors))
+            throw new Validation_Exception($this->_vorm);
 
     }
 

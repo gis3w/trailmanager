@@ -18,7 +18,7 @@ class Controller_Test extends Controller{
         /*
         $path = ORMGIS::factory('Path',26);
 */
-        $geo = GEO_Postgis::instance();
+
         /*
         $extent = [
             $path->bbox['minx'],
@@ -41,7 +41,8 @@ class Controller_Test extends Controller{
         $pt = $geo->pointFromToSRS([(int)$path->coordxini,(int)$path->coordyini],3004,3857);
          */
 
-       $path = ORMGIS::factory('Path',26);
+      $kml = new KMLF();
+        echo $kml->render();
         exit;
 
 

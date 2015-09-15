@@ -9,7 +9,7 @@
  * @copyright  (c) 2013 Gis3W
  */
 
-class Kohana_GPXF
+class Kohana_GPXF extends Kohana_XMLF
 {
     
     const MODE_PHP = 1;
@@ -89,11 +89,7 @@ class Kohana_GPXF
        $this->_gpx_metadata = $this->_gpx->addchild('metadata');
        $this->_gpx->metadata->addchild('time',date('Y-m-d\TH:m:s\Z'));
     }
-    
-    protected function _addSimpleNode($parent,$data,$namespace = NULL)
-    {
-        $parent->addChild($data[0],$data[1],$namespace);
-    }
+
     
     public function addBounds($node,$bounds)
     {

@@ -139,6 +139,7 @@ Kohana::modules(array(
     'highliting' => MODPATH.'highliting',
     'print' => MODPATH.'print',
     'geoexport' => MODPATH.'geoexport',
+    'minion' => MODPATH.'minion',
 	));
 
 /**
@@ -279,17 +280,9 @@ foreach($parms as $parametro => $valore)
     /**
      * Adding $_SERVER paramenters 
      */
-    
-    define('HTTP_HOST',$_SERVER['HTTP_HOST']);
+    if(isset($_SERVER['HTTP_HOST']))
+        define('HTTP_HOST',$_SERVER['HTTP_HOST']);
 
-
-/**
- * ADD HIGHLITING STATES
- */
-$parms = ORM::factory('Highliting_State')->find_all()->as_array('name');
-
-foreach($parms as $parametro => $valore)
-    define('HSTATE_'.Inflector::underscore(strtoupper($parametro)), $valore->id);
 
 /**
  * ADD ROLES

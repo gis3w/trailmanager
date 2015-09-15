@@ -103,6 +103,14 @@ $.extend(APP.interactiveMap,
 			return APP.config.localConfig.typology[index];
 		return false;
 	},
+
+	getTypologyByName: function(typologyName)
+	{
+		var index = APP.utils.getIndexFromField(APP.config.localConfig.typology, "name", typologyName);
+		if (index > -1 && APP.utils.isset(APP.config.localConfig.typology[index]))
+			return APP.config.localConfig.typology[index];
+		return false;
+	},
 	
 	resize: function()
 	{
@@ -711,6 +719,7 @@ $.extend(APP.interactiveMap,
 								<div class="paragraphes text-justify"></div>\
 							  </div>\
 							  <div class="modal-footer">\
+							  	<button type="button" class="btn btn-warning btnExportKML"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> '+APP.i18n.translate('Download KML')+'</button>\
 							  	<button type="button" class="btn btn-warning btnExportGPX"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> '+APP.i18n.translate('Download GPX')+'</button>\
 								<button type="button" class="btn btn-warning btnPrint"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> '+APP.i18n.translate('print')+'</button>\
 								<button type="button" data-dismiss="modal" class="btn btn-primary">'+APP.i18n.translate('close')+'</button>\
@@ -735,6 +744,10 @@ $.extend(APP.interactiveMap,
 		});
 		myModal.find('.btnExportGPX').click(function(){
 			location.href = '/export/gpx/'+section+'/'+id;
+			return false;
+		});
+		myModal.find('.btnExportKML').click(function(){
+			location.href = '/export/kml/'+section+'/'+id;
 			return false;
 		});
 				
@@ -1071,6 +1084,7 @@ $.extend(APP.interactiveMap,
 				checkVoice('description', 'text');
 				checkVoice('length', 'ov-icage', {image: that.icons['length'], voiceResult: "features"});
 				checkVoice('altitude_gap', 'ov-icage', {image: that.icons.altitude_gap, voiceResult: "features"});
+				checkVoice('q_init', 'ov-icage', {voiceResult: "features"});
 				checkVoice('heightsprofilepath', 'c3chart', {chartType: 'line',voiceResult: "heightsprofilepath"});
 				checkVoice('modes', 'ov-descriptionWithInlineImages', {values: APP.config.localConfig.path_mode, label: 'mode', icon: "icon", voiceResult: "features", description: APP.i18n.translate('transportation_types')});
 				checkVoice('reason', 'text');
@@ -1882,6 +1896,22 @@ $.extend(APP.interactiveMap,
 					if (v.color)
 						oo.color = v.color;
 					oo.weight = APP.utils.isset(v.width)? v.width : 7;
+
+					if (v.geoJSON.type === "MultiLineString" || v.geoJSON.type === "LineString"){
+						switch (v.diff){
+							case "E":
+								oo.dashArray = 4*oo.weight+', '+2*oo.weight;
+							break;
+
+							case "EE":
+								oo.dashArray = 1*oo.weight+', '+oo.weight;
+							break;
+
+							case "EEA":
+								oo.weight = 0;
+							break;
+						}
+					}
 						
 					return oo;
 				},
@@ -1892,14 +1922,45 @@ $.extend(APP.interactiveMap,
 					});
 				}
 			});
+			if (v.geoJSON.type === "MultiLineString" || v.geoJSON.type === "LineString"){
+				switch (v.diff){
+					case "EEA":
+						layer.setText('+', {repeat: true,
+							offset: 0,
+							attributes: {fill: v.color,'font-size':'20','font-weight':'bold'}});
+					break;
+				}
+			}
 			$.each(['pt_start','pt_end'], function(k,tag){
 				if (v[tag])
 				{
 					var myObj = {
 						title: ((tag === 'pt_start')? "Inizio" : "Fine")+"  "+v.title,
+<<<<<<< HEAD
 						icon:  (tag === 'pt_start')? APP.map.startIcon : APP.map.stopIcon
+=======
+						zIndexOffset: 1000
+>>>>>>> branch 'trail' of https://fbellina@bitbucket.org/wlorenzetti/turisticgis.git
 					};
+<<<<<<< HEAD
 					
+=======
+					var typologyObj = that.getTypologyByName(tag)
+					if (typologyObj && typologyObj.marker)
+					{
+						myObj.icon = L.icon({
+							iconUrl: typologyObj.marker,
+							//iconRetinaUrl: 'my-icon@2x.png',
+							//iconSize: [38, 95],
+							iconAnchor: [16, 37],
+							//popupAnchor: [-3, -76],
+							//shadowUrl: 'my-icon-shadow.png',
+							//shadowRetinaUrl: 'my-icon-shadow@2x.png',
+							//shadowSize: [68, 95],
+							//shadowAnchor: [22, 94]
+						});
+					}
+>>>>>>> branch 'trail' of https://fbellina@bitbucket.org/wlorenzetti/turisticgis.git
 					var title = myObj.title;
 					APP.map.addLayer({layer: new L.Marker([v[tag].coordinates[1],v[tag].coordinates[0]], myObj).bindPopup(title), id: tag+" "+v.id});
 				}

@@ -9,7 +9,7 @@ class Controller_Export_Itinerary_Gpx extends Controller_Export_Base_Gpx{
     public function action_index()
     {
 
-        #get the sepcific path
+        #get the sepcific itinerary
         $this->_itinerary = ORM::factory('Itinerary', $this->request->param('id'));
         #star GPXF Obeject
         $this->filename = 'Itinerary_'.Inflector::underscore($this->_itinerary->name).'_'.time().'.gpx';

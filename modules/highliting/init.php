@@ -13,3 +13,11 @@ Route::set('confirmregistration', 'confirmregistration/<hash_registration>')
         'controller' => 'confirmregistration',
         'action'     => 'index',
     ));
+
+/**
+ * ADD HIGHLITING STATES
+ */
+$parms = ORM::factory('Highliting_State')->find_all()->as_array('name');
+
+foreach($parms as $parametro => $valore)
+    define('HSTATE_'.Inflector::underscore(strtoupper($parametro)), $valore->id);

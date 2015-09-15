@@ -96,7 +96,7 @@ abstract class Controller_Ajax_Auth_Strict extends Controller_Ajax_Main {
             
             if(Kohana::$environment === Kohana::DEVELOPMENT)
                 Kohana::$log->add(LOG::DEBUG, "ACL CONTROLLER FIT: ".$controller    );
-            
+
             if($this->request->action() === 'create' AND !$this->user->allow_capa($controller.'-insert'))
                     throw HTTP_Exception::factory(500,SAFE::message('capability','default',NULL,$controller.'-insert'));
             

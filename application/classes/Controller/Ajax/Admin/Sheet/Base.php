@@ -21,6 +21,8 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
                 'image_path' => 'Image_Path',
                 'image_area' => 'Image_Area'
     );
+
+    protected $_noValidation = [];
      
     protected $_url_multifield_postname;
     protected $_url_multifiled_value;
@@ -98,12 +100,22 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
     protected function _data_edit()
     {
         Filter::emptyPostDataToNULL();
-        
+        unset($_POST['data_mod'],$_POST['data_ins']);
         $this->_set_the_geom_edit();
-         $this->_orm->values($_POST);
-         $this->_orm->save();
+        $this->_orm->values($_POST);
 
-         $this->_set_typologies_edit();
+        if(isset($this->_orm->{$this->_orm->primary_key()}))
+        {
+            $this->_orm->data_mod = time();
+        }
+        else
+        {
+            $this->_orm->data_ins = $this->_orm->data_mod = time();
+        }
+
+        $this->_orm->save();
+
+        $this->_set_typologies_edit();
         if(isset($this->_orm->itineraries))
             $this->_set_itineraries_edit();
          
@@ -112,6 +124,7 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
          $this->_save_url_multifiled();
                   
     }
+
     
     /**
      * Save th eurl motifield values
@@ -193,8 +206,12 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
             
             //adding empty image validation
             $imageField = 'image_'.strtolower($this->_datastruct->get_nameOrm());
-            $this->_vorm->rule($imageField, 'not_empty');
-            $this->_vorm->label($imageField,__('Images to upload'));
+            if(!in_array($imageField,$this->_noValidation))
+            {
+                $this->_vorm->rule($imageField, 'not_empty');
+                $this->_vorm->label($imageField,__('Images to upload'));
+            }
+
        
         
         

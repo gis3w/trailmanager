@@ -12,17 +12,48 @@ class Datastruct_Path extends Datastruct {
         array(
             'name' => 'path-data',
             'position' => 'left',
-            'fields' => array('id','title','publish','description','length','altitude_gap','reason','period_schedule','general_features','accessibility','inquiry','pdf_print_qrcode'),
+            'fields' => array(
+                'id',
+                'data_ins',
+                'data_mod',
+                'title',
+                'publish',
+                'description',
+                'diff_current',
+                'length',
+                'altitude_gap',
+                'q_init_current',
+                'q_end_current',
+                'time_current',
+                'rev_time_current',
+                'accessibility',
+                'inquiry',
+                'pdf_print_qrcode',
+                'pdf_print_sheet'
+            ),
         ),
        array(
             'name' => 'path-foreign-data',
             'position' => 'right',
-            'fields' => array('itineraries','typology_id','typologies','path_modes','the_geom','color','width','image_path','video_path'),
+            'fields' => array(
+                'itineraries',
+                'typology_id',
+                'typologies',
+                'path_modes',
+                'the_geom',
+                'color',
+                'width',
+                'image_path',
+                'video_path'
+            ),
         ),
         array(
             'name' => 'path-block-data',
             'position' => 'block',
-            'fields' => array('url_path','heights_profile_path'),
+            'fields' => array(
+                'url_path',
+                'heights_profile_path'
+            ),
         ),
         array(
             'name' => 'path-base-data-path',
@@ -55,6 +86,7 @@ class Datastruct_Path extends Datastruct {
             'name' => 'path-base-data-current',
             'position' => 'left',
             'fields' => array(
+                'loc_current',
                 'percorr_current',
                 'rid_perc_current',
             ),
@@ -106,12 +138,20 @@ class Datastruct_Path extends Datastruct {
         array(
             'name' => 'tab-main',
             'icon' => 'globe',
-            'groups' => array('path-data','path-foreign-data','path-block-data'),
+            'groups' => array(
+                'path-data',
+                'path-foreign-data',
+                'path-base-data-current',
+                'path-block-data'
+            ),
         ),
         array(
             'name' => 'tab-base-data',
             'icon' => 'mobile-phone',
-            'groups' => array('path-base-data-path','path-base-data-geo','path-base-data-current','path-base-data-data'),
+            'groups' => array(
+                'path-base-data-path',
+                'path-base-data-geo',
+                'path-base-data-data'),
         ),
         array(
             'name' => 'tab-poi',
@@ -153,21 +193,23 @@ class Datastruct_Path extends Datastruct {
          );
         
             return array(
+                "data_ins" => array(
+                    'editable' => FALSE,
+                    'table_show' => TRUE,
+                    'label' => __('Insert date'),
+                ),
+                "data_mod" => array(
+                    'editable' => FALSE,
+                    'table_show' => TRUE,
+                    'label' => __('Update date'),
+                ),
                 "description" => array(
                     'form_input_type' => self::TEXTAREA,
                     'editor' => TRUE,
                 ),
-                 "reason" => array(
-                    'form_input_type' => self::TEXTAREA,
-                     'editor' => TRUE,
-                ),
                  "accessibility" => array(
                     'form_input_type' => self::TEXTAREA,
                      'editor' => TRUE,
-                ),
-                "general_features" => array(
-                    'form_input_type' => self::TEXTAREA,
-                    'editor' => TRUE,
                 ),
                 "color" => array(
                     "form_input_type" => self::MAPBOX_COLOR,
@@ -175,10 +217,6 @@ class Datastruct_Path extends Datastruct {
                 ),
                  "width" => array(
                     "default_value" => 3,
-                ),
-                 "period_schedule" => array(
-                    'form_input_type' => self::TEXTAREA,
-                    'editor' => TRUE,
                 ),
                  "the_geom" => array(
                     'form_input_type' => self::MAPBOX,
@@ -210,7 +248,7 @@ class Datastruct_Path extends Datastruct {
                     'url_values' => '/jx/typology',
                     'label' => __('Main typology'),
                      'description' => __('Select the main typology  for this point of interest'),
-                     "table_show" => TRUE,
+                     "table_show" => FALSE,
                 ),
                 "nome" => array(
                     'editable' => FALSE,
@@ -239,87 +277,155 @@ class Datastruct_Path extends Datastruct {
                 "percorr" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'percorr_segment',
                     'label' => __('Walkable path segment'),
+                    'editable' => FALSE,
                 )),
 
                 "rid_perc" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'rid_perc_segment',
                     'label' => __('Reduction walkable path segment'),
+                    'editable' => FALSE,
                 )),
 
                 "diff" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'diff_segment',
+                    'foreign_toshow' => '$1 - $2',
+                    'foreign_toshow_params' => array(
+                        '$1' => 'code',
+                        '$2' => 'description',
+                    ),
                     'label' => __('Difficulty typology path segment'),
+                    'editable' => FALSE,
                 )),
 
                 "em_natur" => array(
                     'label' => __('Natural emergency'),
+                    'editable' => FALSE,
                 ),
 
                 "ev_stcul" => array(
                     'label' => __('History cultural evidences'),
+                    'editable' => FALSE,
                 ),
 
                 "em_paes" => array(
                     'label' => __('Landascape values'),
+                    'editable' => FALSE,
                 ),
 
                 "op_attr" => array(
                     'label' => __('Works and equipment on the path'),
+                    'editable' => FALSE,
                 ),
 
                 "coordxini" => array(
                     'editable' => FALSE,
                     'suffix' => 'm',
                     'label' => __('Start X coordinate'),
+                    'editable' => FALSE,
                 ),
 
                 "coordxen" => array(
                     'editable' => FALSE,
                     'suffix' => 'm',
                     'label' => __('End X coordinate'),
+                    'editable' => FALSE,
                 ),
 
                 "coordyini" => array(
                     'editable' => FALSE,
                     'suffix' => 'm',
                     'label' => __('Start Y coordinate'),
+                    'editable' => FALSE,
                 ),
 
                 "coordyen" => array(
                     'editable' => FALSE,
                     'suffix' => 'm',
                     'label' => __('End Y coordinate'),
+                    'editable' => FALSE,
                 ),
 
                 "q_init" => array(
                     'editable' => FALSE,
                     'suffix' => 'm',
                     'label' => __('Start altitude'),
+                    'editable' => FALSE,
                 ),
                 "q_end" => array(
                     'editable' => FALSE,
                     'suffix' => 'm',
                     'label' => __('End altitude'),
+                    'editable' => FALSE,
                 ),
                 "l" => array(
                     'editable' => FALSE,
                     'suffix' => 'km',
                     'label' => __('Length'),
+                    'editable' => FALSE,
                 ),
                 "time" => array(
                     'editable' => FALSE,
                     'suffix' => 'm',
                     'label' => __('Travel time'),
+                    'editable' => FALSE,
                 ),
                 "rev_time" => array(
                     'editable' => FALSE,
                     'suffix' => 'm',
                     'label' => __('Back travel time'),
+                    'editable' => FALSE,
                 ),
 
                 /* Fields current can be update
                  * =============================
                  */
+
+
+                "loc_current" => array(
+                    'form_input_type' => self::TEXTAREA,
+                    'editor' => TRUE,
+                    'label' => __('Cross places'),
+                ),
+
+                "em_paes_current" => array(
+                    'form_input_type' => self::TEXTAREA,
+                    'editor' => TRUE,
+                    'label' => __('Landascape values'),
+                ),
+
+                "ev_stcul_current" => array(
+                    'form_input_type' => self::TEXTAREA,
+                    'editor' => TRUE,
+                    'label' => __('History cultural evidences'),
+                ),
+
+                "diff_current" => array_replace($baseSingleSelectField,array(
+                    'foreign_key' => 'diff_segment',
+                    'foreign_toshow' => '$1 - $2',
+                    'foreign_toshow_params' => array(
+                        '$1' => 'code',
+                        '$2' => 'description',
+                    ),
+                    'label' => __('Difficulty typology path segment'),
+                )),
+
+                "time_current" => array(
+                    'suffix' => 'min',
+                    'label' => __('Travel time'),
+                ),
+                "rev_time_current" => array(
+                    'suffix' => 'min',
+                    'label' => __('Back travel time'),
+                ),
+                "q_init_current" => array(
+                    'suffix' => 'm',
+                    'label' => __('Start quota'),
+                ),
+
+                "q_end_current" => array(
+                    'suffix' => 'm',
+                    'label' => __('End quota'),
+                ),
 
                 "percorr_current" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'percorr_segment',
@@ -402,6 +508,25 @@ class Datastruct_Path extends Datastruct {
                 )
         );
 
+        $fct['pdf_print_sheet']  = array_replace($this->_columnStruct,array(
+                'form_input_type' => self::BUTTON,
+                'input_class' => 'default',
+                'data_type' => 'pdf_print',
+                'url_values' => '/print/path/sheet/$1',
+                'url_values_params' => array(
+                    '$1' => 'id',
+                ),
+                'description' => __('Print path sheet'),
+                'table_show' => FALSE,
+                'label' => __(''),
+                'icon' => 'print',
+                'form_show' => array(
+                    self::STATE_INSERT => FALSE,
+                    self::STATE_UPDATE =>TRUE
+                ),
+            )
+        );
+
         $fct['pois_path'] = array_replace($this->_columnStruct, array(
                 "data_type" => self::SUBTABLE,
                 "table_show" => FALSE,
@@ -453,6 +578,7 @@ class Datastruct_Path extends Datastruct {
         );
 
         $fct['heights_profile_path'] = array_replace($this->_columnStruct, array(
+                "form_show" => FALSE,
                 "data_type" => self::C3CHART,
                 "c3chart_type" => self::C3CHART_TYPE_LINECHART,
                 "c3chart_x_axis" => 'cds2d',
