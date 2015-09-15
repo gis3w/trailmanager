@@ -1938,6 +1938,7 @@ $.extend(APP.interactiveMap,
 					});
 				}
 			});
+			layer.bindLabel(v.title);
 			if (v.geoJSON.type === "MultiLineString" || v.geoJSON.type === "LineString"){
 				switch (v.diff){
 					case "EEA":
