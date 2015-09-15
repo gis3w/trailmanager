@@ -26,6 +26,10 @@ class Datastruct_Image_Path extends Datastruct_Image_Poi {
                         'download_options' => array(
                             '$1' => self::$preKeyField.'-file',
                             ),
+                         'show' => 'admin/download/imagepath/show/$1',
+                         'show_options' => array(
+                             '$1' => self::$preKeyField.'-file',
+                         ),
                        'thumbnail' => 'admin/download/imagepath/thumbnail/$1',
                        'thumbnail_options' => array(
                             '$1' => self::$preKeyField.'-file',
