@@ -518,12 +518,12 @@ $.extend(APP.subforms,
 				{
 					if (v.data_type=="file")
 					{
-						if (v.urls.download)
+						if (v.urls.show)
 						{
-							dUrl = v.urls.download;
-							if (v.urls.download_options)
+							dUrl = v.urls.show;
+							if (v.urls.show_options)
 							{
-								$.each(v.urls.download_options, function(i1,v1){
+								$.each(v.urls.show_options, function(i1,v1){
 									dUrl = APP.utils.replaceAll(i1,data[v1],dUrl);
 								});
 							}
