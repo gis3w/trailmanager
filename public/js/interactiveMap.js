@@ -2766,7 +2766,7 @@ $.extend(APP.interactiveMap,
 		var s = that.frontPrefix+section;
 		if (!APP.anagrafica.hasOwnProperty("sections"))
 			APP.anagrafica.sections = {};
-		//if (!APP.anagrafica.sections.hasOwnProperty(s)) // forzo il reset perch� in questo progetto i datastruct possono cambiare dinamicamente
+		//if (!APP.anagrafica.sections.hasOwnProperty(s)) // forzo il reset perchï¿½ in questo progetto i datastruct possono cambiare dinamicamente
 			APP.anagrafica.sections[s] = APP.utils.setBaseStructure(s, s);
 		APP.anagrafica.getStructure(APP.config.localConfig.urls.dStruct+"?tb="+s, s, null, false, callback);
 	},
