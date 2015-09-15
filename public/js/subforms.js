@@ -531,10 +531,14 @@ $.extend(APP.subforms,
 						return false;
 					}
 				});
-				APP.utils.showMsg({
-					title: "Anteprima",
-					content: '<iframe src="'+dUrl+'" style="border: 0px; width: 100%; height: 350px"> </iframe>',
+				that.myModal = APP.modals.create({
+					container: $("body"),
+					id: "previewModal",
+					size: "lg",
+					header: "Anteprima",
+					body: '<iframe src="'+dUrl+'" style="border: 0px; width: 100%; height: 350px"> </iframe>',
 				});
+				that.myModal.modal("show");
 				return;
 			default:
 				console.log("Aggiungi questo tipo: "+type);
