@@ -32,6 +32,7 @@ return array(
 		//'../modules/pikachoose/lib/jquery.jcarousel.min.js',
 		//'../modules/pikachoose/lib/jquery.pikachoose.min.js',
 		'../modules/leaflet-0.7.5/leaflet.js',
+    	'../modules/Leaflet.EasyButton/src/easy-button.js',
 		//'../modules/leaflet-hash/leaflet-hash.js',
     	'../modules//Leaflet.Coordinates/dist/Leaflet.Coordinates-0.1.4.min.js',
     	'../modules/Leaflet.label/dist/leaflet.label.js',

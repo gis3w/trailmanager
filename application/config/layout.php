@@ -31,6 +31,7 @@ return array(
         //'../modules/pikachoose/styles/bottom.css' => 'screen',
         '../modules/chosen_v1.0.0/chosen.css' => 'screen',
         '../modules/leaflet-0.7.5/leaflet.css' => 'screen',
+    	'../modules/Leaflet.EasyButton/src/easy-button.css' => 'screen',
     	'../modules/Leaflet.label/dist/leaflet.label.css' => 'screen',
     	'../modules//Leaflet.Coordinates/dist/Leaflet.Coordinates-0.1.4.css' => 'screen',
         '../modules/leaflet-locatecontrol/src/L.Control.Locate.css' => 'screen',		
