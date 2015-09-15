@@ -29,7 +29,8 @@ $.extend(APP.subforms,
 			str.append("<button type='button' id='show_"+i+"' data-subformname='"+subformName+"' name='show' class='btn btn-default' ><i class='icon-eye-open'></i></button>");
 		if ($.inArray("delete", that.sectionTarget.subforms[subformName].capabilities) > -1)
 			str.append("<button type='button' id='remove_"+i+"' data-subformname='"+subformName+"' name='remove' class='btn btn-danger' ><i class='icon-trash'></i></button>");
-		str.append("<button type='button' id='download_"+i+"' data-subformname='"+subformName+"' name='download' class='btn btn-warning' ><i class='icon-download'></i></button>");
+		if (that.sectionTarget.subforms[subformName].enctype == "multipart/form-data")
+			str.append("<button type='button' id='download_"+i+"' data-subformname='"+subformName+"' name='download' class='btn btn-warning' ><i class='icon-download'></i></button>");
 		//str.find("button").data({subformName: subformName});
 		return str.html();
 	},
@@ -485,7 +486,28 @@ $.extend(APP.subforms,
 				});
 				return;
 			case "download":
-
+				var dUrl = "";
+				$.each(that.sectionTarget.subforms[data.subformname].columns,function(i,v)
+				{
+					if (v.data_type=="file")
+					{
+						if (v.urls.download)
+						{
+							dUrl = v.urls.download;
+							if (v.urls.download_options)
+							{
+								$.each(v.urls.download_options, function(i1,v1){
+									dUrl = APP.utils.replaceAll(i1,data[v1],dUrl);
+								});
+							}
+						}
+						return false;
+					}
+				});
+				$.fileDownload(dUrl)
+				.fail(function () {
+					APP.utils.showNoty({title: APP.i18n.translate("error"), type: "error", content: APP.i18n.translate("download_failure")});
+				});
 				return;
 			default:
 				console.log("Aggiungi questo tipo: "+type);
