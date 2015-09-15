@@ -15,6 +15,7 @@ class Controller_Print_Path_Sheet extends Controller_Print_Base_Auth_Nostrict
         parent::action_index();
         // get the map extent for path
         $this->path = ORMGIS::factory('Path',$this->request->param('id'));
+        View::set_global('sheetTitle',__('Path').' '.$this->path->title);
 
         $newExtent = $this->_calculateExtentWithBuffer($this->path,0.1,3857);
 
@@ -42,23 +43,23 @@ class Controller_Print_Path_Sheet extends Controller_Print_Base_Auth_Nostrict
         foreach ($heights_profile_data as $height)
         {
             $z[] = (float)$height->z;
-            $x[] = round((float)$height->cds2d,1);
+            $x[] = round((float)$height->cds2d,0);
         }
 
         $factory = new pChartFactory();
 
         // create and populate the pData class
         $myData = $factory->newData($z, "Heights");
-        $myData->setAxisName(0,__('Heights').'(m)');
-        $serieSettings = array("R"=>229,"G"=>11,"B"=>11,"Alpha"=>80);
-        $myData->setPalette("Heights",$serieSettings);
+        $myData->setAxisName(0,__('Height').'(m)');
+        $serieSettings = array("R"=>221,"G"=>72,"B"=>20,"Alpha"=>90);
+        $myData->setPalette("Height",$serieSettings);
 
 
 
-        $myData->addPoints($x, "Distances");
-        $myData->setSerieDescription("Distances",__("Distance(m)"));
-        $myData->setAbscissa("Distances");
-        $myData->setAbscissaName(__("Distance(m)"));
+        $myData->addPoints($x, "Distance");
+        $myData->setSerieDescription("Distance",__("Distance")."(m)");
+        $myData->setAbscissa("Distance");
+        $myData->setAbscissaName(__("Distance")."(m)");
 
         // create the image and set the data
         $myPicture = $factory->newImage(700, 300, $myData);

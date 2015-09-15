@@ -203,6 +203,7 @@ return array(
     'highliting_typology_id' => 'Tipo di segnalazione',
     'Highliting_typology_id' => 'Tipo di segnalazione',
     'Current highliting state' => 'Stato corrente',
+    'Highliting typology' => 'Tipo segnalazione/manutenzione',
     'Subject' => 'Soggetto',
 
 
@@ -238,6 +239,26 @@ return array(
     'Reduction walkable path segment' => 'Riduzione di percorribilità',
     'Works and equipment on the path' => 'Rilevatori e attrezzatura',
     'Notes history' => 'Storico note',
+    'Travel time' => 'Tempo di percorrenza',
+    'Back travel time' => 'Tempo di ritorno',
+    'time_current' => 'Tempo di percorrenza',
+    'rev_time_current' => 'Tempo di ritorno',
+    'q_init_current' => 'Quota iniziale',
+    'q_end_current' => 'Quota finale',
+    'diff_current' => 'Difficoltà',
+    'Loc_current' => 'Località attraversate',
+    'Em_natur_current' => 'Emergenze naturali',
+    'Em_paes_current' => 'Emergenze paesaggistiche',
+    'Ev_stcul_current' => 'Evidenze storico-culturali',
+    'Distance' => 'Distanza',
+    'Height' => 'Altezza',
+    'Pictures' => 'Immagini',
+    'Characteristics' => 'Caratteristiche',
+    'Creation date' => 'Data di creazione',
+    'Last update' => 'Ultimo aggiornamento',
+    'Path' => 'Sentiero di riferimento',
+
+
 
 
 
@@ -302,6 +323,11 @@ return array(
     'highliting-poi-foreign-data' => 'Geodati/Tipologia',
     'highliting-poi-ending' => 'Esiti',
     'highliting-poi-note' => 'Note di processo',
+    'highliting-path-abstract' => 'Riassunto',
+    'highliting-path-foreign-data' => 'Geodati/Tipologia',
+    'highliting-path-data' => 'Dati generali della segnalazione/manutenzione lineare',
+    'highliting-path-ending' => 'Esiti',
+    'highliting-path-note' => 'Note di processo',
 
 
     

@@ -6,6 +6,13 @@ class Model_Path extends ORMGIS {
     
     public $epsg_db = 3004;
     public $epsg_out = 4326;
+
+    protected $_belongs_to = array(
+        'difficulty_current' => array(
+            'model'   => 'Diff_Segment',
+            'foreign_key' => 'diff_current',
+        ),
+    );
     
      protected $_has_many = array(
         'itineraries' => array(

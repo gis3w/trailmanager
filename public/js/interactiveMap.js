@@ -674,8 +674,7 @@ $.extend(APP.interactiveMap,
 			myModal.remove();
 		
 		var myTitle = that.getObjectTitle(section, id);
-		
-		myModal = $('<div id="modal-'+section+'-info" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="'+section+'" aria-hidden="true">\
+		var sheetTemplate = '<div id="modal-'+section+'-info" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="'+section+'" aria-hidden="true">\
 						<div class="modal-dialog modal-lg">\
 							<div class="modal-content">\
 							  <div class="modal-header">\
@@ -688,6 +687,7 @@ $.extend(APP.interactiveMap,
 									<div class="row thumbnailsRow" style="padding: 20px; vertical-align: middle"></div>\
 								</div>\
 								<div class="row">\
+									<!--\
 									<div class="col-md-3">\
 										<div class="panel panel-default categories" style="display: none">\
 											<div class="panel-heading">\
@@ -697,7 +697,8 @@ $.extend(APP.interactiveMap,
 											</div>\
 										</div>\
 									</div>\
-									<div class="col-md-4">\
+									-->\
+									<div class="col-md-5">\
 										<div class="panel panel-default features" style="display: none">\
 											<div class="panel-heading">\
 												<h3 class="panel-title">'+APP.i18n.translate('features')+'</h3>\
@@ -706,7 +707,7 @@ $.extend(APP.interactiveMap,
 											</div>\
 										</div>\
 									</div>\
-									<div class="col-md-5">\
+									<div class="col-md-7">\
 									<div class="panel panel-default heightsprofilepath" style="display: none">\
 										<div class="panel-heading">\
 											<h3 class="panel-title">'+APP.i18n.translate('Heightsprofilepath')+'</h3>\
@@ -719,14 +720,21 @@ $.extend(APP.interactiveMap,
 								<div class="paragraphes text-justify"></div>\
 							  </div>\
 							  <div class="modal-footer">\
-							  	<button type="button" class="btn btn-warning btnExportKML"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> '+APP.i18n.translate('Download KML')+'</button>\
-							  	<button type="button" class="btn btn-warning btnExportGPX"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> '+APP.i18n.translate('Download GPX')+'</button>\
-								<button type="button" class="btn btn-warning btnPrint"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> '+APP.i18n.translate('print')+'</button>\
-								<button type="button" data-dismiss="modal" class="btn btn-primary">'+APP.i18n.translate('close')+'</button>\
-							  </div>\
+							  	';
+								var sheetButtonKML = '<button type="button" class="btn btn-warning btnExportKML"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> '+APP.i18n.translate('Download KML')+'</button>';
+							  	var sheetButtonGPX = '<button type="button" class="btn btn-warning btnExportGPX"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> '+APP.i18n.translate('Download GPX')+'</button>';
+								var sheetButtonPrint = '<button type="button" class="btn btn-warning btnPrint"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> '+APP.i18n.translate('print')+'</button>';
+								var sheetButtonClose = '<button type="button" data-dismiss="modal" class="btn btn-primary">'+APP.i18n.translate('close')+'</button>';
+								sheetTemplate += sheetButtonKML + sheetButtonGPX;
+								if(section != 'itinerary')
+									sheetTemplate += sheetButtonPrint;
+								sheetTemplate += sheetButtonClose;
+							  sheetTemplate += '</div>\
 							</div>\
 						</div>\
-					</div>');
+					</div>';
+
+		myModal = $(sheetTemplate);
 		
 		myModal.find('.btnPrint').click(function(){
 			var printUrl = '/print/'+section+'/sheet/'+id+'?background_layer_id=';
@@ -966,8 +974,8 @@ $.extend(APP.interactiveMap,
 							that.heightsprofileCharts[c3c.attr("name")] = c3.generate({
 								bindto: c3c[0],
 								size: {
-								  width: 310,
-								  height: 150
+								  width: 450,
+								  height: 180
 								},
 								padding: {
 									right: 15
@@ -1079,12 +1087,20 @@ $.extend(APP.interactiveMap,
 				checkVoice('video_poi', 'video');
 				break;
 			case "path":
-				checkVoice('typology_id', 'ov-img', {values: APP.config.localConfig.typology, label: 'name', icon: "icon", voiceResult: "categories"});
-				checkVoice('typologies', 'ov-img', {values: APP.config.localConfig.typology, label: 'name', icon: "icon", voiceResult: "categories"});
+				//checkVoice('typology_id', 'ov-img', {values: APP.config.localConfig.typology, label: 'name', icon: "icon", voiceResult: "categories"});
+				//checkVoice('typologies', 'ov-img', {values: APP.config.localConfig.typology, label: 'name', icon: "icon", voiceResult: "categories"});
 				checkVoice('description', 'text');
+				checkVoice('loc_current', 'text');
+				checkVoice('em_natur_current', 'text');
+				checkVoice('em_paes_current', 'text');
+				checkVoice('ev_stcul_current', 'text');
+				checkVoice('diff_current', 'ov-icage',{voiceResult: "features"});
 				checkVoice('length', 'ov-icage', {image: that.icons['length'], voiceResult: "features"});
 				checkVoice('altitude_gap', 'ov-icage', {image: that.icons.altitude_gap, voiceResult: "features"});
-				checkVoice('q_init', 'ov-icage', {voiceResult: "features"});
+				checkVoice('q_init_current', 'ov-icage',{voiceResult: "features"});
+				checkVoice('q_end_current', 'ov-icage',{voiceResult: "features"});
+				checkVoice('time_current', 'ov-icage',{voiceResult: "features"});
+				checkVoice('rev_time_current', 'ov-icage',{voiceResult: "features"});
 				checkVoice('heightsprofilepath', 'c3chart', {chartType: 'line',voiceResult: "heightsprofilepath"});
 				checkVoice('modes', 'ov-descriptionWithInlineImages', {values: APP.config.localConfig.path_mode, label: 'mode', icon: "icon", voiceResult: "features", description: APP.i18n.translate('transportation_types')});
 				checkVoice('reason', 'text');

@@ -4,7 +4,14 @@
     <page margin = "2.5cm 2.5cm"></page>
     <h2 color="gray" border-type="bottom" border-color="gray" border-size="0.5px" padding-bottom="10px" font-size="24px"></h2>
     <div class="header1" height="60px" width="100%"></div>
-    <div class="header1-logo"  text-align="center" width="100%"></div>
+    <div class="header1-logo"  text-align="center" width="100%">
+        <img float="left"/>
+        <h1 float="right" color="white" margin-right="10px" margin-top="20px" ></h1>
+    </div>
+    <div class="item-image">
+        <img float="left"/>
+        <div float="left"></div>
+    </div>
     <div class="footer1" color="gray" padding-top="10px"  height="30px" border-type="top" border-color="gray" border-size="0.5px"></div>
     <div class="map-image" margin-top="10px"></div>
     <header margin-bottom="10px"></header>
@@ -12,7 +19,9 @@
     <img class="image-image" width="210px"/>
     <div class="box" float="left" border-color="#eaeaea" border-radius="4px">
         <h3 background.color="#eaeaea" border-color="#eaeaea" border-radius="4px" margin-top="0px" color="gray" padding="3px 3px 3px 3px"></h3>
+        <div class="body-box" padding="10px"></div>
     </div>
     <div class="category" width="268px" margin-right="20px"></div>
-    <div class="characteristics" width="400px"></div>
+    <div class="characteristics" width="100%"></div>
+    <div class="heights-profile-chart" width="100%"></div>
 </stylesheet>

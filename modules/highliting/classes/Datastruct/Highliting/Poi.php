@@ -83,6 +83,7 @@ class Datastruct_Highliting_Poi extends Datastruct {
                     'foreign_toshow_params' => array(
                         '$1' => 'name',
                     ),
+                    'label' => __('Highliting typology'),
                     'url_values' => Kohana::$base_url.'jx/highlitingtypology',
                      'description' => __('Select the main typology for this highlighting'),
                      "table_show" => TRUE,

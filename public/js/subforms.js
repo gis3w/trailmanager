@@ -13,6 +13,7 @@ $.extend(APP.subforms,
 		div.find(".icon-eye-open").parents("button").first().tooltip({title: APP.i18n.translate("show")});
 		div.find(".icon-pencil").parents("button").first().tooltip({title: APP.i18n.translate("edit")});
 		div.find(".icon-trash").parents("button").first().tooltip({title: APP.i18n.translate("remove")});
+		div.find(".icon-download").parents("button").first().tooltip({title: APP.i18n.translate("download")});
 		div.find(".icon-lock").parents("button").first().tooltip({title: APP.i18n.translate("off")});
 		div.find(".icon-off").parents("button").first().tooltip({title: APP.i18n.translate("on")});
 	},
@@ -28,6 +29,7 @@ $.extend(APP.subforms,
 			str.append("<button type='button' id='show_"+i+"' data-subformname='"+subformName+"' name='show' class='btn btn-default' ><i class='icon-eye-open'></i></button>");
 		if ($.inArray("delete", that.sectionTarget.subforms[subformName].capabilities) > -1)
 			str.append("<button type='button' id='remove_"+i+"' data-subformname='"+subformName+"' name='remove' class='btn btn-danger' ><i class='icon-trash'></i></button>");
+		str.append("<button type='button' id='download_"+i+"' data-subformname='"+subformName+"' name='download' class='btn btn-warning' ><i class='icon-download'></i></button>");
 		//str.find("button").data({subformName: subformName});
 		return str.html();
 	},
@@ -481,6 +483,9 @@ $.extend(APP.subforms,
 					content: deleteConfirmMsg,
 					buttons: btns
 				});
+				return;
+			case "download":
+
 				return;
 			default:
 				console.log("Aggiungi questo tipo: "+type);

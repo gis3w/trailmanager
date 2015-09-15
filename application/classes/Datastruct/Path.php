@@ -79,6 +79,7 @@ class Datastruct_Path extends Datastruct {
                 'coordyen',
                 'q_init',
                 'q_end',
+                'diff_q',
                 'l'),
         ),
 
@@ -87,6 +88,9 @@ class Datastruct_Path extends Datastruct {
             'position' => 'left',
             'fields' => array(
                 'loc_current',
+                'em_natur_current',
+                'em_paes_current',
+                'ev_stcul_current',
                 'percorr_current',
                 'rid_perc_current',
             ),
@@ -252,38 +256,47 @@ class Datastruct_Path extends Datastruct {
                 ),
                 "nome" => array(
                     'editable' => FALSE,
+                    'table_show' => FALSE,
                 ),
                 "loc" => array(
                     'editable' => FALSE,
+                    'table_show' => FALSE,
                 ),
                 "se" => array(
                     'editable' => FALSE,
                 ),
                 "bike" => array(
                     'editable' => FALSE,
+                    'table_show' => FALSE,
                 ),
                 "ip" => array(
                     'editable' => FALSE,
+                    'table_show' => FALSE,
                 ),
                 "cod_f1" => array(
                     'editable' => FALSE,
+                    'table_show' => FALSE,
                 ),
                 "cod_f2" => array(
                     'editable' => FALSE,
+                    'table_show' => FALSE,
                 ),
                 "descriz" => array(
                     'editable' => FALSE,
+                    'table_show' => FALSE,
                 ),
                 "percorr" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'percorr_segment',
                     'label' => __('Walkable path segment'),
                     'editable' => FALSE,
+                    'table_show' => FALSE,
                 )),
 
                 "rid_perc" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'rid_perc_segment',
                     'label' => __('Reduction walkable path segment'),
                     'editable' => FALSE,
+                    'table_show' => FALSE,
                 )),
 
                 "diff" => array_replace($baseSingleSelectField,array(
@@ -295,26 +308,31 @@ class Datastruct_Path extends Datastruct {
                     ),
                     'label' => __('Difficulty typology path segment'),
                     'editable' => FALSE,
+                    'table_show' => FALSE,
                 )),
 
                 "em_natur" => array(
                     'label' => __('Natural emergency'),
                     'editable' => FALSE,
+                    'table_show' => FALSE,
                 ),
 
                 "ev_stcul" => array(
                     'label' => __('History cultural evidences'),
                     'editable' => FALSE,
+                    'table_show' => FALSE,
                 ),
 
                 "em_paes" => array(
                     'label' => __('Landascape values'),
                     'editable' => FALSE,
+                    'table_show' => FALSE,
                 ),
 
                 "op_attr" => array(
                     'label' => __('Works and equipment on the path'),
                     'editable' => FALSE,
+                    'table_show' => FALSE,
                 ),
 
                 "coordxini" => array(
@@ -322,6 +340,7 @@ class Datastruct_Path extends Datastruct {
                     'suffix' => 'm',
                     'label' => __('Start X coordinate'),
                     'editable' => FALSE,
+                    'table_show' => FALSE,
                 ),
 
                 "coordxen" => array(
@@ -329,6 +348,7 @@ class Datastruct_Path extends Datastruct {
                     'suffix' => 'm',
                     'label' => __('End X coordinate'),
                     'editable' => FALSE,
+                    'table_show' => FALSE,
                 ),
 
                 "coordyini" => array(
@@ -336,6 +356,7 @@ class Datastruct_Path extends Datastruct {
                     'suffix' => 'm',
                     'label' => __('Start Y coordinate'),
                     'editable' => FALSE,
+                    'table_show' => FALSE,
                 ),
 
                 "coordyen" => array(
@@ -343,6 +364,7 @@ class Datastruct_Path extends Datastruct {
                     'suffix' => 'm',
                     'label' => __('End Y coordinate'),
                     'editable' => FALSE,
+                    'table_show' => FALSE,
                 ),
 
                 "q_init" => array(
@@ -350,30 +372,42 @@ class Datastruct_Path extends Datastruct {
                     'suffix' => 'm',
                     'label' => __('Start altitude'),
                     'editable' => FALSE,
+                    'table_show' => FALSE,
                 ),
                 "q_end" => array(
                     'editable' => FALSE,
                     'suffix' => 'm',
                     'label' => __('End altitude'),
                     'editable' => FALSE,
+                    'table_show' => FALSE,
+                ),
+                "diff_q" => array(
+                    'editable' => FALSE,
+                    'suffix' => 'm',
+                    'label' => __('Altitude gap'),
+                    'editable' => FALSE,
+                    'table_show' => FALSE,
                 ),
                 "l" => array(
                     'editable' => FALSE,
                     'suffix' => 'km',
                     'label' => __('Length'),
                     'editable' => FALSE,
+                    'table_show' => FALSE,
                 ),
                 "time" => array(
                     'editable' => FALSE,
                     'suffix' => 'm',
                     'label' => __('Travel time'),
                     'editable' => FALSE,
+                    'table_show' => FALSE,
                 ),
                 "rev_time" => array(
                     'editable' => FALSE,
                     'suffix' => 'm',
                     'label' => __('Back travel time'),
                     'editable' => FALSE,
+                    'table_show' => FALSE,
                 ),
 
                 /* Fields current can be update
@@ -385,18 +419,28 @@ class Datastruct_Path extends Datastruct {
                     'form_input_type' => self::TEXTAREA,
                     'editor' => TRUE,
                     'label' => __('Cross places'),
+                    'table_show' => FALSE,
+                ),
+
+                "em_natur_current" => array(
+                    'form_input_type' => self::TEXTAREA,
+                    'editor' => TRUE,
+                    'label' => __('Natural emergency'),
+                    'table_show' => FALSE,
                 ),
 
                 "em_paes_current" => array(
                     'form_input_type' => self::TEXTAREA,
                     'editor' => TRUE,
                     'label' => __('Landascape values'),
+                    'table_show' => FALSE,
                 ),
 
                 "ev_stcul_current" => array(
                     'form_input_type' => self::TEXTAREA,
                     'editor' => TRUE,
                     'label' => __('History cultural evidences'),
+                    'table_show' => FALSE,
                 ),
 
                 "diff_current" => array_replace($baseSingleSelectField,array(
@@ -407,34 +451,41 @@ class Datastruct_Path extends Datastruct {
                         '$2' => 'description',
                     ),
                     'label' => __('Difficulty typology path segment'),
+                    'table_show' => FALSE,
                 )),
 
                 "time_current" => array(
                     'suffix' => 'min',
                     'label' => __('Travel time'),
+                    'table_show' => FALSE,
                 ),
                 "rev_time_current" => array(
                     'suffix' => 'min',
                     'label' => __('Back travel time'),
+                    'table_show' => FALSE,
                 ),
                 "q_init_current" => array(
                     'suffix' => 'm',
                     'label' => __('Start quota'),
+                    'table_show' => FALSE,
                 ),
 
                 "q_end_current" => array(
                     'suffix' => 'm',
                     'label' => __('End quota'),
+                    'table_show' => FALSE,
                 ),
 
                 "percorr_current" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'percorr_segment',
                     'label' => __('Walkable path segment'),
+                    'table_show' => FALSE,
                 )),
 
                 "rid_perc_current" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'rid_perc_segment',
                     'label' => __('Reduction walkable path segment'),
+                    'table_show' => FALSE,
                 )),
 
 
