@@ -32,7 +32,7 @@ $.extend(APP.subforms,
 		if (that.sectionTarget.subforms[subformName].enctype == "multipart/form-data")
 		{
 			str.append("<button type='button' id='download_"+i+"' data-subformname='"+subformName+"' name='download' class='btn btn-warning' ><i class='icon-download'></i></button>");
-			str.append("<button type='button' id='file_preview_"+i+"' data-subformname='"+subformName+"' name='file_preview' class='btn btn-default' ><i class='icon-eye-open'></i></button>");
+			str.append("<button type='button' id='file_preview_"+i+"' data-subformname='"+subformName+"' name='file_preview' class='btn btn-info' ><i class='icon-eye-open'></i></button>");
 		}
 		//str.find("button").data({subformName: subformName});
 		return str.html();
@@ -531,10 +531,14 @@ $.extend(APP.subforms,
 						return false;
 					}
 				});
-				APP.utils.showMsg({
-					title: "Anteprima",
-					content: '<iframe src="'+dUrl+'" style="border: 0px; width: 100%; height: 350px"> </iframe>',
+				that.myModal = APP.modals.create({
+					container: $("body"),
+					id: "previewModal",
+					size: "lg",
+					header: "Anteprima",
+					body: '<iframe src="'+dUrl+'" style="border: 0px; width: 100%; height: 350px"> </iframe>',
 				});
+				that.myModal.modal("show");
 				return;
 			default:
 				console.log("Aggiungi questo tipo: "+type);
