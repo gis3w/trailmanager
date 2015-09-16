@@ -4,8 +4,7 @@ class Controller_Ajax_Admin_Base_Highliting extends Controller_Ajax_Admin_Sheet_
 
     protected  $_subformToSave = array(
         'image_highliting_poi' => 'Image_Highliting_Poi',
-        'image_highliting_path' => 'Image_Highliting_Path',
-        'image_highliting_area' => 'Image_Highliting_Area'
+        'image_highliting_path' => 'Image_Highliting_Path'
     );
 
     protected $_noValidation = [

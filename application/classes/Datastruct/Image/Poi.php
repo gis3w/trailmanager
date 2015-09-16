@@ -55,6 +55,10 @@ class Datastruct_Image_Poi extends Datastruct {
                         'download_options' => array(
                             '$1' => self::$preKeyField.'-file',
                             ),
+                        'show' => 'admin/download/imagepoi/show/$1',
+                        'show_options' => array(
+                            '$1' => self::$preKeyField.'-file',
+                        ),
                         'thumbnail' => 'admin/download/imagepoi/thumbnail/$1',
                         'thumbnail_options' => array(
                             '$1' => self::$preKeyField.'-file',
