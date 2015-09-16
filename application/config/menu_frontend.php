@@ -58,6 +58,14 @@ return array(
             'icon' => 'user',
             'display' => FALSE,
         ),
+        'logout' => array(
+            'id' =>'logout',
+            'name' => __('Logout'),
+            'url' => NULL,
+            'capability' => NULL,
+            'icon' => 'user',
+            'display' => FALSE,
+        ),
     ),
     
 );
