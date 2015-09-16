@@ -269,40 +269,46 @@ $.extend(APP.interactiveMap,
 				that.markerByCoordsCtrl.removeFrom(APP.map.globalData[APP.map.currentMapId].map);
 			}
 			
-			that.markerByCoordsCtrl = L.easyButton( '<i class="icon icon-compass"></i>', function()
-			{
-				var myBody = $('<form>\
-						  <div class="form-group">\
-						    <label for="latitude">'+APP.i18n.translate("Latitude")+'</label>\
-						    <input type="text" class="form-control" name="latitude" id="modal-latitude" placeholder="'+APP.i18n.translate("latitude")+'">\
-						  </div>\
-						    <div class="form-group">\
-						    <label for="longitude">'+APP.i18n.translate("Longitude")+'</label>\
-						    <input type="text" class="form-control" name="longitude" id="modal-longitude" placeholder="'+APP.i18n.translate("longitude")+'">\
-						  </div>\
-						</form>');
-				
-				var myFooter = $('<div><button type="button" class="btn btn-success saveBtn">Salva</button><button type="button" class="btn btn-default cancelBtn">Annulla</button></div>');
-				myFooter.find(".saveBtn").click(function(){
-					var lng = that.markerByCoordsModal.find("#modal-longitude").val();
-					var lat = that.markerByCoordsModal.find("#modal-latitude").val();
-					APP.map.globalData[APP.map.currentMapId].map.panTo([lat,lng]);
-					that.markerByCoordsModal.modal("hide");
-					that.addMarker([lat,lng]);
-				});
-				myFooter.find(".cancelBtn").click(function(){
-					that.markerByCoordsModal.modal("hide");
-				});
-				
-				that.markerByCoordsModal = APP.modals.create({
-					container: $("body"),
-					id: "markerByCoordsModal",
-					size: "sm",
-					header: APP.i18n.translate("Add coordinates"),
-					body: myBody,
-					footer: myFooter, 
-				});
-				that.markerByCoordsModal.modal("show");
+			that.markerByCoordsCtrl = L.easyButton({
+				states: [{
+				    stateName: 'add-marker-by-coords',
+				    icon: 'icon-compass',
+				    title: APP.i18n.translate('add marker by coords'),
+				    onClick: function(control) {
+						var myBody = $('<form>\
+								  <div class="form-group">\
+								    <label for="latitude">'+APP.i18n.translate("Latitude")+'</label>\
+								    <input type="text" class="form-control" name="latitude" id="modal-latitude" placeholder="'+APP.i18n.translate("latitude")+'">\
+								  </div>\
+								    <div class="form-group">\
+								    <label for="longitude">'+APP.i18n.translate("Longitude")+'</label>\
+								    <input type="text" class="form-control" name="longitude" id="modal-longitude" placeholder="'+APP.i18n.translate("longitude")+'">\
+								  </div>\
+								</form>');
+						
+						var myFooter = $('<div><button type="button" class="btn btn-success saveBtn">Salva</button><button type="button" class="btn btn-default cancelBtn">Annulla</button></div>');
+						myFooter.find(".saveBtn").click(function(){
+							var lng = that.markerByCoordsModal.find("#modal-longitude").val();
+							var lat = that.markerByCoordsModal.find("#modal-latitude").val();
+							APP.map.globalData[APP.map.currentMapId].map.panTo([lat,lng]);
+							that.markerByCoordsModal.modal("hide");
+							that.addMarker([lat,lng]);
+						});
+						myFooter.find(".cancelBtn").click(function(){
+							that.markerByCoordsModal.modal("hide");
+						});
+						
+						that.markerByCoordsModal = APP.modals.create({
+							container: $("body"),
+							id: "markerByCoordsModal",
+							size: "sm",
+							header: APP.i18n.translate("Add coordinates"),
+							body: myBody,
+							footer: myFooter, 
+						});
+						that.markerByCoordsModal.modal("show");
+					}
+				  }]
 			}).addTo(APP.map.globalData[APP.map.currentMapId].map);
 			
 			/*
