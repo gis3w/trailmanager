@@ -8,7 +8,7 @@ $.extend(APP.adminMap,
 		layers: null,
 		scale: null,
 	},
-	geometries: ['polyline','polygon','rectangle','circle','marker'], //leaflet.draw
+	geometries: ['polyline','marker'], //leaflet.draw
 	bCircleMarker: false,
 	
 	datastruct: {},
@@ -18,12 +18,29 @@ $.extend(APP.adminMap,
 			'idAttribute': "id",
 			'titleAttribute': "subject",
 			'tableId': "reportingsTable",
+			'tableFields': ['id','subject','highliting_typology_id','data_ins','data_mod','highliting_path_id','reporter','supervisor','executor','current_highliting_sate']
 		},
 		'trails': {
-			'resource': "path",
+			'resource': "highliting_path",
 			'idAttribute': "id",
-			'titleAttribute': "title",
-			'tableId': null,
+			'titleAttribute': "subject",
+			'tableId': "trailsTable",
+			'tableFields': ['id','subject','highliting_typology_id','data_ins','data_mod','highliting_path_id','reporter','supervisor','executor','current_highliting_sate']
+		}
+	},
+	
+	getCollByRes: function(resource)
+	{
+		var that = this;
+		
+		switch(resource)
+		{
+			case "highliting_poi":
+				return that.reportings;
+			case "highliting_path":
+				return that.trails;
+			default:
+				return false;
 		}
 	},
 	
@@ -42,9 +59,8 @@ $.extend(APP.adminMap,
 						<div class="col-md-12"></div>\
 					</div>\
 					<div class="row" style="height: 100%">\
-						<div class="col-md-6 map" style="height: 100%"></div>\
-						<div class="col-md-6 table-responsive" style="height: 100%; margin-bottom:0px; padding-top: 20px">\
-						</div>\
+						<div class="col-md-5 map" style="height: 100%"></div>\
+						<div class="col-md-7 table-responsive" style="height: 100%; overflow-y: scroll; margin-bottom:0px; padding-top: 20px"></div>\
 					</div>\
 				</div>'),
 				
@@ -404,7 +420,12 @@ $.extend(APP.adminMap,
 	{
 		var that = this;
 		
-		var anchor = $('<tr style="cursor: pointer" id="item_'+obj[targetInfo.idAttribute]+'"><td>'+obj[targetInfo.titleAttribute]+'</td></tr>');
+		var anchor = $('<tr style="cursor: pointer" id="item_'+obj[targetInfo.idAttribute]+'"></tr>');
+		
+		$.each(targetInfo.tableFields, function(k,v){
+			anchor.append('<td>'+obj[v]+'</td>');
+		});
+		
 		anchor.data(targetInfo.idAttribute, obj[targetInfo.idAttribute]);
 		anchor.click(function(){
 			that.onItemSelect($(this).data(targetInfo.idAttribute), target, targetInfo);
@@ -428,10 +449,15 @@ $.extend(APP.adminMap,
 		if (targetInfo.tableId)
 		{
 			table = $(	'<table id="'+targetInfo.tableId+'" class="table table-hover table-striped" style="margin-bottom: 15px">\
-							<caption>'+APP.i18n.translate(targetInfo.resource)+'</caption>\
-							<thead><tr><th>'+APP.i18n.translate('name')+'</th></tr></thead>\
+							<caption><h3>'+APP.i18n.translate(targetInfo.resource)+'</h3></caption>\
+							<thead><tr></tr></thead>\
 							<tbody></tbody>\
 						</table>');
+
+			$.each(targetInfo.tableFields, function(k, v){
+				var th = $('<th>'+APP.i18n.translate(v)+'</th>');
+				table.find('thead tr').append(th);
+			});
 			that.layout.find(".table-responsive").append(table);
 		}
 	},
@@ -458,8 +484,6 @@ $.extend(APP.adminMap,
 	initItems: function(target, targetInfo)
 	{
 		var that = this;
-		
-		that.setDomTable(targetInfo);
 		
 		var rc = Backbone.Collection.extend({
 			model: Backbone.Model.extend({
@@ -489,6 +513,8 @@ $.extend(APP.adminMap,
 			success: function(collection, response, options)
 			{
 				that.emptyDomItems(targetInfo);
+				
+				that.setDomTable(targetInfo);
 				
 				$.each(response.data.items, function(i,v)
 				{ 
@@ -619,6 +645,7 @@ $.extend(APP.adminMap,
 		
 		that.createMap();
 		that.createFeatureGroup();
+		
 		that.reportings = that.initItems(that.reportings, that.info['reportings']);
 		that.getItems(that.reportings, that.info['reportings'], function(){
 			that.datatablize(that.info['reportings']);			
@@ -627,9 +654,11 @@ $.extend(APP.adminMap,
 			that.setDefaultExtent();
 			that.addMapControls();
 		});
+		
 		that.trails = that.initItems(that.trails, that.info['trails']);
 		that.getItems(that.trails, that.info['trails'], function(){
 			that.datatablize(that.info['trails']);
+			that.getItemsDatastruct(that.trails, that.info['trails']);
 		});
 	},
 });

@@ -167,22 +167,29 @@ $.extend(APP.config,{
 
 			  routes: {
 				"home": "home",
+				
 				"highliting_poi/:query": "highliting_poi",
 				"highliting_poi": "highliting_poi",
 				"new_highliting_poi": "new_highliting_poi",
+				
+				"highliting_path/:query": "highliting_path",
+				"highliting_path": "highliting_path",
+				"new_highliting_path": "new_highliting_path",
+				
+				"path/:query": "path",
+				"path": "path",
 				"new_path": "new_path",
-			    "path/:query": "path",
-			    "path": "path",
-			    "poi/:query": "poi",
+				
+				"area/:query": "area",
+				"area": "area",
+				"new_area": "new_area",
+			    
+				"poi/:query": "poi",
 			    "poi": "poi",
 			    "itinerary/:query": "itinerary",
 			    "itinerary": "itinerary",
 			    "pathsegment/:query": "pathsegment",
 			    "pathsegment": "pathsegment",
-			    "new_area": "new_area",
-			    "area/:query": "area",
-			    "area": "area",
-			    
 			    "search/:query/p:page": "search"   // #search/kiwis/p7
 			  },
 			  
@@ -196,6 +203,14 @@ $.extend(APP.config,{
 			  
 			  highliting_poi: function(query) {
 			  	workNow("highliting_poi", "Segnalazioni", query);
+			  },
+			  
+			  new_highliting_path: function(query) {
+				  workNow("highliting_path", "Nuova segnalazione", null, true);
+			  },
+			  
+			  highliting_path: function(query) {
+			  	workNow("highliting_path", "Segnalazioni", query);
 			  },
 			  
 			  new_path: function(query) {
