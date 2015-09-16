@@ -1,5 +1,6 @@
 $.extend(APP.subforms,
 {
+	filepreviewModal: null,
 	sectionTarget: null,
 	subformRows: {},
 	
@@ -531,14 +532,14 @@ $.extend(APP.subforms,
 						return false;
 					}
 				});
-				that.myModal = APP.modals.create({
+				that.filepreviewModal = APP.modals.create({
 					container: $("body"),
 					id: "previewModal",
 					size: "lg",
 					header: "Anteprima",
 					body: '<iframe src="'+dUrl+'" style="border: 0px; width: 100%; height: 350px"> </iframe>',
 				});
-				that.myModal.modal("show");
+				that.filepreviewModal.modal("show");
 				return;
 			default:
 				console.log("Aggiungi questo tipo: "+type);
