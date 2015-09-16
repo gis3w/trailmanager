@@ -84,7 +84,7 @@ class Datastruct_Highliting_Path extends Datastruct {
                         '$1' => 'name',
                     ),
                     'label' => __('Highliting typology'),
-                    'url_values' => Kohana::$base_url.'jx/highlitingtypology',
+                    'url_values' => Kohana::$base_url.'jx/admin/highlitingtypology',
                      'description' => __('Select the main typology for this highlighting'),
                      "table_show" => TRUE,
                 ),
