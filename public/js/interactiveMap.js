@@ -31,6 +31,7 @@ $.extend(APP.interactiveMap,
 		'length': '/public/img/lunghezza.png',
 		'time': '/public/img/durata.png',
 	},
+	markerByCoordsCtrl: null,
 	bouncingMarkers: false,
 	searchUrl: '/jx/search?tofind=',
 	pages: {},
@@ -206,7 +207,7 @@ $.extend(APP.interactiveMap,
 		
 		setTimeout(function(){
 			that.openEditModal("highlitingpoi", null, marker);
-		},250);
+		},500);
 	},
 	
 	toggleDrawEditor: function(bDraw, geometries)
@@ -263,6 +264,47 @@ $.extend(APP.interactiveMap,
 				that.openEditModal(key, null, e.layer);
 			});
 			
+			if (APP.utils.isset(that.markerByCoordsCtrl))
+			{
+				that.markerByCoordsCtrl.removeFrom(APP.map.globalData[APP.map.currentMapId].map);
+			}
+			
+			that.markerByCoordsCtrl = L.easyButton( '<i class="icon icon-compass"></i>', function()
+			{
+				var myBody = $('<form>\
+						  <div class="form-group">\
+						    <label for="latitude">'+APP.i18n.translate("Latitude")+'</label>\
+						    <input type="text" class="form-control" name="latitude" id="modal-latitude" placeholder="'+APP.i18n.translate("latitude")+'">\
+						  </div>\
+						    <div class="form-group">\
+						    <label for="longitude">'+APP.i18n.translate("Longitude")+'</label>\
+						    <input type="text" class="form-control" name="longitude" id="modal-longitude" placeholder="'+APP.i18n.translate("longitude")+'">\
+						  </div>\
+						</form>');
+				
+				var myFooter = $('<div><button type="button" class="btn btn-success saveBtn">Salva</button><button type="button" class="btn btn-default cancelBtn">Annulla</button></div>');
+				myFooter.find(".saveBtn").click(function(){
+					var lng = that.markerByCoordsModal.find("#modal-longitude").val();
+					var lat = that.markerByCoordsModal.find("#modal-latitude").val();
+					APP.map.globalData[APP.map.currentMapId].map.panTo([lat,lng]);
+					that.markerByCoordsModal.modal("hide");
+					that.addMarker([lat,lng]);
+				});
+				myFooter.find(".cancelBtn").click(function(){
+					that.markerByCoordsModal.modal("hide");
+				});
+				
+				that.markerByCoordsModal = APP.modals.create({
+					container: $("body"),
+					id: "markerByCoordsModal",
+					size: "sm",
+					header: APP.i18n.translate("Add coordinates"),
+					body: myBody,
+					footer: myFooter, 
+				});
+				that.markerByCoordsModal.modal("show");
+			}).addTo(APP.map.globalData[APP.map.currentMapId].map);
+			
 			/*
 			APP.map.globalData[APP.map.currentMapId].map.on('draw:edited', function (e) {
 				var layers = e.layers;
@@ -277,6 +319,11 @@ $.extend(APP.interactiveMap,
 			APP.map.globalData[APP.map.currentMapId].map.off('draw:drawstart');
 			APP.map.globalData[APP.map.currentMapId].map.off('draw:created');
 			//APP.map.globalData[APP.map.currentMapId].map.off('draw:edited');
+			if (APP.utils.isset(that.markerByCoordsCtrl))
+			{
+				that.markerByCoordsCtrl.removeFrom(APP.map.globalData[APP.map.currentMapId].map);
+			}
+			that.markerByCoordsCtrl = null;
 		}
 	},
 	
