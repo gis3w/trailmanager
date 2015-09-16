@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 
-class Controller_Ajax_Config extends Controller_Ajax_Main{
+class Controller_Ajax_Config extends Controller_Ajax_Auth_Nostrict{
     
     public $config;
     
@@ -23,7 +23,7 @@ class Controller_Ajax_Config extends Controller_Ajax_Main{
     public function action_index()
     {
 //        $this->_set_roles();
-//        $this->_set_authuser();
+        $this->_set_authuser();
         $this->_set_i18n();
         $this->_set_typologies();
         $this->_set_highliting_typologies();
@@ -142,7 +142,7 @@ class Controller_Ajax_Config extends Controller_Ajax_Main{
 
     protected function _set_authuser()
     {
-        $this->config->authuser = Controller_Ajax_User::user_data_plus($this->user);
+        $this->config->authuser = Controller_Ajax_Admin_User::user_data_plus($this->user);
     }
 
 
@@ -169,6 +169,7 @@ class Controller_Ajax_Config extends Controller_Ajax_Main{
         
         
     }
+
 
     
     protected function _set_timezone()
