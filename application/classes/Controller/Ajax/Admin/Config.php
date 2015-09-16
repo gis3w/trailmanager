@@ -202,6 +202,7 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
             'image_highliting_poi' => 'jx/admin/imagehighlitingpoi',
             'highliting_path' => '/jx/admin/highlitingpath',
             'image_highliting_path' => 'jx/admin/imagehighlitingpath',
+            'highliting_summary' => 'jx/admin/highlitingsummary',
             'theme' => 'jx/admin/settheme'
             
             
