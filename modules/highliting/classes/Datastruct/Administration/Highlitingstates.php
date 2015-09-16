@@ -31,5 +31,6 @@ class Datastruct_Administration_Highlitingstates extends Datastruct {
     }
 
 
+
 }
   

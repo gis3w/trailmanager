@@ -55,6 +55,10 @@ class Datastruct_Image_Highliting_Path extends Datastruct {
                         'download_options' => array(
                             '$1' => self::$preKeyField.'-file',
                             ),
+                        'show' => 'admin/download/imagehighlitingpath/show/$1',
+                        'show_options' => array(
+                            '$1' => self::$preKeyField.'-file',
+                        ),
                         'thumbnail' => 'admin/download/imagehighlitingpath/thumbnail/$1',
                         'thumbnail_options' => array(
                             '$1' => self::$preKeyField.'-file',

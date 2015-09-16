@@ -142,7 +142,8 @@ class Controller_Ajax_Config extends Controller_Ajax_Auth_Nostrict{
 
     protected function _set_authuser()
     {
-        $this->config->authuser = Controller_Ajax_Admin_User::user_data_plus($this->user);
+        if($this->user)
+            $this->config->authuser = Controller_Ajax_Admin_User::user_data_plus($this->user);
     }
 
 

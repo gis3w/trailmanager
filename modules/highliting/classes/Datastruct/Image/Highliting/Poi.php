@@ -55,6 +55,10 @@ class Datastruct_Image_Highliting_Poi extends Datastruct {
                         'download_options' => array(
                             '$1' => self::$preKeyField.'-file',
                             ),
+                        'show' => 'admin/download/imagehighlitingpoi/show/$1',
+                        'show_options' => array(
+                            '$1' => self::$preKeyField.'-file',
+                        ),
                         'thumbnail' => 'admin/download/imagehighlitingpoi/thumbnail/$1',
                         'thumbnail_options' => array(
                             '$1' => self::$preKeyField.'-file',

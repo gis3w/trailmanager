@@ -25,6 +25,9 @@ class Controller_Ajax_Admin_Global_Highlitingtypology extends Controller_Ajax_Ba
             
             $this->_orm->values($_POST)->save($this->_extra_validation);
 
+            // save sections
+            $this->_orm->setManyToMany('sections',$_POST['sections']);
+
             // we update or save mappins relative
             $this->_update_mappins();
             
@@ -73,7 +76,7 @@ class Controller_Ajax_Admin_Global_Highlitingtypology extends Controller_Ajax_Ba
                 $_POST[$field] = '';
                 continue;
             }
-            
+
             foreach ($postField as $data)
             {
                  if($data->stato == 'D')
@@ -102,7 +105,9 @@ class Controller_Ajax_Admin_Global_Highlitingtypology extends Controller_Ajax_Ba
         if($res['icon'] == '')
             $res['icon'] = NULL;
 
+        $res['sections'] = array_keys($orm->sections->find_all()->as_array('id'));
+
         return $res;
     }
-    
+
 }
