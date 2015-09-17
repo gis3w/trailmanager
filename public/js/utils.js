@@ -178,6 +178,84 @@ $.extend(APP.utils,{
 		return myModal;
 	},
 	
+	setTableRow: function(obj)
+	{
+		var that = this;
+		
+		var v = obj.model.toJSON();
+		var valori = obj.valori;
+		var datastruct = obj.datastruct;
+		var tr = obj.row;
+		var table;
+		
+		$.each(datastruct.columns, function(j, k)
+		{
+			if (!k.table_show)
+				return true;
+			
+			var classesAndStyles = APP.utils.getStyleByCssParams(k.name, v.css_params);
+			
+			if (APP.utils.isset(k.foreign_key))
+			{
+				var fValues = APP.config.localConfig[k.foreign_key];
+				var data = (APP.utils.isset(v[k.name]))? v[k.name] : [];
+				var str = "";
+				
+				if (!$.isArray(data))
+					data = [data];
+				
+				$.each(data, function(x, y)
+				{
+					var primary_key = (APP.utils.isset(k.foreign_value_field))? k.foreign_value_field : "id";
+					
+					y = (!$.isPlainObject(y))? y : y[primary_key];
+					var oi = APP.utils.getIndexFromField(fValues, primary_key, y);
+					if (oi > -1)
+						str += APP.config.getValue(fValues[oi], k.foreign_toshow, k.foreign_toshow_params)+", ";//str += APP.config.getValue(k.name, fValues[oi])+", "; 
+				});
+				str = str.substr(0, str.length-2);
+				
+				tr.append("<td class='table-td "+classesAndStyles[0]+"' style='"+classesAndStyles[1]+"'>"+APP.utils.displayData(str, k)+"</td>");
+				return true;
+			}
+			if (!v.hasOwnProperty("foreign_key") && v.form_input_type == "combobox" && !APP.utils.isset(v.slave_of))
+				valori[v.name] = APP.utils.getForeignValue(v, null);
+			
+			if (k.form_input_type == "combobox" && !APP.utils.isset(k.slave_of))
+			{
+				var fValues = valori[k.name];
+				var data = (APP.utils.isset(v[k.name]))? v[k.name] : [];
+				var str = "";
+				
+				if (!$.isArray(data))
+					data = [data];
+				
+				$.each(data, function(x, y)
+				{
+					var primary_key = (APP.utils.isset(k.foreign_value_field))? k.foreign_value_field : "id";
+					y = (!$.isPlainObject(y))? y : y[primary_key];
+					var oi = APP.utils.getIndexFromField(fValues, primary_key, y);
+					if (oi > -1)
+						str += APP.config.getValue(fValues[oi], k.foreign_toshow, k.foreign_toshow_params)+", ";//str += APP.config.getValue(k.name, fValues[oi])+", "; 
+				});
+				str = str.substr(0, str.length-2);
+				
+				tr.append("<td class='table-td "+classesAndStyles[0]+"' style='"+classesAndStyles[1]+"'>"+APP.utils.displayData(str, k)+"</td>");
+				return true;
+			}
+			
+			if (!APP.utils.isset(v[k.name]))
+			{
+				var str = APP.utils.getSecondaryValue(k); 
+				
+				tr.append("<td class='table-td "+classesAndStyles[0]+"' style='"+classesAndStyles[1]+"'>"+APP.utils.displayData(str, k)+"</td>");
+				return true;
+			}
+			tr.append("<td class='table-td "+classesAndStyles[0]+"' style='"+classesAndStyles[1]+"'>"+APP.utils.displayData(v[k.name], k)+"</td>");
+		});
+		return tr;
+	},
+	
 	getThumbnailUrl: function(urls, v)
 	{
 		if (urls.thumbnail)

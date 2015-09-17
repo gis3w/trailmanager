@@ -18,36 +18,27 @@ $.extend(APP.adminMap,
 			'idAttribute': "id",
 			'titleAttribute': "subject",
 			'tableId': "reportingsTable",
-			'tableFields': ['id','subject','highliting_typology_id','data_ins','data_mod','highliting_path_id','reporter','supervisor','executor','current_highliting_sate']
+			'table': null,
 		},
-		'trails': {
+		'pathreportings': {
 			'resource': "highliting_path",
 			'idAttribute': "id",
 			'titleAttribute': "subject",
 			'tableId': "trailsTable",
-			'tableFields': ['id','subject','highliting_typology_id','data_ins','data_mod','highliting_path_id','reporter','supervisor','executor','current_highliting_sate']
+			'table': null,
+		},
+		'trails': {
+			'resource': "path",
+			'idAttribute': "id",
+			'titleAttribute': "title",
+			'tableId': null,
+			'table': null,
 		}
 	},
 	
-	getCollByRes: function(resource)
-	{
-		var that = this;
-		
-		switch(resource)
-		{
-			case "highliting_poi":
-				return that.reportings;
-			case "highliting_path":
-				return that.trails;
-			default:
-				return false;
-		}
-	},
+	fkRequests: {},
 	
 	markerIconBaseUrl: '/download/mappin/index/',
-
-	reportings: null,	// Backbone collection
-	trails: null, // Backbone collection
 	
 	body: null,
 	myModal: null,
@@ -332,7 +323,7 @@ $.extend(APP.adminMap,
 		
 		model.get('popup').openOn(that.map);
 	},
-	
+	/*
 	openEditModal: function(id, layer, onSave, onCancel)
 	{
 		var that = this;
@@ -402,83 +393,182 @@ $.extend(APP.adminMap,
 		
 		that.myModal.modal("show");
 	},
+	*/
 	
-	emptyDomItems: function(targetInfo)
+	setTR: function(obj)
 	{
 		var that = this;
 		
-		var table = that.layout.find("#"+targetInfo.tableId);
-		if ($.fn.DataTable.fnIsDataTable( table[0] ))
-		{
-			table.dataTable().fnClearTable(true);
-		}
-		else
-			table.find("tbody").empty();
-	},
-	
-	setDomItems: function(target, targetInfo, obj)
-	{
-		var that = this;
+		var item = obj.model;
+		var datastruct = obj.datastruct;
 		
-		var anchor = $('<tr style="cursor: pointer" id="item_'+obj[targetInfo.idAttribute]+'"></tr>');
-		
-		$.each(targetInfo.tableFields, function(k,v){
-			anchor.append('<td>'+obj[v]+'</td>');
-		});
-		
-		anchor.data(targetInfo.idAttribute, obj[targetInfo.idAttribute]);
-		anchor.click(function(){
-			that.onItemSelect($(this).data(targetInfo.idAttribute), target, targetInfo);
-		});
-		that.layout.find("#"+targetInfo.tableId).find("tbody").append(anchor);
-	},
-	
-	setDomTable: function(targetInfo)
-	{
-		var that = this;
-		
-		var table = that.layout.find('#'+targetInfo.tableId);
-		if (table.length>0)
-		{
-			if ($.fn.DataTable.fnIsDataTable( table[0] ))
-			{
-				table.dataTable().fnDestroy(true);
-			}
-		}
-		
-		if (targetInfo.tableId)
-		{
-			table = $(	'<table id="'+targetInfo.tableId+'" class="table table-hover table-striped" style="margin-bottom: 15px">\
-							<caption><h3>'+APP.i18n.translate(targetInfo.resource)+'</h3></caption>\
-							<thead><tr></tr></thead>\
-							<tbody></tbody>\
-						</table>');
+		$.each(datastruct.columns, function(k, v)
+				{
+					if (!v.table_show)
+						return true;
+					
+					if (counter === 0)
+					{
+						var th = $('<th>'+APP.i18n.translate(v.label)+'</th>');
+						that.info[resource].table.find('thead tr').append(th);
+					}
+					
+					var tdValue = model.get(v.name);
+					
+					var tdAppender  = function(myTr, myValue){
+						myTr.append('<td>'+myValue+'</td>');
+					};
+					
+					var assignFKvalue = function(urlValuesKey, tdv){
+						$.each(that.fkRequests[urlValuesKey], function(index, obj)
+						{
+							if (obj["id"] == tdv)
+							{
+								tdv = obj["name"];
+								return false;
+							}
+						});
+						
+						return tdv;
+					};
 
-			$.each(targetInfo.tableFields, function(k, v){
-				var th = $('<th>'+APP.i18n.translate(v)+'</th>');
-				table.find('thead tr').append(th);
-			});
-			that.layout.find(".table-responsive").append(table);
-		}
+					if (v.url_values)
+					{
+					 	if (!APP.utils.isset(that.fkRequests[v.url_values]))
+					 	{
+					 		that.fkRequests[v.url_values] = "";
+					 		
+					 		var exit = false;
+					 		var myUrl = v.url_values;
+					 		if (v.url_values_params)
+					 		{
+					 			$.each(v.url_values_params, function(iter,objV)
+					 			{
+					 				var rep = model.get(objV);
+					 				if (APP.utils.isset(rep))
+					 				{
+					 					exit = true;
+					 					return false;
+					 				}
+						 			myUrl = APP.utils.replaceAll(iter, rep, myUrl);
+						 		});
+					 		}
+					 		
+					 		if (exit)
+					 		{
+					 			tdAppender(tr, tdValue);
+					 			return true;
+					 		}
+					 		
+					 		$.ajax({
+								type: 'GET',
+								url: myUrl,
+								success: function(result)
+								{
+									if (!APP.utils.checkError(result.error, null))
+									{
+										that.fkRequests[v.url_values] = result.data.items;
+										
+										tdAppender(tr, assignFKvalue(v.url_values, tdValue));
+									}
+									else
+										APP.utils.showErrMsg(result);
+								},
+								error: function(data)
+								{
+									APP.utils.showErrMsg(result);
+								}
+							});
+					 	}
+					 	else
+					 	{
+					 		tdAppender(tr, assignFKvalue(v.url_values, tdValue));
+					 	}
+					}
+					else
+						tdAppender(tr, tdValue);
+				});
 	},
 	
-	datatablize: function(targetInfo)
+	setTable: function(resource)
 	{
 		var that = this;
 		
-		var table = that.layout.find("#"+targetInfo.tableId);
-		if (table.length==0)
+		if (!that.info[resource].tableId)
 			return false;
 		
-		if ($.fn.DataTable.fnIsDataTable( table[0] ))
+		if (that.info[resource].table)
 		{
-			table.dataTable().fnDestroy(true);
+			if ($.fn.DataTable.fnIsDataTable( that.info[resource].table[0] ))
+			{
+				that.info[resource].table.dataTable().fnClearTable(true);
+				that.info[resource].table.dataTable().fnDestroy(true);
+			}
+			that.info[resource].table.remove();
 		}
 		
-		table.dataTable({
-			"sPaginationType": "full_numbers",
-			"oLanguage": APP.utils.getDataTableLanguage(),
+		that.info[resource].table = $(	'<table id="'+that.info[resource].tableId+'" class="table table-bordered table-hover table-striped">\
+											<caption><h3>'+APP.i18n.translate(that.info[resource].resource)+'</h3></caption>\
+											<thead><tr></tr></thead>\
+											<tbody></tbody>\
+										</table>');
+		
+		var valori = {};
+		
+		$.each(that.datastruct[that.info[resource].resource].columns, function(i, v)
+		{
+			if (!v.table_show)
+				return true;
+			if (APP.utils.isset(v.description))
+			{
+				var th = $('<th class="table-th" title="'+v.description+'">'+v.label+'</th>');
+				th.tooltip({container: $("body")});
+				that.info[resource].table.find("thead tr").append(th);
+			}
+			else
+				that.info[resource].table.find("thead tr").append('<th class="table-th">'+v.label+'</th>');
+			
+			if (!v.hasOwnProperty("foreign_key") && v.form_input_type == "combobox" && !APP.utils.isset(v.slave_of))
+				valori[v.name] = APP.utils.getForeignValue(v, null);
 		});
+				
+		$.each(that[resource].models, function(modK, model)
+		{
+			var modelId = model.get(that.info[resource].idAttribute);
+			var tr = $('<tr style="cursor: pointer" id="item_'+modelId+'"></tr>');
+			
+			tr = APP.utils.setTableRow({
+				row: tr,
+				model: model,
+				datastruct: that.datastruct[that.info[resource].resource],
+				valori: valori,
+			});
+			
+			tr.data(that.info[resource].idAttribute, model.get(that.info[resource].idAttribute));
+			tr.click(function(){
+				that.onItemSelect($(this).data(that.info[resource].idAttribute), that[resource], that.info[resource]);
+			});
+			that.info[resource].table.find("tbody").append(tr);
+		});
+	},
+	
+	showTables: function()
+	{
+		var that = this;
+		
+		$.each(that.info, function(key, targetInfo)
+		{
+			if (targetInfo.table)
+			{
+				that.layout.find(".table-responsive").append(targetInfo.table);
+				targetInfo.table.dataTable({
+					"sPaginationType": "full_numbers",
+					"oLanguage": APP.utils.getDataTableLanguage(),
+				});
+			}
+		});
+		
+		that.layout.find(".table-responsive").fadeIn();
 	},
 	
 	initItems: function(target, targetInfo)
@@ -512,14 +602,8 @@ $.extend(APP.adminMap,
 		target.fetch({
 			success: function(collection, response, options)
 			{
-				that.emptyDomItems(targetInfo);
-				
-				that.setDomTable(targetInfo);
-				
 				$.each(response.data.items, function(i,v)
 				{ 
-					that.setDomItems(target, targetInfo, v);
-					
 					var gjo = {
 						pointToLayer: function(feature, latlng)
 						{
@@ -598,7 +682,7 @@ $.extend(APP.adminMap,
 		that.openPopup(id, target, targetInfo);
 	},
 	
-	getItemsDatastruct: function(target, targetInfo)
+	getItemsDatastruct: function(target, targetInfo, callback)
 	{
 		var that = this;
 		
@@ -612,7 +696,8 @@ $.extend(APP.adminMap,
 				if (!APP.utils.checkError(data.error, null))
 				{
 					APP.anagrafica.loadStructure(data, that.datastruct[targetInfo.resource]);
-					that.datastruct[targetInfo.resource].values = target.toJSON();
+					if ($.isFunction(callback))
+						callback();
 				}
 				else
 					APP.utils.showErrMsg(data);
@@ -635,6 +720,7 @@ $.extend(APP.adminMap,
 		that.body.css(h100);
 		var mc = that.body.find("#mainContent");
 		mc.css(h100).css({"padding":0,"margin":0});
+		that.layout.find(".table-responsive").hide();
 		mc.find("#"+that.thisSection+"Container").css({
 			"padding":0,
 			"margin": 0,
@@ -646,19 +732,26 @@ $.extend(APP.adminMap,
 		that.createMap();
 		that.createFeatureGroup();
 		
-		that.reportings = that.initItems(that.reportings, that.info['reportings']);
-		that.getItems(that.reportings, that.info['reportings'], function(){
-			that.datatablize(that.info['reportings']);			
-			that.getItemsDatastruct(that.reportings, that.info['reportings']);
-			that.setMapBounds();
-			that.setDefaultExtent();
-			that.addMapControls();
-		});
-		
-		that.trails = that.initItems(that.trails, that.info['trails']);
-		that.getItems(that.trails, that.info['trails'], function(){
-			that.datatablize(that.info['trails']);
-			that.getItemsDatastruct(that.trails, that.info['trails']);
+		var counter = 0;
+		$.each(that.info, function(resource, objR)
+		{
+			that[resource] = that.initItems(that[resource], that.info[resource]);
+			
+			that.getItems(that[resource], that.info[resource], function()
+			{
+				that.getItemsDatastruct(that[resource], that.info[resource], function(){
+					counter++;
+					//that.datastruct[that.info[resource]].values = that[resource].toJSON();
+					that.setTable(resource);
+					if (counter === Object.keys(that.info).length)
+					{
+						that.setMapBounds();
+						that.setDefaultExtent();
+						that.addMapControls();
+						that.showTables();
+					}
+				});
+			});
 		});
 	},
 });

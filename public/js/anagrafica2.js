@@ -739,8 +739,8 @@ $.extend(APP.anagrafica,
 					tr.append("<td class='table-td "+classesAndStyles[0]+"' style='"+classesAndStyles[1]+"'>"+APP.utils.displayData(str, k)+"</td>");
 					return true;
 				}
-				if (!v.hasOwnProperty("foreign_key") && v.form_input_type == "combobox" && !GB.utils.isset(v.slave_of))
-					valori[v.name] = GB.utils.getForeignValue(v, null);
+				if (!v.hasOwnProperty("foreign_key") && v.form_input_type == "combobox" && !APP.utils.isset(v.slave_of))
+					valori[v.name] = APP.utils.getForeignValue(v, null);
 				
 				if (k.form_input_type == "combobox" && !APP.utils.isset(k.slave_of))
 				{
