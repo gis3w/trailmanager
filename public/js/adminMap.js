@@ -46,12 +46,11 @@ $.extend(APP.adminMap,
 	featureGroup: null,
 	
 	layout: $(	'<div class="container-fluid" style="height: 100%">\
-					<div class="row">\
-						<div class="col-md-12"></div>\
-					</div>\
 					<div class="row" style="height: 100%">\
 						<div class="col-md-5 map" style="height: 100%"></div>\
-						<div class="col-md-7 table-responsive" style="height: 100%; overflow-y: scroll; margin-bottom:0px; padding-top: 20px"></div>\
+						<div class="col-md-7 table-responsive" style="height: 100%; overflow-y: scroll; margin-bottom:0px; padding-top: 20px">\
+							<div class="report"></div>\
+						</div>\
 					</div>\
 				</div>'),
 				
@@ -395,6 +394,29 @@ $.extend(APP.adminMap,
 	},
 	*/
 	
+	setReport: function()
+	{
+		var that = this;
+		
+		$.ajax({
+			type: 'GET',
+			url: APP.config.localConfig.urls['highliting_summary'],
+			success: function(data)
+			{
+				if (!APP.utils.checkError(data.error, null))
+				{
+					var myData = data.data;
+				}
+				else
+					APP.utils.showErrMsg(data);
+			},
+			error: function(data)
+			{
+				APP.utils.showErrMsg(data);
+			}
+		});
+	},
+	
 	setTable: function(resource)
 	{
 		var that = this;
@@ -630,6 +652,12 @@ $.extend(APP.adminMap,
 		
 		that.createMap();
 		that.createFeatureGroup();
+		
+		APP.utils.setHomeReport({
+			panelPerRow: 2,
+			container: that.layout.find(".report").empty(),
+			section: 'highliting_summary',
+		});
 		
 		var counter = 0;
 		$.each(that.info, function(resource, objR)

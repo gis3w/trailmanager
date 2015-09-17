@@ -973,6 +973,124 @@ $.extend(APP.utils,{
 		return data;
 	},
 	
+	setHomeReport: function(params) // panelPerRow, container, section
+	{
+		var that = this;		
+		
+		var createPanel = function(obj)
+		{
+			var spanNumber = parseInt(12/params.panelPerRow);
+			var panelClass = APP.utils.isset(obj.panelClass)? obj.panelClass : 'panel-default';
+			var well = $('<div class="panel '+panelClass+'"></div>');
+			well.append('<div class="panel-heading">'+obj.title+'</div>');
+			well.append('<div class="panel-body" style="padding:0px;"><ul class="list-group" style="margin: 0px"></ul></div>');
+			
+			var appLi = function(label, badge, well)
+			{
+				var li = $('<li class="list-group-item"></li>');
+				li.append(APP.utils.capitalize(APP.i18n.translate(label)));
+				li.prepend('<span class="badge">'+badge+'</span>');
+				well.find('.list-group').append(li);
+			};		
+			
+			$.each(obj.items, function(i,v)
+			{
+				if ($.isPlainObject(v))
+				{
+					$.each(v, function(j,k)
+					{
+						switch(i)
+						{
+							/*
+							case "state": 
+								var index = APP.utils.getIndexFromField(APP.config.localConfig.states, "id", parseInt(j));
+								if (index > -1)
+								{
+									var ooo = APP.config.localConfig.states[index];
+									j = APP.i18n.translate(i)+': <span class="label" style="background: '+ooo.color+'">'+ooo.name+'</span>';
+								}
+								break;
+							*/
+							default:
+								j = APP.i18n.translate(i)+': '+j;
+								break;
+						}
+						appLi(j,k,well);
+					});
+				}
+				else
+					appLi(i,v,well);
+			});
+		
+			var spanx = $('<div class="col-md-'+spanNumber+'"></div>');
+			spanx.append(well);
+			return spanx;
+		};
+		
+		var displayHomeItems = function(data)
+		{
+			if (data.length === 0)
+				return;
+			
+			var numPanels = data.length;
+			var numRows = Math.ceil(numPanels/params.panelPerRow);
+
+			var div = $('<div class="homeitems"></div>');
+			var row = null;
+			$.each(data, function(j,k)
+			{
+				if (j === 0 || j%params.panelPerRow === 0)
+				{
+					row = $('<div class="row"></div>');
+					div.append(row);
+				}
+				row.append(createPanel(k));
+			});
+			
+			return div;
+		};
+		
+		$.ajax({
+			type: 'GET',
+			url: APP.config.localConfig.urls[params.section],
+			dataType: 'json',
+			success: function(data)
+			{
+				if (!APP.utils.checkError(data.error, null))
+				{
+					if (APP.utils.isset(data.data) && APP.utils.isset(data.data.general))
+					{
+						var arr = [];
+						var getPanelColor = function(iter)
+						{
+							var cl = ['default','primary','success', 'warning', 'info', 'danger'];
+							return APP.utils.isset(cl[iter])? cl[iter] : cl[0];
+						};
+						var counter = 0;
+						$.each(data.data.general, function(i,v)
+						{
+							if (!$.isPlainObject(v))
+								return true;
+							var o = {};
+							o.title = (APP.utils.isset(v.title))? v.title : APP.utils.capitalize(APP.i18n.translate(i));
+							o.items = v;
+							o.panelClass = "panel-"+getPanelColor(counter);
+							arr.push(o);
+							counter++;
+						});
+						params.container.append(displayHomeItems(arr));
+					}
+				}
+				else
+					APP.utils.showErrMsg(data);
+			},
+			error: function(result)
+			{
+				APP.utils.showErrMsg(result);
+			}
+		});
+	},
+	
 	getOptionsSelect: function(valori, name, options, sectionTarget, par)
 	{
 		var that = this;
