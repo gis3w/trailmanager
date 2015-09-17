@@ -47,9 +47,17 @@ $.extend(APP.adminMap,
 	
 	layout: $(	'<div class="container-fluid" style="height: 100%">\
 					<div class="row" style="height: 100%">\
-						<div class="col-md-5 map" style="height: 100%"></div>\
+						<div class="col-md-5" style="height: 100%; padding-top: 15px">\
+							<div class="row">\
+								<div class="col-md-12 report">\
+								</div>\
+							</div>\
+							<div class="row" style="height: 50%;">\
+								<div class="col-md-12 map" style="height: 100%">\
+								</div>\
+							</div>\
+						</div>\
 						<div class="col-md-7 table-responsive" style="height: 100%; overflow-y: scroll; margin-bottom:0px; padding-top: 20px">\
-							<div class="report"></div>\
 						</div>\
 					</div>\
 				</div>'),
