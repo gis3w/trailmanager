@@ -36,7 +36,7 @@ $.extend(APP.adminMap,
 		}
 	},
 	
-	fkRequests: {},
+	fkValori: {},
 	
 	markerIconBaseUrl: '/download/mappin/index/',
 	
@@ -162,10 +162,10 @@ $.extend(APP.adminMap,
 						    	resource = "new_highliting_poi";
 						    	break;
 						    case "Polygon":
-						    	resource = "new_area";
+						    	resource = "new_highliting_area";
 						    	break;
 						    case "LineString":
-						    	resource = "new_path";
+						    	resource = "new_highliting_path";
 						    	break;
 					    }
 					    if (resource)
@@ -395,101 +395,6 @@ $.extend(APP.adminMap,
 	},
 	*/
 	
-	setTR: function(obj)
-	{
-		var that = this;
-		
-		var item = obj.model;
-		var datastruct = obj.datastruct;
-		
-		$.each(datastruct.columns, function(k, v)
-				{
-					if (!v.table_show)
-						return true;
-					
-					if (counter === 0)
-					{
-						var th = $('<th>'+APP.i18n.translate(v.label)+'</th>');
-						that.info[resource].table.find('thead tr').append(th);
-					}
-					
-					var tdValue = model.get(v.name);
-					
-					var tdAppender  = function(myTr, myValue){
-						myTr.append('<td>'+myValue+'</td>');
-					};
-					
-					var assignFKvalue = function(urlValuesKey, tdv){
-						$.each(that.fkRequests[urlValuesKey], function(index, obj)
-						{
-							if (obj["id"] == tdv)
-							{
-								tdv = obj["name"];
-								return false;
-							}
-						});
-						
-						return tdv;
-					};
-
-					if (v.url_values)
-					{
-					 	if (!APP.utils.isset(that.fkRequests[v.url_values]))
-					 	{
-					 		that.fkRequests[v.url_values] = "";
-					 		
-					 		var exit = false;
-					 		var myUrl = v.url_values;
-					 		if (v.url_values_params)
-					 		{
-					 			$.each(v.url_values_params, function(iter,objV)
-					 			{
-					 				var rep = model.get(objV);
-					 				if (APP.utils.isset(rep))
-					 				{
-					 					exit = true;
-					 					return false;
-					 				}
-						 			myUrl = APP.utils.replaceAll(iter, rep, myUrl);
-						 		});
-					 		}
-					 		
-					 		if (exit)
-					 		{
-					 			tdAppender(tr, tdValue);
-					 			return true;
-					 		}
-					 		
-					 		$.ajax({
-								type: 'GET',
-								url: myUrl,
-								success: function(result)
-								{
-									if (!APP.utils.checkError(result.error, null))
-									{
-										that.fkRequests[v.url_values] = result.data.items;
-										
-										tdAppender(tr, assignFKvalue(v.url_values, tdValue));
-									}
-									else
-										APP.utils.showErrMsg(result);
-								},
-								error: function(data)
-								{
-									APP.utils.showErrMsg(result);
-								}
-							});
-					 	}
-					 	else
-					 	{
-					 		tdAppender(tr, assignFKvalue(v.url_values, tdValue));
-					 	}
-					}
-					else
-						tdAppender(tr, tdValue);
-				});
-	},
-	
 	setTable: function(resource)
 	{
 		var that = this;
@@ -512,24 +417,18 @@ $.extend(APP.adminMap,
 											<thead><tr></tr></thead>\
 											<tbody></tbody>\
 										</table>');
-		
-		var valori = {};
-		
+				
 		$.each(that.datastruct[that.info[resource].resource].columns, function(i, v)
 		{
 			if (!v.table_show)
 				return true;
-			if (APP.utils.isset(v.description))
-			{
-				var th = $('<th class="table-th" title="'+v.description+'">'+v.label+'</th>');
-				th.tooltip({container: $("body")});
-				that.info[resource].table.find("thead tr").append(th);
-			}
-			else
-				that.info[resource].table.find("thead tr").append('<th class="table-th">'+v.label+'</th>');
 			
-			if (!v.hasOwnProperty("foreign_key") && v.form_input_type == "combobox" && !APP.utils.isset(v.slave_of))
-				valori[v.name] = APP.utils.getForeignValue(v, null);
+			that.info[resource].table.find("thead tr").append('<th class="table-th">'+v.label+'</th>');
+			
+			if (!v.hasOwnProperty("foreign_key") && v.form_input_type == "combobox" && !APP.utils.isset(v.slave_of) && !APP.utils.isset(that.fkValori[v.name]))
+			{
+				that.fkValori[v.name] = APP.utils.getForeignValue(v, null);
+			}
 		});
 				
 		$.each(that[resource].models, function(modK, model)
@@ -539,9 +438,9 @@ $.extend(APP.adminMap,
 			
 			tr = APP.utils.setTableRow({
 				row: tr,
-				model: model,
+				model: model.toJSON(),
 				datastruct: that.datastruct[that.info[resource].resource],
-				valori: valori,
+				valori: that.fkValori,
 			});
 			
 			tr.data(that.info[resource].idAttribute, model.get(that.info[resource].idAttribute));

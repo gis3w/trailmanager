@@ -182,7 +182,7 @@ $.extend(APP.utils,{
 	{
 		var that = this;
 		
-		var v = obj.model.toJSON();
+		var v = obj.model;
 		var valori = obj.valori;
 		var datastruct = obj.datastruct;
 		var tr = obj.row;
