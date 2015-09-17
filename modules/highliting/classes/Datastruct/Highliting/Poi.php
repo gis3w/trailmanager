@@ -99,7 +99,7 @@ class Datastruct_Highliting_Poi extends Datastruct {
                     'url_values' => SAFE::setBaseUrl('jx/highlitingstate?highliting_state_id=$1'),
                     'url_values_params' => array(
                         '$1' => array(
-                            'level' => 'poi',
+                            'level' => 'highliting_poi',
                             'field' => 'highliting_state_id',
                         ),    
                         

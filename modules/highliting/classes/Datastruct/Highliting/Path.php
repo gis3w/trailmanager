@@ -99,7 +99,7 @@ class Datastruct_Highliting_Path extends Datastruct {
                     'url_values' => SAFE::setBaseUrl('jx/highlitingstate?highliting_state_id=$1'),
                     'url_values_params' => array(
                         '$1' => array(
-                            'level' => 'path',
+                            'level' => 'highliting_path',
                             'field' => 'highliting_state_id',
                         ),    
                         

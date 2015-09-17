@@ -20,7 +20,7 @@ return array(
      'dropdown_highliting' => array(
              'id' => 'dropdown_highliting',
              'capability' => 'access-highliting',
-             'name' => __('Highlitings').'/'.__('Manintenances'),
+             'name' => __('Highlitings').'/'.__('Maintenances'),
              'icon' => 'plus'
          ),
      'dropdown_user' => array(

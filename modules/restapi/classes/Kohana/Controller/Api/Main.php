@@ -750,12 +750,22 @@ abstract class Kohana_Controller_Api_Main extends Kohana_Controller_REST{
      */
     protected function _apply_default_filters($orm)
     {
-        if(!isset($this->user->main_role_id))
+        $this->_default_filter_list($orm);
+
+        if(!isset($this->user) OR $this->user->main_role_id == NULL)
             return;
+
+        // filter id role based
         $main_role_id = $this->user->main_role_id;
         $method = "_role_".$main_role_id."_filters";
         if(method_exists($this, $method))
-                $this->$method($orm);
+            $this->$method($orm);
+
+        // filter name role based
+        $main_role_name = strtoupper($this->user->main_role);
+        $method = "_role_".$main_role_name."_filters";
+        if(method_exists($this, $method))
+            $this->$method($orm);
     }
     
     protected function _apply_default_filter($orm)
@@ -764,6 +774,11 @@ abstract class Kohana_Controller_Api_Main extends Kohana_Controller_REST{
     }
     
     protected function _default_filter($orm)
+    {
+        return;
+    }
+
+    protected function _default_filter_list($orm)
     {
         return;
     }
