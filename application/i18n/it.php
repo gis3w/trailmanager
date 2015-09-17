@@ -257,8 +257,9 @@ return array(
     'Creation date' => 'Data di creazione',
     'Last update' => 'Ultimo aggiornamento',
     'Path' => 'Sentiero di riferimento',
-
-
+    'Highliting state to' => 'Stato corrente',
+    'Highliting path' => 'Lineari',
+    'Maintenances' => 'Manutenzioni',
 
 
 

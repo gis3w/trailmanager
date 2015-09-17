@@ -2,11 +2,18 @@
 
 class Task_Role_Add extends Minion_Task
 {
-    protected $_options = array(
+    protected $_options = [
         'capability' => NULL,
         'rolename' => NULL,
+        'actions' => [
+            'insert',
+            'update',
+            'delete',
+            'list',
+            'get'
+        ]
 
-    );
+    ];
 
     protected $_base_action_capabilities = [
         'insert',
@@ -23,9 +30,12 @@ class Task_Role_Add extends Minion_Task
      */
     protected function _execute(array $params)
     {
+        $paramActions = is_array($this->_options['actions']) ? $this->_options['actions'] : preg_split('/,/',$this->_options['actions']);
         # before check if capabilities exists
         foreach($this->_base_action_capabilities as $action)
         {
+            if(!in_array($action,$paramActions))
+                continue;
             $capabilityname = $this->_options['capability'].'-'.$action;
             $capabilityORM = ORM::factory('Capability')
                 ->where('name','=',$capabilityname)
@@ -42,7 +52,7 @@ class Task_Role_Add extends Minion_Task
                 ->where('name','=',strtoupper($this->_options['rolename']))
                 ->find();
 
-            if(isset($role->id))
+            if(isset($role->id) AND !$role->has('capabilities',$capabilityORM))
                 $role->add('capabilities',$capabilityORM);
 
             $capabilityORM->reset();
