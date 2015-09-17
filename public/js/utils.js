@@ -973,7 +973,7 @@ $.extend(APP.utils,{
 		return data;
 	},
 	
-	setHomeReport: function(params) // panelPerRow, container, section
+	setHomeReport: function(params) // panelPerRow, container, section, callback
 	{
 		var that = this;		
 		
@@ -1079,6 +1079,9 @@ $.extend(APP.utils,{
 							counter++;
 						});
 						params.container.append(displayHomeItems(arr));
+						
+						if ($.isFunction(params.callback))
+							params.callback();
 					}
 				}
 				else

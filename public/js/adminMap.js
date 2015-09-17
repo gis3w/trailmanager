@@ -47,12 +47,12 @@ $.extend(APP.adminMap,
 	
 	layout: $(	'<div class="container-fluid" style="height: 100%">\
 					<div class="row" style="height: 100%">\
-						<div class="col-md-5" style="height: 100%; padding-top: 15px">\
+						<div class="col-md-5 leftRowsContainer" style="height: 100%">\
 							<div class="row">\
 								<div class="col-md-12 report">\
 								</div>\
 							</div>\
-							<div class="row" style="height: 50%;">\
+							<div class="row">\
 								<div class="col-md-12 map" style="height: 100%">\
 								</div>\
 							</div>\
@@ -443,7 +443,7 @@ $.extend(APP.adminMap,
 		}
 		
 		that.info[resource].table = $(	'<table id="'+that.info[resource].tableId+'" class="table table-bordered table-hover table-striped table-condensed">\
-											<caption><h3>'+APP.i18n.translate(that.info[resource].resource)+'</h3></caption>\
+											<caption><h3>'+APP.i18n.translate(APP.utils.capitalize(that.info[resource].resource))+'</h3></caption>\
 											<thead><tr></tr></thead>\
 											<tbody></tbody>\
 										</table>');
@@ -658,35 +658,45 @@ $.extend(APP.adminMap,
 			"padding-bottom": that.body.find('#main_navbar_admin').parents('.navbar').outerHeight()-that.body.find('#main_navbar_admin').height(),
 		}).html(that.layout);
 		
-		that.createMap();
-		that.createFeatureGroup();
-		
 		APP.utils.setHomeReport({
 			panelPerRow: 2,
 			container: that.layout.find(".report").empty(),
 			section: 'highliting_summary',
+			callback: function()
+			{
+				var mapRow = that.layout.find(".map").parents(".row:first");
+				var reportRow = that.layout.find(".report").parents(".row:first");
+				var lrc = that.layout.find(".leftRowsContainer");
+								
+				mapRow.css("height", ((lrc.height()-reportRow.height())*100)/lrc.height()+"%");
+				
+				that.createMap();
+				that.createFeatureGroup();
+				
+				var counter = 0;
+				$.each(that.info, function(resource, objR)
+				{
+					that[resource] = that.initItems(that[resource], that.info[resource]);
+					
+					that.getItems(that[resource], that.info[resource], function()
+					{
+						that.getItemsDatastruct(that[resource], that.info[resource], function(){
+							counter++;
+							//that.datastruct[that.info[resource]].values = that[resource].toJSON();
+							that.setTable(resource);
+							if (counter === Object.keys(that.info).length)
+							{
+								that.setMapBounds();
+								that.setDefaultExtent();
+								that.addMapControls();
+								that.showTables();
+							}
+						});
+					});
+				});
+			}
 		});
 		
-		var counter = 0;
-		$.each(that.info, function(resource, objR)
-		{
-			that[resource] = that.initItems(that[resource], that.info[resource]);
-			
-			that.getItems(that[resource], that.info[resource], function()
-			{
-				that.getItemsDatastruct(that[resource], that.info[resource], function(){
-					counter++;
-					//that.datastruct[that.info[resource]].values = that[resource].toJSON();
-					that.setTable(resource);
-					if (counter === Object.keys(that.info).length)
-					{
-						that.setMapBounds();
-						that.setDefaultExtent();
-						that.addMapControls();
-						that.showTables();
-					}
-				});
-			});
-		});
+		
 	},
 });
