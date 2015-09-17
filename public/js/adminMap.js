@@ -507,7 +507,7 @@ $.extend(APP.adminMap,
 			that.info[resource].table.remove();
 		}
 		
-		that.info[resource].table = $(	'<table id="'+that.info[resource].tableId+'" class="table table-bordered table-hover table-striped">\
+		that.info[resource].table = $(	'<table id="'+that.info[resource].tableId+'" class="table table-bordered table-hover table-striped table-condensed">\
 											<caption><h3>'+APP.i18n.translate(that.info[resource].resource)+'</h3></caption>\
 											<thead><tr></tr></thead>\
 											<tbody></tbody>\
