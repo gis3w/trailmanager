@@ -49,15 +49,15 @@ $.extend(APP.adminMap,
 					<div class="row" style="height: 100%">\
 						<div class="col-md-5 map" style="height: 100%">\
 						</div>\
-						<div class="col-md-7" style="height: 100%; margin-bottom:0px; padding-top: 15px">\
+						<div class="col-md-7" style="height: 100%; margin-bottom:0px; padding-top: 15px; overflow-y: auto">\
 							<ul class="nav nav-tabs" role="tablist">\
 								<li role="presentation" class="active"><a data-tabname="Report" href="#report" aria-controls="report" role="tab" data-toggle="tab"></a></li>\
 								<li role="presentation"><a data-tabname="Highlitings" href="#highliting" aria-controls="highliting" role="tab" data-toggle="tab"></a></li>\
 							</ul>\
-							<div class="tab-content" style="padding-top: 15px">\
+							<div class="tab-content" style="padding-top: 15px; ">\
 								<div role="tabpanel" class="tab-pane report active" id="report"></div>\
 								<div role="tabpanel" class="tab-pane" id="highliting">\
-									<div class="table-responsive"></div>\
+									<div class="table-responsive" ></div>\
 								</div>\
 							</div>\
 						</div>\
