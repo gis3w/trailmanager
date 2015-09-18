@@ -5,7 +5,9 @@ class Datastruct_Poi extends Datastruct {
     protected $_nameORM = "Poi";
     protected $_typeORM = "ORMGIS";
 
-
+    public $form_table_name = 'Pois';
+    public $form_title = 'Poi';
+    public $formLyoutType = 'form-vertical';
     public $icon = 'suitcase';
     public $filter = FALSE;
 
@@ -193,10 +195,12 @@ class Datastruct_Poi extends Datastruct {
                 ),
                 "description" => array(
                     'form_input_type' => self::TEXTAREA,
+                    'editor' => TRUE,
                     'editable' => TRUE,
                 ),
                  "accessibility" => array(
                     'form_input_type' => self::TEXTAREA,
+                    'editor' => TRUE,
                     'editable' => TRUE,
                 ),
                 "the_geom" => array(
@@ -224,6 +228,7 @@ class Datastruct_Poi extends Datastruct {
                 "inquiry" => array(
                     'form_input_type' => self::TEXTAREA,
                     'editable' => TRUE,
+                    'editor' => TRUE,
                 ),
                 "max_scale" => array(
                     'prefix' => '1:',

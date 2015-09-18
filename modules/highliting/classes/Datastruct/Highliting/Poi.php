@@ -6,7 +6,8 @@ class Datastruct_Highliting_Poi extends Datastruct {
     protected $_typeORM = "ORMGIS";
 
     public $formLyoutType = 'form-vertical';
-    
+    public $form_table_name = 'Highliting poins';
+    public $form_title = 'Highliting point';
     public $icon = 'suitcase';
     public $filter = FALSE;
 
@@ -25,7 +26,12 @@ class Datastruct_Highliting_Poi extends Datastruct {
        array(
             'name' => 'highliting-poi-foreign-data',
             'position' => 'right',
-            'fields' => array('highliting_typology_id','highliting_path_id','the_geom','image_highliting_poi'),
+            'fields' => array(
+                'highliting_typology_id',
+                'pt_inter',
+                'highliting_path_id',
+                'the_geom',
+                'image_highliting_poi'),
         ),
         array(
             'name' => 'highliting-poi-ending',
@@ -205,6 +211,24 @@ class Datastruct_Highliting_Poi extends Datastruct {
                 'label' => __('Images to upload'),
              )
         );
+
+
+
+        $fct['pt_inter'] = array_replace($this->_columnStruct,array(
+            'foreign_key' => 'pt_inter_poi',
+            'form_show' => FALSE,
+            'label' => __('Point of interest class'),
+            'editable' => TRUE,
+            'form_input_type' => self::SELECT,
+            'foreign_mode' => self::SINGLESELECT,
+            'foreign_value_field' => 'code',
+            'foreign_toshow' => '$1',
+            'foreign_toshow_params' => array(
+                '$1' => 'description',
+            ),
+            "table_show" => FALSE,
+            "change" => SAFE::setBaseUrl('jx/admin/changehighlitingtypology'),
+            ));
          
          // we add a note filed for insert only
          $fct['note'] = array_replace($this->_columnStruct, array(

@@ -22,6 +22,9 @@ class Datastruct extends Kohana_Formstruct{
     
     protected $_requiredColumns;
 
+    public $form_table_name;
+
+    public $form_title;
 
     public $filter = FALSE;
     
@@ -120,10 +123,14 @@ class Datastruct extends Kohana_Formstruct{
         if(!isset($this->enctype))
             $this->enctype = self::ECNTYPE_DEFAULT;
         
-            
-        
         if(!isset($this->_nameORM))
             $this->_nameORM = substr(get_class($this), 11);
+
+        if(isset($this->form_title))
+            $this->form_title = __($this->form_title);
+
+        if(isset($this->form_table_name))
+            $this->form_table_name = __($this->form_table_name);
         
         // si setta la lingua
         $this->_set_lang();
@@ -290,7 +297,12 @@ class Datastruct extends Kohana_Formstruct{
         
         if(isset($this->sortable))
             $toRes['sortable'] = $this->sortable;
-           
+        // set table title
+        if(isset($this->form_table_name))
+            $toRes['form_table_name'] = $this->form_table_name;
+        // set form title
+        if(isset($this->form_title))
+            $toRes['form_title'] = $this->form_title;
         
         foreach(array('groups','menu','fields_to_save','icon','capabilities','filter','tabs') as $col)
                 if(isset($this->$col))

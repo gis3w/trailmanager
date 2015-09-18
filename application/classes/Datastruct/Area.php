@@ -4,7 +4,10 @@ class Datastruct_Area extends Datastruct {
     
     protected $_nameORM = "Area";
     protected $_typeORM = "ORMGIS";
-    
+
+    public $formLyoutType = 'form-vertical';
+    public $form_table_name = 'Areas';
+    public $form_title = 'Area';
     public $icon = 'location-arrow';
     public $filter = FALSE;
 

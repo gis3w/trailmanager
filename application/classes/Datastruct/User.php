@@ -1,6 +1,8 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 class Datastruct_User extends Datastruct {
+
+    public $formLyoutType = 'form-vertical';
     
     public $title = array(
         "title_toshow" => "$1 $2 ($3)",

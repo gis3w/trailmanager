@@ -193,7 +193,7 @@ return array(
     'Paths' => 'Sentieri',
     'Highlitings' => 'Segnalazioni',
     'Trail elements' => 'Sentieri',
-    'Highliting point' => 'Puntuali',
+    'Highliting point' => 'Puntuale',
     'Descriz' => 'Descrizione',
     'Walkable path segment' => 'Percorribilità',
     'Landascape values' => 'Valori paesaggistici',

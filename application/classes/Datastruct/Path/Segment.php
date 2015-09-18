@@ -5,6 +5,9 @@ class Datastruct_Path_Segment extends Datastruct
     protected $_nameORM = "Path_Segment";
     protected $_typeORM = "ORMGIS";
 
+    public $formLyoutType = 'form-vertical';
+    public $form_table_name = 'Path segments';
+    public $form_title = 'Path segment';
     public $icon = 'location-arrow';
     public $filter = FALSE;
 

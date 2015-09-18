@@ -4,7 +4,10 @@ class Datastruct_Path extends Datastruct {
     
     protected $_nameORM = "Path";
     protected $_typeORM = "ORMGIS";
-    
+
+    public $formLyoutType = 'form-vertical';
+    public $form_table_name = 'Paths';
+    public $form_title = 'Path';
     public $icon = 'location-arrow';
     public $filter = TRUE;
 

@@ -5,6 +5,9 @@ class Datastruct_Itinerary extends Datastruct {
     protected $_nameORM = "Itinerary";
 
     public $filter = FALSE;
+    public $formLyoutType = 'form-vertical';
+    public $form_table_name = 'Itineraries';
+    public $form_title = 'Itinerary';
 
     public $groups = array(
         array(
