@@ -1421,6 +1421,8 @@ $.extend(APP.anagrafica,
 		var v = null;
 		var position = null;
 		
+		var formHorizontal = APP.utils.getFormLayout(sectionTarget);
+		
 		//sectionTarget.wizard_mode = true;
 		
 		var displayInputs = function(k, parNode)
@@ -1460,43 +1462,42 @@ $.extend(APP.anagrafica,
 				if (inp === null)
 					return true;
 				
-				var spanValues = null;
-				if (APP.utils.isset(sectionTarget.cols_relation))
-					spanValues = sectionTarget.cols_relation;
-				else
-					spanValues = (APP.utils.isset(position) && position === "blockColForm")? [2, 9, 1] : [2, 9, 1];
+				var spanValues = (APP.utils.isset(sectionTarget.cols_relation))? sectionTarget.cols_relation : [2, 9, 1];
 				
-				var myFieldLabel = (APP.utils.isset(v.label))? APP.i18n.translate(v.label)+":" : null;
-				if (!myFieldLabel)
-				{
-					spanValues[1] = spanValues[0]+spanValues[1];
-					spanValues[0] = 0;
-				}
-				if (!APP.utils.isset(v.description))
-				{
-					spanValues[1] = spanValues[1]+spanValues[2];
-					spanValues[2] = 0;
-				}
-
-				var ctrlGrp = $("<div class='form-group'>\
+				var myFieldLabel = (APP.utils.isset(v.label))? v.label+":" : "";
+				
+				/*
+				var ctrlGrp = $("<div class='form-group' style=''>\
+									<label class='control-label col-md-"+spanValues[0]+"' for='APP-"+v.name+"' "+displayOnOff+">"+((v.required)? APP.utils.getRequiredSymbol() : '')+myFieldLabel+"</label>\
 									<div class='controls col-md-"+spanValues[1]+"' "+displayOnOff+"></div>\
+									<div class='descrInput col-md-"+spanValues[2]+"'></div>\
 								</div>");
+				*/
 				
-				if (myFieldLabel)
-					ctrlGrp.prepend("<label class='control-label col-md-"+spanValues[0]+"' for='APP-"+v.name+"' "+displayOnOff+">"+((v.required)? APP.utils.getRequiredSymbol() : '')+myFieldLabel+"</label>");
-				
-				var cssClass = (APP.utils.isset(v.css_class))? v.css_class : "";
-				ctrlGrp.addClass(cssClass);
+				var ctrlGrp = $('<div class="form-group" '+displayOnOff+'></div>');
+				if (APP.utils.isset(v.css_class))
+					ctrlGrp.addClass(v.css_class);
+				var label = $('<label class="control-label" for="APP-'+v.name+'"> '+((v.required)? APP.utils.getRequiredSymbol() : '')+myFieldLabel+' </label>');
+				var descSpan = APP.utils.isset(v.description)? $('<span id="description_'+v.name+'" data-toggle="tooltip" title="'+v.description+'" data-placement="auto" data-container="body" class="tooltipElement text-muted" style="padding-left: 5px"><i class="icon icon-info-sign"></i></span>') : null;
 								
-				ctrlGrp.find(".controls").append(inp);
-				
-				if (APP.utils.isset(v.description))
+				switch(formHorizontal)
 				{
-					var descrInput = $("<div class='descrInput col-md-"+spanValues[2]+"'></div>");
-					descrInput.append($('<span id="description_'+v.name+'" data-toggle="tooltip" title="'+v.description+'" data-placement="auto" data-container="body" class="tooltipElement text-muted" style="padding-left: 5px"><i class="icon icon-info-sign"></i></span>'));
-					ctrlGrp.append(descrInput);
+					case "form-horizontal":
+						label.addClass("col-md-"+spanValues[0])
+						ctrlGrp.append(label);
+						var inputContainer = $('<div class="col-md-'+spanValues[1]+'"></div>');
+						inputContainer.append(inp);
+						var descContainer = $('<div class="col-md-'+spanValues[2]+'"></div>');
+						descContainer.append(descSpan);
+						ctrlGrp.append(inputContainer);
+						ctrlGrp.append(descContainer);
+						break;
+					default:
+						label.append(descSpan);
+						ctrlGrp.append(label);
+						ctrlGrp.append(inp);
 				}
-								
+				
 				parNode.append(ctrlGrp);							
 				
 				if (($.type(v.editable) === "boolean" && !v.editable) || ($.isPlainObject(v.editable) && ((!v.editable.insert && !APP.utils.isset(identifier)) || (!v.editable.update && APP.utils.isset(identifier)))) || (APP.utils.isset(identifier) && $.inArray("update", sectionTarget.capabilities) === -1) || (!APP.utils.isset(identifier) && $.inArray("insert", sectionTarget.capabilities) === -1))//if (!v.editable || $.inArray("update", sectionTarget.capabilities) === -1)
@@ -1510,6 +1511,7 @@ $.extend(APP.anagrafica,
 				if (APP.utils.isset(v.send_with_file) && v.send_with_file)
 					parNode.find("#APP-"+v.name).addClass("sendWithFile");
 			});
+		
 		};
 		
 		if (!APP.utils.isset(sectionTarget.groups) || sectionTarget.groups.length === 0)
@@ -1527,7 +1529,7 @@ $.extend(APP.anagrafica,
 		
 		if (APP.utils.isset(sectionTarget.wizard_mode) && sectionTarget.wizard_mode === true && sectionTarget.groups.length > 1)
 		{
-			form = $('<form id="fm_'+sectionLabel+'" class="form-horizontal wizard" '+enctype+' role="form"></form>');
+			form = $('<form id="fm_'+sectionLabel+'" class="'+formHorizontal+' wizard" '+enctype+' role="form"></form>');
 			
 			form.prepend('<p id="formButtons" class="row" style="margin-bottom: 30px; padding-left: 15px; display: none"></p>');
 			
@@ -1606,7 +1608,7 @@ $.extend(APP.anagrafica,
 			return form;
 		}
 		
-		var form = $('<form id="fm_'+sectionLabel+'" class="form-horizontal" '+enctype+' role="form">\
+		var form = $('<form id="fm_'+sectionLabel+'" class="'+formHorizontal+'" '+enctype+' role="form">\
 						<input type="hidden" name="csrf_token" class="tokenInput" value="'+APP.config.getToken(sectionTarget.resource)+'">\
 						<div class="row">\
 							<div class="col-md-12">\

@@ -303,6 +303,11 @@ $.extend(APP.utils,{
 		return resArr;
 	},
 	
+	getFormLayout: function(sectionTarget)
+	{
+		return (this.isset(sectionTarget.form_layout_type))? sectionTarget.form_layout_type : "";
+	},
+	
 	setLookTable: function(tableDiv){
 		var filter = tableDiv.find(".dataTables_filter");
 		var label = filter.find("label");
