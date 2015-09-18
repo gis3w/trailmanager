@@ -93,6 +93,7 @@ class Datastruct_Highliting_Poi extends Datastruct {
                     'url_values' => Kohana::$base_url.'jx/admin/highlitingtypology',
                      'description' => __('Select the main typology for this highlighting'),
                      "table_show" => TRUE,
+                    "change" => SAFE::setBaseUrl('jx/admin/changehighlitingtypology/'),
                 ),
                 "highliting_state_id" => array(
                     'data_type' => 'integer',
@@ -227,7 +228,6 @@ class Datastruct_Highliting_Poi extends Datastruct {
                 '$1' => 'description',
             ),
             "table_show" => FALSE,
-            "change" => SAFE::setBaseUrl('jx/admin/changehighlitingtypology'),
             ));
          
          // we add a note filed for insert only

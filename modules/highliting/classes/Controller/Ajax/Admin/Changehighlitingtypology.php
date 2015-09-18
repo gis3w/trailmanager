@@ -17,7 +17,15 @@ class Controller_Ajax_Admin_Changehighlitingtypology extends Controller_Ajax_Aut
         
     }
     
-    
+    protected function _get_item()
+    {
+        unset($this->jres->data->items);
+        $this->jres->data = array(
+            'pt_inter' => [
+                'hidden' => FALSE,
+            ]
+        );
+    }
     protected function _get_list()
     {
 
