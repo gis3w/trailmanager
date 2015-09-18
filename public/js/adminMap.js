@@ -47,17 +47,19 @@ $.extend(APP.adminMap,
 	
 	layout: $(	'<div class="container-fluid" style="height: 100%">\
 					<div class="row" style="height: 100%">\
-						<div class="col-md-5 leftRowsContainer" style="height: 100%">\
-							<div class="row">\
-								<div class="col-md-12 report">\
-								</div>\
-							</div>\
-							<div class="row">\
-								<div class="col-md-12 map" style="height: 100%">\
-								</div>\
-							</div>\
+						<div class="col-md-5 map" style="height: 100%">\
 						</div>\
-						<div class="col-md-7 table-responsive" style="height: 100%; overflow-y: scroll; margin-bottom:0px; padding-top: 20px">\
+						<div class="col-md-7" style="height: 100%; margin-bottom:0px; padding-top: 15px">\
+							<ul class="nav nav-tabs" role="tablist">\
+								<li role="presentation" class="active"><a data-tabname="Report" href="#report" aria-controls="report" role="tab" data-toggle="tab"></a></li>\
+								<li role="presentation"><a data-tabname="Highlitings" href="#highliting" aria-controls="highliting" role="tab" data-toggle="tab"></a></li>\
+							</ul>\
+							<div class="tab-content" style="padding-top: 15px">\
+								<div role="tabpanel" class="tab-pane report active" id="report"></div>\
+								<div role="tabpanel" class="tab-pane" id="highliting">\
+									<div class="table-responsive"></div>\
+								</div>\
+							</div>\
 						</div>\
 					</div>\
 				</div>'),
@@ -72,7 +74,7 @@ $.extend(APP.adminMap,
 						<h4 class="media-heading"></h4>\
 						<div class="text-center">\
 							<button type="button" class="btn btn-default btn-sm popupDetailsBtn" style="margin-top: 10px">\
-								<i class="icon icon-search"></i> '+APP.i18n.translate('Edit')+'\
+								<i class="icon icon-search"></i> <span></span>\
 							</button>\
 						</div>\
 					</div>\
@@ -497,7 +499,7 @@ $.extend(APP.adminMap,
 			}
 		});
 		
-		that.layout.find(".table-responsive").fadeIn();
+		//that.layout.find(".table-responsive").fadeIn();
 	},
 	
 	initItems: function(target, targetInfo)
@@ -647,9 +649,19 @@ $.extend(APP.adminMap,
 		that.body = $("body");
 		that.body.parents("html").css(h100);
 		that.body.css(h100);
+		
+		var as = that.layout.find(".nav-tabs a");
+		$.each(as, function(i,v){
+			v = $(v);
+			v.html(APP.i18n.translate(v.attr("data-tabname")));
+		});
+		
+		that.popup.find(".popupDetailsBtn span").html(APP.i18n.translate("Edit"));
+		
 		var mc = that.body.find("#mainContent");
 		mc.css(h100).css({"padding":0,"margin":0});
-		that.layout.find(".table-responsive").hide();
+		//that.layout.find(".table-responsive").hide();
+		
 		mc.find("#"+that.thisSection+"Container").css({
 			"padding":0,
 			"margin": 0,
@@ -662,41 +674,33 @@ $.extend(APP.adminMap,
 			panelPerRow: 2,
 			container: that.layout.find(".report").empty(),
 			section: 'highliting_summary',
-			callback: function()
-			{
-				var mapRow = that.layout.find(".map").parents(".row:first");
-				var reportRow = that.layout.find(".report").parents(".row:first");
-				var lrc = that.layout.find(".leftRowsContainer");
-								
-				mapRow.css("height", ((lrc.height()-reportRow.height())*100)/lrc.height()+"%");
-				
-				that.createMap();
-				that.createFeatureGroup();
-				
-				var counter = 0;
-				$.each(that.info, function(resource, objR)
-				{
-					that[resource] = that.initItems(that[resource], that.info[resource]);
-					
-					that.getItems(that[resource], that.info[resource], function()
-					{
-						that.getItemsDatastruct(that[resource], that.info[resource], function(){
-							counter++;
-							//that.datastruct[that.info[resource]].values = that[resource].toJSON();
-							that.setTable(resource);
-							if (counter === Object.keys(that.info).length)
-							{
-								that.setMapBounds();
-								that.setDefaultExtent();
-								that.addMapControls();
-								that.showTables();
-							}
-						});
-					});
-				});
-			}
+			callback: function(){}
 		});
 		
+		that.createMap();
+		that.createFeatureGroup();
 		
+		var counter = 0;
+		$.each(that.info, function(resource, objR)
+		{
+			that[resource] = that.initItems(that[resource], that.info[resource]);
+			
+			that.getItems(that[resource], that.info[resource], function()
+			{
+				that.getItemsDatastruct(that[resource], that.info[resource], function()
+				{
+					counter++;
+					//that.datastruct[that.info[resource]].values = that[resource].toJSON();
+					that.setTable(resource);
+					if (counter === Object.keys(that.info).length)
+					{
+						that.setMapBounds();
+						that.setDefaultExtent();
+						that.addMapControls();
+						that.showTables();
+					}
+				});
+			});
+		});
 	},
 });
