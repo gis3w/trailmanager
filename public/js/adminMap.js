@@ -445,7 +445,6 @@ $.extend(APP.adminMap,
 		}
 		
 		that.info[resource].table = $(	'<table id="'+that.info[resource].tableId+'" class="table table-bordered table-hover table-striped table-condensed">\
-											<caption><h3>'+APP.i18n.translate(APP.utils.capitalize(that.info[resource].resource))+'</h3></caption>\
 											<thead><tr></tr></thead>\
 											<tbody></tbody>\
 										</table>');
@@ -487,10 +486,13 @@ $.extend(APP.adminMap,
 	{
 		var that = this;
 		
+		that.layout.find(".table-responsive h3").remove();
+		
 		$.each(that.info, function(key, targetInfo)
 		{
 			if (targetInfo.table)
 			{
+				that.layout.find(".table-responsive").append('<h3>'+APP.i18n.translate(APP.utils.capitalize(targetInfo.resource))+'</h3>');
 				that.layout.find(".table-responsive").append(targetInfo.table);
 				targetInfo.table.dataTable({
 					"sPaginationType": "full_numbers",
@@ -499,7 +501,7 @@ $.extend(APP.adminMap,
 			}
 		});
 		
-		//that.layout.find(".table-responsive").fadeIn();
+		that.layout.find(".table-responsive").fadeIn();
 	},
 	
 	initItems: function(target, targetInfo)
@@ -660,7 +662,7 @@ $.extend(APP.adminMap,
 		
 		var mc = that.body.find("#mainContent");
 		mc.css(h100).css({"padding":0,"margin":0});
-		//that.layout.find(".table-responsive").hide();
+		that.layout.find(".table-responsive").hide();
 		
 		mc.find("#"+that.thisSection+"Container").css({
 			"padding":0,

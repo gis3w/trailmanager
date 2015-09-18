@@ -255,3 +255,7 @@ textarea {
 table.dataTable th {
     /*background-color:  #ffeeaa;*/
 }
+
+.dataTables_wrapper {
+	margin-bottom: 60px;
+}
