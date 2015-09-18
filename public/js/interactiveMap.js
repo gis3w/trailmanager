@@ -2016,7 +2016,7 @@ $.extend(APP.interactiveMap,
 							//iconRetinaUrl: 'my-icon@2x.png',
 							//iconSize: [38, 95],
 							iconAnchor: [16, 37],
-							//popupAnchor: [-3, -76],
+							popupAnchor: [0, -34],
 							//shadowUrl: 'my-icon-shadow.png',
 							//shadowRetinaUrl: 'my-icon-shadow@2x.png',
 							//shadowSize: [68, 95],
@@ -2024,7 +2024,7 @@ $.extend(APP.interactiveMap,
 						});
 					}
 					var title = myObj.title;
-					APP.map.addLayer({layer: new L.Marker([v[tag].coordinates[1],v[tag].coordinates[0]], myObj).bindPopup(title), id: tag+" "+v.id});
+					var l = APP.map.addLayer({layer: new L.Marker([v[tag].coordinates[1],v[tag].coordinates[0]], myObj).bindPopup(title), id: tag+" "+v.id});
 				}
 			});
 			

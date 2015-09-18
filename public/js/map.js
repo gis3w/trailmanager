@@ -343,6 +343,8 @@ $.extend(APP.map,
 			
 		if (!that.globalData[that.currentMapId].map.hasLayer(that.globalData[that.currentMapId].addedLayers[obj.id].layer))
 				that.globalData[that.currentMapId].addedLayers[obj.id].layer.addTo(that.globalData[that.currentMapId].map);
+		
+		return that.globalData[that.currentMapId].addedLayers[obj.id].layer;
 	},
 	
 	showLayer: function(id)
