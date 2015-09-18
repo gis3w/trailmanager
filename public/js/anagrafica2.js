@@ -799,6 +799,9 @@ $.extend(APP.anagrafica,
 		});
 	
 		var s = $('<div></div>');
+				
+		if (APP.utils.isset(that.sections[section].form_table_name))
+			s.append('<h3 class="pull-right">'+APP.i18n.translate(that.sections[section].form_table_name)+'</h3>');
 		
 		if ($.inArray("insert", this.sections[section].capabilities) > -1)
 			s.append('<button type="button" id="addItemButton_'+section+'" class="btn btn-primary"><i class="icon-plus"></i> '+APP.i18n.translate("add")+'</button>');
@@ -1613,9 +1616,15 @@ $.extend(APP.anagrafica,
 						<div class="row">\
 							<div class="col-md-12">\
 								<div id="formButtons" class="well well-sm" style="text-align: center; display:none"></div>\
+								<div class="form_title pull-left"></div>\
 							</div>\
 						</div>\
 					</form>');
+		
+		if (APP.utils.isset(sectionTarget.form_title))
+		{
+			form.find(".form_title").html('<h3>'+APP.i18n.translate(sectionTarget.form_title)+'</h3>');
+		}
 			
 		var fb = form.find("#formButtons");
 		if (buttons.length>0)
