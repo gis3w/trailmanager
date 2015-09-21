@@ -29,6 +29,15 @@ class Datastruct_Highliting_Poi extends Datastruct {
             'fields' => array(
                 'highliting_typology_id',
                 'pt_inter',
+                'strut_ric',
+                'aree_attr',
+                'insediam',
+                'pt_acqua',
+                'pt_socc',
+                'percorr',
+                'fatt_degr',
+                'stato_segn',
+                'tipo_segna',
                 'highliting_path_id',
                 'the_geom',
                 'image_highliting_poi'),
@@ -53,6 +62,24 @@ class Datastruct_Highliting_Poi extends Datastruct {
     );
     
      protected function _columns_type() {
+
+         $baseSingleSelectField = array(
+             'editable' => TRUE,
+             'form_input_type' => self::SELECT,
+             'foreign_mode' => self::SINGLESELECT,
+             'foreign_value_field' => 'code',
+             'foreign_toshow' => '$1',
+             'foreign_toshow_params' => array(
+                 '$1' => 'description',
+             ),
+             "table_show" => TRUE,
+         );
+
+         $baseHighlitingSlave = array_replace($baseSingleSelectField,[
+             "table_show" => FALSE,
+             "slave_off" => "highliting_typology_id"
+         ]);
+
         
             return array(
                 "description" => array(
@@ -82,6 +109,7 @@ class Datastruct_Highliting_Poi extends Datastruct {
                     'label' =>__('Geodata'),
                     'table_show' => FALSE,
                 ),
+
                 "highliting_typology_id" => array(
                     'form_input_type' => self::SELECT,
                     'foreign_mode' => self::SINGLESELECT,
@@ -95,6 +123,7 @@ class Datastruct_Highliting_Poi extends Datastruct {
                      "table_show" => TRUE,
                     "change" => SAFE::setBaseUrl('jx/admin/changehighlitingtypology/'),
                 ),
+
                 "highliting_state_id" => array(
                     'data_type' => 'integer',
                     'form_input_type' => self::SELECT,
@@ -162,7 +191,50 @@ class Datastruct_Highliting_Poi extends Datastruct {
                         ),
                         "table_show" => TRUE,
                         'editable' => TRUE,
-                    )
+                    ),
+                // fileds for highliting typology
+                'pt_inter' => array_replace($baseHighlitingSlave,array(
+                    'foreign_key' => 'pt_inter_poi',
+                    'label' => __('Point of interest class'),
+                )),
+                'strut_ric' => array_replace($baseHighlitingSlave,array(
+                    'foreign_key' => 'strut_ric_poi',
+                    'label' => __('Accomodation building class'),
+                )),
+                'aree_attr' => array_replace($baseHighlitingSlave,array(
+                    'foreign_key' => 'aree_attr_poi',
+                    'label' => __('Equip area class'),
+                )),
+                'insediam' => array_replace($baseHighlitingSlave,array(
+                    'foreign_key' => 'insediam_poi',
+                    'label' => __('Village class'),
+                )),
+                'pt_acqua' => array_replace($baseHighlitingSlave,array(
+                    'foreign_key' => 'pt_acqua_poi',
+                    'label' => __('Water point class'),
+                )),
+                'pt_socc' => array_replace($baseHighlitingSlave,array(
+                    'foreign_key' => 'pt_socc_poi',
+                    'label' => __('Rescue point class'),
+                )),
+                'percorr' => array_replace($baseHighlitingSlave,array(
+                    'foreign_key' => 'percorr_segment',
+                    'label' => __('Walkable path segment'),
+                )),
+                'fatt_degr' => array_replace($baseHighlitingSlave,array(
+                    'foreign_key' => 'fatt_degr_poi',
+                    'label' => __('Degeneration cause class'),
+                )),
+                'stato_segn' => array_replace($baseHighlitingSlave,array(
+                    'foreign_key' => 'stato_segn_poi',
+                    'label' => __('Signage state class'),
+                )),
+                'tipo_segna' => array_replace($baseHighlitingSlave,array(
+                    'foreign_key' => 'tipo_segna_poi',
+                    'label' => __('Signage type class'),
+                )),
+
+
             );
       }
       
@@ -215,21 +287,10 @@ class Datastruct_Highliting_Poi extends Datastruct {
 
 
 
-        $fct['pt_inter'] = array_replace($this->_columnStruct,array(
-            'foreign_key' => 'pt_inter_poi',
-            'form_show' => FALSE,
-            'label' => __('Point of interest class'),
-            'editable' => TRUE,
-            'form_input_type' => self::SELECT,
-            'foreign_mode' => self::SINGLESELECT,
-            'foreign_value_field' => 'code',
-            'foreign_toshow' => '$1',
-            'foreign_toshow_params' => array(
-                '$1' => 'description',
-            ),
-            "table_show" => FALSE,
-            ));
-         
+
+
+
+
          // we add a note filed for insert only
          $fct['note'] = array_replace($this->_columnStruct, array(
                 "form_input_type" => self::TEXTAREA,

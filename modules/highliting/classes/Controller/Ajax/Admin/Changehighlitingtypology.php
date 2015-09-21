@@ -22,7 +22,9 @@ class Controller_Ajax_Admin_Changehighlitingtypology extends Controller_Ajax_Aut
         unset($this->jres->data->items);
         $this->jres->data = array(
             'pt_inter' => [
-                'hidden' => FALSE,
+                'hidden' => [
+                    'value' => FALSE,
+                    ]
             ]
         );
     }
@@ -33,7 +35,9 @@ class Controller_Ajax_Admin_Changehighlitingtypology extends Controller_Ajax_Aut
         unset($this->jres->data->items);
         $this->jres->data = array(
             'pt_inter' => [
-                'hidden' => FALSE,
+                'hidden' => [
+                    'value' => FALSE,
+                ]
             ]
         );
 
