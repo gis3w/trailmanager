@@ -15,13 +15,27 @@ class Datastruct_Highliting_Poi extends Datastruct {
          array(
             'name' => 'highliting-poi-abstract',
             'position' => 'left',
-            'fields' => array('reporter','supervisor','executor','current_highliting_sate','highliting_state_id','supervisor_user_id','executor_user_id'),
+            'fields' => array(
+                'reporter',
+                'supervisor',
+                'executor',
+                'current_highliting_sate',
+                'highliting_state_id',
+                'supervisor_user_id',
+                'executor_user_id',
+                'from_highliting_to_poi'
+            ),
              'class' => 'well',
         ),
         array(
             'name' => 'highliting-poi-data',
             'position' => 'left',
-            'fields' => array('id','publish','subject','description'),
+            'fields' => array(
+                'id',
+                'publish',
+                'subject',
+                'description'
+            ),
         ),
        array(
             'name' => 'highliting-poi-foreign-data',
@@ -134,10 +148,7 @@ class Datastruct_Highliting_Poi extends Datastruct {
                     ),
                     'url_values' => SAFE::setBaseUrl('jx/highlitingstate?highliting_state_id=$1'),
                     'url_values_params' => array(
-                        '$1' => array(
-                            'level' => 'highliting_poi',
-                            'field' => 'highliting_state_id',
-                        ),    
+                        '$1' => 'highliting_state_id',
                         
                    ),
                     "change" => SAFE::setBaseUrl('jx/admin/changehighliting?highliting_state_id='),
@@ -285,12 +296,6 @@ class Datastruct_Highliting_Poi extends Datastruct {
              )
         );
 
-
-
-
-
-
-
          // we add a note filed for insert only
          $fct['note'] = array_replace($this->_columnStruct, array(
                 "form_input_type" => self::TEXTAREA,
@@ -298,6 +303,25 @@ class Datastruct_Highliting_Poi extends Datastruct {
                 "table_show" => FALSE,
                 'label' => __('Note'),
              )
+        );
+
+        $fct['from_highliting_to_poi']  = array_replace($this->_columnStruct,array(
+                'form_input_type' => self::BUTTON,
+                'input_class' => 'default',
+                'data_type' => 'pdf_print',
+                'url_values' => '/jx/admin/fromhpoi2poi/$1',
+                'url_values_params' => array(
+                    '$1' => 'id',
+                ),
+                'description' => __('Transform to Point of interest'),
+                'table_show' => FALSE,
+                'label' => __(''),
+                'icon' => 'hand-up',
+                'form_show' => array(
+                    self::STATE_INSERT => FALSE,
+                    self::STATE_UPDATE =>TRUE
+                ),
+            )
         );
 
 
