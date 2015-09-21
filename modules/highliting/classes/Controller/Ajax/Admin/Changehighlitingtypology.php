@@ -41,6 +41,17 @@ class Controller_Ajax_Admin_Changehighlitingtypology extends Controller_Ajax_Aut
                     ],
                 'disabled' => [
                     'value' => FALSE,
+                ],
+                'value' => [
+                    'items' => [
+                        [
+                            'id' =>1,
+                            'description' => 'pippo',
+                        ]
+                    ],
+                    'label_toshow' => '$1',
+                    'label_toshow_params' => 'description',
+                    'value_field' => 'id',
                 ]
             ]
         );
