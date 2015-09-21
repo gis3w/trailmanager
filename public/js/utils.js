@@ -915,7 +915,7 @@ $.extend(APP.utils,{
 		var data = null;
 		
 		if (APP.utils.isset(column.url_values_params))
-		{
+		{			
 			$.each(column.url_values_params, function(i,v)
 			{
 				if (APP.utils.isset(par))
@@ -940,7 +940,10 @@ $.extend(APP.utils,{
 					}
 					else
 					{
-						urlV = that.replaceAll(i, APP.config.breadCrumb[APP.config.breadCrumb.length-1].data[v.field], urlV);
+						if (APP.config.breadCrumb.length>0)
+							urlV = that.replaceAll(i, APP.config.breadCrumb[APP.config.breadCrumb.length-1].data[v.field], urlV);
+						else
+							urlV = that.replaceAll(i, valori, urlV);
 					}
 				}
 			});
