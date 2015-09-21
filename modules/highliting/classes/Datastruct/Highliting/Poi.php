@@ -77,7 +77,7 @@ class Datastruct_Highliting_Poi extends Datastruct {
 
          $baseHighlitingSlave = array_replace($baseSingleSelectField,[
              "table_show" => FALSE,
-             "slave_off" => "highliting_typology_id"
+             "slave_of" => "highliting_typology_id"
          ]);
 
         
