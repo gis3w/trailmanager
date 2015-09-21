@@ -93,6 +93,17 @@ class Controller_Ajax_Admin_Changehighlitingtypology extends Controller_Ajax_Aut
                     ]
                 ];
             }
+            else
+            {
+                $this->jres->data[$fieldName] = [
+                    'hidden' => [
+                        'value' => TRUE,
+                    ],
+                    'disabled' => [
+                        'value' => TRUE,
+                    ]
+                ];
+            }
         }
 
 
