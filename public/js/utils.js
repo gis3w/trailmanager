@@ -345,6 +345,7 @@ $.extend(APP.utils,{
 			no_results_text: APP.i18n.translate("no result"),
 		};
 		elem.chosen(defaultObj);
+		elem.parents(".form-group:first").find(".chosen-container").css("width","100%");
 	},
 	
 	setLookForm: function(form, id)
@@ -474,7 +475,10 @@ $.extend(APP.utils,{
 		{
 			that.setChangeProperty($(v));
 			$(v).data().mode = that.isset(id)? "update" : "insert";
-		});		
+			if ($.isFunction($(v).change))
+				$(v).change();
+		});
+		/*
 		if (APP.utils.isset(id))
 		{
 			$.each(inps, function(i,v)
@@ -485,16 +489,10 @@ $.extend(APP.utils,{
 				{
 					v.data().mode = "first_update";
 					v.change();
-					/*var fields = data.sectionTarget.columns;
-					var ind = that.getIndexFromField(fields, "name", v.attr("name"));
-					if (ind > -1 && !fields[ind].editable.update)
-					{
-						v.attr("disabled", true);
-					}*/
 				}
 			});
 		}
-		
+		*/
 		if (form.hasClass("wizard"))
 		{
 			var settings = form.data().jWizardSettings;
@@ -697,9 +695,34 @@ $.extend(APP.utils,{
 			
 		elem.change(function()
 		{
+			var changeParams = $(this).data().changeParams;
+			var urlV = $(this).data().change;
+			
+			if (APP.utils.isset(changeParams))
+			{
+				$.each(changeParams, function(i,v)
+				{
+					if ($.isPlainObject(v))
+					{
+						$.each(APP.config.breadCrumb, function(ii, vv)
+						{
+							if (!that.isset(vv.data) || !that.isset(vv.level) || vv.level !== v.level)
+								return true;
+							
+							urlV = that.replaceAll(i, vv.data[v.field], urlV);
+							return false;
+						});
+					}
+					else
+					{
+						urlV = that.replaceAll(i, APP.config.breadCrumb[APP.config.breadCrumb.length-1].data[v.field], urlV);
+					}
+				});
+			}
+			
 			$.ajax({
 				type: 'GET',
-				url: elem.data().change+$(this).val(),
+				url: urlV+$(this).val(),
 				dataType: 'json',
 				success: function(data)
 				{
@@ -707,7 +730,7 @@ $.extend(APP.utils,{
 					{
 						$.each(data.data, function(fieldName, fieldObj)
 						{
-							var fieldToChange = (elem.hasClass("multifield"))? elem.parents("tr:first").find("#APP-"+fieldName) : form.find("#APP-"+fieldName); //form.find("#APP-"+fieldName);
+							var fieldToChange = (elem.hasClass("multifield"))? elem.parents("tr:first").find("#APP-"+fieldName) : form.find("#APP-"+fieldName);
 							
 							$.each(fieldObj, function(action, actionObj)
 							{
@@ -723,31 +746,37 @@ $.extend(APP.utils,{
 									case "value":
 										if (fieldToChange.is('select'))
 										{
-											var oldValue = fieldToChange.val();
-											var arr = [];
-											$.each(fieldObj.value.items, function(j, k)
-											{
-												var label = APP.config.getValue(k, fieldObj.value.label_toshow, fieldObj.value.label_toshow_params);
-												var valueField = (APP.utils.isset(k[fieldObj.value.value_field]))? fieldObj.value.value_field : "id";
-												if (!APP.utils.isset(k[valueField]) || APP.utils.isEmptyString(k[valueField]) || !APP.utils.isset(label) || APP.utils.isEmptyString(label))
-													return true;
-													
-												arr.push({name: label, value: k[valueField]});
-											});
+											var newValue = (fieldObj.value.hasOwnProperty('default_value'))? fieldObj.value.default_value : fieldToChange.val();
 											
-											fieldToChange.html(that.createOptions(arr));
+											if (fieldObj.value.items)
+											{
+												var arr = [];
+												$.each(fieldObj.value.items, function(j, k)
+												{
+													var label = APP.config.getValue(k, fieldObj.value.label_toshow, fieldObj.value.label_toshow_params);
+													var valueField = (APP.utils.isset(k[fieldObj.value.value_field]))? fieldObj.value.value_field : "id";
+													if (!APP.utils.isset(k[valueField]) || APP.utils.isEmptyString(k[valueField]) || !APP.utils.isset(label) || APP.utils.isEmptyString(label))
+														return true;
+														
+													arr.push({name: label, value: k[valueField]});
+												});
+												
+												fieldToChange.html(that.createOptions(arr));
+											}
+											
 											if (fieldToChange.find("option").length === 1)
 												fieldToChange.attr("disabled", true);
 											else
-												fieldToChange.val(oldValue);
-											break;
+											{
+												if (fieldToChange.hasClass("boolean") && APP.utils.isset(newValue))
+													newValue = ""+newValue;
+												/*if (!APP.utils.isset(newValue))
+													newValue = "";*/
+												fieldToChange.val(newValue);
+											}
 										}
-										if (fieldToChange.is('input') && fieldToChange.hasClass("mapbox"))
-										{
-											APP.map.updateLayerGroups(elem.attr("id"), 'mapboxDiv-'+fieldToChange.attr("name"), fieldObj.value.items);
-											break;
-										}
-										fieldToChange.val(fieldObj.value.items[0]);
+										else
+											fieldToChange.val(fieldObj.value.items[0]);
 										break;
 									case "notify":
 										var to = (APP.utils.isset(actionObj.timeout))? actionObj.timeout : 3000; 
@@ -779,11 +808,15 @@ $.extend(APP.utils,{
 									case "hidden":
 										if (actionObj.value)
 										{
-											fieldToChange.parents(".form-group:first").fadeOut(600);
+											if (fieldToChange.hasClass("chosen"))
+												fieldToChange.addClass("chosenHidden");
+											fieldToChange.parents(".form-group:first").hide();
 										}
 										else
 										{
-											fieldToChange.parents(".form-group:first").fadeIn(600);
+											if (fieldToChange.hasClass("chosen"))
+												fieldToChange.removeClass("chosenHidden");
+											fieldToChange.parents(".form-group:first").show();
 										}
 										break;
 									default:
@@ -1545,10 +1578,16 @@ $.extend(APP.utils,{
 						inp.append(this.getOptionsSelect(valore, v.name, obj, sectionTarget, parVal));
 					}
 					else
-						inp.attr("disabled", true);
+					{
+						inp.hide();
+						inp.addClass("chosenHidden");
+					}
 						
 					if (inp.find("option").length === 1)
-						inp.attr("disabled", true);
+					{
+						inp.hide();
+						inp.addClass("chosenHidden");
+					}
 				}
 				else
 					inp.append(this.getOptionsSelect(valore, v.name, obj, sectionTarget));

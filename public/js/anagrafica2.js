@@ -1477,6 +1477,11 @@ $.extend(APP.anagrafica,
 								</div>");
 				*/
 				
+				if (inp.find(":input").hasClass("chosenHidden"))
+				{
+					displayOnOff = "style='display: none'";
+				}
+				
 				var ctrlGrp = $('<div class="form-group" '+displayOnOff+'></div>');
 				if (APP.utils.isset(v.css_class))
 					ctrlGrp.addClass(v.css_class);
