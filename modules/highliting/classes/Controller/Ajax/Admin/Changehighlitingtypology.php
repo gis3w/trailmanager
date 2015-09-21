@@ -50,7 +50,9 @@ class Controller_Ajax_Admin_Changehighlitingtypology extends Controller_Ajax_Aut
                         ]
                     ],
                     'label_toshow' => '$1',
-                    'label_toshow_params' => 'description',
+                    'label_toshow_params' => [
+                        '$1' => 'description',
+                        ],
                     'value_field' => 'id',
                 ]
             ]

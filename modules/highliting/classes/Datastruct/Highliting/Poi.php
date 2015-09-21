@@ -6,7 +6,7 @@ class Datastruct_Highliting_Poi extends Datastruct {
     protected $_typeORM = "ORMGIS";
 
     public $formLyoutType = 'form-vertical';
-    public $form_table_name = 'Highliting poins';
+    public $form_table_name = 'Highliting points';
     public $form_title = 'Highliting point';
     public $icon = 'suitcase';
     public $filter = FALSE;

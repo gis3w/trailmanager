@@ -6,6 +6,8 @@ class Datastruct_Highliting_Path extends Datastruct {
     protected $_typeORM = "ORMGIS";
 
     public $formLyoutType = 'form-vertical';
+    public $form_table_name = 'Highliting paths';
+    public $form_title = 'Highliting path';
     
     public $icon = 'suitcase';
     public $filter = FALSE;

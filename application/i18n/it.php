@@ -194,6 +194,7 @@ return array(
     'Highlitings' => 'Segnalazioni',
     'Trail elements' => 'Sentieri',
     'Highliting point' => 'Puntuale',
+    'Highliting points' => 'Segnalazioni/manutenzioni puntuali',
     'Descriz' => 'Descrizione',
     'Walkable path segment' => 'Percorribilità',
     'Landascape values' => 'Valori paesaggistici',
@@ -259,6 +260,7 @@ return array(
     'Path' => 'Sentiero di riferimento',
     'Highliting state to' => 'Stato corrente',
     'Highliting path' => 'Lineari',
+    'Highliting paths' => 'Segnalazioni/manutenzioni lineari',
     'Maintenances' => 'Manutenzioni',
 
 
