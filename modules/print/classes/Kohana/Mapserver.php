@@ -74,7 +74,6 @@ class Kohana_Mapserver {
         $this->_pathsLayerObj = $this->_mapObj->getLayerByName('PATHS');
         $this->_poisLayerObj = $this->_mapObj->getLayerByName('POIS');
 
-
         $this->addBaseLayer(MS_ON,$base_layer_id);
         if(isset($area_id))
         {

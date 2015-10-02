@@ -579,19 +579,19 @@ class Datastruct_Poi extends Datastruct {
             
         ));
 
-          $fct['itineraries']  = array_replace($this->_columnStruct,array(
-              'data_type' => 'integer',
-              'form_input_type' => self::SELECT,
-              'foreign_mode' => self::MULTISELECT,
-              'foreign_toshow' => '$1',
-              'foreign_toshow_params' => array(
-                  '$1' => 'name',
-              ),
-              'url_values' => '/jx/admin/itinerary',
-              'label' => __('Itineraries'),
-              'description' => __('Select one or more itineraries'),
-              "table_show" => FALSE,
-          ));
+        $fct['itineraries']  = array_replace($this->_columnStruct,array(
+          'data_type' => 'integer',
+          'form_input_type' => self::SELECT,
+          'foreign_mode' => self::MULTISELECT,
+          'foreign_toshow' => '$1',
+          'foreign_toshow_params' => array(
+              '$1' => 'name',
+          ),
+          'url_values' => '/jx/admin/itinerary',
+          'label' => __('Itineraries'),
+          'description' => __('Select one or more itineraries'),
+          "table_show" => FALSE,
+        ));
         
       
         return $fct;

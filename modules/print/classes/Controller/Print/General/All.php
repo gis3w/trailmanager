@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Controller_Print_General_All extends Controller_Print_Base
+class Controller_Print_General_All extends Controller_Print_Base_Auth_Nostrict
 {
 
     protected $_xmlContentView = 'print/general/all';
