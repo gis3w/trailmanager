@@ -41,6 +41,8 @@ class Datastruct_Front_Highlitingpoi extends Datastruct_Highliting_Poi {
         $columns = parent::_columns_type();
         
         $columns['description']['editor'] = FALSE;
+        $columns['highliting_typology_id']['url_values'] = Kohana::$base_url.'jx/highlitingtypology';
+        $columns['highliting_typology_id']['change'] = SAFE::setBaseUrl('jx/changehighlitingtypology/');
         $columns['the_geom']['form_show'] = FALSE;
         
         return $columns;
