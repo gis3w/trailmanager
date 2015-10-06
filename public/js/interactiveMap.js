@@ -740,7 +740,6 @@ $.extend(APP.interactiveMap,
 									<div class="row thumbnailsRow" style="padding: 20px; vertical-align: middle"></div>\
 								</div>\
 								<div class="row">\
-									<!--\
 									<div class="col-md-3">\
 										<div class="panel panel-default categories" style="display: none">\
 											<div class="panel-heading">\
@@ -749,27 +748,30 @@ $.extend(APP.interactiveMap,
 											<div class="panel-body">\
 											</div>\
 										</div>\
-									</div>\
-									-->\
-									<div class="col-md-5">\
+									</div>';
+		if(section == 'poi') {
+			sheetTemplate += '<div class="col-md-5">\
 										<div class="panel panel-default features" style="display: none">\
 											<div class="panel-heading">\
-												<h3 class="panel-title">'+APP.i18n.translate('features')+'</h3>\
+												<h3 class="panel-title">' + APP.i18n.translate('features') + '</h3>\
 											</div>\
 											<div class="panel-body">\
 											</div>\
 										</div>\
-									</div>\
-									<div class="col-md-7">\
+									</div>';
+		}
+		if(section == 'path') {
+			sheetTemplate += '<div class="col-md-7">\
 									<div class="panel panel-default heightsprofilepath" style="display: none">\
 										<div class="panel-heading">\
-											<h3 class="panel-title">'+APP.i18n.translate('Heightsprofilepath')+'</h3>\
+											<h3 class="panel-title">' + APP.i18n.translate('Heightsprofilepath') + '</h3>\
 										</div>\
 										<div class="panel-body">\
 										</div>\
 									</div>\
-								</div>\
-								</div>\
+								</div>';
+		}
+		sheetTemplate += '</div>\
 								<div class="paragraphes text-justify"></div>\
 							  </div>\
 							  <div class="modal-footer">\
