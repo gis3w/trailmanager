@@ -361,17 +361,25 @@ $.extend(APP.config,{
 		return stringTemplate;
 	},
 	
-	getControlLayers: function()
+	getControlLayers: function(params)
 	{
 		var that = this;
 		
 		var baseLayers = {};
-		var overlays = {};
+		var overlays = (APP.utils.isset(params) && APP.utils.isset(params.overlays))? params.overlays : {};
 		var layers = [];
 		var defLayName = null;
 		var defLayUrl = null;
 		var defaultLayer = null;
 		var defaultOverlays = [];
+		if (APP.utils.isset(params) && APP.utils.isset(params.initialOverlays))
+		{
+			$.each(params.initialOverlays, function(i,v){
+				if (APP.utils.isset(overlays[v]))
+					defaultOverlays.push(overlays[v]);
+			});
+		}
+		
 		if (APP.utils.isset(that.localConfig))
 		{
 			$.each(that.localConfig.background_layer, function(i,v)
@@ -408,7 +416,6 @@ $.extend(APP.config,{
 				layers.push(l);
 				if (v.def)
 				{
-					
 					if (!v.transparent)
 					{
 						defLayUrl = v.url;
@@ -440,7 +447,7 @@ $.extend(APP.config,{
 			defLayName = "Openstreetmap";
 		}
 		
-		var initialLayers = [defaultLayer];
+		var initialLayers = [defaultLayer];		
 		$.each(defaultOverlays, function(i,v){
 			initialLayers.push(v);
 		});

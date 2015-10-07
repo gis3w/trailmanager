@@ -532,7 +532,12 @@ $.extend(APP.map,
 		this.changeMap(id);
 		// add an OpenStreetMap tile layer
 		
-		var bgl = APP.config.getControlLayers();
+		var parObj = {};
+		if (O.overlays)
+			parObj.overlays = O.overlays;
+		if (O.initialOverlays)
+			parObj.initialOverlays = O.initialOverlays;
+		var bgl = APP.config.getControlLayers(parObj);
 		
 		that.globalData[id].map = new L.map(id, {
 			'center': (O.center)? O.center : new L.LatLng(0,0),//new L.LatLng(44.160534,11.04126),

@@ -1155,171 +1155,231 @@ $.extend(APP.anagrafica,
 		if (form.find("div.mapbox").length > 0)
 		{
 			var ddd = form.find("div.mapbox");
-			APP.map.setMap({container: ddd});
+			var mapParams = {container: ddd};
 			
-			if (APP.utils.isset(APP.map.globalData[APP.map.currentMapId].drawnItems))
+			var initMap = function()
 			{
-				APP.map.globalData[APP.map.currentMapId].map.removeLayer(APP.map.globalData[APP.map.currentMapId].drawnItems);
-				APP.map.globalData[APP.map.currentMapId].drawnItems = null;
-			}
-			if (APP.utils.isset(APP.map.globalData[APP.map.currentMapId].drawControl))
-			{
-				APP.map.globalData[APP.map.currentMapId].map.removeControl(APP.map.globalData[APP.map.currentMapId].drawControl);
-				APP.map.globalData[APP.map.currentMapId].drawControl = null;
-			}
-			
-			var index = APP.utils.getIndexFromField(this.sections[this.currentSection].columns, "form_input_type", "mapbox");
-			if (index > -1)
-			{
-				var obj = this.sections[this.currentSection].columns[index];
+				APP.map.setMap(mapParams);
 				
-				if (obj.map_box_editing)
+				if (APP.utils.isset(APP.map.globalData[APP.map.currentMapId].drawnItems))
 				{
-					var opt = {
-						draw: {
-							polyline: false,
-							polygon: false,
-							circle: false,
-							marker: false,
-							rectangle: false
-						},
-						edit: {
-							edit: {
-								selectedPathOptions: {}
+					APP.map.globalData[APP.map.currentMapId].map.removeLayer(APP.map.globalData[APP.map.currentMapId].drawnItems);
+					APP.map.globalData[APP.map.currentMapId].drawnItems = null;
+				}
+				if (APP.utils.isset(APP.map.globalData[APP.map.currentMapId].drawControl))
+				{
+					APP.map.globalData[APP.map.currentMapId].map.removeControl(APP.map.globalData[APP.map.currentMapId].drawControl);
+					APP.map.globalData[APP.map.currentMapId].drawControl = null;
+				}
+				
+				if (index > -1)
+				{
+					var obj = that.sections[that.currentSection].columns[index];
+					
+					if (obj.map_box_editing)
+					{
+						var opt = {
+							draw: {
+								polyline: false,
+								polygon: false,
+								circle: false,
+								marker: false,
+								rectangle: false
 							},
-							remove: {}
-						}
-					};
-					if (!obj.editable)
-						opt.edit.edit = false;
-					/*if (!obj.removable)
-						opt.edit.remove = false;*/
-						
-					$.each(obj.map_box_editing_geotype, function(i,v)
-					{
-						opt.draw[v] = {title: APP.i18n.translate(v)};
-					});
-					APP.map.toggleDrawEditor(APP.map.currentMapId, true, opt);
-					
-					APP.map.globalData[APP.map.currentMapId].map.on('draw:created', function (e)
-					{
-						var type = e.layerType;
-						var	layer = e.layer;
-						
-						APP.map.globalData[APP.map.currentMapId].drawnItems.addLayer(layer);
-					});
-					APP.map.globalData[APP.map.currentMapId].map.on('draw:edited', function (e)
-					{
-						console.log("imposta l'evento draw:edited");
-					});
-					APP.map.globalData[APP.map.currentMapId].map.on('draw:deleted', function (o)
-					{
-						$.each(o.layers.getLayers(), function(ij,vj){
-							APP.map.globalData[APP.map.currentMapId].drawnItems.removeLayer(vj);
-						});
-						//APP.map.globalData[APP.map.currentMapId].drawnItems.clearLayers(layers);
-					});
-				}
-				
-				var inp = form.find("input.mapbox");
-				if (inp.length > 0 && inp.val() != "")
-				{
-					var value = inp.val();
-					
-					var gj = L.geoJson($.parseJSON(value), {
-						/*
-						coordsToLatLng: function(coords)
-						{
-							return [coords[1],coords[0]];
-						},
-						*/
-						onEachFeature: function(feature, layer)
-						{
-							switch( feature.type)
-							{
-								
-								case "MultiLineString": 
-									$.each(feature.coordinates, function(i,v){
-										L.polyline(L.GeoJSON.coordsToLatLngs(v)).addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
-									});
-								
-									/*var cs = feature.coordinates;
-									$.each(cs, function(i,v){
-										$.each(v,function(j,k){
-											v[j] = [k[1],k[0]];
-										});
-										L.polyline(v).addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
-									});
-									*/	
-									break
-								case "LineString":
-									L.polyline(feature.coordinates).addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
-									break;
-								case "MultiPolygon": 
-									$.each(feature.coordinates, function(i,v){
-										L.polygon(L.GeoJSON.coordsToLatLngs(v,1)).addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
-									});
-									break;
-								case "Polygon":
-									L.polygon(feature.coordinates).addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
-									/*
-									var cs = feature.coordinates;
-									$.each(cs, function(i,v){
-										$.each(v,function(w,z){
-											$.each(z,function(j,k){
-												z[j] = [k[1],k[0]];
-											});
-											L.polygon(z).addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
-										});
-									});
-									*/
-									break;
-								default:
-									layer.addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
-
+							edit: {
+								edit: {
+									selectedPathOptions: {}
+								},
+								remove: {}
 							}
-						},
-						/*
-						pointToLayer: function (data, latlng) {
-							return L.circleMarker(latlng);
-						},
-						*/
-					});
+						};
+						if (!obj.editable)
+							opt.edit.edit = false;
+						/*if (!obj.removable)
+							opt.edit.remove = false;*/
+							
+						$.each(obj.map_box_editing_geotype, function(i,v)
+						{
+							opt.draw[v] = {title: APP.i18n.translate(v)};
+						});
+						APP.map.toggleDrawEditor(APP.map.currentMapId, true, opt);
+						
+						APP.map.globalData[APP.map.currentMapId].map.on('draw:created', function (e)
+						{
+							var type = e.layerType;
+							var	layer = e.layer;
+							
+							APP.map.globalData[APP.map.currentMapId].drawnItems.addLayer(layer);
+						});
+						APP.map.globalData[APP.map.currentMapId].map.on('draw:edited', function (e)
+						{
+							console.log("imposta l'evento draw:edited");
+						});
+						APP.map.globalData[APP.map.currentMapId].map.on('draw:deleted', function (o)
+						{
+							$.each(o.layers.getLayers(), function(ij,vj){
+								APP.map.globalData[APP.map.currentMapId].drawnItems.removeLayer(vj);
+							});
+							//APP.map.globalData[APP.map.currentMapId].drawnItems.clearLayers(layers);
+						});
+					}
 					
-					APP.map.globalData[APP.map.currentMapId].map.fitBounds(APP.map.globalData[APP.map.currentMapId].drawnItems.getBounds());
-				}
-				
-				if (obj.map_box_fileloading)
-				{
-					var options_eraseall = {
-						layer :  APP.map.globalData[APP.map.currentMapId].drawnItems
-					};
-					APP.map.globalData[APP.map.currentMapId].eraseAllControl = new L.Control.EraseALL(options_eraseall); 
-					APP.map.globalData[APP.map.currentMapId].map.addControl(APP.map.globalData[APP.map.currentMapId].eraseAllControl);	
-					
-					//var style = {color:'red', opacity: 1.0, fillOpacity: 1.0, weight: 2, clickable: false};
-					L.Control.FileLayerLoad.LABEL = '<i class="icon-folder-open"></i>';
-					var control = L.Control.fileLayerLoad({
-						fitBounds: true,
-						layerOptions: {
+					var inp = form.find("input.mapbox");
+					if (inp.length > 0 && inp.val() != "")
+					{
+						var value = inp.val();
+						
+						var gj = L.geoJson($.parseJSON(value), {
+							/*
+							coordsToLatLng: function(coords)
+							{
+								return [coords[1],coords[0]];
+							},
+							*/
+							onEachFeature: function(feature, layer)
+							{
+								switch( feature.type)
+								{
+									
+									case "MultiLineString": 
+										$.each(feature.coordinates, function(i,v){
+											L.polyline(L.GeoJSON.coordsToLatLngs(v)).addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
+										});
+									
+										/*var cs = feature.coordinates;
+										$.each(cs, function(i,v){
+											$.each(v,function(j,k){
+												v[j] = [k[1],k[0]];
+											});
+											L.polyline(v).addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
+										});
+										*/	
+										break
+									case "LineString":
+										L.polyline(feature.coordinates).addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
+										break;
+									case "MultiPolygon": 
+										$.each(feature.coordinates, function(i,v){
+											L.polygon(L.GeoJSON.coordsToLatLngs(v,1)).addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
+										});
+										break;
+									case "Polygon":
+										L.polygon(feature.coordinates).addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
+										/*
+										var cs = feature.coordinates;
+										$.each(cs, function(i,v){
+											$.each(v,function(w,z){
+												$.each(z,function(j,k){
+													z[j] = [k[1],k[0]];
+												});
+												L.polygon(z).addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
+											});
+										});
+										*/
+										break;
+									default:
+										layer.addTo(APP.map.globalData[APP.map.currentMapId].drawnItems);
+
+								}
+							},
+							/*
 							pointToLayer: function (data, latlng) {
 								return L.circleMarker(latlng);
 							},
+							*/
+						});
+						
+						APP.map.globalData[APP.map.currentMapId].map.fitBounds(APP.map.globalData[APP.map.currentMapId].drawnItems.getBounds());
+					}
+					
+					if (obj.map_box_fileloading)
+					{
+						var options_eraseall = {
+							layer :  APP.map.globalData[APP.map.currentMapId].drawnItems
+						};
+						APP.map.globalData[APP.map.currentMapId].eraseAllControl = new L.Control.EraseALL(options_eraseall); 
+						APP.map.globalData[APP.map.currentMapId].map.addControl(APP.map.globalData[APP.map.currentMapId].eraseAllControl);	
+						
+						//var style = {color:'red', opacity: 1.0, fillOpacity: 1.0, weight: 2, clickable: false};
+						L.Control.FileLayerLoad.LABEL = '<i class="icon-folder-open"></i>';
+						var control = L.Control.fileLayerLoad({
+							fitBounds: true,
+							layerOptions: {
+								pointToLayer: function (data, latlng) {
+									return L.circleMarker(latlng);
+								},
+							},
+						}).addTo(APP.map.globalData[APP.map.currentMapId].map);
+						
+						
+						control.loader.on('data:loaded', function (e) {
+							var ttt = arguments;
+							APP.map.globalData[APP.map.currentMapId].drawnItems.addLayer(e.layer);
+							//APP.map.globalData[APP.map.currentMapId].map.removeLayer(e.layer);
+						});					
+						
+					}
+				}
+				APP.utils.setLookForm(form, id);
+			};
+			
+			var index = APP.utils.getIndexFromField(that.sections[that.currentSection].columns, "form_input_type", "mapbox");
+			if (index > -1)
+			{
+				if (that.sections[section].columns[index].overlays)
+				{
+					var oUrl = that.sections[section].columns[index].overlays;
+					if (APP.utils.isset(that.sections[section].columns[index].overlays_parmas))
+					{
+						$.each(that.sections[section].columns[index].overlays_parmas, function(i,v){
+							oUrl = APP.utils.replaceAll(i, dataObject[v], oUrl);
+						});
+					}
+					
+					$.ajax({
+						method: "GET",
+						url: oUrl,
+						success: function(result)
+						{
+							mapParams.overlays = {};
+							if (result && result.data && result.data.items)
+							{
+								$.each(result.data.items, function(j,k)
+								{
+									var l = L.geoJson(k['the_geom']);
+									l.bindLabel(k.title);
+									mapParams.overlays[k.title] = l;
+								});
+								
+								if (APP.utils.isset(that.sections[section].columns[index].overlays_default))
+								{
+									mapParams.initialOverlays = that.sections[section].columns[index].overlays_default; // deve essere un array, tipo: ["139"]
+								}
+								else // di default li accendo tutti
+								{
+									mapParams.initialOverlays = [];
+									$.each(mapParams.overlays,function(x,y){
+										mapParams.initialOverlays.push(x)
+									});
+								}
+							}
+															
+							initMap();
 						},
-					}).addTo(APP.map.globalData[APP.map.currentMapId].map);
-					
-					
-					control.loader.on('data:loaded', function (e) {
-						var ttt = arguments;
-						APP.map.globalData[APP.map.currentMapId].drawnItems.addLayer(e.layer);
-						//APP.map.globalData[APP.map.currentMapId].map.removeLayer(e.layer);
-					});					
+						error: function(result)
+						{
+							
+						}
+					});
 					
 				}
+				else
+					initMap();
 			}
 		}
+		else
+			APP.utils.setLookForm(form, id);
 		
-		APP.utils.setLookForm(form, id);
 	},
 	
 	deactiveItem: function(id, section, contentDiv)
