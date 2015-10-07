@@ -94,6 +94,13 @@ class Controller_Ajax_Admin_Poi extends Controller_Ajax_Admin_Sheet_Base{
         $_POST['typologies'] = $typology_ids;
         parent::_set_typologies_edit();
     }
+
+    protected function _single_request_row($orm)
+    {
+        $toRes = parent::_single_request_row($orm);
+        $toRes['path_id'] = $orm->paths->find()->id;
+        return $toRes;
+    }
     
   
 }

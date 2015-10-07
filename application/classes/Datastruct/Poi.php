@@ -25,7 +25,8 @@ class Datastruct_Poi extends Datastruct {
                 'accessibility',
                 'inquiry',
                 'pdf_print_qrcode',
-                'pdf_print_sheet'),
+                'pdf_print_sheet'
+            ),
         ),
        array(
             'name' => 'poi-foreign-data',
@@ -37,7 +38,8 @@ class Datastruct_Poi extends Datastruct {
                 'the_geom',
                 'max_scale',
                 'image_poi',
-                'video_poi'),
+                'video_poi',
+                'path_id'),
         ),
         array(
             'name' => 'poi-poi-data',
@@ -183,6 +185,11 @@ class Datastruct_Poi extends Datastruct {
             );
         
             return array(
+                "path_id" => array(
+                    'editable' => FALSE,
+                    'table_show' => FALSE,
+                    'form_show' => FALSE
+                ),
                 "data_ins" => array(
                     'editable' => FALSE,
                     'table_show' => TRUE,
@@ -212,6 +219,10 @@ class Datastruct_Poi extends Datastruct {
                     'map_box_fileloading' => TRUE,
                     'label' =>__('Geodata'),
                     'table_show' => FALSE,
+                    'overlays' => '/jx/admin/path/$1',
+                    'overlays_parmas' => [
+                        '$1' => 'path_id',
+                    ]
                 ),
                 "typology_id" => array(
                     'form_input_type' => self::SELECT,
