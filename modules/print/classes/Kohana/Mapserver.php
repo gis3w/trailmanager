@@ -239,7 +239,7 @@ class Kohana_Mapserver {
         $this->_baseLayerObj = new LayerObj($this->_mapObj);
         $this->_baseLayerObj->set('type',MS_LAYER_RASTER);
         $this->_baseLayerObj->set('status',$status);
-        $this->_baseLayerObj->set('connection','http://localhost/mapproxy_osm/service?');
+        $this->_baseLayerObj->set('connection','http://'.$_SERVER['HTTP_HOST'].'/mapproxy_osm/service?');
         $this->_baseLayerObj->setConnectionType(MS_WMS);
         $this->_baseLayerObj->setProjection("init=epsg:3857");
 

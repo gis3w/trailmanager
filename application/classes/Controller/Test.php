@@ -41,8 +41,7 @@ class Controller_Test extends Controller{
         $pt = $geo->pointFromToSRS([(int)$path->coordxini,(int)$path->coordyini],3004,3857);
          */
 
-      $kml = new KMLF();
-        echo $kml->render();
+      var_dump($_SERVER);
         exit;
 
 

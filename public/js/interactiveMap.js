@@ -739,8 +739,9 @@ $.extend(APP.interactiveMap,
 									<div class="overviewImage" style="width: 100%; height: 300px"></div>\
 									<div class="row thumbnailsRow" style="padding: 20px; vertical-align: middle"></div>\
 								</div>\
-								<div class="row">\
-									<div class="col-md-3">\
+								<div class="row">';
+		if(section == 'poi') {
+			sheetTemplate += '<div class="col-md-3">\
 										<div class="panel panel-default categories" style="display: none">\
 											<div class="panel-heading">\
 												<h3 class="panel-title">'+APP.i18n.translate('categories')+'</h3>\
@@ -749,7 +750,8 @@ $.extend(APP.interactiveMap,
 											</div>\
 										</div>\
 									</div>';
-		if(section == 'poi') {
+		}
+		if(section == 'poi' || section == 'path') {
 			sheetTemplate += '<div class="col-md-5">\
 										<div class="panel panel-default features" style="display: none">\
 											<div class="panel-heading">\
