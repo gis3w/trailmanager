@@ -244,7 +244,7 @@ class Kohana_Mapserver {
         $this->_baseLayerObj->setProjection("init=epsg:3857");
 
         $this->_baseLayerObj->setMetaData('DESCRIPTION','OSM layer');
-        if(isset($bl) AND isset($bl->id) AND isset($bl->mapproxy_layer) AND $bl->mapproxy_laye != '')
+        if(isset($bl) AND isset($bl->id) AND isset($bl->mapproxy_layer) AND $bl->mapproxy_layer != '')
         {
             $wms_name = $bl->mapproxy_layer;
         }
