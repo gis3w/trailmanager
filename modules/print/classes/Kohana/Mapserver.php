@@ -214,7 +214,6 @@ class Kohana_Mapserver {
 
         //$this->_orderLayers = array_reverse($this->_orderLayers);
         $this->_mapObj->setLayersDrawingOrder($this->_orderLayers);
-        error_log(print_r($this->_orderLayers,true));
 
     }
 
@@ -239,7 +238,15 @@ class Kohana_Mapserver {
         $this->_baseLayerObj = new LayerObj($this->_mapObj);
         $this->_baseLayerObj->set('type',MS_LAYER_RASTER);
         $this->_baseLayerObj->set('status',$status);
-        $this->_baseLayerObj->set('connection','http://'.$_SERVER['HTTP_HOST'].'/mapproxy_osm/service?');
+        if(Kohana::$config->load('print')['mapproxy_url'] != '')
+        {
+            $mapproxy_url = Kohana::$config->load('print')['mapproxy_url'];
+        }
+        else
+        {
+            $mapproxy_url = 'http://'.$_SERVER['HTTP_HOST'].'/mapproxy_osm/service?';
+        }
+        $this->_baseLayerObj->set('connection',$mapproxy_url);
         $this->_baseLayerObj->setConnectionType(MS_WMS);
         $this->_baseLayerObj->setProjection("init=epsg:3857");
 

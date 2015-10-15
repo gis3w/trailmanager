@@ -17,6 +17,7 @@ return array(
             ]
         ]
     ],
+    'mapproxy_url' => '',
     'mapping_trailmanager_mapproxy' => [
 
     ]
