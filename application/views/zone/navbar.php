@@ -40,7 +40,7 @@
                     <li><a href="?lang=<?php echo $I18n ?>"><i class="icon icon-flag"></i> <?php echo $lang ?></a></li>
             <?php endforeach; ?>
             <?php if($frontend):?>
-                <li><a id="helpButton" href="#"><i class="icon icon-flag"></i> <?php echo __('Help') ?></a></li>
+                <li><a id="helpButton" href="#"><i class="icon icon-question"></i> <?php echo __('Help') ?></a></li>
                 <li><a id="creditsButton" href="#"></a></li>
              <?php endif; ?>
                 <?php if(isset($user) AND !$frontend): ?>

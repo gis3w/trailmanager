@@ -167,6 +167,9 @@ return array(
     'Highliting states' => 'Stati della segnalazione',
     'System users' => 'Utenti di sistema',
     'Anonimous Users' => 'Segnalatori non registrati',
+    'Survey date' => 'Data di rilievo',
+    'Weather state' => 'Condizioni meteo',
+    'Data collector' => 'Rilevatore',
 
     'New Report' => 'Nuova segnalazione',
     'New report' => 'Nuova segnalazione',
@@ -205,7 +208,7 @@ return array(
     'Highliting_typology_id' => 'Tipo di segnalazione',
     'Current highliting state' => 'Stato corrente',
     'Highliting typology' => 'Tipo segnalazione/manutenzione',
-    'Subject' => 'Soggetto',
+    'Subject' => 'Titolo segnalazione',
 
 
     'Images to upload' => 'Immagini da caricare',
@@ -262,6 +265,29 @@ return array(
     'Highliting path' => 'Lineari',
     'Highliting paths' => 'Segnalazioni/manutenzioni lineari',
     'Maintenances' => 'Manutenzioni',
+    'Quality survey' => 'Qualità del rilievo',
+    'Survey class' => 'Classificazione metodologia di rilievo',
+    'Typology path segment' => 'Tipo tratta',
+    'Bottom typology path segment' => 'Fondo',
+    'Difficulty typology path segment' => 'Difficoltà',
+    'Morfology path segment' => 'Morfologia',
+    'Ambient path segment' => 'Ambiente',
+    'GSM coverage path segment' => 'Segnale GSM',
+    'current' => 'corrente',
+    'Punctuals' => 'Puntuali',
+    'Linears' => 'Lineari',
+    'Typology' => 'Tipologia',
+    'State' => 'Stato',
+    'Total' => 'Totale',
+    'New' => 'Nuova',
+    'Highliting_poi' => 'Puntiali',
+    'Highliting_path' => 'Lineari',
+    'Correlated path' => 'Sentiero correlato',
+    'Latitude' => 'Latitudine',
+    'Longitude' => 'Longitudine',
+    'latitude' => 'Latitudine',
+    'longitude' => 'Longitudine',
+    'Add coordinates' => 'Aggiungi coordinate geografice decimali',
 
 
 

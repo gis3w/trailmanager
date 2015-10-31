@@ -21,6 +21,30 @@ class Model_Path_Segment extends ORMGIS
 
     );
 
+    public function labels() {
+        return array(
+            "cod_f1" => __('Code f1'),
+            "cod_f2" => __('Code f2'),
+            "data_ril" => __('Survey date'),
+            "condmeteo" => __('Weather state'),
+            'rilev' => __('Data collector'),
+            'class_ril' => __('Survey class'),
+            'qual_ril' => __('Quality survey'),
+            'tp_trat' => __('Typology path segment'),
+            'tp_fondo' => __('Bottom typology path segment'),
+            'diff' => __('Difficulty typology path segment'),
+            'percorr' => __('Walkable path segment'),
+            'morf' => __('Morfology path segment'),
+            'ambiente' => __('Ambient path segment'),
+            'cop_tel' => __('GSM coverage path segment'),
+            'rid_perc' => __('Reduction walkable path segment'),
+            'diff_current' => __('Difficulty typology path segment').' '.__('current'),
+            'percorr_current' => __('Walkable path segment').' '.__('current'),
+            'rid_perc_current' => __('Reduction walkable path segment').' '.__('current'),
+            'cop_tel_current' => __('GSM coverage path segment').' '.__('current'),
+        );
+    }
+
     public function rules()
     {
         return array(

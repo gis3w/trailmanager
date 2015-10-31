@@ -187,7 +187,7 @@ class Datastruct_Highliting_Poi extends Datastruct {
                 'highliting_path_id' => array(
                         'data_type' => 'integer',
                         'description' => __('Select the path'),
-                        'label' => _('Path'),
+                        'label' => __('Correlated path'),
                         'form_input_type' => self::SELECT,
                         'foreign_mode' => self::SINGLESELECT,
                         'foreign_toshow' => '$1',

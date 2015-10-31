@@ -106,48 +106,39 @@ class Datastruct_Path_Segment extends Datastruct
 
             "class_ril" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'class_ril_segment',
-                'label' => __('Survey class'),
                 'foreign_value_field' => 'class',
             )),
 
             "tp_trat" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'tp_trat_segment',
-                'label' => __('Typology path segment'),
             )),
 
             "tp_fondo" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'tp_fondo_segment',
-                'label' => __('Bottom typology path segment'),
             )),
 
             "diff" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'diff_segment',
-                'label' => __('Difficulty typology path segment'),
             )),
 
             "percorr" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'percorr_segment',
-                'label' => __('Walkable path segment'),
             )),
 
             "morf" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'morf_segment',
-                'label' => __('Morfology path segment'),
             )),
 
             "ambiente" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'ambiente_segment',
-                'label' => __('Ambient path segment'),
             )),
 
             "cop_tel" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'cop_tel_segment',
-                'label' => __('GSM coverage path segment'),
             )),
 
             "rid_perc" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'rid_perc_segment',
-                'label' => __('Reduction walkable path segment'),
             )),
 
             /* Fields current can be update
@@ -156,17 +147,14 @@ class Datastruct_Path_Segment extends Datastruct
 
             "percorr_current" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'percorr_segment',
-                'label' => __('Walkable path segment'),
             )),
 
             "rid_perc_current" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'rid_perc_segment',
-                'label' => __('Reduction walkable path segment'),
             )),
 
             "cop_tel_current" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'cop_tel_segment',
-                'label' => __('GSM coverage path segment'),
             )),
 
 
