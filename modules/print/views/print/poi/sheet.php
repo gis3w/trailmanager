@@ -2,9 +2,12 @@
 <?php echo '<?xml version="1.0" encoding="UTF-8"?>' ?>
 <!DOCTYPE pdf SYSTEM "%resources%/dtd/doctype.dtd">
 <pdf>
-    <dynamic-page  page-size="<?php echo $pdf_page_size ?>">
+    <page page-size="<?php echo $pdf_page_size ?>-landscape">
         <?php echo $header1 ?>
         <div class="map-image"><img src="<?php echo $tmp_dir.$mapURL ?>" /></div>
+    </page>
+    <dynamic-page  page-size="<?php echo $pdf_page_size ?>">
+        <?php echo $header1 ?>
         <!--TITLE-->
         <div>
             <h1><?php echo $poi->title ?></h1>
@@ -24,19 +27,7 @@
         </div>
 
         <!--IMAGES-->
-        <div>
-            <h2><?php echo __('Pictures') ?></h2>
-            <?php $images = $poi->images->find_all() ?>
-            <?php foreach ($images as $image): ?>
-                <div class="image-container">
-                    <img class="image-image" src="<?php echo APPPATH.'../'.$img_base_dir.'/'.$image->file ?>" />
-                    <?php if(isset($image->description) AND $image->description !=''): ?>
-                        <p class="image-description"><?php echo $image->description ?></p>
-                    <?php endif ?>
-                </div>
-            <?php endforeach; ?>
-
-        </div>
+        <?php if(isset($images_sheet)) echo $images_sheet; ?>
 
 
     </dynamic-page>

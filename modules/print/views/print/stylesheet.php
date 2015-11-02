@@ -1,7 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php echo '<?xml version="1.0" encoding="UTF-8"?>' ?>
 <stylesheet>
-    <page margin = "2.5cm 2.5cm"></page>
     <h2 color="gray" border-type="bottom" border-color="gray" border-size="0.5px" padding-bottom="10px" font-size="24px"></h2>
     <div class="header1" height="60px" width="100%"></div>
     <div class="header1-logo"  text-align="center" width="100%">

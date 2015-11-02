@@ -25,8 +25,13 @@ class Controller_Print_Path_Sheet extends Controller_Print_Base_Auth_Nostrict
         $this->_xmlContentView->mapURL = $map->imageURL;
         $this->_xmlContentView->path = $this->path;
 
-        $this->_resizeImage($this->path);
-        $this->_printImagesSheet($this->path);
+        $images = $this->path->images->find_all();
+        if(count($images) > 0)
+        {
+            $this->_resizeImage($this->path);
+            $this->_printImagesSheet($this->path);
+        }
+
         $this->_buildAltitudeGapChart();
 
 

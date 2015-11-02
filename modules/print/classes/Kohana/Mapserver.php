@@ -66,7 +66,7 @@ class Kohana_Mapserver {
 
     }
 
-    public function makeMap($poi_id = NULL, $path_id = NULL, $area_id = NULL,$base_layer_id = NULL)
+    public function makeMap($poi_id = NULL, $path_id = NULL, $area_id = NULL,$base_layer_id = NULL,$width=NULL, $height=NULL)
     {
         $this->_makePoisSymbols();
 

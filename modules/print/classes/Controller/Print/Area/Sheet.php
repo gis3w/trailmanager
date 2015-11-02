@@ -21,6 +21,13 @@ class Controller_Print_Area_Sheet extends Controller_Print_Base_Auth_Nostrict
         $this->_xmlContentView->mapURL = $map->imageURL;
         $this->_xmlContentView->area = $area;
 
+        $images = $area->images->find_all();
+        if(count($images) > 0)
+        {
+            $this->_resizeImage($area);
+            $this->_printImagesSheet($area);
+        }
+
 
         // set filename
         $this->filename .= Inflector::underscore($area->title).'_'.time().'.pdf';

@@ -20,8 +20,12 @@ class Controller_Print_Poi_Sheet extends Controller_Print_Base_Auth_Nostrict
         $this->_xmlContentView->mapURL = $map->imageURL;
         $this->_xmlContentView->poi = $poi;
 
-        $this->_resizeImage($poi);
-
+        $images = $poi->images->find_all();
+        if(count($images) > 0)
+        {
+            $this->_resizeImage($poi);
+            $this->_printImagesSheet($poi);
+        }
 
         // set filename
         $this->filename .= Inflector::underscore($poi->title).'_'.time().'.pdf';
