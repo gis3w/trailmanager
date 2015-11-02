@@ -77,6 +77,7 @@ class Datastruct_Poi extends Datastruct {
             'position' => 'left',
             'fields' => array(
                 'se',
+                'idwp',
                 'bike',
                 'ip',
                 'cod_f1',
@@ -102,7 +103,9 @@ class Datastruct_Poi extends Datastruct {
                 'rilev',
                 'class_ril',
                 'photo',
-                'note'
+                'note',
+                'note_man'
+
             ),
         ),
         array(
@@ -248,6 +251,9 @@ class Datastruct_Poi extends Datastruct {
                 "se" => array(
                     'editable' => FALSE,
                 ),
+                "idwp" => array(
+                    'editable'=>FALSE,
+                ),
                 "bike" => array(
                     'editable' => FALSE,
                     "table_show" => FALSE,
@@ -286,6 +292,10 @@ class Datastruct_Poi extends Datastruct {
                     'table_show' => FALSE,
                     'editable' => FALSE,
                     'label' => __('Note'),
+                ),
+                "note_man" => array(
+                    'table_show' => FALSE,
+                    'editable' => FALSE,
                 ),
                 "quali_ril" => array(
                     'editable' => FALSE,

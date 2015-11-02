@@ -1136,6 +1136,8 @@ $.extend(APP.interactiveMap,
 			case "poi":
 				checkVoice('typology_id', 'ov-img', {values: APP.config.localConfig.typology, label: 'name', icon: "icon", voiceResult: "categories"});
 				checkVoice('typologies', 'ov-img', {values: APP.config.localConfig.typology, label: 'name', icon: "icon", voiceResult: "categories"});
+				checkVoice('coordinates', 'ov-icage',{voiceResult: "features"});
+				checkVoice('quota', 'ov-icage',{voiceResult: "features"});
 				checkVoice('description', 'text');
 				checkVoice('reason', 'text');
 				checkVoice('period_schedule', 'text');
@@ -1159,7 +1161,8 @@ $.extend(APP.interactiveMap,
 				checkVoice('time_current', 'ov-icage',{voiceResult: "features"});
 				checkVoice('rev_time_current', 'ov-icage',{voiceResult: "features"});
 				checkVoice('heightsprofilepath', 'c3chart', {chartType: 'line',voiceResult: "heightsprofilepath"});
-				checkVoice('modes', 'ov-descriptionWithInlineImages', {values: APP.config.localConfig.path_mode, label: 'mode', icon: "icon", voiceResult: "features", description: APP.i18n.translate('transportation_types')});
+				//checkVoice('modes', 'ov-descriptionWithInlineImages', {values: APP.config.localConfig.path_mode, label: 'mode', icon: "icon", voiceResult: "features", description: APP.i18n.translate('transportation_types')});
+				checkVoice('walkable_current', 'ov-icage',{voiceResult: "features"});
 				checkVoice('reason', 'text');
 				checkVoice('period_schedule', 'text');
 				checkVoice('accessibility', 'text');

@@ -40,8 +40,6 @@ class Datastruct_Path extends Datastruct {
             'position' => 'right',
             'fields' => array(
                 'itineraries',
-                'typology_id',
-                'typologies',
                 'path_modes',
                 'the_geom',
                 'color',
@@ -65,6 +63,7 @@ class Datastruct_Path extends Datastruct {
                 'nome',
                 'loc',
                 'se',
+                'ex_se',
                 'bike',
                 'ip',
                 'cod_f1',
@@ -244,7 +243,7 @@ class Datastruct_Path extends Datastruct {
                 "length" => array(
                     'suffix' => 'km',
                 ),
-
+                /*
                 "typology_id" => array(
                     'form_input_type' => self::SELECT,
                     'foreign_mode' => self::SINGLESELECT,
@@ -257,6 +256,7 @@ class Datastruct_Path extends Datastruct {
                      'description' => __('Select the main typology  for this point of interest'),
                      "table_show" => FALSE,
                 ),
+                */
                 "nome" => array(
                     'editable' => FALSE,
                     'table_show' => FALSE,
@@ -266,6 +266,9 @@ class Datastruct_Path extends Datastruct {
                     'table_show' => FALSE,
                 ),
                 "se" => array(
+                    'editable' => FALSE,
+                ),
+                "ex_se" => array(
                     'editable' => FALSE,
                 ),
                 "bike" => array(
@@ -653,7 +656,8 @@ class Datastruct_Path extends Datastruct {
 
 
       protected function _foreign_column_type() {
-          
+
+      /*
         $fct['typologies']  = array_replace($this->_columnStruct,array(
             'data_type' => 'integer',
             'form_input_type' => self::SELECT,
@@ -667,6 +671,8 @@ class Datastruct_Path extends Datastruct {
              'description' => __('Select one or more typology  for this point of interest'),
              "table_show" => FALSE,
         ));
+
+      */
         
         $fct['path_modes']  = array_replace($this->_columnStruct,array(
             'data_type' => 'integer',

@@ -22,7 +22,9 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
                 'image_area' => 'Image_Area'
     );
 
-    protected $_noValidation = [];
+    protected $_noValidation = [
+        'image_path'
+    ];
      
     protected $_url_multifield_postname;
     protected $_url_multifiled_value;

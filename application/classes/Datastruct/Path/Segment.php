@@ -15,7 +15,7 @@ class Datastruct_Path_Segment extends Datastruct
         array(
             'name' => 'path-base-data-path',
             'position' => 'left',
-            'fields' => array('gid','se','bike','ip','cod_f1','cod_f2'),
+            'fields' => array('gid','se','ex_se','bike','ip','cod_f1','cod_f2'),
         ),
         array(
             'name' => 'path-base-data-survey',
@@ -33,7 +33,7 @@ class Datastruct_Path_Segment extends Datastruct
             'fields' => array('percorr_current','rid_perc_current','cop_tel_current'),
         ),
         array(
-            'name' => 'path-base-data-data',
+            'name' => 'path-segment-base-data-data',
             'position' => 'block',
             'fields' => array('tp_trat','tp_fondo','diff','percorr','rid_perc','morf','ambiente','cop_tel'),
         ),
@@ -50,7 +50,7 @@ class Datastruct_Path_Segment extends Datastruct
         array(
             'name' => 'tab-main',
             'icon' => 'mobile-phone',
-            'groups' => array('path-base-data-path','path-base-data-survey','path-base-data-geodata','path-base-data-current','path-base-data-data'),
+            'groups' => array('path-base-data-path','path-base-data-survey','path-base-data-geodata','path-base-data-current','path-segment-base-data-data'),
         ),
         array(
             'name' => 'tab-path-segment-path',
@@ -77,6 +77,9 @@ class Datastruct_Path_Segment extends Datastruct
 
         return array(
             "se" => array(
+                'editable' => FALSE,
+            ),
+            "ex_se" => array(
                 'editable' => FALSE,
             ),
             "bike" => array(
@@ -107,38 +110,47 @@ class Datastruct_Path_Segment extends Datastruct
             "class_ril" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'class_ril_segment',
                 'foreign_value_field' => 'class',
+                'editable' => FALSE,
             )),
 
             "tp_trat" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'tp_trat_segment',
+                'editable' => FALSE,
             )),
 
             "tp_fondo" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'tp_fondo_segment',
+                'editable' => FALSE,
             )),
 
             "diff" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'diff_segment',
+                'editable' => FALSE,
             )),
 
             "percorr" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'percorr_segment',
+                'editable' => FALSE,
             )),
 
             "morf" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'morf_segment',
+                'editable' => FALSE,
             )),
 
             "ambiente" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'ambiente_segment',
+                'editable' => FALSE,
             )),
 
             "cop_tel" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'cop_tel_segment',
+                'editable' => FALSE,
             )),
 
             "rid_perc" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'rid_perc_segment',
+                'editable' => FALSE,
             )),
 
             /* Fields current can be update

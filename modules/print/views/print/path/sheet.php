@@ -10,12 +10,6 @@
         <?php echo $header1 ?>
         <!--CATEGORY AND CHARACTERISTICS-->
         <div>
-            <!--
-            <div class="category box">
-                <h3><?php echo __('Category') ?></h3>
-
-            </div>
-            -->
             <div class="characteristics box">
                 <h3><?php echo __('Characteristics') ?></h3>
                 <div class="body-box">
@@ -24,8 +18,16 @@
                     <div class="item-image"><img src="<?php echo $tmp_dir.'/public/img/dislivello.png' ?>" /><div><?php echo __('Altitude gap') ?>: <?php echo $path->altitude_gap ?></div></div>
                     <div><?php echo __('q_init_current') ?>: <?php echo $path->q_init_current ?> m</div>
                     <div><?php echo __('q_end_current') ?>: <?php echo $path->q_end_current ?> m</div>
+                    <?php if($path->rev_time_current): ?>
                     <div><?php echo __('time_current') ?>: <?php echo $path->time_current ?> min</div>
+                    <?php endif ?>
+                    <?php if($path->rev_time_current): ?>
                     <div><?php echo __('rev_time_current') ?>: <?php echo $path->rev_time_current ?> min</div>
+                    <?php endif ?>
+                    <?php if($path->walkable_current): ?>
+                        <div><?php echo __('Walkable path') ?>: <?php echo $path->walkable_current->description ?></div>
+                    <?php endif ?>
+
                 </div>
             </div>
             <?php if(isset($heights_profile_img)): ?>

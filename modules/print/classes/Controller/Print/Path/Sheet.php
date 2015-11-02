@@ -42,13 +42,51 @@ class Controller_Print_Path_Sheet extends Controller_Print_Base_Auth_Nostrict
     protected function _buildAltitudeGapChart()
     {
         $heights_profile_data = $this->path->heights_profile->find_all();
+
+
         if(count($heights_profile_data) == 0)
             return;
+
+        $lhpd = count($heights_profile_data);
+        switch($lhpd)
+        {
+            case $lhpd >= 1 AND $lhpd < 301:
+                $limit_cont = 1;
+                break;
+            case $lhpd >= 300 AND $lhpd < 601:
+                $limit_cont = 2;
+                break;
+            case $lhpd >= 600 AND $lhpd < 901:
+                $limit_cont = 3;
+                break;
+            case $lhpd >= 900 AND $lhpd < 1201:
+                $limit_cont = 4;
+                break;
+            case $lhpd >= 1200 AND $lhpd < 1501:
+                $limit_cont = 5;
+                break;
+            case $lhpd >= 1500 AND $lhpd < 2001:
+                $limit_cont = 10;
+                break;
+            case $lhpd >= 2000 AND $lhpd < 3001:
+                $limit_cont = 10;
+                break;
+            case $lhpd >= 3000:
+                $limit_cont = 20;
+        }
+        $cont = 0;
         $x = $z = [];
         foreach ($heights_profile_data as $height)
         {
-            $z[] = (float)$height->z;
-            $x[] = round((float)$height->cds2d,0);
+            $cont++;
+            if($cont == 1)
+            {
+                $z[] = (float)$height->z;
+                $x[] = round((float)$height->cds2d,0);
+            }
+
+            if($cont == $limit_cont)
+                $cont = 0;
         }
 
         $factory = new pChartFactory();

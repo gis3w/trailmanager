@@ -27,6 +27,12 @@ class Model_Poi extends ORMGIS {
             'model'   => 'Url_Poi',
         ),
     );
+
+    protected $_belongs_to = array(
+      'typology' => array(
+          'model' => 'Typology'
+      ),
+    );
     
     public function labels() {
         return array(

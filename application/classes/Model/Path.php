@@ -12,6 +12,10 @@ class Model_Path extends ORMGIS {
             'model'   => 'Diff_Segment',
             'foreign_key' => 'diff_current',
         ),
+        'walkable_current' => array(
+            'model'   => 'Percorr_Segment',
+            'foreign_key' => 'percorr_current',
+        ),
     );
     
      protected $_has_many = array(

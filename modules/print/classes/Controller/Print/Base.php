@@ -35,6 +35,7 @@ abstract class Controller_Print_Base extends Controller_Base_Main {
     protected $_pdf_page_orientation = 'P';
 
     protected $_img_base_dir = 'upload/image';
+    protected $_img_marker_dir = 'upload/typologymarker';
     protected $_img_resized = [];
 
     public function action_index()
@@ -76,6 +77,9 @@ abstract class Controller_Print_Base extends Controller_Base_Main {
         // for images
         $this->_xmlContentView->img_base_dir = $this->_img_base_dir;
         $this->_xmlContentView->bind('images_resized',$this->_img_resized);
+
+        // for typology icons
+        $this->_xmlContentView->img_marker_dir = $this->_img_marker_dir;
     }
     
     public function after() {

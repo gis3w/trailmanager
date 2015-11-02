@@ -12,6 +12,9 @@ class Controller_Print_Poi_Sheet extends Controller_Print_Base_Auth_Nostrict
         parent::action_index();
         // get the map extent for path
         $poi = ORMGIS::factory('Poi',$this->request->param('id'));
+        View::set_global('sheetTitle',$poi->title);
+        $this->_xmlContentView->lat = $poi->lat;
+        $this->_xmlContentView->lon = $poi->lon;
         $poi->getLonLat(3857);
         $scale = 10000;
         $map = new Mapserver($this->_mapFile,$this->_mapPath,$this->_tmp_dir,$this->_image_base_url,$scale,[$poi->x,$poi->y]);
@@ -19,6 +22,7 @@ class Controller_Print_Poi_Sheet extends Controller_Print_Base_Auth_Nostrict
         $map->makeMap($poi->id,NULL,NULL);
         $this->_xmlContentView->mapURL = $map->imageURL;
         $this->_xmlContentView->poi = $poi;
+        $this->_xmlContentView->typologies = $poi->typologies->find_all();
 
         $images = $poi->images->find_all();
         if(count($images) > 0)

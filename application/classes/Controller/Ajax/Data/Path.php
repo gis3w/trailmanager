@@ -20,6 +20,7 @@ class Controller_Ajax_Data_Path extends Controller_Ajax_Data_Base{
         $toRes['time_current'] = $toRes['time_current'].' min';
         $toRes['rev_time_current'] = $toRes['rev_time_current'].' min';
         $toRes['diff_current'] = $orm->difficulty_current->code.' - '.$orm->difficulty_current->description;
+        $toRes['walkable_current'] = $orm->walkable_current->description;
 
         #element to unset
         $unsetKeys = [
@@ -47,6 +48,8 @@ class Controller_Ajax_Data_Path extends Controller_Ajax_Data_Base{
             'loc',
             'op_attr',
             'nome',
+            'percorr_current',
+            'percorr'
         ];
 
         foreach ($unsetKeys as $k)

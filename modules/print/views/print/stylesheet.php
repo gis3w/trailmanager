@@ -23,4 +23,6 @@
     <div class="category" width="268px" margin-right="20px"></div>
     <div class="characteristics" width="100%"></div>
     <div class="heights-profile-chart" width="100%"></div>
+    <img class="typology-section" float="left" />
+    <div class="typology-name" width="80%"  float="right"></div>
 </stylesheet>
