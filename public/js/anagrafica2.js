@@ -463,7 +463,7 @@ $.extend(APP.anagrafica,
 								if (psa.length==2)
 									ssss =  "pathsegment"+"/"+psa[1];
 							}
-							
+							APP.config.queue.pop();
 							APP.config.workSpace.navigate(ssss, {trigger: true, replace: true});
 						}
 						else
