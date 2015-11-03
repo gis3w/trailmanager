@@ -391,7 +391,7 @@ $.extend(APP.config,{
 						l = new L.Google();
 						break;
 					case "BING":
-						l = new L.BingLayer();
+						l = new L.BingLayer(v.url,{type: v.layers});
 						break;					
 					default:
 						switch(v.layer_type)
