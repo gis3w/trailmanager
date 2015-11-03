@@ -505,9 +505,20 @@ $.extend(APP.map,
 			});
 		}
 		ls[elemId] = [];
-		$.each(items, function(){
-			ls[elemId].push(L.geoJson(this.geoJSON));
-			ls[elemId][ls[elemId].length-1].addTo(map);
+		$.each(items, function(i,v){
+			var gj = L.geoJson(this.geoJSON);
+			gj.addTo(map);
+			ls[elemId].push(gj);
+			var b = gj.getBounds();
+			if (i>0)
+			{
+				var bounds = map.getBounds();
+				map.fitBounds(bounds.extend(b));
+			}
+			else
+			{
+				map.fitBounds(b);
+			}
 		});
 	},
 	

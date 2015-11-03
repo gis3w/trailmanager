@@ -747,7 +747,6 @@ $.extend(APP.utils,{
 										if (fieldToChange.is('select'))
 										{
 											var newValue = (fieldObj.value.hasOwnProperty('default_value'))? fieldObj.value.default_value : fieldToChange.val();
-											
 											if (fieldObj.value.items)
 											{
 												var arr = [];
@@ -770,13 +769,16 @@ $.extend(APP.utils,{
 											{
 												if (fieldToChange.hasClass("boolean") && APP.utils.isset(newValue))
 													newValue = ""+newValue;
-												/*if (!APP.utils.isset(newValue))
-													newValue = "";*/
 												fieldToChange.val(newValue);
 											}
+											break;
 										}
-										else
-											fieldToChange.val(fieldObj.value.items[0]);
+										if (fieldToChange.is('input') && fieldToChange.hasClass("mapbox"))
+										{
+											APP.map.updateLayerGroups(elem.attr("id"), 'mapboxDiv-'+fieldToChange.attr("name"), fieldObj.value.items);
+											break;
+										}
+										fieldToChange.val(fieldObj.value.items[0]);
 										break;
 									case "notify":
 										var to = (APP.utils.isset(actionObj.timeout))? actionObj.timeout : 3000; 
