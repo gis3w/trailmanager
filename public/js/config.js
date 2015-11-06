@@ -683,6 +683,7 @@ $.extend(APP.config,{
 		this.currentConfigSection = section;
 		this.currentUrl = section;
 		APP.config.queue = [];
+		APP.config.bDirectUrl = false;
 		APP.utils.updateBreadcrumb("empty");
 		var divId = this.currentConfigSection+"Container";
 		$("#mainContent").append("<div id='"+divId+"' style='padding-top: 20px'></div>");
