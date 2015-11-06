@@ -283,7 +283,7 @@ return array(
     'State' => 'Stato',
     'Total' => 'Totale',
     'New' => 'Nuova',
-    'Highliting_poi' => 'Puntiali',
+    'Highliting_poi' => 'Puntuali',
     'Highliting_path' => 'Lineari',
     'Correlated path' => 'Sentiero correlato',
     'Latitude' => 'Latitudine',
