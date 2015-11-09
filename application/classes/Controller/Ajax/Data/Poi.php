@@ -12,6 +12,7 @@ class Controller_Ajax_Data_Poi extends Controller_Ajax_Data_Base{
 
     protected function _single_request_row($orm) {
         $toRes = $this->_get_base_data_from_orm($orm);
+        $toRes['title'] = $toRes['idwp'];
         $toRes['coordinates'] = __('Lat').': '.round($orm->lat,3).', '.__('Lon').': '.round($orm->lon,3);
         $toRes['quota'] = $toRes['quota'].' m';
         $toRes['last_update']  = $toRes['data_mod'] ? $toRes['data_mod'] : $toRes['data_ins'];

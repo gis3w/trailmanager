@@ -12,7 +12,7 @@ class Controller_Ajax_Admin_Subtablepath extends Controller_Ajax_Admin_Path{
     public function action_delete() {}
 
 
-
+    /*
     protected function _default_filter($orm)
     {
         if (!isset($_GET['poi_id']) and !isset($_GET['path_segment_id']))
@@ -30,4 +30,5 @@ class Controller_Ajax_Admin_Subtablepath extends Controller_Ajax_Admin_Path{
         return $orm;
 
     }
+    */
 }

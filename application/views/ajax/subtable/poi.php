@@ -6,22 +6,22 @@ $items = $jres->data->items;
 <table class="table table-stripped">
     <thead>
     <tr>
-        <th><?php echo _('ID') ?></th>
-        <th><?php echo _('Point of interest class')?></th>
-        <th><?php echo _('Accomodation building class')?></th>
-        <th><?php echo _('Equip area class')?></th>
-        <th><?php echo _('Village class')?></th>
-        <th><?php echo _('Water point clas')?></th>
-        <th><?php echo _('Signage type class')?></th>
-        <th><?php echo _('Rescue point class')?></th>
+        <th><?php echo __('IDWP') ?></th>
+        <th><?php echo __('Point of interest class')?></th>
+        <th><?php echo __('Accomodation building class')?></th>
+        <th><?php echo __('Equip area class')?></th>
+        <th><?php echo __('Village class')?></th>
+        <th><?php echo __('Water point class')?></th>
+        <th><?php echo __('Signage type class')?></th>
+        <th><?php echo __('Rescue point class')?></th>
     </tr>
     </thead>
     <tbody>
     <?php foreach ($items as $item): ?>
         <tr>
             <td>
-                <a class="btn btn-default" href="/admin#poi/<?php echo $item['id'] ?>">
-                    <span class="icon icon-link"></span> <?php echo $item['id'] ?>
+                <a class="btn btn-default" href="/admin#poi/<?php echo $item['idwp'] ?>">
+                    <span class="icon icon-link"></span> <?php echo $item['idwp'] ?>
                 </a>
             </td>
             <td><?php echo SAFEDB::tbCache('Pt_Inter_Poi',$item['pt_inter'],'description','code') ?></td>

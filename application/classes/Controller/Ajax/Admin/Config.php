@@ -28,7 +28,6 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
         $this->_set_highliting_typologies();
         $this->_set_menu();
         $this->_set_url();
-        $this->_set_path_modes();
         $this->_set_survey_codes_path_segments();
         $this->_set_survey_codes_poi();
         $this->_set_global_configs();
@@ -215,14 +214,8 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
         $menu = Kohana::$config->load('menu');
         $this->config->menu =  $menu['main'];
     }
-    
-    public function _set_path_modes()
-    {
-        $pms = ORM::factory('Path_Mode')->find_all();
-        $this->config->path_modes = array();
-        foreach($pms as $pm)
-            $this->config->path_modes[] = $pm->as_array();
-    }
+
+
 
     public function _set_survey_codes_path_segments()
     {

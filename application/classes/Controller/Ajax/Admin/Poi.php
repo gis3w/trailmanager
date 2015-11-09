@@ -6,10 +6,7 @@ class Controller_Ajax_Admin_Poi extends Controller_Ajax_Admin_Sheet_Base{
     protected $_pagination = FALSE;
     
     protected $_datastruct = "Poi";
-    
-    protected $_url_multifield_postname = 'url_poi';
-    protected $_url_multifield_nameORM = 'Url_Poi';
-    protected $_url_multifield_foreignkey = 'poi_id';
+
 
 
     protected function _set_typologies_edit()
@@ -47,10 +44,10 @@ class Controller_Ajax_Admin_Poi extends Controller_Ajax_Admin_Sheet_Base{
             $checkPuntoInteresse = ($checkPuntoInteresse OR (bool)$orm[$field]);
         });
 
-        if(isset($this->_orm->fatt_degr_current) AND $this->_orm->fatt_degr_current != '')
+        if(isset($this->_orm->fatt_degr) AND $this->_orm->fatt_degr != '')
         {
-            $this->_orm->typology_id = $TYPOLOGY_MAP['fatt_degr_current'];
-            $typology_ids = $this->_get_other_typologies_by_fields('fatt_degr_current');
+            $this->_orm->typology_id = $TYPOLOGY_MAP['fatt_degr'];
+            $typology_ids = $this->_get_other_typologies_by_fields('fatt_degr');
         }
         elseif($checkPuntoInteresse)
         {
@@ -71,21 +68,21 @@ class Controller_Ajax_Admin_Poi extends Controller_Ajax_Admin_Sheet_Base{
         }
         else
         {
-            if(isset($this->_orm->nuov_segna_current) AND $this->_orm->nuov_segna_current != '')
+            if(isset($this->_orm->nuov_segna) AND $this->_orm->nuov_segna != '')
             {
-                $this->_orm->typology_id = $TYPOLOGY_MAP['nuov_segna_current'];
-                $typology_ids = $this->_get_other_typologies_by_fields('nuov_segna_current');
+                $this->_orm->typology_id = $TYPOLOGY_MAP['nuov_segna'];
+                $typology_ids = $this->_get_other_typologies_by_fields('nuov_segna');
             }
-            elseif(isset($this->_orm->stato_segn_current) AND $this->_orm->stato_segna_current != '')
+            elseif(isset($this->_orm->stato_segn) AND $this->_orm->stato_segna != '')
             {
-                $this->_orm->typology_id = $TYPOLOGY_MAP['stato_segn_current'];
-                $typology_ids = $this->_get_other_typologies_by_fields('stato_segn_current');
+                $this->_orm->typology_id = $TYPOLOGY_MAP['stato_segn'];
+                $typology_ids = $this->_get_other_typologies_by_fields('stato_segn');
 
             }
             else
             {
-                $this->_orm->typology_id = $TYPOLOGY_MAP['tipo_segna_current'];
-                $typology_ids = $this->_get_other_typologies_by_fields('tipo_segna_current');
+                $this->_orm->typology_id = $TYPOLOGY_MAP['tipo_segna'];
+                $typology_ids = $this->_get_other_typologies_by_fields('tipo_segna');
             }
         }
 

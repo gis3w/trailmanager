@@ -39,11 +39,11 @@
             </div>
 
         </div>
-        <?php if($poi->description): ?>
+        <?php if($poi->note): ?>
         <!--DESCRIPTION-->
         <div class="outside-column" >
             <h2><?php echo __('Description') ?></h2>
-            <p><?php echo $poi->description ?></p>
+            <p><?php echo $poi->note ?></p>
         </div>
         <?php endif ?>
 

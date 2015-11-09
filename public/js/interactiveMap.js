@@ -1138,35 +1138,27 @@ $.extend(APP.interactiveMap,
 				checkVoice('typologies', 'ov-img', {values: APP.config.localConfig.typology, label: 'name', icon: "icon", voiceResult: "categories"});
 				checkVoice('coordinates', 'ov-icage',{voiceResult: "features"});
 				checkVoice('quota', 'ov-icage',{voiceResult: "features"});
-				checkVoice('description', 'text');
-				checkVoice('reason', 'text');
-				checkVoice('period_schedule', 'text');
-				checkVoice('accessibility', 'text');
-				checkVoice('urls', 'url');
+				checkVoice('note', 'text');
 				checkVoice('video_poi', 'video');
 				break;
 			case "path":
 				//checkVoice('typology_id', 'ov-img', {values: APP.config.localConfig.typology, label: 'name', icon: "icon", voiceResult: "categories"});
 				//checkVoice('typologies', 'ov-img', {values: APP.config.localConfig.typology, label: 'name', icon: "icon", voiceResult: "categories"});
-				checkVoice('description', 'text');
-				checkVoice('loc_current', 'text');
-				checkVoice('em_natur_current', 'text');
-				checkVoice('em_paes_current', 'text');
-				checkVoice('ev_stcul_current', 'text');
-				checkVoice('diff_current', 'ov-icage',{voiceResult: "features"});
-				checkVoice('length', 'ov-icage', {image: that.icons['length'], voiceResult: "features"});
-				checkVoice('altitude_gap', 'ov-icage', {image: that.icons.altitude_gap, voiceResult: "features"});
-				checkVoice('q_init_current', 'ov-icage',{voiceResult: "features"});
-				checkVoice('q_end_current', 'ov-icage',{voiceResult: "features"});
-				checkVoice('time_current', 'ov-icage',{voiceResult: "features"});
-				checkVoice('rev_time_current', 'ov-icage',{voiceResult: "features"});
+				checkVoice('descriz', 'text');
+				checkVoice('loc', 'text');
+				checkVoice('em_natur', 'text');
+				checkVoice('em_paes', 'text');
+				checkVoice('ev_stcul', 'text');
+				checkVoice('diff', 'ov-icage',{voiceResult: "features"});
+				checkVoice('l', 'ov-icage', {image: that.icons['length'], voiceResult: "features"});
+				checkVoice('diff_q', 'ov-icage', {image: that.icons.altitude_gap, voiceResult: "features"});
+				checkVoice('q_init', 'ov-icage',{voiceResult: "features"});
+				checkVoice('q_end', 'ov-icage',{voiceResult: "features"});
+				checkVoice('time', 'ov-icage',{voiceResult: "features"});
+				checkVoice('rev_time', 'ov-icage',{voiceResult: "features"});
 				checkVoice('heightsprofilepath', 'c3chart', {chartType: 'line',voiceResult: "heightsprofilepath"});
 				//checkVoice('modes', 'ov-descriptionWithInlineImages', {values: APP.config.localConfig.path_mode, label: 'mode', icon: "icon", voiceResult: "features", description: APP.i18n.translate('transportation_types')});
-				checkVoice('walkable_current', 'ov-icage',{voiceResult: "features"});
-				checkVoice('reason', 'text');
-				checkVoice('period_schedule', 'text');
-				checkVoice('accessibility', 'text');
-				checkVoice('urls', 'url');
+				checkVoice('walkable', 'ov-icage',{voiceResult: "features"});
 				checkVoice('video_path', 'video');
 				break;
 			case "area":
@@ -2911,10 +2903,6 @@ $.extend(APP.interactiveMap,
 			{
 				obj: APP.config.localConfig.page_urls,
 				label: 'page_urls',
-			},
-			{
-				obj: APP.config.localConfig.path_mode,
-				label: 'path_mode',
 			},
 			{
 				obj: APP.config.localConfig.typology,

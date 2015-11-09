@@ -8,13 +8,13 @@ class Model_Path extends ORMGIS {
     public $epsg_out = 4326;
 
     protected $_belongs_to = array(
-        'difficulty_current' => array(
+        'difficulty' => array(
             'model'   => 'Diff_Segment',
-            'foreign_key' => 'diff_current',
+            'foreign_key' => 'diff',
         ),
-        'walkable_current' => array(
+        'walkable' => array(
             'model'   => 'Percorr_Segment',
-            'foreign_key' => 'percorr_current',
+            'foreign_key' => 'percorr',
         ),
     );
     
@@ -48,19 +48,16 @@ class Model_Path extends ORMGIS {
     
     public function labels() {
         return array(
-            "title" => __("Title"),
-            "description" => __("Description"),
-            "altitude_gap" => __("Altitude gap"),
-            "general_features" => __("General features"),
-            "accessibility" => __("Accessibility"),
-            "length" =>__("Length"),
-            "accessibility" => __("Accessibility"),
-            "information_url" => __("Information url"),
+            "descriz" => __("Description"),
+            "diff_q" => __("Altitude gap"),
+            "l" =>__("Length"),
             "publish" => __("Published"),
-            "typology_id" => __("Main typology"),
             "color" => __("Color"),
             "width" => __("Width"),
-            "inquiry" => __('Request informations'),
+            "loc" => __("Cross places"),
+            "cod_f1" => __("Cod F1"),
+            "cod_f2" => __("Cod F2"),
+            "ex_se" => __("Ex Se"),
         );
     }
     
@@ -68,15 +65,16 @@ class Model_Path extends ORMGIS {
     public function rules()
     {
         return array(
-            'title' => array(
+            'nome' => array(
                     array('not_empty'),
             ),
-            'length' => array(
-                    array('not_empty'),
+            'se' => array(
+                array('not_empty'),
+            ),
+            'l' => array(
                     array('numeric')
             ),
-            'altitude_gap' => array(
-                    array('not_empty'),
+            'diff_q' => array(
                     array('numeric')
             ),
             'publish' =>array(
@@ -108,8 +106,8 @@ class Model_Path extends ORMGIS {
         
         switch($column)
         {
-            case "length":
-            case "altitude_gap":
+            case "l":
+            case "dff_q":
                 $value = Filter::point2comma((string)parent::get($column));
             break;
 

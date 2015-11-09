@@ -12,6 +12,8 @@ class Controller_Ajax_Geo_Path extends Controller_Ajax_Geo_Base{
 
         $row = $this->_get_geo_base_data_from_orm($orm);
 
+        $row['title'] = $orm->nome;
+
         #add start and end point
         $geo = GEO::instance();
         $pt_start = $geo->pointFromToSRS([(float)$orm->coordxini,(float)$orm->coordyini],3004,4326);

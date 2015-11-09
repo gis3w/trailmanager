@@ -22,15 +22,6 @@ class Datastruct_Path extends Datastruct {
                 'title',
                 'publish',
                 'description',
-                'diff_current',
-                'length',
-                'altitude_gap',
-                'q_init_current',
-                'q_end_current',
-                'time_current',
-                'rev_time_current',
-                'accessibility',
-                'inquiry',
                 'pdf_print_qrcode',
                 'pdf_print_sheet'
             ),
@@ -40,7 +31,6 @@ class Datastruct_Path extends Datastruct {
             'position' => 'right',
             'fields' => array(
                 'itineraries',
-                'path_modes',
                 'the_geom',
                 'color',
                 'width',
@@ -52,7 +42,6 @@ class Datastruct_Path extends Datastruct {
             'name' => 'path-block-data',
             'position' => 'block',
             'fields' => array(
-                'url_path',
                 'heights_profile_path'
             ),
         ),
@@ -61,9 +50,9 @@ class Datastruct_Path extends Datastruct {
             'position' => 'left',
             'fields' => array(
                 'nome',
-                'loc',
                 'se',
                 'ex_se',
+                'loc',
                 'bike',
                 'ip',
                 'cod_f1',
@@ -142,22 +131,21 @@ class Datastruct_Path extends Datastruct {
 
     public $tabs = array(
         array(
-            'name' => 'tab-main',
-            'icon' => 'globe',
-            'groups' => array(
-                'path-data',
-                'path-foreign-data',
-                'path-base-data-current',
-                'path-block-data'
-            ),
-        ),
-        array(
             'name' => 'tab-base-data',
             'icon' => 'mobile-phone',
             'groups' => array(
                 'path-base-data-path',
                 'path-base-data-geo',
                 'path-base-data-data'),
+        ),
+        array(
+            'name' => 'tab-main',
+            'icon' => 'globe',
+            'groups' => array(
+                'path-data',
+                'path-foreign-data',
+                'path-block-data'
+            ),
         ),
         array(
             'name' => 'tab-poi',
@@ -209,14 +197,6 @@ class Datastruct_Path extends Datastruct {
                     'table_show' => TRUE,
                     'label' => __('Update date'),
                 ),
-                "description" => array(
-                    'form_input_type' => self::TEXTAREA,
-                    'editor' => TRUE,
-                ),
-                 "accessibility" => array(
-                    'form_input_type' => self::TEXTAREA,
-                     'editor' => TRUE,
-                ),
                 "color" => array(
                     "form_input_type" => self::MAPBOX_COLOR,
                     "class" => "color-path",
@@ -234,74 +214,34 @@ class Datastruct_Path extends Datastruct {
                     'label' =>__('Geodata'),
                     'table_show' => FALSE,
                 ),
-                "information_url" => array(
-                    'prefix' => 'http://'
-                ),
-                 "altitude_gap" => array(
-                    'suffix' => 'm',
-                ),
-                "length" => array(
-                    'suffix' => 'km',
-                ),
-                /*
-                "typology_id" => array(
-                    'form_input_type' => self::SELECT,
-                    'foreign_mode' => self::SINGLESELECT,
-                    'foreign_toshow' => '$1',
-                    'foreign_toshow_params' => array(
-                        '$1' => 'name',
-                    ),
-                    'url_values' => '/jx/typology',
-                    'label' => __('Main typology'),
-                     'description' => __('Select the main typology  for this point of interest'),
-                     "table_show" => FALSE,
-                ),
-                */
-                "nome" => array(
-                    'editable' => FALSE,
-                    'table_show' => FALSE,
-                ),
                 "loc" => array(
-                    'editable' => FALSE,
                     'table_show' => FALSE,
-                ),
-                "se" => array(
-                    'editable' => FALSE,
-                ),
-                "ex_se" => array(
-                    'editable' => FALSE,
                 ),
                 "bike" => array(
-                    'editable' => FALSE,
                     'table_show' => FALSE,
                 ),
                 "ip" => array(
-                    'editable' => FALSE,
                     'table_show' => FALSE,
                 ),
                 "cod_f1" => array(
-                    'editable' => FALSE,
                     'table_show' => FALSE,
                 ),
                 "cod_f2" => array(
-                    'editable' => FALSE,
                     'table_show' => FALSE,
                 ),
                 "descriz" => array(
-                    'editable' => FALSE,
                     'table_show' => FALSE,
+                    'form_input_type' => self::TEXTAREA,
                 ),
                 "percorr" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'percorr_segment',
                     'label' => __('Walkable path segment'),
-                    'editable' => FALSE,
                     'table_show' => FALSE,
                 )),
 
                 "rid_perc" => array_replace($baseSingleSelectField,array(
                     'foreign_key' => 'rid_perc_segment',
                     'label' => __('Reduction walkable path segment'),
-                    'editable' => FALSE,
                     'table_show' => FALSE,
                 )),
 
@@ -313,186 +253,89 @@ class Datastruct_Path extends Datastruct {
                         '$2' => 'description',
                     ),
                     'label' => __('Difficulty typology path segment'),
-                    'editable' => FALSE,
                     'table_show' => FALSE,
                 )),
 
                 "em_natur" => array(
                     'label' => __('Natural emergency'),
-                    'editable' => FALSE,
+                    'form_input_type' => self::TEXTAREA,
                     'table_show' => FALSE,
                 ),
 
                 "ev_stcul" => array(
                     'label' => __('History cultural evidences'),
-                    'editable' => FALSE,
+                    'form_input_type' => self::TEXTAREA,
                     'table_show' => FALSE,
                 ),
 
                 "em_paes" => array(
                     'label' => __('Landascape values'),
-                    'editable' => FALSE,
+                    'form_input_type' => self::TEXTAREA,
                     'table_show' => FALSE,
                 ),
 
                 "op_attr" => array(
                     'label' => __('Works and equipment on the path'),
-                    'editable' => FALSE,
+                    'form_input_type' => self::TEXTAREA,
                     'table_show' => FALSE,
                 ),
 
                 "coordxini" => array(
-                    'editable' => FALSE,
                     'suffix' => 'm',
                     'label' => __('Start X coordinate'),
-                    'editable' => FALSE,
                     'table_show' => FALSE,
                 ),
 
                 "coordxen" => array(
-                    'editable' => FALSE,
                     'suffix' => 'm',
                     'label' => __('End X coordinate'),
-                    'editable' => FALSE,
                     'table_show' => FALSE,
                 ),
 
                 "coordyini" => array(
-                    'editable' => FALSE,
                     'suffix' => 'm',
                     'label' => __('Start Y coordinate'),
-                    'editable' => FALSE,
                     'table_show' => FALSE,
                 ),
 
                 "coordyen" => array(
-                    'editable' => FALSE,
                     'suffix' => 'm',
                     'label' => __('End Y coordinate'),
-                    'editable' => FALSE,
                     'table_show' => FALSE,
                 ),
 
                 "q_init" => array(
-                    'editable' => FALSE,
                     'suffix' => 'm',
                     'label' => __('Start altitude'),
-                    'editable' => FALSE,
                     'table_show' => FALSE,
                 ),
                 "q_end" => array(
-                    'editable' => FALSE,
                     'suffix' => 'm',
                     'label' => __('End altitude'),
-                    'editable' => FALSE,
                     'table_show' => FALSE,
                 ),
                 "diff_q" => array(
-                    'editable' => FALSE,
                     'suffix' => 'm',
                     'label' => __('Altitude gap'),
-                    'editable' => FALSE,
                     'table_show' => FALSE,
                 ),
                 "l" => array(
-                    'editable' => FALSE,
                     'suffix' => 'km',
                     'label' => __('Length'),
-                    'editable' => FALSE,
                     'table_show' => FALSE,
                 ),
                 "time" => array(
-                    'editable' => FALSE,
                     'suffix' => 'm',
                     'label' => __('Travel time'),
-                    'editable' => FALSE,
                     'table_show' => FALSE,
                 ),
                 "rev_time" => array(
-                    'editable' => FALSE,
                     'suffix' => 'm',
                     'label' => __('Back travel time'),
-                    'editable' => FALSE,
                     'table_show' => FALSE,
                 ),
 
-                /* Fields current can be update
-                 * =============================
-                 */
 
-
-                "loc_current" => array(
-                    'form_input_type' => self::TEXTAREA,
-                    'editor' => TRUE,
-                    'label' => __('Cross places'),
-                    'table_show' => FALSE,
-                ),
-
-                "em_natur_current" => array(
-                    'form_input_type' => self::TEXTAREA,
-                    'editor' => TRUE,
-                    'label' => __('Natural emergency'),
-                    'table_show' => FALSE,
-                ),
-
-                "em_paes_current" => array(
-                    'form_input_type' => self::TEXTAREA,
-                    'editor' => TRUE,
-                    'label' => __('Landascape values'),
-                    'table_show' => FALSE,
-                ),
-
-                "ev_stcul_current" => array(
-                    'form_input_type' => self::TEXTAREA,
-                    'editor' => TRUE,
-                    'label' => __('History cultural evidences'),
-                    'table_show' => FALSE,
-                ),
-
-                "diff_current" => array_replace($baseSingleSelectField,array(
-                    'foreign_key' => 'diff_segment',
-                    'foreign_toshow' => '$1 - $2',
-                    'foreign_toshow_params' => array(
-                        '$1' => 'code',
-                        '$2' => 'description',
-                    ),
-                    'label' => __('Difficulty typology path segment'),
-                    'table_show' => FALSE,
-                )),
-
-                "time_current" => array(
-                    'suffix' => 'min',
-                    'label' => __('Travel time'),
-                    'table_show' => FALSE,
-                ),
-                "rev_time_current" => array(
-                    'suffix' => 'min',
-                    'label' => __('Back travel time'),
-                    'table_show' => FALSE,
-                ),
-                "q_init_current" => array(
-                    'suffix' => 'm',
-                    'label' => __('Start quota'),
-                    'table_show' => FALSE,
-                ),
-
-                "q_end_current" => array(
-                    'suffix' => 'm',
-                    'label' => __('End quota'),
-                    'table_show' => FALSE,
-                ),
-
-                "percorr_current" => array_replace($baseSingleSelectField,array(
-                    'foreign_key' => 'percorr_segment',
-                    'label' => __('Walkable path segment'),
-                    'table_show' => FALSE,
-                )),
-
-                "rid_perc_current" => array_replace($baseSingleSelectField,array(
-                    'foreign_key' => 'rid_perc_segment',
-                    'label' => __('Reduction walkable path segment'),
-                    'table_show' => FALSE,
-                )),
 
 
             );
@@ -657,44 +500,8 @@ class Datastruct_Path extends Datastruct {
 
       protected function _foreign_column_type() {
 
-      /*
-        $fct['typologies']  = array_replace($this->_columnStruct,array(
-            'data_type' => 'integer',
-            'form_input_type' => self::SELECT,
-            'foreign_mode' => self::MULTISELECT,
-            'foreign_toshow' => '$1',
-            'foreign_toshow_params' => array(
-                '$1' => 'name',
-            ),
-            'url_values' => '/jx/typology',
-            'label' => __('Typologies'),
-             'description' => __('Select one or more typology  for this point of interest'),
-             "table_show" => FALSE,
-        ));
 
-      */
-        
-        $fct['path_modes']  = array_replace($this->_columnStruct,array(
-            'data_type' => 'integer',
-            'form_input_type' => self::SELECT,
-            'foreign_mode' => self::MULTISELECT,
-            'foreign_key' => 'path_modes',
-            'foreign_toshow' => '$1',
-            'foreign_toshow_params' => array(
-                '$1' => 'mode',
-            ),
-            'label' => __('Modes'),
-             'description' => __('Select one or more modes for  this path'),
-             "table_show" => FALSE,
-        ));
-        
-        $fct['url_path'] = array_replace($this->_columnStruct,array(
-             
-            'data_type' => 'multifield',
-            'label' => __('Urls path'),
-            "table_show" => FALSE,
-            
-        ));
+
 
           $fct['itineraries']  = array_replace($this->_columnStruct,array(
               'data_type' => 'integer',

@@ -185,13 +185,6 @@ return array(
             'menu' => array(
                 'type' => 'tabs',
                 'items' => array(
-                     'administration_pathmodes' => array(
-                        'id' =>'pathmodes',
-                        'name' => __('Path modes'),
-                        'url' => '/jx/admin/administration/pathmodes',
-                        'capability' => 'access-administration-pathmodes',
-                        'icon' => 'cog',
-                    ),
                     'administration_highlitingstates' => array(
                         'id' =>'highlitingstates',
                         'name' => __('Highliting states'),

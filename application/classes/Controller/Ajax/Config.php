@@ -27,7 +27,6 @@ class Controller_Ajax_Config extends Controller_Ajax_Auth_Nostrict{
         $this->_set_i18n();
         $this->_set_typologies();
         $this->_set_highliting_typologies();
-        $this->_set_path_modes();
 //        $this->_set_timezone();
 //        $this->_set_menu();
         $this->_set_url();
@@ -95,14 +94,7 @@ class Controller_Ajax_Config extends Controller_Ajax_Auth_Nostrict{
         $this->config->i18n = I18n::lang();
     }
     
-    protected function _set_path_modes()
-    {
-        $this->_get_table('Path_Mode');
-        foreach($this->config->path_mode as &$modes)
-            $modes['icon'] =(isset($modes['icon']) AND $modes['icon'] != '') ? $this->_icon_pathmode_uri.$modes['icon'] : NULL;
-        
-    }
-    
+
     protected function _set_typologies()
     {
         $this->_get_table('Typology');

@@ -207,13 +207,14 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
                 $this->_vorm->label($_POST[$this->_url_multifield_postname],__('Urls'));
             
             //adding empty image validation
+            /*
             $imageField = 'image_'.strtolower($this->_datastruct->get_nameOrm());
             if(!in_array($imageField,$this->_noValidation))
             {
                 $this->_vorm->rule($imageField, 'not_empty');
                 $this->_vorm->label($imageField,__('Images to upload'));
             }
-
+            */
        
         
         
@@ -267,7 +268,6 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
         $this->_set_typologies($toRes, $orm);
         $this->_set_itineraries($toRes,$orm);
         $this->_set_the_geom($toRes, $orm);
-        $this->_set_urls($toRes,$orm);
 
 
 
@@ -328,15 +328,5 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
             $toRes['the_geom'] = $orm->asgeojson_php;
     }
     
-     protected function _set_urls(&$toRes,$orm)
-    {
-        if (isset($orm->urls))
-        {
-            $urls = $orm->urls->find_all();
-            foreach($urls as $url)
-                $toRes[$this->_url_multifield_postname][] = $url->as_array();
-        }
 
-            
-    }
 }

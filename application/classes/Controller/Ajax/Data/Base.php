@@ -61,13 +61,7 @@ class Controller_Ajax_Data_Base extends Controller_Ajax_Base_Crud_NoStrict_GET{
             $toRes['typology_id'] = (int)$orm->typology_id;
         
         // adding urls
-        $urls = $orm->urls->find_all();
-        foreach($urls as $url)
-        {
-            $url = $url->as_array();
-            unset($url['poi_id'],$url['path_id'],$url['area_id'],$url['id']);
-            $toRes['urls'][] = $url;
-        }
+
             
         
         switch($this->request->controller())

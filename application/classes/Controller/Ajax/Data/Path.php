@@ -10,25 +10,21 @@ class Controller_Ajax_Data_Path extends Controller_Ajax_Data_Base{
     
     protected function _single_request_row($orm) {
         $toRes = $this->_get_base_data_from_orm($orm);
+
+        // custome title for client
+        $toRes['title'] = $toRes['nome'];
         
-        $toRes['modes'] = array_keys($orm->modes->find_all()->as_array('id'));
-        
-        $toRes['altitude_gap'] = $toRes['altitude_gap'].' m';
-        $toRes['length'] = $toRes['length'].' m';
-        $toRes['q_init_current'] = $toRes['q_init_current'].' m';
-        $toRes['q_end_current'] = $toRes['q_end_current'].' m';
-        $toRes['time_current'] = $toRes['time_current'].' min';
-        $toRes['rev_time_current'] = $toRes['rev_time_current'].' min';
-        $toRes['diff_current'] = $orm->difficulty_current->code.' - '.$orm->difficulty_current->description;
-        $toRes['walkable_current'] = $orm->walkable_current->description;
+        $toRes['diff_q'] = $toRes['diff_q'].' m';
+        $toRes['l'] = $toRes['l'].' m';
+        $toRes['q_init'] = $toRes['q_init'].' m';
+        $toRes['q_end'] = $toRes['q_end'].' m';
+        $toRes['time'] = $toRes['time'].' min';
+        $toRes['rev_time'] = $toRes['rev_time'].' min';
+        $toRes['diff'] = $orm->difficulty->code.' - '.$orm->difficulty->description;
+        $toRes['walkable'] = $orm->walkable->description;
 
         #element to unset
         $unsetKeys = [
-            'time',
-            'rev_time',
-            'q_init',
-            'q_end',
-            'descriz',
             'bike',
             'cod_f1',
             'cod_f2',
@@ -38,18 +34,8 @@ class Controller_Ajax_Data_Path extends Controller_Ajax_Data_Base{
             'coordyen',
             'data_ins',
             'data_mod',
-            'diff',
-            'em_natur',
-            'em_paes',
-            'ev_stcul',
-            'inquiry',
             'ip',
-            'l',
-            'loc',
-            'op_attr',
             'nome',
-            'percorr_current',
-            'percorr'
         ];
 
         foreach ($unsetKeys as $k)

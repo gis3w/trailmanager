@@ -12,7 +12,7 @@ class Controller_Print_Poi_Sheet extends Controller_Print_Base_Auth_Nostrict
         parent::action_index();
         // get the map extent for path
         $poi = ORMGIS::factory('Poi',$this->request->param('id'));
-        View::set_global('sheetTitle',$poi->title);
+        View::set_global('sheetTitle',$poi->idwp);
         $this->_xmlContentView->lat = $poi->lat;
         $this->_xmlContentView->lon = $poi->lon;
         $poi->getLonLat(3857);
@@ -32,6 +32,6 @@ class Controller_Print_Poi_Sheet extends Controller_Print_Base_Auth_Nostrict
         }
 
         // set filename
-        $this->filename .= Inflector::underscore($poi->title).'_'.time().'.pdf';
+        $this->filename .= Inflector::underscore($poi->idwp).'_'.time().'.pdf';
     }
 }
