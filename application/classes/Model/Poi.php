@@ -68,7 +68,8 @@ class Model_Poi extends ORMGIS {
             "coord_x" => __('X coordinate'),
             "coord_y" => __('Y coordinate'),
             "data_ins" => __('Insert date'),
-            "data_mod" => __('Update date')
+            "data_mod" => __('Update date'),
+            "the_geom" => __('Geodata'),
         );
     }
     

@@ -15,17 +15,22 @@ class Controller_Ajax_Admin_Subtablepoi extends Controller_Ajax_Admin_Poi{
 
     protected function _default_filter($orm)
     {
-        if (!isset($_GET['path_id']))
-            return;
+        if (!isset($_GET['path_id']) and !isset($_GET['path_segment_id']))
+            return $orm;
 
 
 
         /*
          * Geographic filter:
-         *  $path = ORMGIS::factory('Path',$_GET['path_id']);
-            $geocond = "ST_Intersects(the_geom,ST_Buffer(ST_Transform(ST_GeometryFromText('".$path->astext."',4326),3004),10))";
+        */
+        if(isset($_GET['path_segment_id']))
+        {
+            $path_segment = ORMGIS::factory('Path_Segment',$_GET['path_segment_id']);
+            $geocond = "ST_Intersects(the_geom,ST_Buffer(ST_Transform(ST_GeometryFromText('".$path_segment->astext."',4326),3004),50))";
             $orm->where(DB::expr($geocond),'IS',DB::expr('true'));
-         */
+        }
+
+
 
 
         return $orm;

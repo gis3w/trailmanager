@@ -29,6 +29,12 @@ class Controller_Ajax_Admin_Path extends Controller_Ajax_Admin_Sheet_Base{
         
     }
 
+    protected function _single_request_row($orm)
+    {
+        $toRes = parent::_single_request_row($orm);
+        $toRes['title'] = $orm->nome;
+        return $toRes;
+    }
 
 
 

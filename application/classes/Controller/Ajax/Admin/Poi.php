@@ -96,6 +96,7 @@ class Controller_Ajax_Admin_Poi extends Controller_Ajax_Admin_Sheet_Base{
     {
         $toRes = parent::_single_request_row($orm);
         $toRes['path_id'] = $orm->paths->find()->id;
+        $toRes['title'] = $orm->idwp;
         return $toRes;
     }
     

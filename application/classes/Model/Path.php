@@ -58,6 +58,8 @@ class Model_Path extends ORMGIS {
             "cod_f1" => __("Cod F1"),
             "cod_f2" => __("Cod F2"),
             "ex_se" => __("Ex Se"),
+            "se" => __("Se"),
+            "the_geom" => __('Geodata'),
         );
     }
     

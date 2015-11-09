@@ -200,9 +200,12 @@ class Datastruct_Path extends Datastruct {
                 "color" => array(
                     "form_input_type" => self::MAPBOX_COLOR,
                     "class" => "color-path",
+                    "table_show" => FALSE,
                 ),
                  "width" => array(
                     "default_value" => 3,
+                    'suffix' => 'px',
+                     "table_show" => FALSE,
                 ),
                  "the_geom" => array(
                     'form_input_type' => self::MAPBOX,
@@ -211,7 +214,6 @@ class Datastruct_Path extends Datastruct {
                         self::GEOTYPE_POLYLINE
                     ),
                     'map_box_fileloading' => TRUE,
-                    'label' =>__('Geodata'),
                     'table_show' => FALSE,
                 ),
                 "loc" => array(

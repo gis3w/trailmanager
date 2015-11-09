@@ -23,8 +23,11 @@ class Model_Path_Segment extends ORMGIS
 
     public function labels() {
         return array(
-            "cod_f1" => __('Code f1'),
-            "cod_f2" => __('Code f2'),
+            "id_tratta" => __('ID Path segment'),
+            "ex_se" => __("Ex Se"),
+            "se" => __("Se"),
+            "cod_f1" => __("Cod F1"),
+            "cod_f2" => __("Cod F2"),
             "data_ril" => __('Survey date'),
             "condmeteo" => __('Weather state'),
             'rilev' => __('Data collector'),
@@ -38,16 +41,19 @@ class Model_Path_Segment extends ORMGIS
             'ambiente' => __('Ambient path segment'),
             'cop_tel' => __('GSM coverage path segment'),
             'rid_perc' => __('Reduction walkable path segment'),
-            'diff_current' => __('Difficulty typology path segment').' '.__('current'),
-            'percorr_current' => __('Walkable path segment').' '.__('current'),
-            'rid_perc_current' => __('Reduction walkable path segment').' '.__('current'),
-            'cop_tel_current' => __('GSM coverage path segment').' '.__('current'),
+            "the_geom" => __('Geodata'),
         );
     }
 
     public function rules()
     {
         return array(
+            'id_tratta' => array(
+                array('not_empty'),
+            ),
+            'se' => array(
+                array('not_empty'),
+            ),
             'the_geom' =>array(
                 array('not_empty'),
             ),

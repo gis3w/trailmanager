@@ -53,12 +53,10 @@ class Datastruct_Highliting_Path extends Datastruct {
             return array(
                 "description" => array(
                     'form_input_type' => self::TEXTAREA,
-                    'editor' => TRUE,
                     'table_show' => FALSE,
                 ),
                  "ending" => array(
                     'form_input_type' => self::TEXTAREA,
-                    'editor' => TRUE,
                     'table_show' => FALSE,
                 ),
                  "highliting_user_id" => array(
@@ -144,7 +142,7 @@ class Datastruct_Highliting_Path extends Datastruct {
                         'foreign_mode' => self::SINGLESELECT,
                         'foreign_toshow' => '$1',
                         'foreign_toshow_params' => array(
-                            '$1' => 'title',
+                            '$1' => 'nome',
                         ),
                         'url_values' => SAFE::setBaseUrl('jx/pathsclose/$1/$2'),
                         'slave_of' => 'the_geom',
@@ -208,7 +206,6 @@ class Datastruct_Highliting_Path extends Datastruct {
          // we add a note filed for insert only
          $fct['note'] = array_replace($this->_columnStruct, array(
                 "form_input_type" => self::TEXTAREA,
-                "editor" => TRUE,
                 "table_show" => FALSE,
                 'label' => __('Note'),
              )

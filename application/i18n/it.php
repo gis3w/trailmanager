@@ -291,6 +291,7 @@ return array(
     'latitude' => 'Latitudine',
     'longitude' => 'Longitudine',
     'Add coordinates' => 'Aggiungi coordinate geografice decimali',
+	"ID Path segment" => 'ID Tratta',
 
 
 
@@ -336,23 +337,26 @@ return array(
     'Path segment' => 'Tratta',
     'Path segments' => 'Tratte',
 
+
     'tab-base-data' => '<b>DATI RILIEVO</b>',
     'tab-main' =>'<b>DATI PRINCIPALI/TURISTICI</b> informativi',
-    'tab-path' => '<b>SENTIERI</b> relativi',
+    'tab-path' => '<b>SENTIERI</b> correlati',
     'tab-poi' => '<b>PUNTI INTERESSE</b> correlati',
     'tab-path-segment' => '<b>TRATTE</b> correlate',
-    'tab-path-segment-path' => '<b>SENTIERI</b> relativi',
-    'tab-path-highlitingpoi' => '<b>Segnalazioni</b> relative',
+    'tab-path-segment-path' => '<b>SENTIERI</b> correlati',
+    'tab-path-highlitingpoi' => '<b>Segnalazioni</b> crrelate',
+	'tab-path-segment-poi' => '<b>PUNTI INTERESSE</b> correlati',
     'path-base-data-path' => 'Dati identificativi sentiero',
     'path-base-data-geo' => 'Geo dati',
     'path-base-data-current' => '<b>STATO ATTUALE</b>',
     'path-base-data-data' => 'Attributi sentiero',
-    'path-base-data-poi' => 'Punti notevoli',
+    'path-base-data-poi' => 'Punti interessi',
     'path-base-data-path-segment' => 'Tratte',
     'path-base-data-geodata' => 'Geodati',
     'path-base-data-survey' => 'Dati rilievo',
     'path-base-data-survey' => 'Dati rilievo',
     'path-segment-base-data-data' => 'Attributi tratta',
+	'poi-base-data-pois' => 'Punti interessi',
 
     'highliting-poi-abstract' => 'Riassunto',
     'highliting-poi-data' => 'Dati generali del punto',

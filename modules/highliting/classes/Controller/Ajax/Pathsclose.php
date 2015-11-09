@@ -25,7 +25,7 @@ class Controller_Ajax_Pathsclose extends Controller_Ajax_Main{
         {
             $this->jres->data->items[]  = [
                 'id' => $path->pk(),
-                'title' => $path->title,
+                'nome' => $path->nome,
             ];
         }
     }

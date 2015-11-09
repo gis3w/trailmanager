@@ -58,7 +58,6 @@ class Controller_Ajax_Admin_Change_itinerarymap extends Controller_Ajax_Auth_Str
         {
             $this->_res['value']['items'][] =array(
                     'id' => $path->id,
-                    'typology_id' => (int)$path->typology_id,
                     'color' => $path->color,
                     'geoJSON' => json_decode($path->asgeojson)
                 );
