@@ -4,6 +4,7 @@ extent -20037508 -20037508 20037508 20037508
 RESOLUTION 96
 DEBUG TRUE
 shapepath "./"
+FONTSET "./fonts/msfontset.txt"
 
 
  OUTPUTFORMAT   ### 24 bit PNG
@@ -55,11 +56,28 @@ LAYER
     PROJECTION
         "init=epsg:3004"
     END
+    LABELITEM 'nome'
     CLASS
+
         Name 'Paths'
         STYLE
             COLOR [color]
             WIDTH [width]
+        END
+        LABEL
+          COLOR   250 0 0
+          #OUTLINECOLOR 255 255 255
+          STYLE
+            GEOMTRANSFORM 'labelpoly'
+            COLOR 255 255 255
+          END
+          ANGLE 0
+          SIZE 10
+          POSITION AUTO
+          PARTIALS FALSE
+          TYPE TRUETYPE
+          FONT 'FreeSans'
+          REPEATDISTANCE 200
         END
     END
 END

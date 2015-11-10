@@ -228,7 +228,8 @@ class Controller_Ajax_Admin_Config extends Controller_Ajax_Auth_Strict{
                      'Rid_Perc_Segment',
                      'Morf_Segment',
                      'Ambiente_Segment',
-                     'Cop_Tel_Segment'
+                     'Cop_Tel_Segment',
+                     'Utenza_Segment'
                  ) as $tb)
         {
             $pms = ORM::factory($tb)->find_all();

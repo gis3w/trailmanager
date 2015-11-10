@@ -55,7 +55,7 @@ class Model_Poi extends ORMGIS {
             "pt_inter" => __('Point of interest class'),
             "strut_ric" => __('Accomodation building class'),
             "aree_attr" => __('Equip area class'),
-            "insediamo" => __('Village class'),
+            "insediam" => __('Village class'),
             "pt_acqua" => __('Water point class'),
             "tipo_segna" => __('Signage type class'),
             "stato_segn" => __('Signage state class'),
@@ -70,6 +70,7 @@ class Model_Poi extends ORMGIS {
             "data_ins" => __('Insert date'),
             "data_mod" => __('Update date'),
             "the_geom" => __('Geodata'),
+            "id_palo" => __('Pole ID'),
         );
     }
     

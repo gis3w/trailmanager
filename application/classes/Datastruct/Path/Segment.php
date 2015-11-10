@@ -41,7 +41,8 @@ class Datastruct_Path_Segment extends Datastruct
             'name' => 'path-base-data-geodata',
             'position' => 'right',
             'fields' => array(
-                'the_geom'
+                'the_geom',
+                'path_id'
             ),
         ),
         array(
@@ -121,6 +122,11 @@ class Datastruct_Path_Segment extends Datastruct
         );
 
         return array(
+            "path_id" => array(
+                'editable' => FALSE,
+                'table_show' => FALSE,
+                'form_show' => FALSE
+            ),
             "class_ril" => array_replace($baseSingleSelectField,array(
                 'foreign_key' => 'class_ril_segment',
                 'foreign_value_field' => 'class',
@@ -158,6 +164,9 @@ class Datastruct_Path_Segment extends Datastruct
                 'foreign_key' => 'rid_perc_segment',
             )),
 
+            "utenza" => array_replace($baseSingleSelectField,array(
+                'foreign_key' => 'utenza_segment',
+            )),
 
 
 
@@ -170,6 +179,10 @@ class Datastruct_Path_Segment extends Datastruct
                 'map_box_fileloading' => TRUE,
                 'label' =>__('Geodata'),
                 'table_show' => FALSE,
+                'overlays' => '/jx/admin/path/$1',
+                'overlays_parmas' => [
+                    '$1' => 'path_id',
+                ]
             ),
         );
     }

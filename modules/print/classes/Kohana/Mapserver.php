@@ -288,6 +288,8 @@ class Kohana_Mapserver {
 
         }
 
+        #add label
+
 
         $this->_pathsLayerObj->set('status',$status);
         $this->_orderLayers[] = $this->_pathsLayerObj->index;

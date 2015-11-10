@@ -41,6 +41,7 @@ class Datastruct_Poi extends Datastruct {
             'position' => 'left',
             'fields' => array(
                 'idwp',
+                'id_palo',
                 'se',
                 'bike',
                 'ip',

@@ -19,7 +19,11 @@ class Controller_Print_Poi_Sheet extends Controller_Print_Base_Auth_Nostrict
         $scale = 10000;
         $map = new Mapserver($this->_mapFile,$this->_mapPath,$this->_tmp_dir,$this->_image_base_url,$scale,[$poi->x,$poi->y]);
         $this->_setImageMapSize($map);
-        $map->makeMap($poi->id,NULL,NULL);
+
+        #try to add every path
+        $paths = ORM::factory('Path')->find_all()->as_array('id');
+
+        $map->makeMap($poi->id,array_keys($paths),NULL);
         $this->_xmlContentView->mapURL = $map->imageURL;
         $this->_xmlContentView->poi = $poi;
         $this->_xmlContentView->typologies = $poi->typologies->find_all();

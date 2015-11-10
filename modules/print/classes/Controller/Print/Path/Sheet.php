@@ -15,7 +15,7 @@ class Controller_Print_Path_Sheet extends Controller_Print_Base_Auth_Nostrict
         parent::action_index();
         // get the map extent for path
         $this->path = ORMGIS::factory('Path',$this->request->param('id'));
-        View::set_global('sheetTitle',__('Path').' '.$this->path->title);
+        View::set_global('sheetTitle',__('Path').' '.$this->path->nome);
 
         $newExtent = $this->_calculateExtentWithBuffer($this->path,0.1,3857);
 
@@ -36,7 +36,7 @@ class Controller_Print_Path_Sheet extends Controller_Print_Base_Auth_Nostrict
 
 
         // set filename
-        $this->filename .= Inflector::underscore($this->path->title).'_'.time().'.pdf';
+        $this->filename .= Inflector::underscore($this->path->nome).'_'.time().'.pdf';
     }
     
     protected function _buildAltitudeGapChart()

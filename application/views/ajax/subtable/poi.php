@@ -7,6 +7,7 @@ $items = $jres->data->items;
     <thead>
     <tr>
         <th><?php echo __('IDWP') ?></th>
+        <th><?php echo __('Pole ID') ?></th>
         <th><?php echo __('Note') ?></th>
         <th><?php echo __('Point of interest class')?></th>
         <th><?php echo __('Accomodation building class')?></th>
@@ -25,6 +26,7 @@ $items = $jres->data->items;
                     <span class="icon icon-link"></span> <?php echo $item['idwp'] ?>
                 </a>
             </td>
+            <td><?php echo $item['id_palo'] ?></td>
             <td><?php echo $item['note'] ?></td>
             <td><?php echo SAFEDB::tbCache('Pt_Inter_Poi',$item['pt_inter'],'description','code') ?></td>
             <td><?php echo SAFEDB::tbCache('Strut_Ric_Poi',$item['strut_ric'],'description','code') ?></td>
