@@ -1328,13 +1328,24 @@ $.extend(APP.anagrafica,
 			{
 				if (that.sections[section].columns[index].overlays)
 				{
+					var bError = false;
 					var oUrl = that.sections[section].columns[index].overlays;
 					if (APP.utils.isset(that.sections[section].columns[index].overlays_parmas))
 					{
 						$.each(that.sections[section].columns[index].overlays_parmas, function(i,v){
-							oUrl = APP.utils.replaceAll(i, dataObject[v], oUrl);
+							if (APP.utils.isset(dataObject[v]))
+								oUrl = APP.utils.replaceAll(i, dataObject[v], oUrl);
+							else
+								bError = true;
 						});
 					}
+					
+					if (bError)
+					{
+						initMap();
+						return false;
+					}
+						
 					
 					$.ajax({
 						method: "GET",
@@ -1346,7 +1357,9 @@ $.extend(APP.anagrafica,
 							{
 								$.each(result.data.items, function(j,k)
 								{
-									var l = L.geoJson(k['the_geom']);
+									var l = L.geoJson(k['the_geom'],{
+									    style: k
+									});
 									l.bindLabel(k.title);
 									mapParams.overlays[k.title] = l;
 								});
@@ -1371,7 +1384,6 @@ $.extend(APP.anagrafica,
 							
 						}
 					});
-					
 				}
 				else
 					initMap();
