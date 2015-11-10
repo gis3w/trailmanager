@@ -1230,6 +1230,7 @@ $.extend(APP.anagrafica,
 						var value = inp.val();
 						
 						var gj = L.geoJson($.parseJSON(value), {
+							style: dataObject,
 							/*
 							coordsToLatLng: function(coords)
 							{
