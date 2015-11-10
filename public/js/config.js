@@ -168,10 +168,16 @@ $.extend(APP.config,{
 			  routes: {
 				"home": "home",
 				
+				"highlitingpoi/:query": "highliting_poi",
+				"highlitingpoi": "highliting_poi",
+				"new_highlitingpoi": "new_highliting_poi",
 				"highliting_poi/:query": "highliting_poi",
 				"highliting_poi": "highliting_poi",
 				"new_highliting_poi": "new_highliting_poi",
 				
+				"highlitingpath/:query": "highliting_path",
+				"highlitingpath": "highliting_path",
+				"new_highlitingpath": "new_highliting_path",
 				"highliting_path/:query": "highliting_path",
 				"highliting_path": "highliting_path",
 				"new_highliting_path": "new_highliting_path",
