@@ -2,10 +2,10 @@ $.extend(APP.adminMap,
 {
 	thisSection: "home",
 	mapControls: {
+		layers: null,
 		coordinates: null,
 		defaultextent: null,
 		draw: null,
-		layers: null,
 		scale: null,
 	},
 	geometries: ['polyline','marker'], //leaflet.draw
@@ -19,6 +19,7 @@ $.extend(APP.adminMap,
 			'titleAttribute': "subject",
 			'tableId': "reportingsTable",
 			'table': null,
+			'layers': [],
 		},
 		'pathreportings': {
 			'resource': "highliting_path",
@@ -26,13 +27,22 @@ $.extend(APP.adminMap,
 			'titleAttribute': "subject",
 			'tableId': "trailsTable",
 			'table': null,
+			'layers': [],
 		},
-		'trails': {
+	},
+	
+	overlays: {
+		'Sentieri': {
 			'resource': "path",
 			'idAttribute': "id",
-			'titleAttribute': "title",
-			'tableId': null,
-			'table': null,
+			'layers': [],
+			'showDefault': true,
+		},
+		'Tratte': {
+			'resource': "path_segment",
+			'idAttribute': "id",
+			'layers': [],
+			'showDefault': false,
 		}
 	},
 	
@@ -186,7 +196,7 @@ $.extend(APP.adminMap,
 					});
 					break;
 				case "layers":
-					var bgl = APP.config.getControlLayers();
+					var bgl = APP.config.getControlLayers();		
 					that.mapControls[i] = L.control.layers(bgl.baselayers, bgl.overlays);
 					break;
 				case "scale":
@@ -194,6 +204,41 @@ $.extend(APP.adminMap,
 					break;
 			}
 			that.mapControls[i].addTo(that.map);
+		});
+	},
+	
+	setOverlays: function()
+	{
+		var that = this;
+		
+		$.each(that.overlays, function(i,v)
+		{
+			v.layerGroup = L.layerGroup();
+			that.mapControls.layers.addOverlay(v.layerGroup, i);
+			
+			$.ajax({
+				method: "GET",
+				url: APP.config.localConfig.urls[v.resource],
+				success: function(result, status, jqXHR)
+				{
+					if (!result || !result.data || !$.isArray(result.data.items))
+						return false;					
+					
+					$.each(result.data.items, function(ii,vv)
+					{
+						var gjl = L.geoJson({
+							"type": "Feature",
+						    "geometry": vv.the_geom,
+						}, vv);
+						v.layers.push(gjl);
+						v.layerGroup.addLayer(gjl);
+					});
+					
+					if (v.showDefault)
+						v.layerGroup.addTo(that.map);
+					
+				}
+			});
 		});
 	},
 	
@@ -205,7 +250,7 @@ $.extend(APP.adminMap,
 		that.featureGroup.addTo(that.map);
 	},
 	
-	addLayer: function(obj)//layer,target,id,onClick,options
+	addLayer: function(obj)//layer,target,targetInfo,id,onClick,options
 	{
 		var that = this;
 		
@@ -230,9 +275,11 @@ $.extend(APP.adminMap,
 		switch(feature.type)
 		{
 			case "MultiLineString":
-				$.each(feature.coordinates, function(i,v){
+				$.each(feature.coordinates, function(i,v)
+				{
 					var l = L.polyline(L.GeoJSON.coordsToLatLngs(v));
 					setOtherOptions(l);
+					obj.targetInfo.layers.push(l);
 					l.addTo(that.featureGroup);
 				});
 				break
@@ -240,11 +287,13 @@ $.extend(APP.adminMap,
 				$.each(feature.coordinates, function(i,v){
 					var l = L.polygon(L.GeoJSON.coordsToLatLngs(v,1));
 					setOtherOptions(l);
+					obj.targetInfo.layers.push(l);
 					l.addTo(that.featureGroup);
 				});
 				break;
 			default:
 				setOtherOptions(obj.layer);
+				obj.targetInfo.layers.push(obj.layer);
 				obj.layer.addTo(that.featureGroup);
 		}
 		
@@ -572,6 +621,7 @@ $.extend(APP.adminMap,
 								'id': v[targetInfo.idAttribute],
 								'layer': layer,
 								'target': target,
+								'targetInfo': targetInfo,
 								'options': opts,
 								'style': {},
 								'label': v[targetInfo.titleAttribute],
@@ -588,11 +638,13 @@ $.extend(APP.adminMap,
 								params.style.weight = v['width'];
 							
 							that.addLayer(params);
+							
 						}
 					};
 					
 					L.geoJson(v.the_geom, gjo);
 				});
+				
 				if (callback && $.isFunction(callback))
 					callback();
 			}
@@ -699,7 +751,8 @@ $.extend(APP.adminMap,
 						that.setMapBounds();
 						that.setDefaultExtent();
 						that.addMapControls();
-						that.showTables();
+						that.setOverlays();
+						that.showTables();						
 					}
 				});
 			});
