@@ -232,7 +232,7 @@ $.extend(APP.adminMap,
 							"type": "Feature",
 						    "geometry": vv.the_geom,
 						}, vv);
-						gjl.bindLabel(vv[v.titleAttribute]);
+						gjl.bindLabel(""+vv[v.titleAttribute]);
 						v.layers.push(gjl);
 						v.layerGroup.addLayer(gjl);
 					});
