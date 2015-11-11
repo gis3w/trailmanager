@@ -35,12 +35,14 @@ $.extend(APP.adminMap,
 		'Sentieri': {
 			'resource': "path",
 			'idAttribute': "id",
+			'titleAttribute': "title",
 			'layers': [],
 			'showDefault': true,
 		},
 		'Tratte': {
 			'resource': "path_segment",
 			'idAttribute': "id",
+			'titleAttribute': "id",
 			'layers': [],
 			'showDefault': false,
 		}
@@ -230,6 +232,7 @@ $.extend(APP.adminMap,
 							"type": "Feature",
 						    "geometry": vv.the_geom,
 						}, vv);
+						gjl.bindLabel(vv[v.titleAttribute]);
 						v.layers.push(gjl);
 						v.layerGroup.addLayer(gjl);
 					});
