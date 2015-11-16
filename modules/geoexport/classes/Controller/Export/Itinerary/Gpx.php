@@ -21,8 +21,8 @@ class Controller_Export_Itinerary_Gpx extends Controller_Export_Base_Gpx{
         foreach($this->_paths as $path)
         {
             $trk = $this->gpx->addTrk([
-                ['name', $path->title],
-                ['desc', $this->_cleanText($path->description)],
+                ['name', $path->nome],
+                ['desc', $this->_cleanText($path->descriz)],
             ]);
 
             $trkseg = $this->gpx->addTrkseg($trk);
@@ -43,8 +43,8 @@ class Controller_Export_Itinerary_Gpx extends Controller_Export_Base_Gpx{
         {
 
             $properties = [
-                ['name',$poi->title],
-                ['desc',$this->_cleanText($poi->description)],
+                ['name',$poi->idwp],
+                ['desc',$this->_cleanText($poi->note)],
             ];
             $poi->getLonLat(4326);
             $wpt = $this->gpx->addWpt($poi->lat,$poi->lon,$properties);

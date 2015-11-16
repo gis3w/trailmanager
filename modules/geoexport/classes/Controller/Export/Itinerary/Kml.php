@@ -13,7 +13,7 @@ class Controller_Export_itinerary_Kml extends Controller_Export_Base_Kml{
         #get the sepcific itinerary
         $this->_itinerary = ORM::factory('Itinerary', $this->request->param('id'));
 
-        $this->filename = 'Itinerary_'.Inflector::underscore($this->_itinerary->name).'_'.time().'.kml';
+        $this->filename = __('Itinerary').'_'.Inflector::underscore($this->_itinerary->name).'_'.date('Ymd-Hi',time()).'.kml';
         $this->kml = KMLF::factory();
 
         $mainDocument = $this->kml->addDocument([
@@ -51,8 +51,8 @@ class Controller_Export_itinerary_Kml extends Controller_Export_Base_Kml{
         foreach($this->_paths as $path)
         {
             $placemark = $this->kml->addPlaceMark($mainDocument,[
-                ['name',$path->title],
-                ['description', strip_tags($path->description)],
+                ['name',$path->nome],
+                ['description', strip_tags($path->descriz)],
                 ['styleUrl','#pathStyle'.$path->id]
             ]);
 
@@ -65,8 +65,8 @@ class Controller_Export_itinerary_Kml extends Controller_Export_Base_Kml{
         {
 
             $placemark = $this->kml->addPlaceMark($mainDocument,[
-                ['name',$poi->title],
-                ['description', strip_tags($poi->description)],
+                ['name',$poi->idwp],
+                ['description', strip_tags($poi->note   )],
                 ['styleUrl','#markerStyle'.$poi->typology_id]
             ]);
             $this->kml->addKMLString($placemark,$poi->getKML());

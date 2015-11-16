@@ -71,6 +71,7 @@ class Model_Poi extends ORMGIS {
             "data_mod" => __('Update date'),
             "the_geom" => __('Geodata'),
             "id_palo" => __('Pole ID'),
+            'quali_ril' => __('Quality survey'),
         );
     }
     

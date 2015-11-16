@@ -11,6 +11,7 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
     protected $_datastruct;
     protected $_datastructName;
     protected $_primary_column = 'id';
+    protected $_save_primary_column = FALSE;
     protected $_orm;
     protected $_typeORM = 'ORM';
     protected $_table;
@@ -99,7 +100,7 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
     {
         $typeORM = $this->_typeORM;
         
-        if(is_numeric($this->id))
+        if(isset($this->id) AND $this->id != 'list')
         {
             $this->_status = $this->request->action() === 'update' ? self::UPDATE : self::DELETE;
              $this->_orm = $typeORM::factory($this->_table)
@@ -229,7 +230,12 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
             
             $this->_get_extra_validation();
             
-            $this->_orm->values($_POST)->save($this->_extra_validation);
+            $this->_orm->values($_POST);
+
+            if($this->_save_primary_column AND isset($_POST[$this->_primary_column]))
+                $this->_orm->{$this->_primary_column} = $_POST[$this->_primary_column];
+
+            $this->_orm->save($this->_extra_validation);
             
             if(method_exists($this, '_save_environments'))
                     $this->_save_environments();
@@ -269,9 +275,12 @@ abstract class Controller_Ajax_Base_Crud extends Controller_Ajax_Auth_Strict{
         try
         {
             Database::instance()->begin();
+
+            if (method_exists($this, '_delete_cascade'))
+                $this->_delete_cascade();
             
             $this->_orm->delete();
-            
+
             Database::instance()->commit();
         }
          catch (Database_Exception $e)

@@ -5,6 +5,7 @@ class Controller_Ajax_Admin_Administration_Diffsegments extends Controller_Ajax_
     
     protected $_pagination = FALSE;
     protected $_datastruct = "Administration_Diffsegments";
+    protected $_save_primary_column = TRUE;
 
     public function action_create()
     {

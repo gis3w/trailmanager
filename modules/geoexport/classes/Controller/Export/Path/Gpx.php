@@ -13,14 +13,14 @@ class Controller_Export_Path_Gpx extends Controller_Export_Base_Gpx{
             throw new HTTP_Exception_500('Sorry Path id not disponibled');
         #star GPXF Obeject
         //set the filename
-        $this->filename = 'Path_'.Inflector::underscore($this->_path->title).'_'.time().'.gpx';
+        $this->filename = __('Path').'_'.Inflector::underscore($this->_path->nome).'_'.date('Ymd-Hi',time()).'.gpx';
         $this->gpx = GPXF::factory(GPXF::MODE_FILE,$this->filename);
 
         $waypoints = $this->_path->getWaypoints();
 
         $trk = $this->gpx->addTrk([
-            ['name', $this->_path->title],
-            ['desc', $this->_cleanText($this->_path->description)],
+            ['name', $this->_path->nome],
+            ['desc', $this->_cleanText($this->_path->descriz)],
         ]);
         $trkseg = $this->gpx->addTrkseg($trk);
         foreach ($waypoints as $w) {

@@ -4,6 +4,7 @@ class Datastruct_Administration_Diffsegments extends Datastruct {
 
     
     protected $_nameORM = "Diff_Segment";
+    public $primary_key = "code";
     
      public $title = array(
         "title_toshow" => "$1",

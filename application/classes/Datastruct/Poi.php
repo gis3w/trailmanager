@@ -66,6 +66,7 @@ class Datastruct_Poi extends Datastruct {
                 'data_ril',
                 'condmeteo',
                 'rilev',
+                'quali_ril',
                 'class_ril',
                 'photo',
                 'note',
@@ -99,6 +100,7 @@ class Datastruct_Poi extends Datastruct {
             'name' => 'poi-base-data-degr',
             'position' => 'right',
             'fields' => array(
+                'prio_int',
                 'fatt_degr'
             ),
         ),

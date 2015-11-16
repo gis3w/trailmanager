@@ -13,12 +13,12 @@ class Controller_Export_Path_Kml extends Controller_Export_Base_Kml{
             throw new HTTP_Exception_500('Sorry Path id not availabled');
         #star GPXF Obeject
         //set the filename
-        $this->filename = 'Path_'.Inflector::underscore($this->_path->title).'_'.time().'.kml';
+        $this->filename = __('Path').'_'.Inflector::underscore($this->_path->nome).'_'.date('Ymd-Hi',time()).'.kml';
         $this->kml = KMLF::factory();
 
         $document = $this->kml->addDocument([
-            ['name',$this->_path->title],
-            ['description',strip_tags($this->_path->description)]
+            ['name',$this->_path->nome],
+            ['description',strip_tags($this->_path->descriz)]
         ]);
 
         $style = $this->kml->addStyle($document,'pathStyle');
@@ -28,8 +28,8 @@ class Controller_Export_Path_Kml extends Controller_Export_Base_Kml{
         ]);
 
         $placemark = $this->kml->addPlaceMark($document,[
-            ['name',$this->_path->title],
-            ['description',strip_tags($this->_path->description)],
+            ['name',$this->_path->nome],
+            ['description',strip_tags($this->_path->descriz)],
             ['styleUrl','#pathStyle']
         ]);
 

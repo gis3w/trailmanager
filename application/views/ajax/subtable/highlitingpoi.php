@@ -14,7 +14,7 @@ $items = $jres->data->items;
     <?php foreach ($items as $item): ?>
         <tr>
             <td>
-                <a class="btn btn-default" href="/admin#highlitingpoi/<?php echo $item['id'] ?>">
+                <a class="btn btn-default" href="/admin#highliting_poi/<?php echo $item['id'] ?>">
                     <span class="icon icon-link"></span> <?php echo $item['id'] ?>
                 </a>
             </td>

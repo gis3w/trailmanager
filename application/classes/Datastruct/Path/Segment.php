@@ -80,7 +80,7 @@ class Datastruct_Path_Segment extends Datastruct
 
     public $tabs = array(
         array(
-            'name' => 'tab-main',
+            'name' => 'tab-base-data',
             'icon' => 'mobile-phone',
             'groups' => array(
                 'path-base-data-path',

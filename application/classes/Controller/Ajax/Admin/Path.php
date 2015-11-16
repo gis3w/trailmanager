@@ -36,6 +36,19 @@ class Controller_Ajax_Admin_Path extends Controller_Ajax_Admin_Sheet_Base{
         return $toRes;
     }
 
+    /**
+     * Delete Pois and Path_segments related
+     */
+    protected function _delete_cascade()
+    {
+        $poisQDelete = DB::delete('pois')
+            ->where('se','=',$this->_orm->se)
+            ->execute();
+        $pathsQDelete = DB::delete('path_segments')
+            ->where('se','=',$this->_orm->se)
+            ->execute();
+    }
+
 
 
 }

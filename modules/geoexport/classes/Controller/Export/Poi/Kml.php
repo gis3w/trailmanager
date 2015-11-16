@@ -13,18 +13,18 @@ class Controller_Export_Poi_Kml extends Controller_Export_Base_Kml{
             throw new HTTP_Exception_500('Sorry Poi id not availabled');
         #star GPXF Obeject
         //set the filename
-        $this->filename = 'Poi_'.Inflector::underscore($this->_poi->title).'_'.time().'.kml';
+        $this->filename = __('Poi').'_'.Inflector::underscore($this->_poi->idwp).'_'.date('Ymd-Hi',time()).'.kml';
         $this->kml = KMLF::factory();
 
         $document = $this->kml->addDocument([
-            ['name',$this->_poi->title],
-            ['description',strip_tags($this->_poi->description)]
+            ['name',$this->_poi->idwp],
+            ['description',strip_tags($this->_poi->note)]
         ]);
         
 
         $placemark = $this->kml->addPlaceMark($document,[
-            ['name',$this->_poi->title],
-            ['description',strip_tags($this->_poi->description)],
+            ['name',$this->_poi->idwp],
+            ['description',strip_tags($this->_poi->note)],
         ]);
 
         $this->kml->addKMLString($placemark,$this->_poi->getKML());
