@@ -305,8 +305,8 @@ class Datastruct_Highliting_Poi extends Datastruct {
         $fct['from_highliting_to_poi']  = array_replace($this->_columnStruct,array(
                 'form_input_type' => self::BUTTON,
                 'input_class' => 'default',
-                'data_type' => 'pdf_print',
-                'url_values' => '/jx/admin/fromhpoi2poi/$1',
+                'data_type' => self::DATA_TYPE_REQUEST,
+                'url_values' => '/jx/admin/highliting2poi/$1',
                 'url_values_params' => array(
                     '$1' => 'id',
                 ),

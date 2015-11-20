@@ -44,6 +44,10 @@ class Kohana_Formstruct{
     const SUBFORM = 'subform';
     const SUBTABLE = 'subtable';
 
+    #data_type
+    const DATA_TYPE_PDF_PRINT = 'pdf_print';
+    const DATA_TYPE_REQUEST = 'request';
+
     const AJAX_MODE_JSON = 'json';
     const AJAX_MODE_HTML = 'html';
     const AJAX_MODE_SCRIPT = 'script';
