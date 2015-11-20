@@ -63,7 +63,7 @@ $.extend(APP.config,{
 						APP.anagrafica.addItem(APP.config.parameters, prevw, tw, sec);
 					else
 						APP.anagrafica.showTable(obj);
-					APP.config.parameters = {};
+					//APP.config.parameters = {};
 				}
 				else
 				{
@@ -192,6 +192,7 @@ $.extend(APP.config,{
 			    
 				"poi/:query": "poi",
 			    "poi": "poi",
+			    "new_poi": "new_poi",
 			    "itinerary/:query": "itinerary",
 			    "itinerary": "itinerary",
 			    "pathsegment/:query": "pathsegment",
@@ -225,6 +226,10 @@ $.extend(APP.config,{
 
 			  path: function(query) {
 				  workNow("path", "Sentieri", query);
+			  },
+			  
+			  new_poi: function(query) {
+				  workNow("poi", "Nuovo punto di interesse", null, true);
 			  },
 			  
 			  poi: function(query) {

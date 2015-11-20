@@ -524,6 +524,8 @@ $.extend(APP.utils,{
 					v.hide();
 			});
 		}
+		
+		APP.config.parameters = {};
 	},
 	
 	checkError: function(error, param)
@@ -1730,16 +1732,11 @@ $.extend(APP.utils,{
 											if (!result || !result.data || !result.data.items){
 												break;
 											}
-											
-											var oldDiv = APP.anagrafica.windows[APP.anagrafica.windows.length-1];
-											APP.anagrafica.createWindow();
-											var section = "poi";
-											APP.anagrafica.sections[section] = APP.utils.setBaseStructure(section, section);
-											APP.anagrafica.getStructure(APP.config.localConfig.urls['dStruct']+"?tb="+section, section, "", false, function(){
-												APP.anagrafica.currentSection = section;
-												APP.anagrafica.addItem(result.data.items, APP.anagrafica.windows[APP.anagrafica.windows.length-1],oldDiv,section);
-											});
-											
+
+											APP.config.bDirectUrl = true;
+											APP.config.parameters = result.data.items;
+											APP.config.queue.push("new_poi");
+											APP.config.workSpace.navigate("new_poi", {trigger: true, replace: true});
 											break;
 										default:
 											break;
