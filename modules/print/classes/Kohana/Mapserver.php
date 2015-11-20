@@ -12,6 +12,7 @@
 class Kohana_Mapserver {
 
     const MAPDIR = "mapserver";
+    const EVERY_FEATURE = 'ALL';
     protected $_mapPath;
     protected $_mapFile = 'print.map';
     protected $_mapObj;
@@ -283,7 +284,15 @@ class Kohana_Mapserver {
             }
             else
             {
-                $this->_pathsLayerObj->set("data","the_geom from (select * from paths where publish is TRUE and id = ".$path_id.") as p using unique id");
+                if($path_id == self::EVERY_FEATURE)
+                {
+                    $this->_pathsLayerObj->set("data","the_geom from (select * from paths where publish is TRUE) as p using unique id");
+                }
+                else
+                {
+                    $this->_pathsLayerObj->set("data","the_geom from (select * from paths where publish is TRUE and id = ".$path_id.") as p using unique id");
+                }
+
             }
 
         }

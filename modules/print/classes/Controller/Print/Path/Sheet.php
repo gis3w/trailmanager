@@ -21,7 +21,7 @@ class Controller_Print_Path_Sheet extends Controller_Print_Base_Auth_Nostrict
 
         $map = new Mapserver($this->_mapFile,$this->_mapPath,$this->_tmp_dir,$this->_image_base_url,NULL,NULL,$newExtent);
         $this->_setImageMapSize($map);
-        $map->makeMap(NULL,$this->path->id,NULL,$this->_background_layer_id);
+        $map->makeMap(NULL,Mapserver::EVERY_FEATURE,NULL,$this->_background_layer_id);
         $this->_xmlContentView->mapURL = $map->imageURL;
         $this->_xmlContentView->path = $this->path;
 

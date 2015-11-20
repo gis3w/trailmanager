@@ -20,8 +20,8 @@
         <h3 background.color="#eaeaea" border-color="#eaeaea" border-radius="4px" margin-top="0px" color="gray" padding="3px 3px 3px 3px"></h3>
         <div class="body-box" padding="10px"></div>
     </div>
-    <div class="category" width="268px" margin-right="20px"></div>
-    <div class="characteristics" width="100%"></div>
+    <div class="category" width="334px" margin-right="20px"></div>
+    <div class="characteristics" width="334px" ></div>
     <div class="heights-profile-chart" width="100%"></div>
     <img class="typology-section" float="left" />
     <div class="typology-name" width="80%"  float="right"></div>

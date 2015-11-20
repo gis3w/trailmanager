@@ -100,7 +100,7 @@ abstract class Controller_Print_Base extends Controller_Base_Main {
         }
         catch (Exception $e)
         {
-            
+            throw $e;
         }
         
         $this->_pdfContent = $this->PHPPdf->render($this->xmlContent, $this->xmlCss);

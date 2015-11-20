@@ -741,7 +741,7 @@ $.extend(APP.interactiveMap,
 								</div>\
 								<div class="row">';
 		if(section == 'poi') {
-			sheetTemplate += '<div class="col-md-3">\
+			sheetTemplate += '<div class="col-md-7">\
 										<div class="panel panel-default categories" style="display: none">\
 											<div class="panel-heading">\
 												<h3 class="panel-title">'+APP.i18n.translate('categories')+'</h3>\
@@ -889,7 +889,10 @@ $.extend(APP.interactiveMap,
 							
 						$.each(arr, function(i, v)
 						{
-							var ii = APP.utils.getIndexFromField(moreParams.values, "id", v);
+							fk = "id";
+							if(APP.utils.isset(moreParams.fk))
+								fk = moreParams.fk;
+							var ii = APP.utils.getIndexFromField(moreParams.values, fk, v);
 							if (ii > -1)
 							{
 								var img  = $('<div class="media">\
@@ -901,6 +904,31 @@ $.extend(APP.interactiveMap,
 												</div>\
 											</div>');
 								overviewToAppend[moreParams.voiceResult].push(img);
+							}
+						});
+					}
+					return;
+				case "ov-fk":
+					if (APP.utils.isset(that.myData[section][id].data[voice]) && APP.utils.isset(moreParams) && $.isArray(moreParams.values))
+					{
+						if (!APP.utils.isset(overviewToAppend[moreParams.voiceResult]))
+							overviewToAppend[moreParams.voiceResult] = [];
+						var arr = [];
+						if (!$.isArray(that.myData[section][id].data[voice]))
+							arr[0] = that.myData[section][id].data[voice];
+						else
+							arr = that.myData[section][id].data[voice];
+
+						$.each(arr, function(i, v)
+						{
+							fk = "id";
+							if(APP.utils.isset(moreParams.fk))
+								fk = moreParams.fk;
+							var ii = APP.utils.getIndexFromField(moreParams.values, fk, v);
+							if (ii > -1)
+							{
+								var span = $('<p><b>'+APP.i18n.translate(voice)+'</b>: '+moreParams.values[ii][moreParams.fk_toshow]+'</p>');
+								overviewToAppend[moreParams.voiceResult].push(span);
 							}
 						});
 					}
@@ -1136,6 +1164,12 @@ $.extend(APP.interactiveMap,
 			case "poi":
 				checkVoice('typology_id', 'ov-img', {values: APP.config.localConfig.typology, label: 'name', icon: "icon", voiceResult: "categories"});
 				checkVoice('typologies', 'ov-img', {values: APP.config.localConfig.typology, label: 'name', icon: "icon", voiceResult: "categories"});
+				checkVoice('pt_inter', 'ov-fk',{values: APP.config.localConfig.pt_inter_poi, fk:'code',fk_toshow:'description', voiceResult: "categories"});
+				checkVoice('strut_ric', 'ov-fk',{values: APP.config.localConfig.strut_ric_poi, fk:'code',fk_toshow:'description', voiceResult: "categories"});
+				checkVoice('aree_attr', 'ov-fk',{values: APP.config.localConfig.aree_attr_poi, fk:'code',fk_toshow:'description', voiceResult: "categories"});
+				checkVoice('insediam', 'ov-fk',{values: APP.config.localConfig.insediam_poi, fk:'code',fk_toshow:'description', voiceResult: "categories"});
+				checkVoice('pt_acqua', 'ov-fk',{values: APP.config.localConfig.pt_acqua_poi, fk:'code',fk_toshow:'description', voiceResult: "categories"});
+				checkVoice('pt_socc', 'ov-fk',{values: APP.config.localConfig.pt_socc_poi, fk:'code',fk_toshow:'description', voiceResult: "categories"});
 				checkVoice('coordinates', 'ov-icage',{voiceResult: "features"});
 				checkVoice('quota', 'ov-icage',{voiceResult: "features"});
 				checkVoice('note', 'text');
@@ -1149,6 +1183,8 @@ $.extend(APP.interactiveMap,
 				checkVoice('em_natur', 'text');
 				checkVoice('em_paes', 'text');
 				checkVoice('ev_stcul', 'text');
+				checkVoice('op_attr', 'text');
+				checkVoice('ex_se', 'ov-icage',{voiceResult: "features"});
 				checkVoice('diff', 'ov-icage',{voiceResult: "features"});
 				checkVoice('l', 'ov-icage', {image: that.icons['length'], voiceResult: "features"});
 				checkVoice('diff_q', 'ov-icage', {image: that.icons.altitude_gap, voiceResult: "features"});

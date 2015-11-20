@@ -29,9 +29,39 @@ class Model_Poi extends ORMGIS {
     );
 
     protected $_belongs_to = array(
-      'typology' => array(
-          'model' => 'Typology'
-      ),
+        'typology' => array(
+            'model' => 'Typology'
+        ),
+        'pt_inter_code' => array(
+            'model'   => 'Pt_Inter_Poi',
+            'foreign_key' => 'pt_inter',
+            'far_key' => 'code'
+        ),
+        'strut_ric_code' => array(
+            'model'   => 'Strut_Ric_Poi',
+            'foreign_key' => 'strut_ric',
+            'far_key' => 'code'
+        ),
+        'aree_attr_code' => array(
+            'model'   => 'Aree_Attr_Poi',
+            'foreign_key' => 'aree_attr',
+            'far_key' => 'code'
+        ),
+        'insediam_code' => array(
+            'model'   => 'Insediam_Poi',
+            'foreign_key' => 'insediam',
+            'far_key' => 'code'
+        ),
+        'pt_acqua_code' => array(
+            'model'   => 'Pt_Acqua_Poi',
+            'foreign_key' => 'pt_acqua',
+            'far_key' => 'code'
+        ),
+        'pt_socc_code' => array(
+            'model'   => 'Pt_Socc_Poi',
+            'foreign_key' => 'pt_socc',
+            'far_key' => 'code'
+        ),
     );
     
     public function labels() {

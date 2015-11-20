@@ -27,6 +27,7 @@ class Controller_Ajax_Config extends Controller_Ajax_Auth_Nostrict{
         $this->_set_i18n();
         $this->_set_typologies();
         $this->_set_highliting_typologies();
+        $this->_set_survey_codes_poi();
 //        $this->_set_timezone();
 //        $this->_set_menu();
         $this->_set_url();
@@ -39,6 +40,34 @@ class Controller_Ajax_Config extends Controller_Ajax_Auth_Nostrict{
          * Popolamento oggetto config per risposta
          */
         $this->jres->data->config = $this->config;
+    }
+
+    public function _set_survey_codes_poi()
+    {
+        foreach (array(
+                     'Pt_Inter_Poi',
+                     'Strut_Ric_Poi',
+                     'Aree_Attr_Poi',
+                     'Insediam_Poi',
+                     'Pt_Acqua_Poi',
+                     'Tipo_Segna_Poi',
+                     'Stato_Segn_Poi',
+                     'Fatt_Degr_Poi',
+                     'Pt_Socc_Poi',
+                     'Coin_In_Fi_Poi',
+                     'Prio_Int_Poi',
+                     'Nuov_Segna_Poi',
+
+                 ) as $tb)
+        {
+            $pms = ORM::factory($tb)->find_all();
+            $tb_dcase = strtolower($tb);
+            $this->config->{$tb_dcase} = array();
+            foreach($pms as $pm)
+                $this->config->{$tb_dcase}[] = $pm->as_array();
+        }
+
+
     }
     
     /**

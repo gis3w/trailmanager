@@ -103,6 +103,9 @@ return array(
     
     'print' => 'Stampa',
 	'show' => 'Mostra',
+
+	'ex_se' => 'Ex sentiero',
+	'Op_attr' => 'Opere e attrezzature',
     
     //TRADUZIONI DELLE VALIDAZIONI
     ':field must not be empty' => ':field non deve essere vuoto',
@@ -220,15 +223,21 @@ return array(
     'Heightsprofilepath' => 'Profilo altimetrico',
 
     'Point of interest class' => 'Punti di interesse',
+	'pt_inter' => 'Punti di interesse',
     'Accomodation building class' => 'Strutture ricettive',
+	'strut_ric' => 'Strutture ricettive',
     'Equip area class' => 'Area attrezzate',
+	'aree_attr' => 'Area attrezzate',
     'Village class' => 'Insediamento',
+	'insediam' => 'Insediamento',
     'Water point class' => 'Punti acqua',
+	'pt_acqua' => 'Punti acqua',
     'Priority intervention class' => 'Priorità intervento',
     'Signage type class' => 'Tipo segnaletica',
     'Signage state class' => 'Stato della segnaletica',
     'Degeneration cause class' => 'Fattori di degrado',
     'Rescue point class' => 'Punti soccorso',
+	'pt_socc' => 'Punti soccorso',
     'New signage' => 'Nuova segnaletica',
     'Start-end coincidence class' => 'Coindidenze inizio-fine',
 

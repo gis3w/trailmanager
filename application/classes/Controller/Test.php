@@ -41,7 +41,8 @@ class Controller_Test extends Controller{
         $pt = $geo->pointFromToSRS([(int)$path->coordxini,(int)$path->coordyini],3004,3857);
          */
 
-      var_dump($_SERVER);
+      $p = ORMGIS::factory('Poi',510);
+        var_dump($p->pt_inter_code->description);
         exit;
 
 
