@@ -31,6 +31,11 @@ class Model_Highliting extends ORMGIS {
         'typology' => array(
             'model'   => 'Typology',
         ),
+        // only for POI
+        'highliting_path' => array(
+            'model'   => 'Path',
+            'foreign_key' => 'highliting_path_id',
+        )
     );
 
     
