@@ -36,6 +36,8 @@ $.extend(APP.adminMap,
 			'resource': "path",
 			'idAttribute': "id",
 			'titleAttribute': "title",
+			'bLabel': true,
+			'bClick': true,
 			'layers': [],
 			'showDefault': true,
 		},
@@ -43,6 +45,8 @@ $.extend(APP.adminMap,
 			'resource': "path_segment",
 			'idAttribute': "id",
 			'titleAttribute': "id",
+			'bLabel': true,
+			'bClick': true,
 			'layers': [],
 			'showDefault': false,
 		}
@@ -232,7 +236,12 @@ $.extend(APP.adminMap,
 							"type": "Feature",
 						    "geometry": vv.the_geom,
 						}, vv);
-						gjl.bindLabel(""+vv[v.titleAttribute]);
+						if (v.bClick)
+							gjl.on('click',function(){
+								that.navigateToItem(v.resource, vv[v.idAttribute]);
+							});
+						if (v.bLabel)
+							gjl.bindLabel(""+vv[v.titleAttribute]);
 						v.layers.push(gjl);
 						v.layerGroup.addLayer(gjl);
 					});
@@ -370,9 +379,7 @@ $.extend(APP.adminMap,
 			//domPopup.find(".media-object").attr('src');
 			domPopup.find(".media-heading").text(model.get(targetInfo.titleAttribute));
 			domPopup.find(".popupDetailsBtn").click(function(){
-				APP.config.bBack = true;
-				APP.config.backUrl = that.thisSection;
-				APP.config.workSpace.navigate(targetInfo.resource+"/"+id, {trigger: true, replace: true});
+				that.navigateToItem(targetInfo.resource, id);
 				/*
 				that.openEditModal(id, model.get('layer'), function(){
 			    	that.start();
@@ -383,6 +390,13 @@ $.extend(APP.adminMap,
 		}
 		
 		model.get('popup').openOn(that.map);
+	},
+	
+	navigateToItem: function(resource, id)
+	{
+		APP.config.bBack = true;
+		APP.config.backUrl = this.thisSection;
+		APP.config.workSpace.navigate(resource+"/"+id, {trigger: true, replace: true});
 	},
 	/*
 	openEditModal: function(id, layer, onSave, onCancel)
