@@ -1556,19 +1556,25 @@ $.extend(APP.utils,{
 					var iinnddeexx = APP.utils.getIndexFromField(sectionTarget.columns, "name", v.slave_of);
 					if (iinnddeexx > -1 && sectionTarget.columns[iinnddeexx].form_input_type == "mapbox")
 					{
-						if (identifier) 
+						if (obj[v.slave_of])
 						{
-							parVal = (obj[v.slave_of] && $.isArray(obj[v.slave_of].coordinates))? {
-								lon: obj[v.slave_of].coordinates[0],
-								lat: obj[v.slave_of].coordinates[1]
-							} : "";
-						}
-						else
-						{
-							parVal = (obj[v.slave_of] && $.isArray(obj[v.slave_of].geometry.coordinates))? {
-								lon: obj[v.slave_of].geometry.coordinates[0],
-								lat: obj[v.slave_of].geometry.coordinates[1]
-							} : "";
+							if ($.isArray(obj[v.slave_of].coordinates))
+							{
+								parVal = {
+									lon: obj[v.slave_of].coordinates[0],
+									lat: obj[v.slave_of].coordinates[1]
+								};
+							}
+							else
+							{
+								if ($.isArray(obj[v.slave_of].geometry.coordinates))
+								{
+									parVal = {
+										lon: obj[v.slave_of].geometry.coordinates[0],
+										lat: obj[v.slave_of].geometry.coordinates[1]
+									};
+								}
+							}
 						}
 					}
 					else
@@ -1700,6 +1706,51 @@ $.extend(APP.utils,{
 							actionUrl: "application/Email.php?action=send", // quando premo su Invia
 							addressesUrl: "application/Uffici.php",
 							valuesUrl: "application/Reclami.php?action=emailvalues&id="+identifier,
+						});
+						break;
+					case "request":
+						btn.click(function()
+						{
+							var urlV = v.url_values;
+							if (that.isset(v.url_values_params))
+							{
+								$.each(v.url_values_params, function(j,k){
+									urlV = that.replaceAll(j, form.find("#APP-"+k).val(), urlV);
+								});
+							}
+							$.ajax({
+								type: 'GET',
+								url: urlV,
+								dataType: 'json',
+								success: function(result)
+								{
+									switch(v.url_values)
+									{
+										case "/jx/admin/highliting2poi/$1":
+											if (!result || !result.data || !result.data.items){
+												break;
+											}
+											
+											var oldDiv = APP.anagrafica.windows[APP.anagrafica.windows.length-1];
+											APP.anagrafica.createWindow();
+											var section = "poi";
+											APP.anagrafica.sections[section] = APP.utils.setBaseStructure(section, section);
+											APP.anagrafica.getStructure(APP.config.localConfig.urls['dStruct']+"?tb="+section, section, "", false, function(){
+												APP.anagrafica.currentSection = section;
+												APP.anagrafica.addItem(result.data.items, APP.anagrafica.windows[APP.anagrafica.windows.length-1],oldDiv,section);
+											});
+											
+											break;
+										default:
+											break;
+									}
+									
+								},
+								error: function(result)
+								{
+									that.showErrMsg(result); 
+								}
+							});
 						});
 						break;
 					default:

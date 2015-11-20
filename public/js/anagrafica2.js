@@ -934,6 +934,38 @@ $.extend(APP.anagrafica,
 			arr.push({
 				htmlString: '<a id="button_cancel" data-toggle="tooltip" data-placement="bottom" title="'+APP.i18n.translate("cancel")+'" class="btn btn-default btn-lg tooltipElement" href="#"><i class="icon-arrow-left"></i></a>',
 				onClick: function(){ 
+					APP.config.queue.pop();
+					if (APP.config.backUrl)
+					{
+						APP.config.workSpace.navigate(APP.config.backUrl, {trigger: true, replace: true});
+						APP.config.backUrl = null;
+						return false;
+					}
+					APP.config.bBack = true;
+					if (APP.config.bDirectUrl && APP.config.queue.length>0)
+					{
+						var ssss = APP.config.queue[APP.config.queue.length-1];
+						var ios = ssss.indexOf("path_segment");
+						
+						if (ios > -1)
+						{
+							var psa = ssss.split("/");
+							ssss = "pathsegment";
+							
+							if (psa.length==2)
+								ssss =  "pathsegment"+"/"+psa[1];
+						}
+						APP.config.queue.pop();
+						APP.config.workSpace.navigate(ssss, {trigger: true, replace: true});
+					}
+					else
+					{
+						that.tmpSelectedItem = that.selectedItem;
+						that.destroyWindow();
+						that.selectedItem = APP.config.bc_getLastSrcElement();
+						APP.config.currentUrl = APP.config.prevUrl;
+					}
+					/*
 					that.tmpSelectedItem = that.selectedItem;
 					that.destroyWindow();
 					that.selectedItem = APP.config.bc_getLastSrcElement();
@@ -943,6 +975,7 @@ $.extend(APP.anagrafica,
 						APP.config.bMustNullBackUrl = true;
 						APP.config.workSpace.navigate(APP.config.backUrl, {trigger: true, replace: true});
 					}
+					*/
 				}
 			});
 			
@@ -1334,7 +1367,7 @@ $.extend(APP.anagrafica,
 					if (APP.utils.isset(that.sections[section].columns[index].overlays_parmas))
 					{
 						$.each(that.sections[section].columns[index].overlays_parmas, function(i,v){
-							if (APP.utils.isset(dataObject[v]))
+							if (!$.isEmptyObject(dataObject) && APP.utils.isset(dataObject[v]))
 								oUrl = APP.utils.replaceAll(i, dataObject[v], oUrl);
 							else
 								bError = true;
