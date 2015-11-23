@@ -5,6 +5,7 @@ $.extend(APP.interactiveMap,
 	bQrCode: false,
 	bEverytypeGeometries: true,
 	arrEverytypeGeometries: ["poi","path","area"],
+	bDefaultOverviewImage: false,
 	frontPrefix: "front_",
 	previousSection: null,
 	currentSection: null,
@@ -94,7 +95,22 @@ $.extend(APP.interactiveMap,
 		if (that.myData[section][id].media && that.myData[section][id].media.images && $.isArray(that.myData[section][id].media.images) && that.myData[section][id].media.images.length > 0)
 			return (thumbnail)? that.myData[section][id].media.images[0].image_thumb_url : that.myData[section][id].media.images[0].image_url;
 		else
+		{
+			if (that.bDefaultOverviewImage)
+			{
+				return (thumbnail && APP.config.localConfig.default_overview_thumbnail)? APP.config.localConfig.default_overview_thumbnail : APP.config.localConfig.default_overview_image;
+			}
+			else
+				return undefined;
+		}
+		
+		/*
+		var that = this;
+		if (that.myData[section][id].media && that.myData[section][id].media.images && $.isArray(that.myData[section][id].media.images) && that.myData[section][id].media.images.length > 0)
+			return (thumbnail)? that.myData[section][id].media.images[0].image_thumb_url : that.myData[section][id].media.images[0].image_url;
+		else
 			return (thumbnail && APP.config.localConfig.default_overview_thumbnail)? APP.config.localConfig.default_overview_thumbnail : APP.config.localConfig.default_overview_image;
+		*/
 	},
 	
 	getTypology: function(typologyId)
@@ -501,20 +517,26 @@ $.extend(APP.interactiveMap,
 		if (section == "poi")
 			po.offset = L.point(0, -25);
 		
-		var media = '<div class="media">\
-						<a class="pull-left" href="#">\
-							<img class="media-object thumbnail" style="width: 75px" src="'+that.getOverviewImage(section, id, true)+'" alt="">\
-						</a>\
-						<div class="media-body">\
-							<h4 class="media-heading hidden-xs hidden-sm">'+that.getObjectTitle(section, id)+'</h4>\
-							<h5 class="media-heading hidden-md hidden-lg">'+that.getObjectTitle(section, id)+'</h5>\
-							<div>\
-								<button type="button" class="btn btn-default btn-sm popupDetailsBtn" style="margin-top: 10px"><i class="icon icon-search"></i> '+APP.i18n.translate('View data sheet')+'</button>\
+		var media = $(	'<div class="media">\
+							<div class="media-body">\
+								<h4 class="media-heading hidden-xs hidden-sm">'+that.getObjectTitle(section, id)+'</h4>\
+								<h5 class="media-heading hidden-md hidden-lg">'+that.getObjectTitle(section, id)+'</h5>\
+								<div>\
+									<button type="button" class="btn btn-default btn-sm popupDetailsBtn" style="margin-top: 10px"><i class="icon icon-search"></i> '+APP.i18n.translate('View data sheet')+'</button>\
+								</div>\
 							</div>\
-						</div>\
-					</div>';
+						</div>');
+		
+		var src = that.getOverviewImage(section, id, true);
+		if (src)
+		{
+			var anc = $('<a class="pull-left" href="#">\
+							<img class="media-object thumbnail" style="width: 75px" src="'+src+'" alt="">\
+						</a>');
+			media.prepend(anc);
+		}
 					
-		element.bindPopup(media, po);
+		element.bindPopup(media.html(), po);
 		
 		element.off('popupopen').on('popupopen', function(a){
 			var myBtn = $(a.popup._container).find(".popupDetailsBtn");
@@ -818,15 +840,21 @@ $.extend(APP.interactiveMap,
 				
 		if (!APP.utils.isset(that.myData[section][id].media) || !APP.utils.isset(that.myData[section][id].media.images) || !$.isArray(that.myData[section][id].media.images) || that.myData[section][id].media.images.length === 0)
 		{
-			var img = $('<img alt="" class="img-responsive centerImage" style="width: 100%; height:100%;">');
-			img.attr('src', APP.config.localConfig.default_overview_image);			
-			myModal.find(".overviewImage").append(img);			
-			/*var thumbnail = $('<div class="col-xs-4 col-md-2">\
-								<a href="#" class="thumbnail">\
-								  <img src="'+APP.config.localConfig.default_overview_image+'" alt="">\
-								</a>\
-							  </div>');
-			myModal.find(".thumbnailsRow").append(thumbnail)*/
+			if (!that.bDefaultOverviewImage)
+			{
+				myModal.find(".overviewImage").hide();
+			}
+			else
+			{
+				var img = $('<img alt="" class="img-responsive centerImage" style="width: 100%; height:100%;">');
+				img.attr('src', APP.config.localConfig.default_overview_image);
+				/*var thumbnail = $('<div class="col-xs-4 col-md-2">\
+									<a href="#" class="thumbnail">\
+									  <img src="'+APP.config.localConfig.default_overview_image+'" alt="">\
+									</a>\
+								  </div>');
+				myModal.find(".thumbnailsRow").append(thumbnail)*/
+			}
 		}
 		else
 		{
