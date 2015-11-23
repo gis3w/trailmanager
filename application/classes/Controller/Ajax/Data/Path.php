@@ -12,7 +12,7 @@ class Controller_Ajax_Data_Path extends Controller_Ajax_Data_Base{
         $toRes = $this->_get_base_data_from_orm($orm);
 
         // custome title for client
-        $toRes['title'] = $toRes['nome'];
+        $toRes['title'] = __('Path').' '.$toRes['nome'];
         
         $toRes['diff_q'] = $toRes['diff_q'].' m';
         $toRes['l'] = $toRes['l'].' m';
