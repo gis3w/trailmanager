@@ -13,7 +13,7 @@
                 </header>
                 <footer>
                     <div class="footer1">
-                        Unione Montana Alta Valle del Metauro - Via A. Manzoni, 25 - 61049 Urbania PU) - email: cm.urbania@provincia.ps.it - PEC: cm.altoemediometauro@emarche.it
+                        Unione Montana Alta Valle del Metauro - Via A. Manzoni, 25 - 61049 Urbania PU) - email: cm.urbania@provincia.ps.it - Centralino: 0722 3133002
                     </div>
                 </footer>
         </placeholders>

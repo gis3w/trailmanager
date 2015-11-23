@@ -6,7 +6,7 @@ class Controller_Print_Path_Sheet extends Controller_Print_Base_Auth_Nostrict
 {
 
     protected $_xmlContentView = 'print/path/sheet';
-    public $filename = "Path_";
+    public $filename = "Path";
     public $path;
 
 
@@ -16,6 +16,8 @@ class Controller_Print_Path_Sheet extends Controller_Print_Base_Auth_Nostrict
         // get the map extent for path
         $this->path = ORMGIS::factory('Path',$this->request->param('id'));
         View::set_global('sheetTitle',__('Path').' '.$this->path->nome);
+
+        $this->filename = __($this->filename)."_";
 
         $newExtent = $this->_calculateExtentWithBuffer($this->path,0.1,3857);
 

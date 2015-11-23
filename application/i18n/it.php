@@ -197,6 +197,7 @@ return array(
     
     'Points of interest' => 'Punti di interesse',
 	'Pois' => 'Punti di interesse',
+	'Poi' => 'Punto di interesse',
     'Paths' => 'Sentieri',
     'Highlitings' => 'Segnalazioni',
     'Trail elements' => 'Sentieri',
@@ -273,7 +274,7 @@ return array(
     'Characteristics' => 'Caratteristiche',
     'Creation date' => 'Data di creazione',
     'Last update' => 'Ultimo aggiornamento',
-    'Path' => 'Sentiero di riferimento',
+    'Path' => 'Sentiero',
     'Highliting state to' => 'Stato corrente',
     'Highliting path' => 'Lineari',
     'Highliting paths' => 'Segnalazioni/manutenzioni lineari',

@@ -4,7 +4,7 @@ class Controller_Print_Poi_Sheet extends Controller_Print_Base_Auth_Nostrict
 {
 
     protected $_xmlContentView = 'print/poi/sheet';
-    public $filename = "Poi_";
+    public $filename = "Poi";
 
 
     public function action_index()
@@ -13,6 +13,7 @@ class Controller_Print_Poi_Sheet extends Controller_Print_Base_Auth_Nostrict
         // get the map extent for path
         $poi = ORMGIS::factory('Poi',$this->request->param('id'));
         View::set_global('sheetTitle',$poi->idwp);
+        $this->filename = Inflector::underscore(__($this->filename)).'_';
         $this->_xmlContentView->lat = $poi->lat;
         $this->_xmlContentView->lon = $poi->lon;
         $poi->getLonLat(3857);
