@@ -82,7 +82,7 @@ $.extend(APP.fileuploader,{
 	onFileAdd: function(form, inputName, data)
 	{
 		var that = this;
-		var table = form.find("#APP-"+inputName).parents(".controls:first").find(".fileToUploadTable");
+		var table = form.find("#APP-"+inputName).parents(".form-group:first").find(".fileToUploadTable");
 		
 		if (!data.hasOwnProperty(inputName))
 			data[inputName] = data.name;
@@ -103,8 +103,8 @@ $.extend(APP.fileuploader,{
 		
 		if (!that.fileRows[inputName].bMultiple)
 		{
-			form.find("#APP-"+inputName).parents(".controls:first").find(".fileinput-button").addClass("disabled");
-			form.find("#APP-"+inputName).parents(".controls:first").find(".fileinput-button").find("input").attr("disabled", true);
+			form.find("#APP-"+inputName).parents(".form-group:first").find(".fileinput-button").addClass("disabled");
+			form.find("#APP-"+inputName).parents(".form-group:first").find(".fileinput-button").find("input").attr("disabled", true);
 		}
 		
 		table.find(".tooltipElement").tooltip();
