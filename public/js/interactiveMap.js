@@ -478,7 +478,7 @@ $.extend(APP.interactiveMap,
 				that.body.find("#modal-"+section).modal('hide');
 			}
 			
-			that.showItems(that.currentSection, ['poi', 'path', 'area']);
+			//that.showItems(that.currentSection, ['poi', 'path', 'area']);
 		});
 		
 		APP.utils.showNoty({content: '<p>'+APP.i18n.translate("You are currently viewing the elements of the following itinerary")+': <strong class="text-danger">'+that.getObjectTitle(section, id)+'</strong>.<br>'+APP.i18n.translate('To view all the elements again, exit from itinerary')+'.</p>', title: APP.i18n.translate("Information"), type: "alert", timeout: 6000});
@@ -1370,16 +1370,24 @@ $.extend(APP.interactiveMap,
 			case "itinerary":
 				var listGroup = $('<div class="list-group list-group-wo-radius" style="margin: 0px -23px 0px -23.5px; padding: -10px"></div>');
 				
+				if (!APP.utils.isset(that.myData[section]))
+					break;
+				
 				$.each(that.myData[section], function(i,v)
-				{					
+				{	
 					var media = $(	'<div class="media">\
-									  <a class="pull-left" href="#">\
-										<img class="media-object img-rounded" src="'+that.getOverviewImage(section, v.data.id, true)+'" alt="'+APP.i18n.translate('no_image')+'" style="max-width: 60px; max-height: 60px">\
-									  </a>\
-									  <div class="media-body">\
-										<h4 class="media-heading">'+this.data.name+'</h4>\
-									  </div>\
+										<div class="media-body">\
+											<h4 class="media-heading">'+this.data.name+'</h4>\
+										</div>\
 									</div>');
+					
+					var src = that.getOverviewImage(section, v.data.id, true);
+					if (src)
+					{
+						media.prepend(	'<a class="pull-left" href="#">\
+											<img class="media-object img-rounded" src="'+src+'" alt="'+APP.i18n.translate('no_image')+'" style="max-width: 60px; max-height: 60px">\
+										</a>');
+					}
 					
 					var a = $('<a id="item_'+section+'_'+v.data.id+'" href="#" class="list-group-item '+((that.currentItinerary === v.data.id)? "active" : "")+'"></a>');
 					a.data(v).append(media);
@@ -1390,7 +1398,7 @@ $.extend(APP.interactiveMap,
 						that.mySidebar.control.hide();
 						that.onItineraryClick({element: $(this), section: section, id: $(this).data().data.id});
 					});
-					that.insertRowAlphabetically(listGroup, a, ".media-heading")
+					that.insertRowAlphabetically(listGroup, a, ".media-heading");
 				});
 				that.mySidebar.div.html(listGroup);
 				break;
