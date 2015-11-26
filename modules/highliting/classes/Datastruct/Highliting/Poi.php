@@ -23,7 +23,8 @@ class Datastruct_Highliting_Poi extends Datastruct {
                 'highliting_state_id',
                 'supervisor_user_id',
                 'executor_user_id',
-                'from_highliting_to_poi'
+                'from_highliting_to_poi',
+                'pdf_print_sheet'
             ),
              'class' => 'well',
         ),
@@ -300,6 +301,25 @@ class Datastruct_Highliting_Poi extends Datastruct {
                 "table_show" => FALSE,
                 'label' => __('Note'),
              )
+        );
+
+        $fct['pdf_print_sheet']  = array_replace($this->_columnStruct,array(
+                'form_input_type' => self::BUTTON,
+                'input_class' => 'default',
+                'data_type' => 'pdf_print',
+                'url_values' => '/print/highlitingpoi/sheet/$1',
+                'url_values_params' => array(
+                    '$1' => 'id',
+                ),
+                'description' => __('Print highliting poi sheet'),
+                'table_show' => FALSE,
+                'label' => __(''),
+                'icon' => 'print',
+                'form_show' => array(
+                    self::STATE_INSERT => FALSE,
+                    self::STATE_UPDATE =>TRUE
+                ),
+            )
         );
 
         $fct['from_highliting_to_poi']  = array_replace($this->_columnStruct,array(

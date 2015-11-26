@@ -29,6 +29,61 @@ OUTPUTFORMAT
  END
 
 LAYER
+    NAME 'HIGHLITING_POIS'
+    TYPE POINT
+    STATUS OFF
+    CONNECTIONTYPE POSTGIS
+    PROJECTION
+        "init=epsg:4326"
+    END
+    CLASS
+        Name 'HighlitingPois'
+        STYLE
+            SYMBOL 'circle'
+            size 30
+            color 0 0 255
+        END
+    END
+END
+
+
+LAYER
+    NAME 'HIGHLITING_PATHS'
+    TYPE LINE
+    #OPACITY 50
+    STATUS OFF
+    CONNECTIONTYPE POSTGIS
+    PROJECTION
+        "init=epsg:4326"
+    END
+    LABELITEM 'subject'
+    CLASS
+
+        Name 'Paths'
+        STYLE
+            COLOR '#0000FF'
+            WIDTH 6
+        END
+        LABEL
+          COLOR   250 0 0
+          #OUTLINECOLOR 255 255 255
+          STYLE
+            GEOMTRANSFORM 'labelpoly'
+            COLOR 255 255 255
+          END
+          ANGLE 0
+          SIZE 10
+          POSITION AUTO
+          PARTIALS FALSE
+          TYPE TRUETYPE
+          FONT 'FreeSans'
+          REPEATDISTANCE 200
+        END
+    END
+END
+
+
+LAYER
     NAME 'POIS'
     TYPE POINT
     STATUS OFF
@@ -83,6 +138,8 @@ LAYER
 END
 
 
+
+
 LAYER
     NAME 'AREAS'
     TYPE POLYGON
@@ -106,6 +163,15 @@ UNITS meters
 
 PROJECTION
   "init=epsg:3857"
+END
+
+SYMBOL
+    NAME 'circle'
+    TYPE ellipse
+    POINTS
+        1 1
+    END
+    FILLED TRUE
 END
 
 

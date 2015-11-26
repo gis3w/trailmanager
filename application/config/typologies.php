@@ -12,7 +12,7 @@ return array(
         'pt_acqua' => 8,
         'pt_socc' => 12,
         'tipo_segna' => 6,
-        'stato_segna' => 15,
+        'stato_segn' => 15,
         'fatt_degr' => 14,
         'nuov_segna' => 16
     ],

@@ -322,7 +322,7 @@ class Datastruct_Path extends Datastruct {
                     'table_show' => FALSE,
                 ),
                 "l" => array(
-                    'suffix' => 'km',
+                    'suffix' => 'm',
                     'label' => __('Length'),
                     'table_show' => FALSE,
                 ),

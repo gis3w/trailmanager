@@ -16,7 +16,7 @@ class Datastruct_Highliting_Path extends Datastruct {
          array(
             'name' => 'highliting-path-abstract',
             'position' => 'left',
-            'fields' => array('reporter','supervisor','executor','current_highliting_sate','highliting_state_id','supervisor_user_id','executor_user_id'),
+            'fields' => array('reporter','supervisor','executor','current_highliting_sate','highliting_state_id','supervisor_user_id','executor_user_id','pdf_print_sheet'),
              'class' => 'well',
         ),
         array(
@@ -201,6 +201,25 @@ class Datastruct_Highliting_Path extends Datastruct {
                 'validation_url' => 'jx/admin/imagehighlitingpath',
                 'label' => __('Images to upload'),
              )
+        );
+
+        $fct['pdf_print_sheet']  = array_replace($this->_columnStruct,array(
+                'form_input_type' => self::BUTTON,
+                'input_class' => 'default',
+                'data_type' => 'pdf_print',
+                'url_values' => '/print/highlitingpath/sheet/$1',
+                'url_values_params' => array(
+                    '$1' => 'id',
+                ),
+                'description' => __('Print highliting path sheet'),
+                'table_show' => FALSE,
+                'label' => __(''),
+                'icon' => 'print',
+                'form_show' => array(
+                    self::STATE_INSERT => FALSE,
+                    self::STATE_UPDATE =>TRUE
+                ),
+            )
         );
          
          // we add a note filed for insert only

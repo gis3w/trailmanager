@@ -148,11 +148,19 @@ abstract class Controller_Print_Base extends Controller_Base_Main {
 
         foreach($images as $image)
         {
-            $imgObj = Image::factory(APPPATH.'../'.$this->_img_base_dir.'/'.$image->file);
-            $imgObj->resize('210',NULL);
-            $newImgFileName = APPPATH.'../public/imgtmp/'.$this->filename.$image->file;
-            $imgObj->save($newImgFileName);
-            $this->_img_resized[$image->file] = $newImgFileName;
+
+            try
+            {
+                $imgObj = Image::factory(APPPATH.'../'.$this->_img_base_dir.'/'.$image->file);
+                $imgObj->resize('210',NULL);
+                $newImgFileName = APPPATH.'../public/imgtmp/'.$this->filename.$image->file;
+                $imgObj->save($newImgFileName);
+                $this->_img_resized[$image->file] = $newImgFileName;
+            }
+            catch (Kohana_Exception $e)
+            {
+                continue;
+            }
 
         }
 

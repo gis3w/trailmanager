@@ -34,6 +34,10 @@ class Kohana_Mapserver {
     protected $_extent;
     protected $_center;
 
+    protected $_db_table_poi = 'pois';
+    protected $_db_table_path = 'paths';
+    protected $_db_table_area = 'areas';
+
     private $_dbConnection;
 
     public function __construct($mapfile = NULL,$mappath = NULL,$tmp_dir = NULL,$image_base_url = NULL,$scale = NULL, $center = NULL, $extent = NULL, $baseLayerId = NULL )
@@ -67,7 +71,7 @@ class Kohana_Mapserver {
 
     }
 
-    public function makeMap($poi_id = NULL, $path_id = NULL, $area_id = NULL,$base_layer_id = NULL,$width=NULL, $height=NULL)
+    public function makeMap($poi_id = NULL, $path_id = NULL, $area_id = NULL,$base_layer_id = NULL,$width=NULL, $height=NULL, $generateImage = TRUE)
     {
         $this->_makePoisSymbols();
 
@@ -82,7 +86,7 @@ class Kohana_Mapserver {
         }
         else
         {
-            $this->_orderLayers[] = $this->_areasLayerObj->index;
+            $this->_reorderLayers($this->_areasLayerObj->index);
         }
 
         if(isset($path_id))
@@ -91,7 +95,7 @@ class Kohana_Mapserver {
         }
         else
         {
-            $this->_orderLayers[] = $this->_pathsLayerObj->index;
+            $this->_reorderLayers($this->_pathsLayerObj->index);
         }
 
         if(isset($poi_id))
@@ -100,7 +104,7 @@ class Kohana_Mapserver {
         }
         else
         {
-            $this->_orderLayers[] = $this->_poisLayerObj->index;
+            $this->_reorderLayers($this->_poisLayerObj->index);
         }
 
 
@@ -108,8 +112,12 @@ class Kohana_Mapserver {
 
 
         $this->_setOrderLayers();
-        $this->_setScalebar();
-        $this->generateImg();
+        if($generateImage)
+        {
+            $this->_setScalebar();
+            $this->generateImg();
+        }
+
     }
 
     public function __set($name,$value)
@@ -212,10 +220,8 @@ class Kohana_Mapserver {
 
     protected function _setOrderLayers()
     {
-
-        //$this->_orderLayers = array_reverse($this->_orderLayers);
         $this->_mapObj->setLayersDrawingOrder($this->_orderLayers);
-
+        $test = 'pippo';
     }
 
     public function generateImg()
@@ -230,6 +236,15 @@ class Kohana_Mapserver {
     {
         $connection = 'host='.$this->_dbConnection['host'].' port='.$this->_dbConnection['port'].' dbname='.$this->_dbConnection['dbname'].' user='.$this->_dbConnection['username'].' password='.$this->_dbConnection['password'];
         $layerObj->set('connection',$connection);
+    }
+
+    protected function _reorderLayers($idx)
+    {
+        if(!isset($this->_orderLayers) OR !count($this->_orderLayers))
+            $this->_orderLayers = $this->_mapObj->getLayersDrawingOrder();
+        $oldKey = array_search($idx,$this->_orderLayers);
+        unset($this->_orderLayers[$oldKey]);
+        $this->_orderLayers[] = $idx;
     }
 
     public function addBaseLayer($status,$base_layer_id = NULL)
@@ -267,7 +282,7 @@ class Kohana_Mapserver {
         $this->_mapObj->moveLayerUp($this->_baseLayerObj->index);
         $this->_mapObj->moveLayerUp($this->_baseLayerObj->index);
 
-        $this->_orderLayers[] = $this->_baseLayerObj->index;
+        $this->_reorderLayers($this->_baseLayerObj->index);
     }
 
 
@@ -280,17 +295,17 @@ class Kohana_Mapserver {
         {
             if(is_array($path_id))
             {
-                $this->_pathsLayerObj->set("data", "the_geom from (select * from paths where publish is TRUE and id IN (".implode(',',$path_id).")) as p using unique id");
+                $this->_pathsLayerObj->set("data", "the_geom from (select * from ".$this->_db_table_path." where publish is TRUE and id IN (".implode(',',$path_id).")) as p using unique id");
             }
             else
             {
                 if($path_id == self::EVERY_FEATURE)
                 {
-                    $this->_pathsLayerObj->set("data","the_geom from (select * from paths where publish is TRUE) as p using unique id");
+                    $this->_pathsLayerObj->set("data","the_geom from (select * from ".$this->_db_table_path." where publish is TRUE) as p using unique id");
                 }
                 else
                 {
-                    $this->_pathsLayerObj->set("data","the_geom from (select * from paths where publish is TRUE and id = ".$path_id.") as p using unique id");
+                    $this->_pathsLayerObj->set("data","the_geom from (select * from ".$this->_db_table_path." where publish is TRUE and id = ".$path_id.") as p using unique id");
                 }
 
             }
@@ -301,7 +316,7 @@ class Kohana_Mapserver {
 
 
         $this->_pathsLayerObj->set('status',$status);
-        $this->_orderLayers[] = $this->_pathsLayerObj->index;
+        $this->_reorderLayers($this->_pathsLayerObj->index);
 
     }
 
@@ -314,11 +329,11 @@ class Kohana_Mapserver {
         {
             if(is_array($poi_id))
             {
-                $this->_poisLayerObj->set("data", "the_geom from (select * from pois where publish is TRUE and id IN (".implode(',',$poi_id).")) as p using unique id");
+                $this->_poisLayerObj->set("data", "the_geom from (select * from ".$this->_db_table_poi." where publish is TRUE and id IN (".implode(',',$poi_id).")) as p using unique id");
             }
             else
             {
-                $this->_poisLayerObj->set("data","the_geom from (select * from pois where publish is TRUE and id = ".$poi_id.") as p using unique id");
+                $this->_poisLayerObj->set("data","the_geom from (select * from ".$this->_db_table_poi." where publish is TRUE and id = ".$poi_id.") as p using unique id");
             }
 
         }
@@ -326,7 +341,7 @@ class Kohana_Mapserver {
         $class = $this->_poisLayerObj->getClass(0);
         $style = $class->getStyle(0);
         $style->set('offsety',-$this->_markerHeight/2);
-        $this->_orderLayers[] = $this->_poisLayerObj->index;
+        $this->_reorderLayers($this->_poisLayerObj->index);
     }
 
     public function addAreas($status, $area_id = NULL)
@@ -338,16 +353,16 @@ class Kohana_Mapserver {
         {
             if(is_array($area_id))
             {
-                $this->_areasLayerObj->set("data", "the_geom from (select * from areas where publish is TRUE and id IN (".implode(',',$area_id).")) as p using unique id");
+                $this->_areasLayerObj->set("data", "the_geom from (select * from ".$this->_db_table_area." where publish is TRUE and id IN (".implode(',',$area_id).")) as p using unique id");
             }
             else
             {
-                $this->_areasLayerObj->set("data","the_geom from (select * from areas where publish is TRUE and id = ".$area_id.") as p using unique id");
+                $this->_areasLayerObj->set("data","the_geom from (select * from ".$this->_db_table_area." where publish is TRUE and id = ".$area_id.") as p using unique id");
             }
 
         }
         $this->_areasLayerObj->set('status',$status);
-        $this->_orderLayers[] = $this->_areasLayerObj->index;
+        $this->_reorderLayers($this->_areasLayerObj->index);
     }
 
     public function setScaleCenter($scale,array $center)

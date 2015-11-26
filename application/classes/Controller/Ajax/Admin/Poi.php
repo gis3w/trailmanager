@@ -73,7 +73,7 @@ class Controller_Ajax_Admin_Poi extends Controller_Ajax_Admin_Sheet_Base{
                 $this->_orm->typology_id = $TYPOLOGY_MAP['nuov_segna'];
                 $typology_ids = $this->_get_other_typologies_by_fields('nuov_segna');
             }
-            elseif(isset($this->_orm->stato_segn) AND $this->_orm->stato_segna != '')
+            elseif(isset($this->_orm->stato_segn) AND $this->_orm->stato_segn != '')
             {
                 $this->_orm->typology_id = $TYPOLOGY_MAP['stato_segn'];
                 $typology_ids = $this->_get_other_typologies_by_fields('stato_segn');

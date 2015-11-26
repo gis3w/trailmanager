@@ -110,7 +110,10 @@ class Model_Poi extends ORMGIS {
     {
         return array(
             'idwp' => array(
+
                 array('not_empty'),
+                #array(array($this,'unique_for_se')),
+
             ),
             'se' => array(
                 array('not_empty'),
@@ -127,10 +130,42 @@ class Model_Poi extends ORMGIS {
         );
     }
 
+    public function insert_rules()
+    {
+        return array(
+            'idwp' => array(
+                array(array($this,'unique_for_se')),
+            ),
+        );
+    }
+
+
+    public function filters()
+    {
+        return array(
+
+            'coord_x' => array(
+                array('Filter::comma2point')
+            ),
+            'coord_y' => array(
+                array('Filter::comma2point')
+            ),
+
+
+
+
+        );
+    }
+
     public function get($column) {
 
         switch($column)
         {
+
+            case "coord_x":
+            case "coord_y":
+                $value = Filter::point2comma((string)parent::get($column));
+                break;
 
             case "paths":
                 $value = ORMGIS::factory('Path')->where('se','=',$this->se);
@@ -142,6 +177,17 @@ class Model_Poi extends ORMGIS {
         }
         return $value;
 
+    }
+
+    public function unique_for_se($value)
+    {
+        $oldIdwp = (bool) count(DB::select()
+            ->from($this->table_name())
+            ->where('idwp','=',$value)
+            ->where('se','=',$_POST['se'])
+            ->execute());
+
+        return !$oldIdwp;
     }
 
 }

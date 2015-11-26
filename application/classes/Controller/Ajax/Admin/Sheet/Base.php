@@ -186,10 +186,15 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
             
             // si aggiungono le validazioni dell'orm
             foreach ($this->_orm->rules() as $col => $rule)
-                $this->_vorm->rules($col, $rule);      
-    
-            
-            // si aggiungono anche le labels
+                $this->_vorm->rules($col, $rule);
+
+            if ($this->_status == self::INSERT and method_exists($this->_orm, 'insert_rules'))
+                foreach ($this->_orm->insert_rules() as $col => $rule)
+                    $this->_vorm->rules($col, $rule);
+
+
+
+        // si aggiungono anche le labels
            $this->_vorm->labels($this->_orm->labels());
 
             if(isset($this->_url_multifiled_value))

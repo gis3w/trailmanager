@@ -74,9 +74,7 @@ class Model_Path extends ORMGIS {
             'se' => array(
                 array('not_empty'),
             ),
-            'l' => array(
-                    array('numeric')
-            ),
+
             'diff_q' => array(
                     array('numeric')
             ),
@@ -94,12 +92,22 @@ class Model_Path extends ORMGIS {
     {
         return array(
           
-            'length' => array(
+            'l' => array(
                     array('Filter::comma2point')
             ),
-            'altitude_gap' => array(
-                    array('Filter::comma2point')
+            'coordxini' => array(
+                array('Filter::comma2point')
             ),
+            'coordyini' => array(
+                array('Filter::comma2point')
+            ),
+            'coordxen' => array(
+                array('Filter::comma2point')
+            ),
+            'coordyen' => array(
+                array('Filter::comma2point')
+            ),
+
             
             
         );
@@ -110,7 +118,10 @@ class Model_Path extends ORMGIS {
         switch($column)
         {
             case "l":
-            case "dff_q":
+            case "coordxini":
+            case "coordyini":
+            case "coordxen":
+            case "coordyen":
                 $value = Filter::point2comma((string)parent::get($column));
             break;
 

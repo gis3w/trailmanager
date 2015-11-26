@@ -303,6 +303,7 @@ return array(
     'longitude' => 'Longitudine',
     'Add coordinates' => 'Aggiungi coordinate geografice decimali',
 	"ID Path segment" => 'ID Tratta',
+	'Length' => 'Lunghezza',
 
 
 
@@ -382,6 +383,37 @@ return array(
     'highliting-path-note' => 'Note di processo',
 
 
+	#leaflet DRAW translation:
+	'Draw a polyline' => 'Disegna una linea',
+	'Draw a polygon' => 'Disegna un poligono',
+	'Draw a rectangle' =>'Disegna un rettangolo',
+	'Draw a circle' => 'Disegna un cerchio',
+	'Draw a marker' => 'Disegna un punto',
+	'Cancel drawing' => 'Annulla il disegno',
+	'Cancel' => 'Annulla',
+	'Delete last point drawn' => 'Cancella l\'ultimo punto disegnato',
+	'Delete last point' => 'Cancella l\'ultimo punto',
+	'Click and drag to draw circle.' => 'Clicca e trascina per disegnare un cerchio.',
+	'Click map to place marker.' => 'Clicca sulla mappa per posizionare il marker.',
+	'Click to start drawing shape.' => 'Clicca per iniziare a disegnare.',
+	'Click to continue drawing shape.' => 'Clicca per cointinuare a disegnare',
+	'Click first point to close this shape.' => 'Clicca il primo punto per chiudere il disegno.',
+	'<strong>Error:</strong> shape edges cannot cross!' => '<strong>Errore:</strong> i bordi della geometria non  possono incrociarsi!',
+	'Click to start drawing line.'=> 'Clicca per iniziare a disegnare la line',
+	'Click to continue drawing line.' => 'Clicca per continuare a disegnare la linea.',
+	'Click last point to finish line.' => 'Clicca sull\'ultimo punto per finire la linea.',
+	'Click and drag to draw rectangle.' => 'Clicca e trascina per disegnare un rettangolo',
+	'Release mouse to finish drawing.' => 'Rilascia il mouse per finire il disegno',
+	'Save changes.' => 'Salva i cambiamenti.',
+	'Cancel editing, discards all changes.' => 'Annulla la modifica, scarta tutt le modifiche.',
+	'Cancel' => 'Annulla',
+	'Edit layers.' => 'Modifica gli strati',
+	'Delete layers.' => 'Elimina gli strati',
+	'No layers to delete.' => 'Nessun strato da eliminare',
+	'Drag handles, or marker to edit feature.' => 'Trascina, o marca per modificate la geometria',
+	'Click cancel to undo changes.' => 'Clicca annulla per annullare le modifiche',
+	'Click on a feature to remove' => 'Clicca sulla geometria da rimuovere',
+
     
     'for'=> 'per',
   
@@ -393,5 +425,6 @@ return array(
     
     'typology_icon_marker_requested' => 'Per proseguire è necessario definire le icone ed i marker per le varie tipologie',
 	'not_configured' => 'non configurato',
+	'This idwp is not unique inside path' => 'Idwp gia presente in per il sentiero indicato',
     
 );

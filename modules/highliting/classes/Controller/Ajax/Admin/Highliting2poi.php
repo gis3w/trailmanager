@@ -45,6 +45,25 @@ class Controller_Ajax_Admin_Highliting2poi extends Controller_Ajax_Auth_Strict{
         $toRes['coord_x'] = $this->_highliting->lon;
         $toRes['coord_y'] = $this->_highliting->lat;
 
+        #Try a to set a new idwp
+        if (isset($this->_highliting->highliting_path_id) and $this->_highliting->highliting_path_id != '')
+        {
+            $path = ORM::factory('Path',$this->_highliting->highliting_path_id);
+
+            $poi = ORM::factory('Poi')
+                ->where('se','=',$path->se)
+                ->order_by('idwp','desc')
+                ->find();
+
+            if($poi->pk())
+            {
+                $idwp = $poi->idwp;
+                list($sentiero, $progressivo) = preg_split("/-/",$idwp);
+                $progressivo = strval((int)$progressivo +1);
+
+            }
+        }
+
         $this->jres->data->tot_items = 1;
         $this->jres->data->page = 1;
         $this->jres->data->offset = 0;
