@@ -41,6 +41,16 @@ class Controller_Ajax_Admin_Path extends Controller_Ajax_Admin_Sheet_Base{
      */
     protected function _delete_cascade()
     {
+        // delete every image
+        $pois = ORM::factory('Poi')->where('se','=',$this->_orm->se)->find_all();
+
+        foreach($pois as $poi)
+        {
+            $images = $poi->images->find_all();
+            foreach($images as $image)
+                @unlink(APPPATH.'../upload/image/'.$image->file);
+        }
+
         $poisQDelete = DB::delete('pois')
             ->where('se','=',$this->_orm->se)
             ->execute();
