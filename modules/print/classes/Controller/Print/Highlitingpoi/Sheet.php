@@ -4,7 +4,7 @@ class Controller_Print_Highlitingpoi_Sheet extends Controller_Print_Base_Auth_St
 {
 
     protected $_xmlContentView = 'print/highlitingpoi/sheet';
-    public $filename = "Highliting Poi";
+    public $filename = "Highliting";
     protected $_img_marker_dir = 'upload/highlitingtypologyicon';
 
     public function action_index()
@@ -13,7 +13,7 @@ class Controller_Print_Highlitingpoi_Sheet extends Controller_Print_Base_Auth_St
         // get the map extent for path
         $poi = ORMGIS::factory('Highliting_Poi',$this->request->param('id'));
         View::set_global('sheetTitle',$poi->subject);
-        $this->filename = Inflector::underscore(__($this->filename)).'_';
+        $this->filename = Inflector::underscore(__($this->filename)).'-'.__('Maintenance').'_';
         $this->_xmlContentView->lat = $poi->lat;
         $this->_xmlContentView->lon = $poi->lon;
         $poi->getLonLat(3857);
@@ -28,6 +28,20 @@ class Controller_Print_Highlitingpoi_Sheet extends Controller_Print_Base_Auth_St
         $map->makeMapHighliting($poi->id);
         $this->_xmlContentView->mapURL = $map->imageURL;
         $this->_xmlContentView->poi = $poi;
+
+        if(isset($poi->state->name))
+        {
+            $view = View::factory('data/currentstate');
+            $view->state = $poi->state;
+            $this->_xmlContentView->currentState = $view->render();
+        }
+
+        $view = View::factory('data/oldnotes');
+        $view->states = $poi->states
+            ->order_by('date','DESC')
+            ->find_all();
+        $this->_xmlContentView->notes = $view->render();
+
 
         $images = $poi->images->find_all();
         if(count($images) > 0)

@@ -35,7 +35,7 @@ class Datastruct_Image_Highliting_Poi extends Datastruct {
                
                 "description" => array(
                     'form_input_type' => self::TEXTAREA,
-                    'editor' => TRUE,
+                    'editor' => FALSE,
                 ),
                 "file" => array(
                    "form_input_type" => self::INPUT,

@@ -200,6 +200,7 @@ return array(
 	'Poi' => 'Punto di interesse',
     'Paths' => 'Sentieri',
     'Highlitings' => 'Segnalazioni',
+	'Highliting' => 'Segnalazione',
     'Trail elements' => 'Sentieri',
     'Highliting point' => 'Puntuale',
     'Highliting points' => 'Segnalazioni/manutenzioni puntuali',
@@ -279,6 +280,7 @@ return array(
     'Highliting path' => 'Lineari',
     'Highliting paths' => 'Segnalazioni/manutenzioni lineari',
     'Maintenances' => 'Manutenzioni',
+	'Maintenance' => 'Manutenzione',
     'Quality survey' => 'Qualifica Rilevatore',
     'Survey class' => 'Classificazione metodologia di rilievo',
     'Typology path segment' => 'Tipo tratta',
@@ -341,7 +343,7 @@ return array(
     'poi-base-data-segna' => 'Segnaletica',
     'poi-base-data-degr' => 'Stato degradazione',
 	'poi-base-data-path-segments' => 'Tratte',
-    
+
     'area-data' => 'Dati generali dell\'area',
     'area-foreign-data' =>'Collegamenti',
     'area-block-data' => 'Altri dati accessori',

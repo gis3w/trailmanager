@@ -29,7 +29,7 @@ class Model_Highliting extends ORMGIS {
             'foreign_key' => 'highliting_state_id',
         ),
         'typology' => array(
-            'model'   => 'Typology',
+            'model'   => 'Highliting_Typology',
             'foreign_key' => 'highliting_typology_id'
         ),
         // only for POI
