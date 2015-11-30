@@ -5,6 +5,7 @@ class Controller_Print_Highlitingpath_Sheet extends Controller_Print_Base_Auth_S
 
     protected $_xmlContentView = 'print/highlitingpath/sheet';
     public $filename = "Highliting Path";
+    protected $_img_marker_dir = 'upload/highlitingtypologyicon';
 
 
     public function action_index()
@@ -25,6 +26,19 @@ class Controller_Print_Highlitingpath_Sheet extends Controller_Print_Base_Auth_S
         $this->_xmlContentView->mapURL = $map->imageURL;
         $this->_xmlContentView->path = $this->path;
 
+        if(isset($this->path->state->name))
+        {
+            $view = View::factory('data/currentstate');
+            $view->state = $this->path->state;
+            $this->_xmlContentView->currentState = $view->render();
+        }
+
+        $view = View::factory('data/oldnotes');
+        $view->states = $this->path->states
+            ->order_by('date','DESC')
+            ->find_all();
+        $this->_xmlContentView->notes = $view->render();
+
         $images = $this->path->images->find_all();
         if(count($images) > 0)
         {
@@ -32,6 +46,6 @@ class Controller_Print_Highlitingpath_Sheet extends Controller_Print_Base_Auth_S
             $this->_printImagesSheet($this->path);
         }
         // set filename
-        $this->filename .= Inflector::underscore($this->path->subject).'_'.time().'.pdf';
+        $this->filename .= Inflector::underscore($this->path->subject).'_'.date('Ymd-Hi',time()).'.pdf';
     }
 }

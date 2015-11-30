@@ -37,6 +37,6 @@ class Controller_Print_Poi_Sheet extends Controller_Print_Base_Auth_Nostrict
         }
 
         // set filename
-        $this->filename .= Inflector::underscore($poi->idwp).'_'.time().'.pdf';
+        $this->filename .= Inflector::underscore($poi->idwp).'_'.date('Ymd-Hi',time()).'.pdf';
     }
 }

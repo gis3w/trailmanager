@@ -38,7 +38,7 @@ class Controller_Print_Path_Sheet extends Controller_Print_Base_Auth_Nostrict
 
 
         // set filename
-        $this->filename .= Inflector::underscore($this->path->nome).'_'.time().'.pdf';
+        $this->filename .= Inflector::underscore($this->path->nome).'_'.date('Ymd-Hi',time()).'.pdf';
     }
     
     protected function _buildAltitudeGapChart()

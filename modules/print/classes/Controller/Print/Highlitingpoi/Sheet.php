@@ -51,6 +51,6 @@ class Controller_Print_Highlitingpoi_Sheet extends Controller_Print_Base_Auth_St
         }
 
         // set filename
-        $this->filename .= Inflector::underscore($poi->subject).'_'.time().'.pdf';
+        $this->filename .= Inflector::underscore($poi->subject).'_'.date('Ymd-Hi',time()).'.pdf';
     }
 }

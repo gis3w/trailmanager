@@ -30,6 +30,6 @@ class Controller_Print_Area_Sheet extends Controller_Print_Base_Auth_Nostrict
 
 
         // set filename
-        $this->filename .= Inflector::underscore($area->title).'_'.time().'.pdf';
+        $this->filename .= Inflector::underscore($area->title).'_'.date('Ymd-Hi',time()).'.pdf';
     }
 }
