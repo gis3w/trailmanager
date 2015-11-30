@@ -23,7 +23,8 @@ class Datastruct_Path extends Datastruct {
                 'publish',
                 'description',
                 'pdf_print_qrcode',
-                'pdf_print_sheet'
+                'pdf_print_sheet',
+                'download_shp'
             ),
         ),
        array(
@@ -422,6 +423,25 @@ class Datastruct_Path extends Datastruct {
                 'table_show' => FALSE,
                 'label' => __(''),
                 'icon' => 'print',
+                'form_show' => array(
+                    self::STATE_INSERT => FALSE,
+                    self::STATE_UPDATE =>TRUE
+                ),
+            )
+        );
+
+        $fct['download_shp']  = array_replace($this->_columnStruct,array(
+                'form_input_type' => self::BUTTON,
+                'input_class' => 'default',
+                'data_type' => 'pdf_print',
+                'url_values' => '/export/shp/path/$1',
+                'url_values_params' => array(
+                    '$1' => 'id',
+                ),
+                'description' => __('Download ShapeFile'),
+                'table_show' => FALSE,
+                'label' => __(''),
+                'icon' => 'download-alt',
                 'form_show' => array(
                     self::STATE_INSERT => FALSE,
                     self::STATE_UPDATE =>TRUE
