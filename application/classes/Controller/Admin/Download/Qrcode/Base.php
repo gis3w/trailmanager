@@ -19,8 +19,13 @@ class Controller_Admin_Download_Qrcode_Base extends Controller_Auth_Strict{
             mkdir ($this->_pathToSave);
         
         
-        $this->_pathToSave = $this->_pathToSave.'qrcode_'.$this->nameORM.'_'.$this->_orm->id.'_'.Inflector::underscore($this->_orm->title).'.png';
+        $this->_getPathToSave();
         
+    }
+
+    protected function _getPathToSave()
+    {
+        $this->_pathToSave = $this->_pathToSave.'qrcode_'.$this->nameORM.'_'.$this->_orm->id.'.png';
     }
     
     
