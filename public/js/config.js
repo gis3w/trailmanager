@@ -657,6 +657,9 @@ $.extend(APP.config,{
 				case "home":
 					APP.adminMap.start();
 					break;
+				case "administration_uploadpathzip":
+					APP.ziploader.start(button, label, section, $("#"+divId));
+					break;
 				default:
 					if (APP.config.serverSide)
 						APP.anagrafica_ss.start(button, label, section, $("#"+divId));

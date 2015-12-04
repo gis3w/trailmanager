@@ -102,6 +102,7 @@ return array(
 		'map.js',
     	'adminMap.js',
 		'interactiveMap.js',
+    	'ziploader.js',
 		//'home.js',
 		'main.js'
     ),

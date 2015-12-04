@@ -10,6 +10,7 @@ var APP = {
 	fileuploader: {},
 	multifields: {},
 	subforms: {},
+	ziploader: {},
 	anagrafica: {},
 	anagrafica_ss: {},
 };
