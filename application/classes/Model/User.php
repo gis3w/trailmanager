@@ -9,6 +9,8 @@ class Model_User extends Model_Auth_User {
     protected $_has_many = array(
             'user_tokens' => array('model' => 'User_Token'),
             'roles'       => array('model' => 'Role', 'through' => 'roles_users'),
+            'paths'       => array('model' => 'Path', 'through' => 'users_paths'),
+
         
        
     );

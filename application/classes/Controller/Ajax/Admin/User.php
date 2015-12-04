@@ -197,7 +197,10 @@ class Controller_Ajax_Admin_User extends Controller_Ajax_Base_Crud{
         // per ogni utente si mettono tutti i ruoli separati da una virgola
         $uarr['roles'] = array_keys($u->roles->where('roles_users.role_id','!=',14)->find_all()->as_array('id'));
         // paramentri aggiuntivi da inviare
-        $uarr['main_role_id'] = $u->main_role_id;     
+        $uarr['main_role_id'] = $u->main_role_id;
+
+        // add favorite paths
+        $uarr['favorite_paths'] = array_keys($u->paths->find_all()->as_array('id'));
                                                                                 
 
         return Arr::push($uarr,$udarr);

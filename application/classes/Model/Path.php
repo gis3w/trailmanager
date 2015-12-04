@@ -44,6 +44,10 @@ class Model_Path extends ORMGIS {
          'urls' => array(
             'model'   => 'Url_Path',
         ),
+         'users' => array(
+             'model' => 'User',
+             'through' => 'users_paths',
+         ),
     );
     
     public function labels() {
