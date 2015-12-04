@@ -220,6 +220,11 @@ return array(
                         'capability' => 'access-administration-backgroundlayers',
                         'icon' => 'leaf',
                     ),
+                    'administration_uploadpathzip' => array(
+                        'id' =>'uploadpathzip',
+                        'name' => __('Upload ZIp Path file'),
+                        'icon' => 'upload',
+                    ),
              ),
             ),
         ),

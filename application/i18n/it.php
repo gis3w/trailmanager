@@ -307,7 +307,10 @@ return array(
 	"ID Path segment" => 'ID Tratta',
 	'Length' => 'Lunghezza',
 
-
+	'Download ShapeFile' => 'Scarica gli shape file',
+	'Print path sheet' => 'Stampa la scheda del sentiero',
+	'Print poi sheet' => 'Stampa la scheda del punto notevole',
+	'Download qrcode position' => 'Scarica il qrcode della posizione',
 
    
     'global-typology-data' => 'Tipologia',
