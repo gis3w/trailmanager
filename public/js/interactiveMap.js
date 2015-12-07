@@ -2040,6 +2040,35 @@ $.extend(APP.interactiveMap,
 		
 		var map = APP.map.getCurrentMap();
 		
+		var layerMouseOver = function(e)
+		{
+			var myLayer = e.target;
+			
+			if (!$.isFunction(myLayer.setStyle))
+				myLayer = myLayer.toGeoJSON();
+			
+			myLayer.setStyle({
+				weight: 8,
+				//color: '#666',
+				dashArray: '',
+				//fillOpacity: 0.7
+			});
+
+			if (!L.Browser.ie && !L.Browser.opera) {
+				myLayer.bringToFront();
+			}
+		};
+
+		var layerMouseOut = function(e)
+		{
+			var myLayer = layer;
+			if (!$.isFunction(myLayer.setStyle))
+				myLayer = myLayer.toGeoJSON();
+			myLayer.resetStyle(e.target);
+		};
+
+		var layer = null;
+		
 		if (v.geoJSON.type === "Point")
 		{
 			var coords = [v.geoJSON.coordinates[1],v.geoJSON.coordinates[0]];
@@ -2070,16 +2099,14 @@ $.extend(APP.interactiveMap,
 			if (myIcon)
 				myObj.icon = myIcon;
 			
-			var layer = new L.Marker(coords,myObj);
+			layer = new L.Marker(coords,myObj);
 			layer.on("click", function(args){
 				that.onElementClick({ element: layer, section: section, id: v.id, latlng: null});
 			});
-			if (!APP.map.globalData[APP.map.currentMapId].map.hasLayer(layer))
-				APP.map.addLayer({layer: layer, id: section+"_"+v.id, max_scale: v.max_scale});
 		}
 		else
 		{
-			var layer = new L.geoJson(v.geoJSON, {
+			layer = new L.geoJson(v.geoJSON, {
 				style: function (feature) {
 					var oo = {};
 					if (v.color)
@@ -2104,11 +2131,16 @@ $.extend(APP.interactiveMap,
 						
 					return oo;
 				},
-				onEachFeature: function (feature, layer) {
-					layer.on("click", function(args)
-					{
-						that.onElementClick({ element: args.layer, section: section, id: v.id, latlng: args.latlng});
-					});
+				onEachFeature: function (feature, layer)
+				{
+					layer.on({
+						"mouseover": layerMouseOver,
+						"mouseout": layerMouseOut,
+						"click": function(args)
+						{
+							that.onElementClick({ element: args.layer, section: section, id: v.id, latlng: args.latlng});
+						}
+ 					});
 				}
 			});
 			layer.bindLabel(v.title);
@@ -2147,10 +2179,12 @@ $.extend(APP.interactiveMap,
 					var l = APP.map.addLayer({layer: new L.Marker([v[tag].coordinates[1],v[tag].coordinates[0]], myObj).bindPopup(title), id: tag+" "+v.id});
 				}
 			});
-			
-			if (!APP.map.globalData[APP.map.currentMapId].map.hasLayer(layer))
-				APP.map.addLayer({layer: layer, id: section+"_"+v.id, max_scale: v.max_scale});
 		}
+		
+		layer.bindLabel(v.title);
+		
+		if (!APP.map.globalData[APP.map.currentMapId].map.hasLayer(layer))
+			APP.map.addLayer({layer: layer, id: section+"_"+v.id, max_scale: v.max_scale});
 	},
 	
 	isAvailableObject: function(myObj)
