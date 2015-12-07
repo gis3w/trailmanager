@@ -44,11 +44,13 @@ class Controller_Ajax_Admin_Upload_Pathzipfile extends Controller_Ajax_Admin_Bas
         }
         else
         {
-            $this->_loadZipFile();
+            $this->_loadZipFile($res);
             if(!empty($this->_errors))
             {
                 $this->_validation_error (array($this->uplload_options['param_name'] => implode('; ',  array_values($this->_errors))));
             }
+            // assuming directory name as path_name
+            $this->_execTrailImport();
         }
 
         $this->jres->data = $res;
@@ -60,16 +62,20 @@ class Controller_Ajax_Admin_Upload_Pathzipfile extends Controller_Ajax_Admin_Bas
         $this->jres->data = $res;
     }
 
-    protected function _loadZipFile()
+    protected function _execTrailImport()
+    {
+
+    }
+
+    protected function _loadZipFile($res)
     {
         // unzip file
         $zipFile = new ZipArchive();
 
-        $res = $zipFile->open($this->_upload_path.$this->uplload_options['param_name']);
+        $res = $zipFile->open($this->_upload_path.$res[$this->uplload_options['param_name']][0]->name);
         if($res !== TRUE)
         {
-            $this->_errors['zipfile'] = __('Problem on unzip file: '.$zipFile->getStatusString());
-            $zipFile::ER_EXISTS;
+            $this->_errors['zipfile'] = __('Problem on unzip file: '.$res);
             return;
         }
 
