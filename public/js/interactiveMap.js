@@ -749,94 +749,141 @@ $.extend(APP.interactiveMap,
 			myModal.remove();
 		
 		var myTitle = that.getObjectTitle(section, id);
-		var sheetTemplate = '<div id="modal-'+section+'-info" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="'+section+'" aria-hidden="true">\
-						<div class="modal-dialog modal-lg">\
-							<div class="modal-content">\
-							  <div class="modal-header">\
-								<button type="button" class="btn-lg close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove"></span></button>\
-								<h3 class="lead">'+myTitle+'</h3>\
-							  </div>\
-							  <div class="modal-body">\
-								<div class="gallery" style="margin: -15px -15px 0px -15px">\
-									<div class="overviewImage" style="width: 100%; height: 300px"></div>\
-									<div class="row thumbnailsRow" style="padding: 20px; vertical-align: middle"></div>\
-								</div>\
-								<div class="row">';
-		if(section == 'poi') {
-			sheetTemplate += '<div class="col-md-7">\
-										<div class="panel panel-default categories" style="display: none">\
-											<div class="panel-heading">\
-												<h3 class="panel-title">'+APP.i18n.translate('categories')+'</h3>\
-											</div>\
-											<div class="panel-body">\
-											</div>\
-										</div>\
-									</div>';
-		}
-		if(section == 'poi' || section == 'path') {
-			sheetTemplate += '<div class="col-md-5">\
-										<div class="panel panel-default features" style="display: none">\
-											<div class="panel-heading">\
-												<h3 class="panel-title">' + APP.i18n.translate('features') + '</h3>\
-											</div>\
-											<div class="panel-body">\
-											</div>\
-										</div>\
-									</div>';
-		}
-		if(section == 'path') {
-			sheetTemplate += '<div class="col-md-7">\
-									<div class="panel panel-default heightsprofilepath" style="display: none">\
-										<div class="panel-heading">\
-											<h3 class="panel-title">' + APP.i18n.translate('Heightsprofilepath') + '</h3>\
-										</div>\
-										<div class="panel-body">\
-										</div>\
-									</div>\
-								</div>';
-		}
-		sheetTemplate += '</div>\
-								<div class="paragraphes text-justify"></div>\
-							  </div>\
-							  <div class="modal-footer">\
-							  	';
-								var sheetButtonKML = '<button type="button" class="btn btn-warning btnExportKML"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> '+APP.i18n.translate('Download KML')+'</button>';
-							  	var sheetButtonGPX = '<button type="button" class="btn btn-warning btnExportGPX"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> '+APP.i18n.translate('Download GPX')+'</button>';
-								var sheetButtonPrint = '<button type="button" class="btn btn-warning btnPrint"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> '+APP.i18n.translate('print')+'</button>';
-								var sheetButtonClose = '<button type="button" data-dismiss="modal" class="btn btn-primary">'+APP.i18n.translate('close')+'</button>';
-								sheetTemplate += sheetButtonKML + sheetButtonGPX;
-								if(section != 'itinerary')
-									sheetTemplate += sheetButtonPrint;
-								sheetTemplate += sheetButtonClose;
-							  sheetTemplate += '</div>\
-							</div>\
-						</div>\
-					</div>';
-
-		myModal = $(sheetTemplate);
 		
-		myModal.find('.btnPrint').click(function(){
-			var printUrl = '/print/'+section+'/sheet/'+id+'?background_layer_id=';
+		var myModal = $(	'<div id="modal-'+section+'-info" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="'+section+'" aria-hidden="true">\
+								<div class="modal-dialog modal-lg">\
+									<div class="modal-content">\
+										<div class="modal-header">\
+											<button type="button" class="btn-lg close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove"></span></button>\
+											<span class="headTitle" style="white-space: nowrap">\
+												<h3 class="lead">'+myTitle+' </h3>\
+											</span>\
+										</div>\
+										<div class="modal-body">\
+											<div class="gallery" style="margin: -15px -15px 0px -15px">\
+												<div class="overviewImage" style="width: 100%; height: 300px"></div>\
+												<div class="row thumbnailsRow" style="padding: 20px; vertical-align: middle"></div>\
+											</div>\
+											<div class="row categoriesAndFeatures"></div>\
+											<div class="paragraphes text-justify"></div>\
+										</div>\
+										<div class="modal-footer">\
+									  		<button type="button" data-dismiss="modal" class="btn btn-primary closeBtn">'+APP.i18n.translate('close')+'</button>\
+								  		</div>\
+									</div>\
+								</div>\
+							</div>');
+		
+		if(section == 'poi')
+		{
+			var cat = $('<div class="col-md-7">\
+							<div class="panel panel-default categories" style="display: none">\
+								<div class="panel-heading">\
+									<h3 class="panel-title">'+APP.i18n.translate('categories')+'</h3>\
+								</div>\
+								<div class="panel-body">\
+								</div>\
+							</div>\
+						</div>');
 			
-			var m = APP.map.globalData[APP.map.currentMapId].map;
+			myModal.find('.modal-body .categoriesAndFeatures').append(cat);
+		}
+		
+		if(section == 'poi' || section == 'path')
+		{
+			var feat = $(	'<div class="col-md-5">\
+									<div class="panel panel-default features" style="display: none">\
+									<div class="panel-heading">\
+										<h3 class="panel-title">' + APP.i18n.translate('features') + '</h3>\
+									</div>\
+									<div class="panel-body">\
+									</div>\
+								</div>\
+							</div>');
 			
-			m.eachLayer(function (layer)
+			myModal.find('.modal-body .categoriesAndFeatures').append(feat);
+		}
+		
+		if(section == 'path')
+		{
+			var hpp = $('<div class="col-md-7">\
+								<div class="panel panel-default heightsprofilepath" style="display: none">\
+								<div class="panel-heading">\
+									<h3 class="panel-title">' + APP.i18n.translate('Heightsprofilepath') + '</h3>\
+								</div>\
+								<div class="panel-body">\
+								</div>\
+							</div>\
+						</div>');
+			
+			myModal.find('.modal-body .categoriesAndFeatures').append(hpp);
+			
+			if (APP.config.checkLoggedUser())
 			{
-				if (layer.options && layer.options.tileLayerId)
+				var btnClass = ($.inArray(id, APP.config.localConfig.authuser.favorite_paths)>=0)? 'btn-warning' : 'btn-default';
+				var btnStar = $('<button type="button" class="btn '+btnClass+' btn-sm"><span class="glyphicon glyphicon-star" aria-hidden="true"></span></button>');
+				btnStar.data({
+					pathId: id
+				});
+				btnStar.click(function()
 				{
-					location.href=printUrl+layer.options.tileLayerId;
-					return false;
-				}
-			});
-		});
-		myModal.find('.btnExportGPX').click(function(){
+					var myBtn = $(this);
+					var bDelete = myBtn.hasClass('btn-warning');
+					$.ajax({
+						method: (bDelete)? 'DELETE' : 'POST',
+						url: '/jx/favoritepath/'+myBtn.data('pathId'),
+						success: function()
+						{
+							APP.config.loadConfig();
+						}
+					});
+					if (bDelete){
+						myBtn.removeClass('btn-warning').addClass('btn-default');
+					}
+					else {
+						myBtn.removeClass('btn-default').addClass('btn-warning');
+					}
+				});
+				myModal.find(".modal-header h3").append(btnStar);
+			}
+		}
+		
+		if (section != 'itinerary')
+		{
+			var sheetButtonPrint = $('<button type="button" class="btn btn-warning btnPrint"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> '+APP.i18n.translate('print')+'</button>');
+			sheetButtonPrint.click(function()
+			{
+				var printUrl = '/print/'+section+'/sheet/'+id+'?background_layer_id=';
+				
+				var m = APP.map.globalData[APP.map.currentMapId].map;
+				
+				m.eachLayer(function (layer)
+				{
+					if (layer.options && layer.options.tileLayerId)
+					{
+						location.href=printUrl+layer.options.tileLayerId;
+						return false;
+					}
+				});
+			})
+			myModal.find('.modal-footer').prepend(sheetButtonPrint);
+		}
+		
+		var btnGPX = $('<button type="button" class="btn btn-warning btnExportGPX"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> '+APP.i18n.translate('Download GPX')+'</button>');
+  		btnGPX.click(function()
+		{
 			location.href = '/export/gpx/'+section+'/'+id;
 			return false;
 		});
-		myModal.find('.btnExportKML').click(function(){
+  		myModal.find('.modal-footer').prepend(btnGPX);
+		
+  		var btnKML = $('<button type="button" class="btn btn-warning btnExportKML"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> '+APP.i18n.translate('Download KML')+'</button>');
+  		btnKML.click(function()
+		{
 			location.href = '/export/kml/'+section+'/'+id;
 			return false;
 		});
+  		myModal.find('.modal-footer').prepend(btnKML);
 				
 		if (!APP.utils.isset(that.myData[section][id].media) || !APP.utils.isset(that.myData[section][id].media.images) || !$.isArray(that.myData[section][id].media.images) || that.myData[section][id].media.images.length === 0)
 		{
