@@ -20,12 +20,12 @@ class Controller_Ajax_Geo_Base extends Controller_Ajax_Data_Base{
         
         //adding centroids
         $toRes['centroids'] = array();
+        /*
         $nGeometries = $orm->geo->numGeometries();
-        
         $geoJsonAdapter = new GeoJSON();
         for($i = 1; $i <= $nGeometries; $i++)
             $toRes['centroids'][] = json_decode ($geoJsonAdapter->write(GEO::PostgisGentroid($orm->geo->geometryN($i))));
-            
+        */
         $toRes['geoJSON'] = json_decode($orm->asgeojson);
         
         if(isset($orm->max_scale))

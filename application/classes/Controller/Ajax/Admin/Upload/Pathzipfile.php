@@ -2,17 +2,21 @@
 
 class Controller_Ajax_Admin_Upload_Pathzipfile extends Controller_Ajax_Admin_Base_Upload {
 
+    protected $_upload_path;
 
     public function before()
     {
-        parent::before();
+
+        $this->_upload_path = APPPATH.'cache/';
+        Controller_Ajax_Auth_Strict::before();
         // si avvia l'uploader senza per initialize
         $this->uplload_options = array(
             'param_name' => 'zipfile',
             'script_url' => "jx/admin/".$this->_delete_url,
-            'upload_dir' => APPPATH.'cache/',
+            'upload_dir' => $this->_upload_path,
             'upload_url' => $this->_download_url,
             'max_file_size' => 10000000,
+            'accept_file_types' => '/\.zip$/i',
         );
 
         $this->UploadHandler = new UploadHandler($this->uplload_options,FALSE);
@@ -20,6 +24,11 @@ class Controller_Ajax_Admin_Upload_Pathzipfile extends Controller_Ajax_Admin_Bas
 
 
     public function action_update() {
+
+        if(!isset($_POST['path_name']) OR $_POST['path_name'] == '')
+        {
+            $this->_errors['path_name'] = __('Path name doesn\'t be empty');
+        }
 
         $res =  $this->UploadHandler->post(FALSE);
 
@@ -30,7 +39,17 @@ class Controller_Ajax_Admin_Upload_Pathzipfile extends Controller_Ajax_Admin_Bas
                 $this->_errors[(string)$idx] = __($file->error);
 
         if(!empty($this->_errors))
-            $this->_validation_error (array('file' => implode('; ',  array_values($this->_errors))));
+        {
+            $this->_validation_error (array($this->uplload_options['param_name'] => implode('; ',  array_values($this->_errors))));
+        }
+        else
+        {
+            $this->_loadZipFile();
+            if(!empty($this->_errors))
+            {
+                $this->_validation_error (array($this->uplload_options['param_name'] => implode('; ',  array_values($this->_errors))));
+            }
+        }
 
         $this->jres->data = $res;
 
@@ -41,5 +60,23 @@ class Controller_Ajax_Admin_Upload_Pathzipfile extends Controller_Ajax_Admin_Bas
         $this->jres->data = $res;
     }
 
-   
+    protected function _loadZipFile()
+    {
+        // unzip file
+        $zipFile = new ZipArchive();
+
+        $res = $zipFile->open($this->_upload_path.$this->uplload_options['param_name']);
+        if($res !== TRUE)
+        {
+            $this->_errors['zipfile'] = __('Problem on unzip file: '.$zipFile->getStatusString());
+            $zipFile::ER_EXISTS;
+            return;
+        }
+
+        $zipFile->extractTo($this->_upload_path);
+        $zipFile->close();
+    }
+
+
+
 }

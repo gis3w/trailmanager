@@ -33,6 +33,7 @@ class Controller_Ajax_Geo_Path extends Controller_Ajax_Geo_Base{
                 $pt_end[1]
             ]
         ];
+
         return $row;
 
         
