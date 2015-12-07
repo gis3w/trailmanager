@@ -820,29 +820,31 @@ $.extend(APP.interactiveMap,
 			
 			if (APP.config.checkLoggedUser())
 			{
-				var btnClass = ($.inArray(id, APP.config.localConfig.authuser.favorite_paths)>=0)? 'btn-warning' : 'btn-default';
-				var btnStar = $('<button type="button" class="btn '+btnClass+' btn-sm"><span class="glyphicon glyphicon-star" aria-hidden="true"></span></button>');
+				var whichBtnClass = function(){
+					return ($.inArray(id, APP.config.localConfig.authuser.favorite_paths)>=0)? 'btn-warning' : 'btn-default';
+				};
+				var btnStar = $('<button type="button" class="btn '+whichBtnClass()+' btn-sm"><span class="glyphicon glyphicon-star" aria-hidden="true"></span></button>');
 				btnStar.data({
 					pathId: id
 				});
 				btnStar.click(function()
 				{
 					var myBtn = $(this);
+					var pathId = myBtn.data('pathId');
 					var bDelete = myBtn.hasClass('btn-warning');
 					$.ajax({
 						method: (bDelete)? 'DELETE' : 'POST',
-						url: '/jx/favoritepath/'+myBtn.data('pathId'),
+						url: '/jx/favoritepath/'+pathId,
+						data: {id: pathId},
 						success: function()
 						{
-							APP.config.loadConfig();
+							APP.config.loadConfig(function()
+							{
+								myBtn.removeClass('btn-warning').removeClass('btn-default');
+								myBtn.addClass(whichBtnClass());
+							});
 						}
 					});
-					if (bDelete){
-						myBtn.removeClass('btn-warning').addClass('btn-default');
-					}
-					else {
-						myBtn.removeClass('btn-default').addClass('btn-warning');
-					}
 				});
 				myModal.find(".modal-header h3").append(btnStar);
 			}

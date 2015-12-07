@@ -832,13 +832,18 @@ $.extend(APP.config,{
 		APP.config.setPeriodicRequests();
 	},
 	
-	loadConfig: function()
+	loadConfig: function(callback)
 	{
 		$.ajax({
 			type: 'GET',
 			async: false,
 			url: BOOTSTRAP_URL,//'/jx/config',
-			success: APP.config.setConfig,
+			success: function(result)
+			{
+				APP.config.setConfig(result);
+				if ($.isFunction(callback))
+					callback();
+			},
 			error: APP.utils.showErrMsg
 		});
 	},
