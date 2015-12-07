@@ -11,7 +11,7 @@ $.extend(APP.config,{
 	fadeInDelay: 400,
 	fadeOutDelay: 100,
 	maxStringsLength: 128,
-	periodicRequestsIds: [],
+	periodicRequests: {},
 	serverSide: false,
 	workSpace: null,
 	backboneRouter: null,
@@ -720,57 +720,65 @@ $.extend(APP.config,{
 	},
 	
 	setPeriodicRequests: function()
-	{
-		if (APP.utils.isset(APP.config.localConfig.periodic_requests))
-		{
-			$.each(APP.config.localConfig.periodic_requests, function(i,v){
-				periodicRequestsIds.push(setInterval(function(){
-					$.ajax({
-						type: 'GET',
-						url: v.url,
-						dataType: 'json',
-						success: function(result)
+	{	
+		var self = this;
+		$.each(self.periodicRequests, function(i,v){
+			clearInterval(v);
+		});
+		self.periodicRequests = {};
+		
+		if (!APP.utils.isset(APP.config.localConfig.periodic_requests))
+			return false;
+		
+		$.each(APP.config.localConfig.periodic_requests, function(i,v)
+		{			
+			self.periodicRequests[i] = setInterval(function()
+			{
+				$.ajax({
+					type: 'GET',
+					url: v.url,
+					dataType: 'json',
+					success: function(result)
+					{
+						if (!APP.utils.checkError(result.error, null))
 						{
-							if (!APP.utils.checkError(result.error, null))
+							$.each(result.data.messages, function(j, obj)
 							{
-								$.each(result.data.messages, function(j, obj)
+								APP.utils.showNoty({title: obj.title, type: obj.type, content: obj.content});
+							});
+							
+							$.each(result.data.badges, function(j, obj)
+							{
+								$.each($("#APP-"+j).attr("class").toString(), function(k, className)
 								{
-									APP.utils.showNoty({title: obj.title, type: obj.type, content: obj.content});
+									if (className !== "notification")
+										$("#APP-"+j).removeClass(className);
 								});
-								
-								$.each(result.data.badges, function(j, obj)
+								$("#APP-"+j).addClass(obj.type);
+								$("#APP-"+j).html(obj.content);
+							});
+							
+							$.each(result.data.labels, function(j, obj)
+							{
+								$.each($("#APP-"+j).attr("class").toString(), function(k, className)
 								{
-									$.each($("#APP-"+j).attr("class").toString(), function(k, className)
-									{
-										if (className !== "notification")
-											$("#APP-"+j).removeClass(className);
-									});
-									$("#APP-"+j).addClass(obj.type);
-									$("#APP-"+j).html(obj.content);
+									if (className !== "label")
+										$("#APP-"+j).removeClass(className);
 								});
-								
-								$.each(result.data.labels, function(j, obj)
-								{
-									$.each($("#APP-"+j).attr("class").toString(), function(k, className)
-									{
-										if (className !== "label")
-											$("#APP-"+j).removeClass(className);
-									});
-									$("#APP-"+j).addClass("label-"+obj.type);
-									$("#APP-"+j).html(obj.content);
-								});
-							}	
-							else
-								APP.utils.showErrMsg(result);
-						},
-						error: function(result)
-						{
+								$("#APP-"+j).addClass("label-"+obj.type);
+								$("#APP-"+j).html(obj.content);
+							});
+						}	
+						else
 							APP.utils.showErrMsg(result);
-						}
-					});
-				},v.frequency));
-			});
-		}
+					},
+					error: function(result)
+					{
+						APP.utils.showErrMsg(result);
+					}
+				});
+			},v.frequency);
+		});
 	},
 	
 	setCSSSelector: function(obj)
