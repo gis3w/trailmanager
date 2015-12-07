@@ -64,6 +64,24 @@ class Controller_Ajax_Admin_Upload_Pathzipfile extends Controller_Ajax_Admin_Bas
 
     protected function _execTrailImport()
     {
+        try{
+            $cmd = APPPATH.'../trail_import_data/tid.py '.$_POST['path_name'].' "'.ORM::factory('Itinerary',$_POST['itinerary'])->name.'"';
+            $exe = Exe::factory($cmd);
+            $res = $exe->run();
+
+
+            if($exe->status === -1 OR $exe->status > 0)
+            {
+                throw HTTP_Exception::factory(500,__('Si sono verificati i seguenti errori:').$exe->error);
+            }
+
+        }
+        catch (Exception $e)
+        {
+            echo $e;
+            exit;
+        }
+
 
     }
 
