@@ -2143,7 +2143,6 @@ $.extend(APP.interactiveMap,
  					});
 				}
 			});
-			layer.bindLabel(v.title);
 			if (v.geoJSON.type === "MultiLineString" || v.geoJSON.type === "LineString"){
 				switch (v.diff){
 					case "EEA":
@@ -2180,8 +2179,8 @@ $.extend(APP.interactiveMap,
 				}
 			});
 		}
-		
-		layer.bindLabel(v.title);
+		if (v.title)
+			layer.bindLabel(v.title);
 		
 		if (!APP.map.globalData[APP.map.currentMapId].map.hasLayer(layer))
 			APP.map.addLayer({layer: layer, id: section+"_"+v.id, max_scale: v.max_scale});
