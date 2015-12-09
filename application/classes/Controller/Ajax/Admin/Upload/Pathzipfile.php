@@ -1,8 +1,12 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
+use Symfony\Component\Filesystem\Filesystem;
+
 class Controller_Ajax_Admin_Upload_Pathzipfile extends Controller_Ajax_Admin_Base_Upload {
 
     protected $_upload_path;
+    protected $_zipFile;
+    protected $_dirZipFiles;
 
     public function before()
     {
@@ -15,7 +19,7 @@ class Controller_Ajax_Admin_Upload_Pathzipfile extends Controller_Ajax_Admin_Bas
             'script_url' => "jx/admin/".$this->_delete_url,
             'upload_dir' => $this->_upload_path,
             'upload_url' => $this->_download_url,
-            'max_file_size' => 10000000,
+            'max_file_size' => 50000000,
             'accept_file_types' => '/\.zip$/i',
         );
 
@@ -51,6 +55,7 @@ class Controller_Ajax_Admin_Upload_Pathzipfile extends Controller_Ajax_Admin_Bas
             }
             // assuming directory name as path_name
             $this->_execTrailImport();
+            $this->_deleteZipFiles();
         }
 
         $this->jres->data = $res;
@@ -62,9 +67,33 @@ class Controller_Ajax_Admin_Upload_Pathzipfile extends Controller_Ajax_Admin_Bas
         $this->jres->data = $res;
     }
 
+    protected function _deleteZipFiles()
+    {
+        $filesystem = new Filesystem();
+        try {
+            if(isset($this->_zipFile))
+                $filesystem->remove($this->_zipFile);
+
+            if(isset($this->_dirZipFiles))
+                $filesystem->remove($this->_dirZipFiles);
+
+        }
+        catch (Exception $e)
+        {
+            throw HTTP_Exception::factory(500,__('Si sono verificati i seguenti errori:').$e);
+        }
+
+    }
+
+
+    /**
+     * Execute extracted zip files.
+     * @throws HTTP_Exception
+     */
     protected function _execTrailImport()
     {
         try{
+            $this->_dirZipFiles = $this->_upload_path.$_POST['path_name'];
             $cmd = APPPATH.'../trail_import_data/tid.py '.$_POST['path_name'].' "'.ORM::factory('Itinerary',$_POST['itinerary'])->name.'"';
             $exe = Exe::factory($cmd);
             $res = $exe->run();
@@ -78,19 +107,22 @@ class Controller_Ajax_Admin_Upload_Pathzipfile extends Controller_Ajax_Admin_Bas
         }
         catch (Exception $e)
         {
-            echo $e;
-            exit;
+            throw HTTP_Exception::factory(500,__('Si sono verificati i seguenti errori:').$e);
         }
 
 
     }
 
+    /**
+     * Open zip file and extract
+     * @param $res
+     */
     protected function _loadZipFile($res)
     {
         // unzip file
         $zipFile = new ZipArchive();
-
-        $res = $zipFile->open($this->_upload_path.$res[$this->uplload_options['param_name']][0]->name);
+        $this->_zipFile = $this->_upload_path.$res[$this->uplload_options['param_name']][0]->name;
+        $res = $zipFile->open($this->_zipFile);
         if($res !== TRUE)
         {
             $this->_errors['zipfile'] = __('Problem on unzip file: '.$res);

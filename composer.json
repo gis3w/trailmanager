@@ -10,6 +10,7 @@
         "nesbot/Carbon": "*",
         "endroid/qrcode": "1.*@dev",
         "szymach/c-pchart": "1.*",
-		"phpdocumentor/phpdocumentor": "2.*"
+		"phpdocumentor/phpdocumentor": "2.*",
+        "symfony/filesystem": "3.0.0"
 	}
 }

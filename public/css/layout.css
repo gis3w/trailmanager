@@ -259,3 +259,11 @@ table.dataTable th {
 .dataTables_wrapper {
 	margin-bottom: 60px;
 }
+
+.leaflet-sidebar {
+	width:600px;
+}
+
+.leaflet-sidebar.left {
+	left: -700px;
+}
