@@ -1467,6 +1467,42 @@ $.extend(APP.interactiveMap,
 				});
 				that.mySidebar.div.html(listGroup);
 				break;
+			case "favorities":
+				var listGroup = $('<div class="list-group list-group-wo-radius" style="margin: 0px -23px 0px -23.5px; padding: -10px"></div>');
+				
+				if (!APP.utils.isset(APP.config.localConfig.authuser.favorite_paths))
+					break;
+				
+				$.each(APP.config.localConfig.authuser.favorite_paths, function(i,v)
+				{	
+					var path = that.myData.path[""+v];
+					var media = $(	'<div class="media">\
+										<div class="media-body">\
+											<h4 class="media-heading">'+path.data.title+'</h4>\
+										</div>\
+									</div>');
+					
+					var src = that.getOverviewImage("path", path.data.id, true);
+					if (src)
+					{
+						media.prepend(	'<a class="pull-left" href="#">\
+											<img class="media-object img-rounded" src="'+src+'" alt="'+APP.i18n.translate('no_image')+'" style="max-width: 60px; max-height: 60px">\
+										</a>');
+					}
+					
+					var a = $('<a id="item_path_'+path.data.id+'" href="#" class="list-group-item '+((that.currentElement === path.data.id)? "active" : "")+'"></a>');
+					a.data(path).append(media);
+					a.click(function(){
+						var lg = $(this).parents(".list-group:first");
+						lg.find("a.active").removeClass("active");
+						$(this).addClass("active");
+						that.mySidebar.control.hide();
+						that.onElementClick({ element: $(this), section: "path", id: path.data.id, latlng: null});
+					});
+					that.insertRowAlphabetically(listGroup, a, ".media-heading");
+				});
+				that.mySidebar.div.html(listGroup);
+				break;
 			default: //case "everytype": case "highlightingsdata": case "poi": case "path": case "area":
 				var accordion = $('<div id="accordion-'+section+'" class="accordion-list" style="margin: 0px -23px 0px -23.5px; padding: -10px"></div>');
 				
@@ -3115,6 +3151,16 @@ $.extend(APP.interactiveMap,
 		}).addTo(APP.map.globalData[APP.map.currentMapId].map);
 	},
 	
+	setFavoritePathsNavbarButton: function()
+	{
+		var that = this;
+		
+		var fb = that.navbars.top.find("#favoritiesButton");
+		fb.parents("li:first").removeClass("disabled");
+		var m = fb.parents("li.dropdown:first");
+		m.removeClass("disabled");
+	},
+	
 	start: function()
 	{
 		var that = this;
@@ -3191,6 +3237,10 @@ $.extend(APP.interactiveMap,
 		that.navbars.top.find("a").click(function()
 		{
 			var btn = $(this);
+			
+			if (btn.hasClass("dropdown-toggle"))
+				return true;
+			
 			var n = that.navbars.top.parents(".navbar:first");
 			if (n.find(".navbar-collapse").hasClass("in") && btn.parents(".dropdown").length == 0)
 				n.find('.navbar-collapse').collapse('hide');
@@ -3255,6 +3305,7 @@ $.extend(APP.interactiveMap,
 		that.mySidebar.div = APP.map.sidebar.div;
 		that.mySidebar.control = APP.map.sidebar.control;
 		that.setTogglePointsBtn();
+		that.setFavoritePathsNavbarButton();
 		that.getPage("info", false);
 		APP.map.getCurrentMap().on('click',function(){			
 			that.resetHighlightLayer();
