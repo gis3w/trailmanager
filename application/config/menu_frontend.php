@@ -2,16 +2,15 @@
 
 
 return array(
-    'main' => array(
-		/*
-        'map' => array(
-            'id' =>'map',
-            'name' => __('Map'),
-            'url' => 'jx/home',
+    'dropdown' =>array(
+        'dropdown_mydata' => array(
+            'id' => 'dropdown_mydata',
             'capability' => NULL,
-            'icon' => 'globe',
-        )
-		*/
+            'name' => __('My data'),
+            'icon' => 'user'
+        ),
+    ),
+    'main' => array(
         'info' => array(
             'id' =>'info',
             'name' => __('Info'),
@@ -19,15 +18,6 @@ return array(
             'capability' => NULL,
             'icon' => 'info-sign',
         ),
-		/*
-        'to_default_extent' => array(
-            'id' =>'to_default_extent',
-            'name' => __('Start extent'),
-            'url' => NULL,
-            'capability' => NULL,
-            'icon' => 'fullscreen',
-        ),
-		*/
         'itinerary' => array(
             'id' =>'itinerary',
             'name' => __('Itineraries'),
@@ -35,20 +25,20 @@ return array(
             'capability' => NULL,
             'icon' => 'code-fork',
         ),
-        /*'everytype' => array(
-            'id' =>'everytype',
-            'name' => __('Elements'),
-            'url' => NULL,
-            'capability' => NULL,
-            'icon' => 'location-arrow',
-        ),
-        */
         'addGeometries' => array(
             'id' =>'addGeometries',
             'name' => __('New Report'),
             'url' => NULL,
             'capability' => NULL,
             'icon' => 'plus',
+        ),
+        'favorities' => array(
+            'id' =>'favorities',
+            'name' => __('Favorities'),
+            'url' => NULL,
+            'capability' => NULL,
+            'icon' => 'path',
+            'dropdown' => 'dropdown_mydata',
         ),
         'login' => array(
             'id' =>'login',
@@ -63,7 +53,7 @@ return array(
             'name' => __('Logout'),
             'url' => NULL,
             'capability' => NULL,
-            'icon' => 'user',
+            'icon' => 'off',
             'display' => FALSE,
         ),
     ),
