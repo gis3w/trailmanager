@@ -2704,6 +2704,20 @@ $.extend(APP.interactiveMap,
 		
 	},
 	
+	toggleMyData: function(bShow)
+	{
+		var that = this;
+		
+		var btn = that.navbars.top.find(".dropdown");
+		if (bShow)
+		{
+			btn.removeClass("disabled").show();
+			that.setFavoritePathsNavbarButton();
+		}
+		else
+			btn.addClass("disabled").hide();
+	},
+	
 	setLoginModal: function()
 	{
 		var that = this;
@@ -2781,6 +2795,7 @@ $.extend(APP.interactiveMap,
 								that.toggleGeometry(false,false);
 								that.toggleGeometry(true,false);
 							}
+							that.toggleMyData(true);
 						}
 						else
 							APP.utils.showErrMsg(data);
@@ -2884,6 +2899,7 @@ $.extend(APP.interactiveMap,
 							that.toggleGeometry(false,false);
 							that.toggleGeometry(true,false);
 						}
+						that.toggleMyData(false);
 					}
 					else
 						APP.utils.showErrMsg(data);
@@ -3157,8 +3173,6 @@ $.extend(APP.interactiveMap,
 		
 		var fb = that.navbars.top.find("#favoritiesButton");
 		fb.parents("li:first").removeClass("disabled");
-		var m = fb.parents("li.dropdown:first");
-		m.removeClass("disabled");
 	},
 	
 	start: function()
@@ -3305,7 +3319,9 @@ $.extend(APP.interactiveMap,
 		that.mySidebar.div = APP.map.sidebar.div;
 		that.mySidebar.control = APP.map.sidebar.control;
 		that.setTogglePointsBtn();
-		that.setFavoritePathsNavbarButton();
+		
+		that.toggleMyData(APP.config.checkLoggedUser());
+			
 		that.getPage("info", false);
 		APP.map.getCurrentMap().on('click',function(){			
 			that.resetHighlightLayer();
