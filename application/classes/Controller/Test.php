@@ -41,8 +41,22 @@ class Controller_Test extends Controller{
         $pt = $geo->pointFromToSRS([(int)$path->coordxini,(int)$path->coordyini],3004,3857);
          */
 
-      $p = ORMGIS::factory('Poi',510);
-        var_dump($p->pt_inter_code->description);
+
+        $cache = Cache::instance('apc');
+        var_dump($cache);
+
+        if ($test = $cache->get('test', FALSE))
+        {
+            var_dump($test);
+        }
+        else
+        {
+            $cache->set('test','pippo',0);
+        }
+
+
+
+
         exit;
 
 

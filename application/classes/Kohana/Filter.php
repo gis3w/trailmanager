@@ -131,8 +131,8 @@ class Kohana_Filter
                 $tounset[] = $key;
             
         foreach($tounset as $key)
-            #unset($_POST[$key]);
-            $_POST[$key] = NULL;
+            unset($_POST[$key]);
+            #$_POST[$key] = NULL;
     }
     
     /**

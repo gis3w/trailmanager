@@ -126,6 +126,13 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
          $this->_save_subforms_1XN();
          
          $this->_save_url_multifiled();
+
+        // reset cache
+        SAFE::resetCache([
+            'jx/data/everytype',
+            'jx/geo/everytype',
+            'jx/data/everytype'
+        ]);
                   
     }
 

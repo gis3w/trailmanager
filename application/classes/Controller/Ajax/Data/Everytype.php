@@ -2,6 +2,8 @@
 
 
 class Controller_Ajax_Data_Everytype extends Controller_Ajax_Main{
+
+    use Controller_Ajax_Base_Cache_GET;
     
     protected $_base_route = 'jx/data';
 
@@ -46,5 +48,6 @@ class Controller_Ajax_Data_Everytype extends Controller_Ajax_Main{
         $this->jres->data->items = $items;
        
     }
-    
+
+
 }

@@ -180,4 +180,29 @@ class Kohana_SAFE extends Kohana_Core
     {
         return Kohana::$base_url.$url;
     }
+
+    public static function getCache()
+    {
+        // Check for the existance of the cache driver
+        if (isset(Cache::$instances['apc']))
+        {
+            // Get the existing cache instance directly (faster)
+            $cache = Cache::$instances['apc'];
+        }
+        else
+        {
+            // Get the cache driver instance (slower)
+            $cache = Cache::instance('apc');
+        }
+
+        return $cache;
+    }
+
+    public static function resetCache($keys = [])
+    {
+        $cache = self::getCache();
+        foreach ($keys as $key)
+            $cache->delete($key);
+
+    }
 }
