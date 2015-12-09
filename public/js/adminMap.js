@@ -73,7 +73,7 @@ $.extend(APP.adminMap,
 							<div class="tab-content" style="padding-top: 15px; ">\
 								<div role="tabpanel" class="tab-pane report active" id="report"></div>\
 								<div role="tabpanel" class="tab-pane" id="highliting">\
-									<div class="table-responsive" ></div>\
+									<div class="tableContainer"></div>\
 								</div>\
 							</div>\
 						</div>\
@@ -493,58 +493,62 @@ $.extend(APP.adminMap,
 		});
 	},
 	
-	setTable: function(resource)
+	setTables: function()
 	{
 		var that = this;
 		
-		if (!that.info[resource].tableId)
-			return false;
-		
-		if (that.info[resource].table)
+		$.each(that.info, function(resource, targetInfo)
 		{
-			if ($.fn.DataTable.fnIsDataTable( that.info[resource].table[0] ))
-			{
-				that.info[resource].table.dataTable().fnClearTable(true);
-				that.info[resource].table.dataTable().fnDestroy(true);
-			}
-			that.info[resource].table.remove();
-		}
-		
-		that.info[resource].table = $(	'<table id="'+that.info[resource].tableId+'" class="table table-bordered table-hover table-striped table-condensed">\
-											<thead><tr></tr></thead>\
-											<tbody></tbody>\
-										</table>');
-				
-		$.each(that.datastruct[that.info[resource].resource].columns, function(i, v)
-		{
-			if (!v.table_show)
+			if (!targetInfo.tableId)
 				return true;
 			
-			that.info[resource].table.find("thead tr").append('<th class="table-th">'+v.label+'</th>');
-			
-			if (!v.hasOwnProperty("foreign_key") && v.form_input_type == "combobox" && !APP.utils.isset(v.slave_of) && !APP.utils.isset(that.fkValori[v.name]))
+			if (targetInfo.table)
 			{
-				that.fkValori[v.name] = APP.utils.getForeignValue(v, null);
+				if ($.fn.DataTable.fnIsDataTable( targetInfo.table[0] ))
+				{
+					targetInfo.table.dataTable().fnClearTable(true);
+					targetInfo.table.dataTable().fnDestroy(true);
+				}
+				targetInfo.table.remove();
+				targetInfo.table = null;
 			}
-		});
+			
+			targetInfo.table = $(	'<table id="'+that.info[resource].tableId+'" class="table table-bordered table-hover table-striped table-condensed">\
+										<thead><tr></tr></thead>\
+										<tbody></tbody>\
+									</table>');
+			
+			$.each(that.datastruct[targetInfo.resource].columns, function(i, v)
+			{
+				if (!v.table_show)
+					return true;
 				
-		$.each(that[resource].models, function(modK, model)
-		{
-			var modelId = model.get(that.info[resource].idAttribute);
-			var tr = $('<tr style="cursor: pointer" id="item_'+modelId+'"></tr>');
-			
-			tr = APP.utils.setTableRow({
-				row: tr,
-				model: model.toJSON(),
-				datastruct: that.datastruct[that.info[resource].resource],
-				valori: that.fkValori,
+				targetInfo.table.find("thead tr").append('<th class="table-th">'+v.label+'</th>');
+				
+				if (!v.hasOwnProperty("foreign_key") && v.form_input_type == "combobox" && !APP.utils.isset(v.slave_of) && !APP.utils.isset(that.fkValori[v.name]))
+				{
+					that.fkValori[v.name] = APP.utils.getForeignValue(v, null);
+				}
 			});
-			
-			tr.data(that.info[resource].idAttribute, model.get(that.info[resource].idAttribute));
-			tr.click(function(){
-				that.onItemSelect($(this).data(that.info[resource].idAttribute), that[resource], that.info[resource]);
+					
+			$.each(that[resource].models, function(modK, model)
+			{
+				var modelId = model.get(targetInfo.idAttribute);
+				var tr = $('<tr style="cursor: pointer" id="item_'+modelId+'"></tr>');
+				
+				tr = APP.utils.setTableRow({
+					row: tr,
+					model: model.toJSON(),
+					datastruct: that.datastruct[targetInfo.resource],
+					valori: that.fkValori,
+				});
+				
+				tr.data(targetInfo.idAttribute, model.get(targetInfo.idAttribute));
+				tr.click(function(){
+					that.onItemSelect($(this).data(targetInfo.idAttribute), that[resource], targetInfo);
+				});
+				targetInfo.table.find("tbody").append(tr);
 			});
-			that.info[resource].table.find("tbody").append(tr);
 		});
 	},
 	
@@ -552,22 +556,29 @@ $.extend(APP.adminMap,
 	{
 		var that = this;
 		
-		that.layout.find(".table-responsive h3").remove();
+		that.layout.find(".tableContainer").empty();
 		
 		$.each(that.info, function(key, targetInfo)
 		{
 			if (targetInfo.table)
 			{
-				that.layout.find(".table-responsive").append('<h3>'+APP.i18n.translate(APP.utils.capitalize(targetInfo.resource))+'</h3>');
-				that.layout.find(".table-responsive").append(targetInfo.table);
+				var div = $('<div></div>');
+				div.append('<h3>'+APP.i18n.translate(APP.utils.capitalize(targetInfo.resource))+'</h3>');
+				
+				var tableResponsive = $('<div class="table-responsive"></div>');
+				tableResponsive.append(targetInfo.table);
+				div.append(tableResponsive);
+				
 				targetInfo.table.dataTable({
 					"sPaginationType": "full_numbers",
 					"oLanguage": APP.utils.getDataTableLanguage(),
 				});
+				
+				that.layout.find(".tableContainer").append(div);
 			}
 		});
 		
-		that.layout.find(".table-responsive").fadeIn();
+		that.layout.find(".tableContainer").fadeIn();
 	},
 	
 	initItems: function(target, targetInfo)
@@ -762,14 +773,14 @@ $.extend(APP.adminMap,
 				{
 					counter++;
 					//that.datastruct[that.info[resource]].values = that[resource].toJSON();
-					that.setTable(resource);
 					if (counter === Object.keys(that.info).length)
 					{
 						that.setMapBounds();
 						that.setDefaultExtent();
 						that.addMapControls();
 						that.setOverlays();
-						that.showTables();						
+						that.setTables();
+						that.showTables();
 					}
 				});
 			});
