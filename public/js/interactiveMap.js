@@ -522,8 +522,10 @@ $.extend(APP.interactiveMap,
 		
 		var media = $(	'<div class="media">\
 							<div class="media-body">\
-								<h4 class="media-heading hidden-xs hidden-sm">'+that.getObjectTitle(section, id)+'</h4>\
-								<h5 class="media-heading hidden-md hidden-lg">'+that.getObjectTitle(section, id)+'</h5>\
+								<span style="white-space: nowrap">\
+									<h4 class="media-heading hidden-xs hidden-sm">'+that.getObjectTitle(section, id)+' </h4>\
+									<h5 class="media-heading hidden-md hidden-lg">'+that.getObjectTitle(section, id)+' </h5>\
+								</span>\
 								<div>\
 									<button type="button" class="btn btn-default btn-sm popupDetailsBtn" style="margin-top: 10px"><i class="icon icon-search"></i> '+APP.i18n.translate('View data sheet')+'</button>\
 								</div>\
@@ -542,6 +544,8 @@ $.extend(APP.interactiveMap,
 		element.bindPopup(media.html(), po);
 		
 		element.off('popupopen').on('popupopen', function(a){
+			if (section == "path")
+				that.setFavoritePathBtn({pathId: id, div: $(a.popup._container).find(".media-heading")});
 			var myBtn = $(a.popup._container).find(".popupDetailsBtn");
 			var closeBtn = $(a.popup._container).find(".leaflet-popup-close-button");
 			closeBtn.off("click").click(function(){
@@ -744,6 +748,44 @@ $.extend(APP.interactiveMap,
 		that.navbars.bottom = null;
 	},
 	
+	setFavoritePathBtn: function(obj) //pathId, div
+	{
+		if (APP.config.checkLoggedUser())
+		{
+			var whichBtnClass = function(){
+				return ($.inArray(obj.pathId, APP.config.localConfig.authuser.favorite_paths)>=0)? 'btn-warning' : 'btn-default';
+			};
+			var btnStar = $('<button type="button" class="btn '+whichBtnClass()+' btn-sm favoritePathBtn_'+obj.pathId+'"><span class="glyphicon glyphicon-star" aria-hidden="true"></span></button>');
+			btnStar.data({
+				pathId: obj.pathId
+			});
+			btnStar.click(function()
+			{
+				var myBtn = $(this);
+				var pathId = myBtn.data('pathId');
+				var bDelete = myBtn.hasClass('btn-warning');
+				$.ajax({
+					method: (bDelete)? 'DELETE' : 'POST',
+					url: '/jx/favoritepath/'+pathId,
+					data: {id: pathId},
+					success: function()
+					{
+						APP.config.loadConfig(function()
+						{
+							$(".favoritePathBtn_"+pathId).removeClass('btn-warning').removeClass('btn-default');
+							$(".favoritePathBtn_"+pathId).addClass(whichBtnClass());
+						});
+					}
+				});
+			});
+			if (obj.div)
+				obj.div.append(btnStar);
+			return btnStar;
+		}
+		else
+			return undefined;
+	},
+	
 	openInfo: function(section, id, onCloseCallback)
 	{
 		var that = this;
@@ -821,36 +863,7 @@ $.extend(APP.interactiveMap,
 			
 			myModal.find('.modal-body .categoriesAndFeatures').append(hpp);
 			
-			if (APP.config.checkLoggedUser())
-			{
-				var whichBtnClass = function(){
-					return ($.inArray(id, APP.config.localConfig.authuser.favorite_paths)>=0)? 'btn-warning' : 'btn-default';
-				};
-				var btnStar = $('<button type="button" class="btn '+whichBtnClass()+' btn-sm"><span class="glyphicon glyphicon-star" aria-hidden="true"></span></button>');
-				btnStar.data({
-					pathId: id
-				});
-				btnStar.click(function()
-				{
-					var myBtn = $(this);
-					var pathId = myBtn.data('pathId');
-					var bDelete = myBtn.hasClass('btn-warning');
-					$.ajax({
-						method: (bDelete)? 'DELETE' : 'POST',
-						url: '/jx/favoritepath/'+pathId,
-						data: {id: pathId},
-						success: function()
-						{
-							APP.config.loadConfig(function()
-							{
-								myBtn.removeClass('btn-warning').removeClass('btn-default');
-								myBtn.addClass(whichBtnClass());
-							});
-						}
-					});
-				});
-				myModal.find(".modal-header h3").append(btnStar);
-			}
+			that.setFavoritePathBtn({pathId: id, div: myModal.find(".modal-header h3")});
 		}
 		
 		if (section != 'itinerary')
