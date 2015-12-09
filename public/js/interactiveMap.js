@@ -39,6 +39,8 @@ $.extend(APP.interactiveMap,
 	eventObj: $(document),
 	leafletSaveMapPluginDir: '/public/modules/leaflet-save-map/',
 	heightsprofileCharts: {},
+	bAllPointsAreOverlays: false,
+	overlays: [],
 	
 	insertRowAlphabetically: function(container, row, selector, offset)
 	{
@@ -2021,6 +2023,15 @@ $.extend(APP.interactiveMap,
 					if (!APP.utils.isset(that.leafletHash) && !that.bQrCode)
 						APP.map.setExtent(APP.map.globalData[APP.map.currentMapId].globalExtent);
 					
+					/*if (APP.map.controlLayers && that.overlays.length>0)
+					{
+						APP.map.addOverlay({
+							name: "overlays",
+							layer: L.layerGroup(that.overlays),
+							show: true,
+						});
+					}*/
+					
 					if (APP.utils.isset(callback) && $.isFunction(callback))
 						callback();
 				}
@@ -2103,6 +2114,15 @@ $.extend(APP.interactiveMap,
 			layer.on("click", function(args){
 				that.onElementClick({ element: layer, section: section, id: v.id, latlng: null});
 			});
+			/*
+			if (that.bAllPointsAreOverlays)
+			{
+				that.overlays.push(layer);
+				if (v.title)
+					layer.bindLabel(v.title);
+				return false;
+			}
+			*/
 		}
 		else
 		{
@@ -2183,7 +2203,9 @@ $.extend(APP.interactiveMap,
 			layer.bindLabel(v.title);
 		
 		if (!APP.map.globalData[APP.map.currentMapId].map.hasLayer(layer))
+		{
 			APP.map.addLayer({layer: layer, id: section+"_"+v.id, max_scale: v.max_scale});
+		}
 	},
 	
 	isAvailableObject: function(myObj)
@@ -3029,6 +3051,54 @@ $.extend(APP.interactiveMap,
 		}
 	},
 	
+	setTogglePointsBtn: function()
+	{
+		var that = this;
+		
+		that.tooglePointsCtrl = L.easyButton({
+			leafletClasses: true,
+		    position: 'topright',
+			states: [
+			{
+				stateName: 'pointshidden',
+			    icon: 'glyphicon-eye-close',
+			    title: APP.i18n.translate('hide points'),
+			    onClick: function(btn, map) {
+			    	$.each(APP.map.globalData[APP.map.currentMapId].addedLayers, function(i,v)
+	    			{
+	    				if ($.isFunction(v.layer.getLatLng)){
+	    					// punti
+	    					APP.map.hideLayer(i);
+	    				}
+	    				else {
+	    					// non punti
+	    				}
+	    			});
+			    	btn.state('pointsshown');
+				}
+			},
+			{
+			    stateName: 'pointsshown',
+			    icon: 'glyphicon-eye-open',
+			    title: APP.i18n.translate('show points'),
+			    onClick: function(btn, map)
+			    {
+			    	$.each(APP.map.globalData[APP.map.currentMapId].addedLayers, function(i,v)
+	    			{
+	    				if ($.isFunction(v.layer.getLatLng)){
+	    					// punti
+	    					APP.map.showLayer(i);
+	    				}
+	    				else {
+	    					// non punti
+	    				}
+	    			});
+			    	btn.state('pointshidden');
+				}
+			}]
+		}).addTo(APP.map.globalData[APP.map.currentMapId].map);
+	},
+	
 	start: function()
 	{
 		var that = this;
@@ -3168,6 +3238,7 @@ $.extend(APP.interactiveMap,
 		APP.map.setMap(params);
 		that.mySidebar.div = APP.map.sidebar.div;
 		that.mySidebar.control = APP.map.sidebar.control;
+		that.setTogglePointsBtn();
 		that.getPage("info", false);
 		APP.map.getCurrentMap().on('click',function(){			
 			that.resetHighlightLayer();

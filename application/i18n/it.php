@@ -194,6 +194,9 @@ return array(
     'actions' => 'Azioni',
     
     'Image' => 'Immagine',
+		
+	'show points' => 'Mostra punti',
+	'hide points' => 'Nascondi punti',
     
     'Points of interest' => 'Punti di interesse',
 	'Pois' => 'Punti di interesse',

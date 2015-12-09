@@ -3,6 +3,7 @@
 $.extend(APP.map,
 {
 	globalData: {},
+	controlLayers: null,
 	previousMapId: null,
 	currentMapId: null,
 	sidebar: {
@@ -330,10 +331,29 @@ $.extend(APP.map,
 		//this.globalData[this.currentMapId].map.invalidateSize(true);
 	},
 	
+	addOverlay: function(obj) //name, layer, show
+	{
+		var that = this;
+		
+		var myId = APP.utils.getIndexFromField(that.globalData[that.currentMapId].addedLayers, "id", obj.name);
+		if (myId > -1)
+			that.globalData[that.currentMapId].addedLayers[myId].visible = true;
+		else
+			that.globalData[that.currentMapId].addedLayers[obj.name] = { id: obj.name, layer: obj.layer, visible: true, max_scale: null};
+			
+		if (!that.globalData[that.currentMapId].map.hasLayer(obj.name))
+		{
+			that.controlLayers.addOverlay(obj.layer, obj.name);
+			if (obj.show)
+				obj.layer.addTo(APP.map.globalData[APP.map.currentMapId].map);
+		}
+		
+		return that.globalData[that.currentMapId].addedLayers[obj.name].layer;
+	},
+	
 	addLayer: function(obj)
 	{
 		var that = this;
-		var foundLayer = false;
 		
 		var myId = APP.utils.getIndexFromField(that.globalData[that.currentMapId].addedLayers, "id", obj.id);
 		if (myId > -1)
@@ -534,6 +554,7 @@ $.extend(APP.map,
 		this.globalData[id] = {
 			map: {},
 			addedLayers: {},
+			addedOverlays: {},
 			layerGroups: {},			
 			drawControl: null,
 			drawnItems: null,
@@ -559,7 +580,7 @@ $.extend(APP.map,
 		if (!O.center)
 			that.setExtent(that.globalData[id].globalExtent);
 		
-		L.control.layers(bgl.baselayers,bgl.overlays).addTo(that.globalData[id].map);
+		that.controlLayers = L.control.layers(bgl.baselayers,bgl.overlays).addTo(that.globalData[id].map);
 
 		//MOUSE COORDINATES
 		if (APP.utils.isset(L.control.coordinates))
