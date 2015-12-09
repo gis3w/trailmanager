@@ -39,6 +39,7 @@ $.extend(APP.interactiveMap,
 	eventObj: $(document),
 	leafletSaveMapPluginDir: '/public/modules/leaflet-save-map/',
 	heightsprofileCharts: {},
+	allPointsHidden: false,
 	bAllPointsAreOverlays: false,
 	overlays: [],
 	
@@ -3074,6 +3075,7 @@ $.extend(APP.interactiveMap,
 	    					// non punti
 	    				}
 	    			});
+			    	that.allPointsHidden = true;
 			    	btn.state('pointsshown');
 				}
 			},
@@ -3093,6 +3095,7 @@ $.extend(APP.interactiveMap,
 	    					// non punti
 	    				}
 	    			});
+			    	that.allPointsHidden = false;
 			    	btn.state('pointshidden');
 				}
 			}]
@@ -3254,7 +3257,7 @@ $.extend(APP.interactiveMap,
 			var scale = that.getScale(APP.map.globalData[APP.map.currentMapId].map);
 			$.each(APP.map.globalData[APP.map.currentMapId].addedLayers, function(i,v)
 			{
-				if (i.indexOf("poi") === -1 || that.currentItinerary)
+				if (i.indexOf("poi") === -1 || that.currentItinerary || that.allPointsHidden)
 					return true;
 				
 				if (!APP.utils.isset(v.max_scale) || scale <= v.max_scale || (that.selectedElement.section === "poi" && that.selectedElement.identifier ===  parseInt(i.split("_")[1])))
