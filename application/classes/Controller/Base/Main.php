@@ -220,7 +220,7 @@ abstract class Controller_Base_Main extends Controller_Template {
              
              $arr = array();
              //il secondo controllo che facciamo è se fa aprte di un dropdown e se ci sono i permessi
-             if(isset($par['dropdown']) AND $this->user->allow_capa($menu['dropdown'][$par['dropdown']]['capability']))
+             if(isset($par['dropdown']) AND (is_null($menu['dropdown'][$par['dropdown']]['capability']) OR $this->user->allow_capa($menu['dropdown'][$par['dropdown']]['capability'])))
              {
                 
                  if(!isset($dropdowns[$par['dropdown']]))
