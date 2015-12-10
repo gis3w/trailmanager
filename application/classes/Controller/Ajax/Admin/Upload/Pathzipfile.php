@@ -60,6 +60,13 @@ class Controller_Ajax_Admin_Upload_Pathzipfile extends Controller_Ajax_Admin_Bas
 
         $this->jres->data = $res;
 
+        // reset cache
+        SAFE::resetCache([
+            'jx/data/everytype',
+            'jx/geo/everytype',
+            'jx/data/everytype'
+        ]);
+
     }
 
     public function action_delete() {

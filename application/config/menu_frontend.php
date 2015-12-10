@@ -37,7 +37,7 @@ return array(
             'name' => __('Favorities'),
             'url' => NULL,
             'capability' => NULL,
-            'icon' => 'path',
+            'icon' => 'star',
             'dropdown' => 'dropdown_mydata',
         ),
         'login' => array(

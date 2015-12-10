@@ -134,7 +134,10 @@ return array(
 
     'Document' => 'Documento',
   
-    
+    'My data' => 'I miei dati',
+	'Favorities' => 'Favoriti',
+	'Favorities section' => 'Sentiri favoriti',
+
     'Birth date' => 'Data di nascita',
     'Birth place' => 'Luogo di nascita',
   
