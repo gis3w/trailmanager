@@ -2245,7 +2245,7 @@ $.extend(APP.interactiveMap,
 						});
 					}
 					var title = myObj.title;
-					var l = APP.map.addLayer({layer: new L.Marker([v[tag].coordinates[1],v[tag].coordinates[0]], myObj).bindPopup(title), id: tag+" "+v.id});
+					var l = APP.map.addLayer({layer: new L.Marker([v[tag].coordinates[1],v[tag].coordinates[0]], myObj).bindPopup(title), id: tag+" "+v.id, visible: false});
 				}
 			});
 		}
@@ -2254,7 +2254,7 @@ $.extend(APP.interactiveMap,
 		
 		if (!APP.map.globalData[APP.map.currentMapId].map.hasLayer(layer))
 		{
-			APP.map.addLayer({layer: layer, id: section+"_"+v.id, max_scale: v.max_scale});
+			APP.map.addLayer({layer: layer, id: section+"_"+v.id, max_scale: v.max_scale, visible: (v.geoJSON.type === "Point")? false: true});
 		}
 	},
 	
@@ -3126,25 +3126,6 @@ $.extend(APP.interactiveMap,
 		    position: 'topright',
 			states: [
 			{
-				stateName: 'pointshidden',
-			    icon: 'glyphicon-eye-close',
-			    title: APP.i18n.translate('hide points'),
-			    onClick: function(btn, map) {
-			    	$.each(APP.map.globalData[APP.map.currentMapId].addedLayers, function(i,v)
-	    			{
-	    				if ($.isFunction(v.layer.getLatLng)){
-	    					// punti
-	    					APP.map.hideLayer(i);
-	    				}
-	    				else {
-	    					// non punti
-	    				}
-	    			});
-			    	that.allPointsHidden = true;
-			    	btn.state('pointsshown');
-				}
-			},
-			{
 			    stateName: 'pointsshown',
 			    icon: 'glyphicon-eye-open',
 			    title: APP.i18n.translate('show points'),
@@ -3162,6 +3143,25 @@ $.extend(APP.interactiveMap,
 	    			});
 			    	that.allPointsHidden = false;
 			    	btn.state('pointshidden');
+				}
+			},
+			{
+				stateName: 'pointshidden',
+			    icon: 'glyphicon-eye-close',
+			    title: APP.i18n.translate('hide points'),
+			    onClick: function(btn, map) {
+			    	$.each(APP.map.globalData[APP.map.currentMapId].addedLayers, function(i,v)
+	    			{
+	    				if ($.isFunction(v.layer.getLatLng)){
+	    					// punti
+	    					APP.map.hideLayer(i);
+	    				}
+	    				else {
+	    					// non punti
+	    				}
+	    			});
+			    	that.allPointsHidden = true;
+			    	btn.state('pointsshown');
 				}
 			}]
 		}).addTo(APP.map.globalData[APP.map.currentMapId].map);
@@ -3340,7 +3340,7 @@ $.extend(APP.interactiveMap,
 				if (i.indexOf("poi") === -1 || that.currentItinerary || that.allPointsHidden)
 					return true;
 				
-				if (!APP.utils.isset(v.max_scale) || scale <= v.max_scale || (that.selectedElement.section === "poi" && that.selectedElement.identifier ===  parseInt(i.split("_")[1])))
+				if (v.visible && (!APP.utils.isset(v.max_scale) || scale <= v.max_scale) || (that.selectedElement.section === "poi" && that.selectedElement.identifier ===  parseInt(i.split("_")[1])))
 					APP.map.showLayer(i);
 				else
 					APP.map.hideLayer(i);

@@ -356,13 +356,15 @@ $.extend(APP.map,
 		var that = this;
 		
 		var myId = APP.utils.getIndexFromField(that.globalData[that.currentMapId].addedLayers, "id", obj.id);
+		var bVisible = (APP.utils.isset(obj.visible))? obj.visible : true;
+		
 		if (myId > -1)
-			that.globalData[that.currentMapId].addedLayers[myId].visible = true;
+			that.globalData[that.currentMapId].addedLayers[myId].visible = bVisible;
 		else
-			that.globalData[that.currentMapId].addedLayers[obj.id] = { id: obj.id, layer: obj.layer, visible: true, max_scale: obj.max_scale};
+			that.globalData[that.currentMapId].addedLayers[obj.id] = { id: obj.id, layer: obj.layer, visible: bVisible, max_scale: obj.max_scale};
 			
-		if (!that.globalData[that.currentMapId].map.hasLayer(that.globalData[that.currentMapId].addedLayers[obj.id].layer))
-				that.globalData[that.currentMapId].addedLayers[obj.id].layer.addTo(that.globalData[that.currentMapId].map);
+		if (bVisible && !that.globalData[that.currentMapId].map.hasLayer(that.globalData[that.currentMapId].addedLayers[obj.id].layer))
+			that.globalData[that.currentMapId].addedLayers[obj.id].layer.addTo(that.globalData[that.currentMapId].map);
 		
 		return that.globalData[that.currentMapId].addedLayers[obj.id].layer;
 	},
