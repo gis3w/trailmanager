@@ -58,13 +58,14 @@ def main():
         cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         print "Connected!\n"
 
-        #before erase data from db based on name!! is not safe
-        qDeletePath = "DELETE FROM paths WHERE nome = '{}'".format(pathNumber)
-        cursor.execute(qDeletePath)
-        conn.commit()
+
 
         #sentieri
         if os.path.exists(WDPath+'sentiero_'+pathNumber+'.shp'):
+            #before erase data from db based on name!! is not safe
+            qDeletePath = "DELETE FROM paths WHERE nome = '{}'".format(pathNumber)
+            cursor.execute(qDeletePath)
+            conn.commit()
             PATH = True
             cmdPATH = "ogr2ogr -update -addFields -geomfield 'the_geom' -f PostgreSQL 'PG:dbname={} user={} password={} host={}' {}sentiero_{}.shp -nlt PROMOTE_TO_MULTI -nln public.paths".format(PG_DB,PG_USER,PG_PASSWORD,PG_HOST,WDPath,pathNumber)
             os.system(cmdPATH)
@@ -84,10 +85,10 @@ def main():
 
 
         #punti notevoli
-        qDeletePoi = "DELETE FROM pois WHERE se = '{}'".format(SE)
-        cursor.execute(qDeletePoi)
-        conn.commit()
         if os.path.exists(WDPath+'puntinotevoli_'+pathNumber+'.shp'):
+            qDeletePoi = "DELETE FROM pois WHERE se = '{}'".format(SE)
+            cursor.execute(qDeletePoi)
+            conn.commit()
             POIS = True
             cmdPOI = "ogr2ogr -update -addFields -geomfield 'the_geom' -f PostgreSQL 'PG:dbname={} user={} password={} host={}' {}puntinotevoli_{}.shp -nlt POINT -nln public.pois".format(PG_DB,PG_USER,PG_PASSWORD,PG_HOST,WDPath,pathNumber)
             out = os.system(cmdPOI)
@@ -95,10 +96,10 @@ def main():
 
 
         #tratte
-        qDeleteSegment = "DELETE FROM path_segments WHERE se = '{}'".format(SE)
-        cursor.execute(qDeleteSegment)
-        conn.commit()
         if os.path.exists(WDPath+'tratte_'+pathNumber+'.shp'):
+            qDeleteSegment = "DELETE FROM path_segments WHERE se = '{}'".format(SE)
+            cursor.execute(qDeleteSegment)
+            conn.commit()
             SEGMENT_PATHS = True
             cmdSEGMENT = "ogr2ogr -update -addFields -geomfield 'the_geom' -f PostgreSQL 'PG:dbname={} user={} password={} host={}' {}tratte_{}.shp -nlt PROMOTE_TO_MULTI -nln public.path_segments".format(PG_DB,PG_USER,PG_PASSWORD,PG_HOST,WDPath,pathNumber)
             os.system(cmdSEGMENT)
