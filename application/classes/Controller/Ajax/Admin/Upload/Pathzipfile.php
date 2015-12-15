@@ -118,12 +118,14 @@ class Controller_Ajax_Admin_Upload_Pathzipfile extends Controller_Ajax_Admin_Bas
 
             if($exe->status === -1 OR $exe->status > 0)
             {
+                Kohana::$log->add(LOG::DEBUG,'errore status import');
                 throw HTTP_Exception::factory(500,__('Si sono verificati i seguenti errori:').$exe->error);
             }
 
         }
         catch (Exception $e)
         {
+            Kohana::$log->add(LOG::DEBUG,'errore import');
             throw HTTP_Exception::factory(500,__('Si sono verificati i seguenti errori:').$e);
         }
 
