@@ -82,11 +82,13 @@ class Controller_Ajax_Admin_Upload_Pathzipfile extends Controller_Ajax_Admin_Bas
     {
         $filesystem = new Filesystem();
         try {
+            Kohana::$log->add(LOG::DEBUG,'Arriva remove file');
             if(isset($this->_zipFile))
                 $filesystem->remove($this->_zipFile);
 
             if(isset($this->_dirZipFiles))
                 $filesystem->remove($this->_dirZipFiles);
+            Kohana::$log->add(LOG::DEBUG,'passato remove file');
 
         }
         catch (Exception $e)
