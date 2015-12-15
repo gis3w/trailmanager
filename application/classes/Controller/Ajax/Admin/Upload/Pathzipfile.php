@@ -80,7 +80,9 @@ class Controller_Ajax_Admin_Upload_Pathzipfile extends Controller_Ajax_Admin_Bas
 
     protected function _deleteZipFiles()
     {
+        Kohana::$log->add(LOG::DEBUG,'istanzina remove file');
         $filesystem = new Filesystem();
+        Kohana::$log->add(LOG::DEBUG,'fine istanza remove file');
         try {
             Kohana::$log->add(LOG::DEBUG,'Arriva remove file');
             if(isset($this->_zipFile))
