@@ -101,7 +101,32 @@ class Controller_Ajax_Admin_Sheet_Base extends Controller_Ajax_Base_Crud{
     
     protected function _data_edit()
     {
-        Filter::emptyPostDataToNULL();
+        $keys_NULL = [
+            'class_ril',
+            'pt_inter',
+            'strut_ric',
+            'stato_segn',
+            'aree_attr',
+            'nuov_segna',
+            'tipo_segna',
+            'insediam',
+            'fatt_degr',
+            'prio_int',
+            'pt_acqua',
+            'pt_socc',
+            'coin_in_fi',
+            'percorr',
+            'rid_perc',
+            'cop_tel',
+            'tp_trat',
+            'percorr',
+            'tp_fondo',
+            'morf',
+            'rid_perc',
+            'ambiente',
+            'utenza',
+        ];
+        Filter::emptyPostDataToNULL(NULL,$keys_NULL);
         unset($_POST['data_mod'],$_POST['data_ins']);
         $this->_set_the_geom_edit();
         $this->_orm->values($_POST);

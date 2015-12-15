@@ -113,7 +113,7 @@ class Kohana_Filter
     /**
      * Unset dei valori vuoti dal client
      */
-    public static function emptyPostDataToNULL($keys = NULL)
+    public static function emptyPostDataToNULL($keys = NULL, $keys_NULL =  [])
     {
         // ne caso di chiavi da acìzzerare
         
@@ -131,8 +131,17 @@ class Kohana_Filter
                 $tounset[] = $key;
             
         foreach($tounset as $key)
-            unset($_POST[$key]);
-            #$_POST[$key] = NULL;
+        {
+            if(in_array($key,$keys_NULL))
+            {
+                $_POST[$key] = NULL;
+            }
+            else
+            {
+                unset($_POST[$key]);
+            }
+        }
+
     }
     
     /**
