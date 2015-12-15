@@ -24,6 +24,7 @@ class Controller_Ajax_Admin_Upload_Pathzipfile extends Controller_Ajax_Admin_Bas
         );
 
         $this->UploadHandler = new UploadHandler($this->uplload_options,FALSE);
+
     }
 
 
@@ -33,8 +34,9 @@ class Controller_Ajax_Admin_Upload_Pathzipfile extends Controller_Ajax_Admin_Bas
         {
             $this->_errors['path_name'] = __('Path name doesn\'t be empty');
         }
-
+        Kohana::$log->add(LOG::DEBUG,'Arriva upload');
         $res =  $this->UploadHandler->post(FALSE);
+        Kohana::$log->add(LOG::DEBUG,'Pasato uplaod');
 
         // devo aggiungere il controllo di eventuali errori di upload
         // si controlla che nella risposta ci siano degli errori:
@@ -48,7 +50,9 @@ class Controller_Ajax_Admin_Upload_Pathzipfile extends Controller_Ajax_Admin_Bas
         }
         else
         {
+            Kohana::$log->add(LOG::DEBUG,'Arriva loadxipfile');
             $this->_loadZipFile($res);
+            Kohana::$log->add(LOG::DEBUG,'Passato loadzipfile');
             if(!empty($this->_errors))
             {
                 $this->_validation_error (array($this->uplload_options['param_name'] => implode('; ',  array_values($this->_errors))));
@@ -100,10 +104,12 @@ class Controller_Ajax_Admin_Upload_Pathzipfile extends Controller_Ajax_Admin_Bas
     protected function _execTrailImport()
     {
         try{
+            Kohana::$log->add(LOG::DEBUG,'Arriva import');
             $this->_dirZipFiles = $this->_upload_path.$_POST['path_name'];
             $cmd = APPPATH.'../trail_import_data/tid.py '.$_POST['path_name'].' "'.ORM::factory('Itinerary',$_POST['itinerary'])->name.'"';
             $exe = Exe::factory($cmd);
             $res = $exe->run();
+            Kohana::$log->add(LOG::DEBUG,'Passato import');
 
 
             if($exe->status === -1 OR $exe->status > 0)
