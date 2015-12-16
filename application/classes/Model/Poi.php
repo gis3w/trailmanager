@@ -62,6 +62,11 @@ class Model_Poi extends ORMGIS {
             'foreign_key' => 'pt_socc',
             'far_key' => 'code'
         ),
+        'fatt_degr_code' => array(
+            'model'   => 'Fatt_Degr_Poi',
+            'foreign_key' => 'fatt_degr',
+            'far_key' => 'code'
+        ),
     );
     
     public function labels() {

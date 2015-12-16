@@ -27,7 +27,8 @@
                                   'aree_attr',
                                   'insediam',
                                   'pt_acqua',
-                                  'pt_socc'] as $code): ?>
+                                  'pt_socc',
+                                  'fatt_degr'] as $code): ?>
                     <?php if(isset($poi->{$code.'_code'}->description)): ?>
                         <div><?php echo __($code) ?>: <?php echo $poi->{$code.'_code'}->description ?></div>
                     <?php endif ?>
@@ -50,9 +51,16 @@
         <?php if($poi->note): ?>
         <!--DESCRIPTION-->
         <div class="outside-column" >
-            <h2><?php echo __('Description') ?></h2>
+            <h2><?php echo __('Note') ?></h2>
             <p><?php echo $poi->note ?></p>
         </div>
+        <?php endif ?>
+        <?php if($poi->note_man): ?>
+            <!--DESCRIPTION-->
+            <div class="outside-column" >
+                <h2><?php echo __('Maintenance note') ?></h2>
+                <p><?php echo $poi->note_man ?></p>
+            </div>
         <?php endif ?>
 
         <!--IMAGES-->

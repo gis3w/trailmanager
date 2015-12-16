@@ -1263,9 +1263,10 @@ $.extend(APP.interactiveMap,
 				checkVoice('insediam', 'ov-fk',{values: APP.config.localConfig.insediam_poi, fk:'code',fk_toshow:'description', voiceResult: "categories"});
 				checkVoice('pt_acqua', 'ov-fk',{values: APP.config.localConfig.pt_acqua_poi, fk:'code',fk_toshow:'description', voiceResult: "categories"});
 				checkVoice('pt_socc', 'ov-fk',{values: APP.config.localConfig.pt_socc_poi, fk:'code',fk_toshow:'description', voiceResult: "categories"});
+				checkVoice('fatt_degr', 'ov-fk',{values: APP.config.localConfig.fatt_degr_poi, fk:'code',fk_toshow:'description', voiceResult: "categories"});
 				checkVoice('coordinates', 'ov-icage',{voiceResult: "features"});
 				checkVoice('quota', 'ov-icage',{voiceResult: "features"});
-				checkVoice('note', 'text');
+				checkVoice('note_man', 'text');
 				checkVoice('video_poi', 'video');
 				break;
 			case "path":

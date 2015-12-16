@@ -244,6 +244,7 @@ return array(
     'Signage type class' => 'Tipo segnaletica',
     'Signage state class' => 'Stato della segnaletica',
     'Degeneration cause class' => 'Fattori di degrado',
+	'fatt_degr' => 'Fattori di degrado',
     'Rescue point class' => 'Punti soccorso',
 	'pt_socc' => 'Punti soccorso',
     'New signage' => 'Nuova segnaletica',
@@ -360,6 +361,9 @@ return array(
 	'Path' => 'Sentiero',
     'Path segment' => 'Tratta',
     'Path segments' => 'Tratte',
+
+	'Maintenance note' => 'Note manutenzione',
+	'Note_man' => 'Note manutenzione',
 
 
     'tab-base-data' => '<b>DATI RILIEVO</b>',
