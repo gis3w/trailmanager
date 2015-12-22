@@ -453,7 +453,7 @@ $.extend(APP.interactiveMap,
 		}
 		
 		that.currentItinerary = id;
-		APP.map.hideAllLayers();
+		that.hiddenLayers = APP.map.hideAllLayers();
 		
 		$.each(that.myData[section][id].data.areas,function(j,k){
 			//APP.map.addLayer(that.myData.path[v.data.id].geo.geoJSON);
@@ -494,7 +494,7 @@ $.extend(APP.interactiveMap,
 		that.currentItinerary = null;
 		that.selectedElement = {identifier: null, section: null};
 		that.hideBottomBar();
-		APP.map.showAllLayers();
+		APP.map.showLayers(that.hiddenLayers);
 		that.resetHighlightLayer();
 		APP.map.setExtent(APP.map.globalData[APP.map.currentMapId].globalExtent);
 		if (APP.utils.isset(onCloseCallback) && $.isFunction(onCloseCallback))
@@ -750,6 +750,7 @@ $.extend(APP.interactiveMap,
 	
 	setFavoritePathBtn: function(obj) //pathId, div
 	{
+		var that = this;
 		if (APP.config.checkLoggedUser())
 		{
 			var whichBtnClass = function(){
@@ -774,6 +775,7 @@ $.extend(APP.interactiveMap,
 						{
 							$(".favoritePathBtn_"+pathId).removeClass('btn-warning').removeClass('btn-default');
 							$(".favoritePathBtn_"+pathId).addClass(whichBtnClass());
+							var lg = that.updateFavoritePaths();
 						});
 					}
 				});
@@ -1383,6 +1385,55 @@ $.extend(APP.interactiveMap,
 		APP.map.setExtent(APP.map.globalData[APP.map.currentMapId].globalExtent);
 	},
 	
+	updateFavoritePaths: function()
+	{
+		var that = this;
+		
+		if (!APP.utils.isset(APP.config.localConfig.authuser.favorite_paths))
+			return false;
+		
+		var listGroup = that.mySidebar.div.find(".favoritePaths");
+		var bInsert = false;
+		if (listGroup.length>0){
+			listGroup.remove();
+			bInsert = true;
+		}
+		listGroup = $('<div class="list-group list-group-wo-radius favoritePaths" style="margin: 0px -23px 0px -23.5px; padding: -10px"></div>');
+		
+		$.each(APP.config.localConfig.authuser.favorite_paths, function(i,v)
+		{	
+			var path = that.myData.path[""+v];
+			var media = $(	'<div class="media">\
+								<div class="media-body">\
+									<h4 class="media-heading">'+path.data.title+'</h4>\
+								</div>\
+							</div>');
+			
+			var src = that.getOverviewImage("path", path.data.id, true);
+			if (src)
+			{
+				media.prepend(	'<a class="pull-left" href="#">\
+									<img class="media-object img-rounded" src="'+src+'" alt="'+APP.i18n.translate('no_image')+'" style="max-width: 60px; max-height: 60px">\
+								</a>');
+			}
+			
+			var a = $('<a id="item_path_'+path.data.id+'" href="#" class="list-group-item '+((that.currentElement === path.data.id)? "active" : "")+'"></a>');
+			a.data(path).append(media);
+			a.click(function(){
+				var lg = $(this).parents(".list-group:first");
+				lg.find("a.active").removeClass("active");
+				$(this).addClass("active");
+				//that.mySidebar.control.hide();
+				that.onElementClick({ element: $(this), section: "path", id: path.data.id, latlng: null});
+			});
+			that.insertRowAlphabetically(listGroup, a, ".media-heading");
+		});
+		if (bInsert){
+			that.mySidebar.div.append(listGroup);
+		}
+		return listGroup;
+	},
+	
 	closeItems: function(section, callback)
 	{
 		var that = this;
@@ -1469,40 +1520,9 @@ $.extend(APP.interactiveMap,
 				that.mySidebar.div.html(listGroup);
 				break;
 			case "favorities":
-				var listGroup = $('<div class="list-group list-group-wo-radius" style="margin: 0px -23px 0px -23.5px; padding: -10px"></div>');
-				
-				if (!APP.utils.isset(APP.config.localConfig.authuser.favorite_paths))
-					break;
-				
-				$.each(APP.config.localConfig.authuser.favorite_paths, function(i,v)
-				{	
-					var path = that.myData.path[""+v];
-					var media = $(	'<div class="media">\
-										<div class="media-body">\
-											<h4 class="media-heading">'+path.data.title+'</h4>\
-										</div>\
-									</div>');
-					
-					var src = that.getOverviewImage("path", path.data.id, true);
-					if (src)
-					{
-						media.prepend(	'<a class="pull-left" href="#">\
-											<img class="media-object img-rounded" src="'+src+'" alt="'+APP.i18n.translate('no_image')+'" style="max-width: 60px; max-height: 60px">\
-										</a>');
-					}
-					
-					var a = $('<a id="item_path_'+path.data.id+'" href="#" class="list-group-item '+((that.currentElement === path.data.id)? "active" : "")+'"></a>');
-					a.data(path).append(media);
-					a.click(function(){
-						var lg = $(this).parents(".list-group:first");
-						lg.find("a.active").removeClass("active");
-						$(this).addClass("active");
-						that.mySidebar.control.hide();
-						that.onElementClick({ element: $(this), section: "path", id: path.data.id, latlng: null});
-					});
-					that.insertRowAlphabetically(listGroup, a, ".media-heading");
-				});
-				that.mySidebar.div.html(listGroup);
+				var lg = that.updateFavoritePaths();
+				if (lg.length>0)
+					that.mySidebar.div.append(lg);
 				break;
 			default: //case "everytype": case "highlightingsdata": case "poi": case "path": case "area":
 				var accordion = $('<div id="accordion-'+section+'" class="accordion-list" style="margin: 0px -23px 0px -23.5px; padding: -10px"></div>');

@@ -369,6 +369,14 @@ $.extend(APP.map,
 		return that.globalData[that.currentMapId].addedLayers[obj.id].layer;
 	},
 	
+	showLayers: function(layerArr)
+	{
+		var that = this;
+		$.each(layerArr, function(i,v){
+			that.showLayer(v);
+		});
+	},
+	
 	showLayer: function(id)
 	{
 		var that = this;
@@ -404,9 +412,15 @@ $.extend(APP.map,
 	hideAllLayers: function()
 	{
 		var that = this;
+		var hiddenLayers = [];
 		$.each(that.globalData[that.currentMapId].addedLayers, function(i, v){
-			that.hideLayer(i);
+			if (v.visible)
+			{
+				that.hideLayer(i);
+				hiddenLayers.push(i);
+			}
 		});
+		return hiddenLayers;
 	},
 	
 	removeLayer: function(id)
