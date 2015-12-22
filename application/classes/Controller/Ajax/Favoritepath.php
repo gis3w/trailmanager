@@ -19,6 +19,11 @@ class Controller_Ajax_Favoritepath extends Controller_Ajax_Base_Crud{
     {
         $this->_orm->remove('users',$this->user);
     }
+
+    protected function _get_list()
+    {
+        $this->jres->data->items = array_keys($this->user->paths->find_all()->as_array('id'));
+    }
     
 
 
