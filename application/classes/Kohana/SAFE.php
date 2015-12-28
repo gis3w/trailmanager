@@ -13,7 +13,7 @@
 class Kohana_SAFE extends Kohana_Core
 {
     
-    const VERSION = 'trailmanager-0.9';
+    const VERSION = 'trailmanager-0.9.1';
     
     /**
      * Overload del metodo per avere anche la traduzione compresa

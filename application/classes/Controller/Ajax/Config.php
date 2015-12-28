@@ -171,7 +171,7 @@ class Controller_Ajax_Config extends Controller_Ajax_Auth_Nostrict{
     
     protected function _get_table($ORM_name)
     {
-        
+
         if($ORM_name InstanceOf Model)
         {
             $results =  $ORM_name;

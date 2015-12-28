@@ -557,7 +557,7 @@ $.extend(APP.anagrafica,
 				
 				$.ajax({
 					type: 'POST',
-					url: "/jx/administration/aclroles/"+obj.id,
+					url: "/jx/admin/administration/aclroles/"+obj.id,
 					data: o,
 					dataType: 'json',
 					success: function(data)
@@ -599,7 +599,7 @@ $.extend(APP.anagrafica,
 		
 		$.ajax({
 			type: 'GET',
-			url: "/jx/administration/aclroles/"+obj.id,
+			url: "/jx/admin/administration/aclroles/"+obj.id,
 			dataType: 'json',
 			success: function(data)
 			{

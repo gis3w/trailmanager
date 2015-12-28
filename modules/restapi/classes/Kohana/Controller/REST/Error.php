@@ -86,6 +86,8 @@ abstract class Kohana_Controller_REST_Error extends Kohana_Controller_Api_Main
         $this->jres->status = 0;
 
         $this->jres->error->errcode = $this->request->action();
+
+        $this->_message = rawurldecode($this->_message);
 	}
 
 

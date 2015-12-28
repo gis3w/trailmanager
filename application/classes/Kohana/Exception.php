@@ -119,8 +119,8 @@ class Kohana_Exception extends Kohana_Kohana_Exception
         $attributes = array(
             'action'	=> 500,
             //'origuri'	=> rawurlencode(Arr::get($_SERVER, 'REQUEST_URI')),
-            //'message'	=> trim(rawurlencode($e->getMessage())),
-            'message'	=> $e->getMessage(),
+            'message'	=> rawurlencode($e->getMessage()),
+            //'message'	=> $e->getMessage(),
             'file' => rawurldecode($e->getFile()),
             'line' => rawurldecode($e->getLine()),
         );
@@ -151,7 +151,6 @@ class Kohana_Exception extends Kohana_Kohana_Exception
                             default:
                                 $errUrl = 'rest/error';
                         }
-                        
                         echo Request::factory(Route::url($errUrl, $attributes))
                             ->execute()
                             ->send_headers()
