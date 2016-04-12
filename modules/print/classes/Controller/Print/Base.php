@@ -113,7 +113,7 @@ abstract class Controller_Print_Base extends Controller_Base_Main {
             @unlink($file);
 
         $this->response->headers('Content-Type', 'application/pdf');
-        $this->response->headers('Content-Disposition','attachment; filename=\''.$this->filename.'\'');
+        $this->response->headers('Content-Disposition','attachment; filename='.$this->filename);
         echo $this->_pdfContent;
     }
 
