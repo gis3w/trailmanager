@@ -62,6 +62,13 @@ def main():
 
         #sentieri
         if os.path.exists(WDPath+'sentiero_'+pathNumber+'.shp'):
+            # get current path_id
+            cursor.execute("SELECT id from paths WHERE nome = '{}'".format(pathNumber))
+            pathRow = cursor.fetchone()
+            conn.commit()
+            OLD_PATH_ID = pathRow['id']
+
+
             #before erase data from db based on name!! is not safe
             qDeletePath = "DELETE FROM paths WHERE nome = '{}'".format(pathNumber)
             cursor.execute(qDeletePath)
@@ -81,6 +88,9 @@ def main():
         SE = pathRow['se']
         PATH_ID = pathRow['id']
 
+        # update users_paths table
+        cursor.execute("UPDATE  users_paths set path_id={} where path_id={}".format(PATH_ID, OLD_PATH_ID))
+        conn.commit()
 
 
 
