@@ -12,10 +12,14 @@ trait Controller_Ajax_Base_Cache_GET {
 
         if ($jres = $cache->get($this->request->uri(), FALSE))
         {
+            Kohana::$log->add(LOG_DEBUG, 'cache load');
+            Kohana::$log->add(LOG_DEBUG, $this->request->uri());
                 $this->jres = $jres;
         }
         else
         {
+            Kohana::$log->add(LOG_DEBUG, 'cache save');
+            Kohana::$log->add(LOG_DEBUG, $this->request->uri());
             // Determine the action to use
             $action = 'action_'.$this->request->action();
 
