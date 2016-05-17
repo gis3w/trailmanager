@@ -66,7 +66,7 @@ def main():
             cursor.execute("SELECT id from paths WHERE nome = '{}'".format(pathNumber))
             pathRow = cursor.fetchone()
             conn.commit()
-            OLD_PATH_ID = pathRow['id']
+            OLD_PATH_ID = pathRow['id'] if 'id' in pathRow else None
 
 
             #before erase data from db based on name!! is not safe
@@ -89,8 +89,9 @@ def main():
         PATH_ID = pathRow['id']
 
         # update users_paths table
-        cursor.execute("UPDATE  users_paths set path_id={} where path_id={}".format(PATH_ID, OLD_PATH_ID))
-        conn.commit()
+        if OLD_PATH_ID is not None:
+            cursor.execute("UPDATE  users_paths set path_id={} where path_id={}".format(PATH_ID, OLD_PATH_ID))
+            conn.commit()
 
 
 

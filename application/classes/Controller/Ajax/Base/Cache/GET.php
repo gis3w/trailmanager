@@ -9,7 +9,7 @@ trait Controller_Ajax_Base_Cache_GET {
         $this->before();
 
         $cache = SAFE::getCache();
-
+        error_log($this->request->uri());
         if ($jres = $cache->get($this->request->uri(), FALSE))
         {
                 $this->jres = $jres;
