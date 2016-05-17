@@ -68,7 +68,7 @@ class Controller_Ajax_Admin_Upload_Pathzipfile extends Controller_Ajax_Admin_Bas
         SAFE::resetCache([
             'jx/data/everytype',
             'jx/geo/everytype',
-            'jx/data/everytype',
+            'jx/media/everytype',
             'jx/geo#it',
             'jx/media#it',
             'jx/data#it',
