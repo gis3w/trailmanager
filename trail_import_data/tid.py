@@ -66,7 +66,7 @@ def main():
             cursor.execute("SELECT id from paths WHERE nome = '{}'".format(pathNumber))
             pathRow = cursor.fetchone()
             conn.commit()
-            OLD_PATH_ID = pathRow['id'] if 'id' in pathRow else None
+            OLD_PATH_ID = pathRow['id'] if pathRow and 'id' in pathRow else None
 
 
             #before erase data from db based on name!! is not safe
