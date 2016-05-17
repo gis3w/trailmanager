@@ -66,7 +66,7 @@ class Controller_Ajax_Highlitingpoi extends Controller_Ajax_Admin_Base_Highlitin
         $toRes = Controller_Ajax_Base_Crud::_single_request_row($orm);
 
         $this->_unset_ORMGIS_geofield($toRes);
-        $this->_set_the_geom($toRes, $orm);
+        $toRes['geoJSON'] = $orm->asgeojson_php;
 
         # data to unset:
         foreach ( array(
