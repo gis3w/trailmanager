@@ -42,6 +42,7 @@ $.extend(APP.interactiveMap,
 	allPointsHidden: false,
 	bAllPointsAreOverlays: false,
 	overlays: [],
+	highlitings: {},
 	
 	insertRowAlphabetically: function(container, row, selector, offset)
 	{
@@ -88,15 +89,35 @@ $.extend(APP.interactiveMap,
 	
 	getObjectTitle: function(section, id)
 	{
-		var that = this;
-		return (section === "itinerary")? that.myData[section][id].data.name : that.myData[section][id].data.title;
+		switch (section)
+		{
+			case "itinerary":
+				return this.myData[section][id].data.name;
+			case "highlitingpoi": case "highlitingpath": 
+				return this.myData[section][id].data.subject;
+			default:
+				return this.myData[section][id].data.title;
+		}
 	},
 	
 	getOverviewImage: function(section, id, thumbnail)
 	{
 		var that = this;
-		if (that.myData[section][id].media && that.myData[section][id].media.images && $.isArray(that.myData[section][id].media.images) && that.myData[section][id].media.images.length > 0)
-			return (thumbnail)? that.myData[section][id].media.images[0].image_thumb_url : that.myData[section][id].media.images[0].image_url;
+		
+		if (that.myData[section][id].media && that.myData[section][id].media.images)
+		{
+			var imgs = that.myData[section][id].media.images;
+			
+			if ($.isArray(imgs) && imgs.length)
+			{
+				return (thumbnail)? imgs[0].image_thumb_url : imgs[0].image_url;
+			}
+			
+			if ($.isPlainObject(imgs))
+			{
+				return (thumbnail)? imgs.image_thumb_url : imgs.image_url;
+			}
+		}
 		else
 		{
 			if (that.bDefaultOverviewImage)
@@ -106,14 +127,6 @@ $.extend(APP.interactiveMap,
 			else
 				return undefined;
 		}
-		
-		/*
-		var that = this;
-		if (that.myData[section][id].media && that.myData[section][id].media.images && $.isArray(that.myData[section][id].media.images) && that.myData[section][id].media.images.length > 0)
-			return (thumbnail)? that.myData[section][id].media.images[0].image_thumb_url : that.myData[section][id].media.images[0].image_url;
-		else
-			return (thumbnail && APP.config.localConfig.default_overview_thumbnail)? APP.config.localConfig.default_overview_thumbnail : APP.config.localConfig.default_overview_image;
-		*/
 	},
 	
 	getTypology: function(typologyId)
@@ -517,7 +530,7 @@ $.extend(APP.interactiveMap,
 			minWidth: (that.body.width() > 320)? 280 : (that.body.width()-(that.body.width()*0.4)),
 			autoPan: false,
 		};
-		if (section == "poi")
+		if (section == "poi" || section == "highlitingpoi")
 			po.offset = L.point(0, -25);
 		
 		var media = $(	'<div class="media">\
@@ -821,7 +834,7 @@ $.extend(APP.interactiveMap,
 								</div>\
 							</div>');
 		
-		if(section == 'poi')
+		if(section == 'poi' || section == 'highlitingpoi')
 		{
 			var cat = $('<div class="col-md-7">\
 							<div class="panel panel-default categories" style="display: none">\
@@ -836,7 +849,7 @@ $.extend(APP.interactiveMap,
 			myModal.find('.modal-body .categoriesAndFeatures').append(cat);
 		}
 		
-		if(section == 'poi' || section == 'path')
+		if(section == 'poi' || section == 'path' || section == 'highlitingpoi' || section == 'highlitinpath')
 		{
 			var feat = $(	'<div class="col-md-5">\
 									<div class="panel panel-default features" style="display: none">\
@@ -851,7 +864,7 @@ $.extend(APP.interactiveMap,
 			myModal.find('.modal-body .categoriesAndFeatures').append(feat);
 		}
 		
-		if(section == 'path')
+		if(section == 'path' || section == 'highlitingpath')
 		{
 			var hpp = $('<div class="col-md-7">\
 								<div class="panel panel-default heightsprofilepath" style="display: none">\
@@ -904,30 +917,21 @@ $.extend(APP.interactiveMap,
 			return false;
 		});
   		myModal.find('.modal-footer').prepend(btnKML);
-				
-		if (!APP.utils.isset(that.myData[section][id].media) || !APP.utils.isset(that.myData[section][id].media.images) || !$.isArray(that.myData[section][id].media.images) || that.myData[section][id].media.images.length === 0)
-		{
-			if (!that.bDefaultOverviewImage)
-			{
-				myModal.find(".overviewImage").hide();
-			}
-			else
-			{
-				var img = $('<img alt="" class="img-responsive centerImage" style="width: 100%; height:100%;">');
-				img.attr('src', APP.config.localConfig.default_overview_image);
-				/*var thumbnail = $('<div class="col-xs-4 col-md-2">\
-									<a href="#" class="thumbnail">\
-									  <img src="'+APP.config.localConfig.default_overview_image+'" alt="">\
-									</a>\
-								  </div>');
-				myModal.find(".thumbnailsRow").append(thumbnail)*/
-			}
-		}
-		else
+		
+  		
+  		
+		if (
+				that.myData[section][id].media && 
+				that.myData[section][id].media.images &&
+				(
+					($.isArray(that.myData[section][id].media.images) && that.myData[section][id].media.images.length) ||
+					($.isPlainObject(that.myData[section][id].media.images) && !$.isEmptyObject(that.myData[section][id].media.images))
+				)
+			)
 		{
 			var imageGalleryId = 'big_'+section+'_'+id;
 			
-			$.each(that.myData[section][id].media.images, function(i,v)
+			var insertImages = function(i, v)
 			{
 				if (i === 0)
 				{
@@ -945,7 +949,19 @@ $.extend(APP.interactiveMap,
 				thumbnail.find('img').tooltip({container: '#modal-'+section+'-info', placement: 'auto', title: $(v.description).text()});
 				
 				myModal.find(".thumbnailsRow").append(thumbnail)
-			});
+			};
+			
+			if ($.isArray(that.myData[section][id].media.images))
+			{
+				$.each(that.myData[section][id].media.images, function(i,v)
+				{
+					insertImages(i, v)
+				});
+			}
+			if ($.isPlainObject(that.myData[section][id].media.images))
+			{
+				insertImages(0, that.myData[section][id].media.images);
+			}			
 			
 			that.setBlueimpGalleryDiv({
 				container: that.body,
@@ -953,6 +969,18 @@ $.extend(APP.interactiveMap,
 				classes: 'blueimp-gallery blueimp-gallery-controls',
 				closeBtn: true,
 			});
+		}
+		else
+		{
+			if (!that.bDefaultOverviewImage)
+			{
+				myModal.find(".overviewImage").hide();
+			}
+			else
+			{
+				var img = $('<img alt="" class="img-responsive centerImage" style="width: 100%; height:100%;">');
+				img.attr('src', APP.config.localConfig.default_overview_image);
+			}
 		}
 		
 		var videosContainer = null;
@@ -1911,7 +1939,6 @@ $.extend(APP.interactiveMap,
 		var url = (APP.utils.isset(o.url))? o.url : (APP.utils.isset(section))? '/jx/media/'+section+'/' : '/jx/media/everytype/';
 		var callback = (APP.utils.isset(o.callback))? o.callback : null;
 		var bAsync = (APP.utils.isset(o.bAsync))? o.bAsync : true;
-		var bSectionCompleted = true;
 		
 		$.ajax({
 			type: 'GET',
@@ -1924,32 +1951,13 @@ $.extend(APP.interactiveMap,
 				{
 					if (APP.utils.isset(data.data) && APP.utils.isset(data.data.items))
 					{
-						$.each(data.data.items, function(i, v)
-						{
-							var cs = (APP.utils.isset(section))? section : i.toLowerCase();
-							if (!APP.utils.isset(destination[cs]))
-								destination[cs] = {};
-							if (!$.isArray(v) && $.isPlainObject(v))
-							{
-								if (!APP.utils.isset(destination[cs][v.id]))
-									destination[cs][v.id] = {};
-								destination[cs][v.id].media = v;
-							}
-							else
-							{
-								$.each(v, function(j,k)
-								{
-									if (!APP.utils.isset(destination[cs][k.id]))
-										destination[cs][k.id] = {};
-									destination[cs][k.id].media = k;
-								});
-								that.checkIfsectionCompleted(cs);
-								bSectionCompleted = false;
-							}
+						that.handleRQ({
+							items: data.data.items,
+							section: section,
+							target: destination,
+							type: 'media'
 						});
 					}
-					if (bSectionCompleted)
-						that.checkIfsectionCompleted(section);
 					if (APP.utils.isset(callback) && $.isFunction(callback))
 						callback();
 				}
@@ -1963,6 +1971,8 @@ $.extend(APP.interactiveMap,
 		});
 	},
 	
+	
+	
 	getData: function(o)
 	{
 		var that = this;
@@ -1972,7 +1982,6 @@ $.extend(APP.interactiveMap,
 		var url = (APP.utils.isset(o.url))? o.url : (APP.utils.isset(section))? '/jx/data/'+section+'/' : '/jx/data/everytype/';
 		var callback = (APP.utils.isset(o.callback))? o.callback : null;
 		var bAsync = (APP.utils.isset(o.bAsync))? o.bAsync : true;
-		var bSectionCompleted = true;
 		
 		$.ajax({
 			type: 'GET',
@@ -1985,32 +1994,13 @@ $.extend(APP.interactiveMap,
 				{
 					if (data.data && data.data.items)
 					{
-						$.each(data.data.items, function(i, v)
-						{
-							var cs = (APP.utils.isset(section))? section : i.toLowerCase();
-							if (!APP.utils.isset(destination[cs]))
-								destination[cs] = {};
-							if (!$.isArray(v) && $.isPlainObject(v))
-							{
-								if (!APP.utils.isset(destination[cs][v.id]))
-									destination[cs][v.id] = {};
-								destination[cs][v.id].data = v;
-							}
-							else
-							{
-								$.each(v, function(j,k)
-								{
-									if (!APP.utils.isset(destination[cs][k.id]))
-										destination[cs][k.id] = {};
-									destination[cs][k.id].data = k;
-								});
-								that.checkIfsectionCompleted(cs);
-								bSectionCompleted = false;
-							}
+						that.handleRQ({
+							items: data.data.items,
+							section: section,
+							target: destination,
+							type: 'data'
 						});
 					}
-					if (bSectionCompleted)
-						that.checkIfsectionCompleted(section);
 					if (APP.utils.isset(callback) && $.isFunction(callback))
 						callback();
 				}
@@ -2032,7 +2022,6 @@ $.extend(APP.interactiveMap,
 		var url = (APP.utils.isset(o.url))? o.url : APP.utils.isset(section)? '/jx/geo/'+section+'/' : '/jx/geo/everytype/';
 		var callback = (APP.utils.isset(o.callback))? o.callback : null;
 		var bAsync = (APP.utils.isset(o.bAsync))? o.bAsync : true;
-		var bSectionCompleted = true;
 		
 		$.ajax({
 			type: 'GET',
@@ -2048,49 +2037,19 @@ $.extend(APP.interactiveMap,
 						var ddi = {
 							'Area': null,
 							'Path': null,
-							'Poi': null
+							'Poi': null,
 						};
 						$.each(data.data.items, function(i,v)
 						{
-							if (i.toLowerCase() == 'area')
-								ddi['Area'] = data.data.items['Area'];
-							if (i.toLowerCase() == 'path')
-								ddi['Path'] = data.data.items['Path'];
-							if (i.toLowerCase() == 'poi')
-								ddi['Poi'] = data.data.items['Poi'];
+							ddi[i] = data.data.items[i];
 						});
-						$.each(ddi, function(i,v)
-						{
-							var cs = (APP.utils.isset(section))? section : i.toLowerCase();
-							if (!APP.utils.isset(destination[cs]))
-								destination[cs] = {};
-							if (!$.isArray(v) && $.isPlainObject(v))
-							{
-								if (!APP.utils.isset(destination[cs][v.id]))
-									destination[cs][v.id] = {};
-								destination[cs][v.id].geo = v;
-								that.sendGeojsonLayerToMap(v, cs);
-								if (APP.config.localConfig.use_default_extent === "0")
-									APP.map.setGlobalExtent(destination[cs][v.id].geo.extent);
-							}
-							else
-							{
-								$.each(v, function(j,k)
-								{
-									if (!APP.utils.isset(destination[cs][k.id]))
-										destination[cs][k.id] = {};
-									destination[cs][k.id].geo = k;
-									that.sendGeojsonLayerToMap(k, cs);
-									if (APP.config.localConfig.use_default_extent === "0")
-										APP.map.setGlobalExtent(destination[cs][k.id].geo.extent);
-								});
-								that.checkIfsectionCompleted(cs);
-								bSectionCompleted = false;
-							}
+						that.handleRQ({
+							items: ddi,
+							section: section,
+							target: destination,
+							type: 'geo'
 						});
 					}
-					if (bSectionCompleted)
-						that.checkIfsectionCompleted(section);
 					if (!APP.utils.isset(that.leafletHash) && !that.bQrCode)
 						APP.map.setExtent(APP.map.globalData[APP.map.currentMapId].globalExtent);
 					
@@ -2150,17 +2109,23 @@ $.extend(APP.interactiveMap,
 		};
 
 		var layer = null;
+		var configTypology = (v.highliting_typology_id)? APP.config.localConfig.highliting_typology : APP.config.localConfig.typology;
+		var typologyId = (v.highliting_typology_id)? v.highliting_typology_id : v.typology_id;
 		
 		if (v.geoJSON.type === "Point")
 		{
+			if (v.highliting_typology_id) {
+				var t;
+			}
 			var coords = [v.geoJSON.coordinates[1],v.geoJSON.coordinates[0]];
 			
 			var myIcon = null;
-			var myIndex = APP.utils.getIndexFromField(APP.config.localConfig.typology, "id", v.typology_id);
-			if (myIndex > -1 && APP.utils.isset(APP.config.localConfig.typology[myIndex].marker) && APP.utils.isset(APP.config.localConfig.typology[myIndex].icon))
+			var myIndex = APP.utils.getIndexFromField(configTypology, "id", typologyId);
+			var iconUrl = APP.utils.isset(configTypology[myIndex].marker)? configTypology[myIndex].marker : (APP.utils.isset(configTypology[myIndex].icon)? configTypology[myIndex].icon : null );
+			if (myIndex > -1 && APP.utils.isset(iconUrl))
 			{
 				myIcon = L.icon({
-					iconUrl: APP.config.localConfig.typology[myIndex].marker,
+					iconUrl: iconUrl,
 					//iconRetinaUrl: 'my-icon@2x.png',
 					//iconSize: [38, 95],
 					iconAnchor: [16, 37],
@@ -2275,7 +2240,7 @@ $.extend(APP.interactiveMap,
 		
 		if (!APP.map.globalData[APP.map.currentMapId].map.hasLayer(layer))
 		{
-			APP.map.addLayer({layer: layer, id: section+"_"+v.id, max_scale: v.max_scale, visible: (v.geoJSON.type === "Point")? false: true});
+			APP.map.addLayer({layer: layer, id: section+"_"+v.id, max_scale: v.max_scale, visible: (v.geoJSON.type === "Point" && !v.highliting_typology_id)? false: true});
 		}
 	},
 	
@@ -3196,6 +3161,116 @@ $.extend(APP.interactiveMap,
 		fb.parents("li:first").removeClass("disabled");
 	},
 	
+	handleRQ: function(args) // items, section, target, type
+	{
+		var that = this;
+		var section = args.section;
+		var destination = args.target;
+		var type = args.type;
+		var bSectionCompleted = true;
+		
+		var geoHandler = function(v, cs) {
+			that.sendGeojsonLayerToMap(v, cs);
+			if (APP.config.localConfig.use_default_extent === "0")
+				APP.map.setGlobalExtent(destination[cs][v.id].geo.extent);
+		};
+		
+		var setItem = function(v, cs) {
+			if (!APP.utils.isset(destination[cs][v.id]))
+				destination[cs][v.id] = {};
+			
+			if (type === 'highliting')
+			{
+				destination[cs][v.id].geo = {
+					centroids: v.centroids,
+					extent: v.extent,
+					geoJSON: v.geoJSON,
+					id: v.id,
+					subject: v.subject,
+					highliting_typology_id: v.highliting_typology_id
+				};
+				geoHandler(v,cs);
+				
+				destination[cs][v.id].data = {
+					id: v.id,
+					subject: v.subject,
+					description: v.description,
+					highliting_typology_id: v.highliting_typology_id
+				};
+				
+				destination[cs][v.id].media = {
+					id: v.id,
+					images: v.images,
+					videos: v.videos
+				};
+			}
+			else
+			{
+				destination[cs][v.id][type] = v;
+				if (type === 'geo') {
+					geoHandler(v, cs);
+				}
+			}
+		};
+		
+		$.each(args.items, function(i, v)
+		{
+			if (!v) {
+				return true;
+			}
+			
+			var cs = (APP.utils.isset(section))? section : i.toLowerCase();
+			
+			if (!APP.utils.isset(destination[cs]))
+				destination[cs] = {};
+			
+			if ($.isPlainObject(v))
+			{
+				setItem(v, cs);
+			}
+			else
+			{
+				$.each(v, function(j,k)
+				{
+					setItem(k, cs);
+				});
+				that.checkIfsectionCompleted(cs);
+				bSectionCompleted = false;
+			}
+		});
+		
+		if (bSectionCompleted)
+			that.checkIfsectionCompleted(section);
+	},
+	
+	getHighlitings: function()
+	{
+		var that = this;
+		
+		$.ajax({
+			method: 'GET',
+			url: '/jx/highliting',
+			success: function(data)
+			{
+				var ddi = {
+					'HighlitingPath': null,
+					'HighlitingPoi': null,
+				};
+				
+				$.each(data.data.items, function(i,v)
+				{
+					ddi['Highliting'+i] = data.data.items[i];
+				});
+				
+				that.handleRQ({
+					items: ddi,
+					target: that.myData,
+					type: 'highliting'
+				});
+			}
+		});
+	},
+	
 	start: function()
 	{
 		var that = this;
@@ -3405,6 +3480,8 @@ $.extend(APP.interactiveMap,
 			that.getData({section: "area"});
 			that.getMedia({section: "area"});
 		}
+		
+		that.getHighlitings();
 		
 		that.getData({section: "itinerary"});
 		that.getMedia({section: "itinerary"});
