@@ -198,8 +198,10 @@ return array(
     
     'Image' => 'Immagine',
 		
-	'show points' => 'Mostra punti',
-	'hide points' => 'Nascondi punti',
+	'show poi' => 'Mostra punti di interesse',
+	'hide poi' => 'Nascondi punti di interesse',
+		'show highlitings'  => 'Mostra segnalazioni',
+		'hide highlitings' => 'Nascondi segnalazioni',
     
     'Points of interest' => 'Punti di interesse',
 	'Pois' => 'Punti di interesse',

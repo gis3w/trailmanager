@@ -604,7 +604,7 @@ $.extend(APP.interactiveMap,
 		
 		if (that.selectedElement.section == "poi" || that.selectedElement.section == "highlitingpoi")
 		{
-			var obj = that.myData.poi[that.selectedElement.identifier];
+			var obj = that.myData[that.selectedElement.section][that.selectedElement.identifier];
 			var id = that.selectedElement.section+"_"+that.selectedElement.identifier;
 			var scale = that.getScale(APP.map.globalData[APP.map.currentMapId].map);
 			if (APP.utils.isset(obj.geo.max_scale) && scale > obj.geo.max_scale)
@@ -3115,12 +3115,17 @@ $.extend(APP.interactiveMap,
 			states: [
 			{
 			    stateName: 'pointsshown',
-			    icon: 'glyphicon-eye-open',
-			    title: APP.i18n.translate('show points'),
+			    icon: 'glyphicon-map-marker',
+			    title: APP.i18n.translate('show poi'),
 			    onClick: function(btn, map)
 			    {
 			    	$.each(APP.map.globalData[APP.map.currentMapId].addedLayers, function(i,v)
 	    			{
+			    		if (v.id.indexOf('highliting')>-1)
+			    		{
+			    			return true;
+			    		}
+			    		
 	    				if ($.isFunction(v.layer.getLatLng)){
 	    					// punti
 	    					APP.map.showLayer(i);
@@ -3135,11 +3140,16 @@ $.extend(APP.interactiveMap,
 			},
 			{
 				stateName: 'pointshidden',
-			    icon: 'glyphicon-eye-close',
-			    title: APP.i18n.translate('hide points'),
+			    icon: 'glyphicon-map-marker',
+			    title: APP.i18n.translate('hide poi'),
 			    onClick: function(btn, map) {
 			    	$.each(APP.map.globalData[APP.map.currentMapId].addedLayers, function(i,v)
 	    			{
+			    		if (v.id.indexOf('highliting')>-1)
+			    		{
+			    			return true;
+			    		}
+			    		
 	    				if ($.isFunction(v.layer.getLatLng)){
 	    					// punti
 	    					APP.map.hideLayer(i);
@@ -3150,6 +3160,67 @@ $.extend(APP.interactiveMap,
 	    			});
 			    	that.allPointsHidden = true;
 			    	btn.state('pointsshown');
+				}
+			}]
+		}).addTo(APP.map.globalData[APP.map.currentMapId].map);
+	},
+	
+	setToggleHighlitingsBtn: function() {
+		var that = this;
+		
+		that.toogleHighlitingsCtrl = L.easyButton({
+			leafletClasses: true,
+		    position: 'topright',
+			states: [
+			{
+				stateName: 'highlitingshidden',
+			    icon: 'glyphicon-pushpin',
+			    title: APP.i18n.translate('hide highlitings'),
+			    onClick: function(btn, map) {
+			    	$.each(APP.map.globalData[APP.map.currentMapId].addedLayers, function(i,v)
+	    			{
+			    		if (v.id.indexOf('highliting')===-1)
+			    		{
+			    			return true;
+			    		}
+			    		
+	    				if ($.isFunction(v.layer.getLatLng)){
+	    					// punti
+	    					APP.map.hideLayer(i);
+	    				}
+	    				else {
+	    					// non punti
+	    				}
+	    			});
+			    	that.allHighlitingsHidden = true;
+			    	$(btn.button).toggleClass('btn-success');
+			    	btn.state('highlitingsshown');
+				}
+			},
+			{
+			    stateName: 'highlitingsshown',
+			    icon: 'glyphicon-pushpin',
+			    title: APP.i18n.translate('show highlitings'),
+			    onClick: function(btn, map)
+			    {
+			    	$.each(APP.map.globalData[APP.map.currentMapId].addedLayers, function(i,v)
+	    			{
+			    		if (v.id.indexOf('highliting')===-1)
+			    		{
+			    			return true;
+			    		}
+			    		
+	    				if ($.isFunction(v.layer.getLatLng)){
+	    					// punti
+	    					APP.map.showLayer(i);
+	    				}
+	    				else {
+	    					// non punti
+	    				}
+	    			});
+			    	that.allHighlitingsHidden = false;
+			    	$(btn.button).toggleClass('btn-success');
+			    	btn.state('highlitingshidden');
 				}
 			}]
 		}).addTo(APP.map.globalData[APP.map.currentMapId].map);
@@ -3418,6 +3489,7 @@ $.extend(APP.interactiveMap,
 		that.mySidebar.div = APP.map.sidebar.div;
 		that.mySidebar.control = APP.map.sidebar.control;
 		that.setTogglePointsBtn();
+		that.setToggleHighlitingsBtn();
 		
 		that.toggleMyData(APP.config.checkLoggedUser());
 			
