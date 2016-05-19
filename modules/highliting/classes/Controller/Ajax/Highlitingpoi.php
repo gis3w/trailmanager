@@ -70,7 +70,6 @@ class Controller_Ajax_Highlitingpoi extends Controller_Ajax_Admin_Base_Highlitin
 
         # data to unset:
         foreach ( array(
-            'highliting_state_id',
             'highliting_user_id',
             'protocol_user_id',
             'supervisor_user_id',
