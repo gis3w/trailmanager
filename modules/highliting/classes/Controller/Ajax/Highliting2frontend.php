@@ -15,13 +15,13 @@ trait Controller_Ajax_Highliting2frontend
         }
     
         // get highliting state to show
-        $higliting_states_id = [
+        $higliting_states_id = array(
             2, // ACCETTATA
             4, // ASSEGNATA SUPERVISOR
             7, // NOTIFICATA
             6, // IN ESECUZIONE
             9, // SOSPESA
-        ];
+        );
     
     
         // only typology to show on frontend

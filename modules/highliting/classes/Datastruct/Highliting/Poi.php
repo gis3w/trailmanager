@@ -16,7 +16,6 @@ class Datastruct_Highliting_Poi extends Datastruct {
             'name' => 'highliting-poi-abstract',
             'position' => 'left',
             'fields' => array(
-                'publish',
                 'reporter',
                 'supervisor',
                 'executor',
