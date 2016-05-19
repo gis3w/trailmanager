@@ -100,9 +100,11 @@ class Model_Highliting extends ORMGIS {
             'subject' => array(
                     array('not_empty'),
             ),
+            /*
             'highliting_state_id' =>array(
                     array('not_empty'),
             ),
+            */
             'highliting_typology_id' =>array(
                     array('not_empty'),
             ),

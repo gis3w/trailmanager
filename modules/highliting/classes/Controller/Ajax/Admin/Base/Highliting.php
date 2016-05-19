@@ -175,7 +175,7 @@ class Controller_Ajax_Admin_Base_Highliting extends Controller_Ajax_Admin_Sheet_
             $this->_url_multifield_foreignkey => $this->_orm->id,
             'user_id' => $this->user->id,
             'from_state_id' => $this->from_state,
-            'to_state_id' => $_POST['highliting_state_id'],
+            'to_state_id' => isset($_POST['highliting_state_id']) ? $_POST['highliting_state_id'] : $this->from_state,
             'date' =>time(),
         );
 

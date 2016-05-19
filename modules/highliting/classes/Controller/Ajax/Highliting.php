@@ -3,7 +3,7 @@
 
 class Controller_Ajax_Highliting extends Controller_Ajax_Main{
 
-    #use Controller_Ajax_Base_Cache_GET;
+#    use Controller_Ajax_Base_Cache_GET;
 
     protected $_base_route = 'jx';
 
@@ -27,6 +27,7 @@ class Controller_Ajax_Highliting extends Controller_Ajax_Main{
          $this->_get_all_highlightins();
         
     }
+
     
     protected function _get_all_highlightins()
     {
@@ -35,11 +36,16 @@ class Controller_Ajax_Highliting extends Controller_Ajax_Main{
                             ->execute()
                             ->body());
 
+        $highliting_path = json_decode(Request::factory(Route::url($this->_base_route, array('controller' => 'highlitingpath')))
+            ->execute()
+            ->body());
+
         $items = array(
             'Poi' => $highliting_poi->data->items,
+            'Path' => $highliting_path->data->items,
         );
         
-        $this->jres->data->tot_items = $this->jres->data->items_per_page =  count($highliting_poi->data->items);
+        $this->jres->data->tot_items = $this->jres->data->items_per_page =  count($highliting_poi->data->items) + count($highliting_path->data->items) ;
         $this->jres->data->items = $items;
        
     }
