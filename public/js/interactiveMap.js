@@ -602,7 +602,7 @@ $.extend(APP.interactiveMap,
 		if (lg)
 			lg.find("a.active").removeClass("active");
 		
-		if (that.selectedElement.section == "poi")
+		if (that.selectedElement.section == "poi" || that.selectedElement.section == "highlitingpoi")
 		{
 			var obj = that.myData.poi[that.selectedElement.identifier];
 			var id = that.selectedElement.section+"_"+that.selectedElement.identifier;
@@ -881,7 +881,7 @@ $.extend(APP.interactiveMap,
 			that.setFavoritePathBtn({pathId: id, div: myModal.find(".modal-header h3")});
 		}
 		
-		if (section != 'itinerary')
+		if (section != 'itinerary' && section !== 'highlitingpoi' && section !== 'highlitingpath')
 		{
 			var sheetButtonPrint = $('<button type="button" class="btn btn-warning btnPrint"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> '+APP.i18n.translate('print')+'</button>');
 			sheetButtonPrint.click(function()
@@ -902,23 +902,24 @@ $.extend(APP.interactiveMap,
 			myModal.find('.modal-footer').prepend(sheetButtonPrint);
 		}
 		
-		var btnGPX = $('<button type="button" class="btn btn-warning btnExportGPX"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> '+APP.i18n.translate('Download GPX')+'</button>');
-  		btnGPX.click(function()
+		if (section !== 'highlitingpoi' && section !== 'highlitingpath')
 		{
-			location.href = '/export/gpx/'+section+'/'+id;
-			return false;
-		});
-  		myModal.find('.modal-footer').prepend(btnGPX);
-		
-  		var btnKML = $('<button type="button" class="btn btn-warning btnExportKML"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> '+APP.i18n.translate('Download KML')+'</button>');
-  		btnKML.click(function()
-		{
-			location.href = '/export/kml/'+section+'/'+id;
-			return false;
-		});
-  		myModal.find('.modal-footer').prepend(btnKML);
-		
-  		
+			var btnGPX = $('<button type="button" class="btn btn-warning btnExportGPX"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> '+APP.i18n.translate('Download GPX')+'</button>');
+	  		btnGPX.click(function()
+			{
+				location.href = '/export/gpx/'+section+'/'+id;
+				return false;
+			});
+	  		myModal.find('.modal-footer').prepend(btnGPX);
+			
+	  		var btnKML = $('<button type="button" class="btn btn-warning btnExportKML"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> '+APP.i18n.translate('Download KML')+'</button>');
+	  		btnKML.click(function()
+			{
+				location.href = '/export/kml/'+section+'/'+id;
+				return false;
+			});
+	  		myModal.find('.modal-footer').prepend(btnKML);
+		}
   		
 		if (
 				that.myData[section][id].media && 
@@ -1338,6 +1339,10 @@ $.extend(APP.interactiveMap,
 				checkVoice('paths', 'paths');
 				checkVoice('pois', 'pois');
 				break;
+			case "highlitingpoi": case "highlitingpath":
+				checkVoice('highliting_typology_id', 'ov-img', {values: APP.config.localConfig.highliting_typology, label: 'name', icon: "icon", voiceResult: "categories"});
+				checkVoice('description', 'text');
+				break;
 			default:
 				break;
 		}
@@ -1387,7 +1392,7 @@ $.extend(APP.interactiveMap,
 		
 		switch(section)
 		{
-			case "poi":
+			case "poi": case "highlitingpoi":
 				var maxZoom = APP.map.globalData[APP.map.currentMapId].map.getMaxZoom();
 				var currentZoom = APP.map.globalData[APP.map.currentMapId].map.getZoom();
 				var latLng = L.latLng(that.myData[section][id].geo.geoJSON.coordinates[1], that.myData[section][id].geo.geoJSON.coordinates[0]);
@@ -1396,7 +1401,7 @@ $.extend(APP.interactiveMap,
 				/*APP.map.globalData[APP.map.currentMapId].map.panTo(latLng, {animate: true});
 				APP.map.globalData[APP.map.currentMapId].map.setZoom(nextZoom, {animate: true});*/
 				return;
-			case "path": case "area":
+			case "path": case "highlitingpath": case "area":
 				APP.map.setGlobalExtent(that.myData[section][id].geo.extent);
 				break;
 			case "itinerary":
@@ -2114,14 +2119,11 @@ $.extend(APP.interactiveMap,
 		
 		if (v.geoJSON.type === "Point")
 		{
-			if (v.highliting_typology_id) {
-				var t;
-			}
 			var coords = [v.geoJSON.coordinates[1],v.geoJSON.coordinates[0]];
 			
 			var myIcon = null;
 			var myIndex = APP.utils.getIndexFromField(configTypology, "id", typologyId);
-			var iconUrl = APP.utils.isset(configTypology[myIndex].marker)? configTypology[myIndex].marker : (APP.utils.isset(configTypology[myIndex].icon)? configTypology[myIndex].icon : null );
+			var iconUrl = (v.highliting_typology_id)? '/download/mappin/index/'+'hs'+v.highliting_state_id+'tp'+v.highliting_typology_id+'.png' : (APP.utils.isset(configTypology[myIndex].marker)? configTypology[myIndex].marker : (APP.utils.isset(configTypology[myIndex].icon)? configTypology[myIndex].icon : null ));
 			if (myIndex > -1 && APP.utils.isset(iconUrl))
 			{
 				myIcon = L.icon({
@@ -3173,7 +3175,7 @@ $.extend(APP.interactiveMap,
 			that.sendGeojsonLayerToMap(v, cs);
 			if (APP.config.localConfig.use_default_extent === "0")
 				APP.map.setGlobalExtent(destination[cs][v.id].geo.extent);
-		};
+		};		
 		
 		var setItem = function(v, cs) {
 			if (!APP.utils.isset(destination[cs][v.id]))
@@ -3195,7 +3197,8 @@ $.extend(APP.interactiveMap,
 					id: v.id,
 					subject: v.subject,
 					description: v.description,
-					highliting_typology_id: v.highliting_typology_id
+					highliting_typology_id: v.highliting_typology_id,
+					highliting_state_id: v.highliting_state_id
 				};
 				
 				destination[cs][v.id].media = {
