@@ -411,16 +411,16 @@ $.extend(APP.config,{
 								l = new L.tileLayer(v.url, {/*minZoom: 5, maxZoom: 19,*/ attribution: v.description, tileLayerId: v.id});
 								break;
 							case "tilelayer.wms":
-								l = new L.tileLayer.wms(v.url, {
-										tileLayerId: v.id,
-										layers: v.layers,
-										version: v.version,
-										styles: v.styles,
-										format: v.format,
-										transparent:  v.transparent,
-										attribution: v.description,
-										tileSize:1024
-									});
+								l = L.tileLayer.betterWms('proxy.php?url='+v.url, {
+									tileLayerId: v.id,
+									layers: v.layers,
+									version: v.version,
+									styles: v.styles,
+									format: v.format,
+									transparent:  v.transparent,
+									attribution: v.description,
+									tileSize:1024
+								});
 								break;
 						}
 				}
