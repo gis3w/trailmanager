@@ -70,6 +70,9 @@ $.extend(APP.map,
 		that.previousMapId = null;
 	},
 	
+	bGetFeatureInfo: false,
+	gfiButton: undefined,
+	
 	/*
 	removeGeolocation: function()
 	{
@@ -184,7 +187,10 @@ $.extend(APP.map,
 	
 	getCurrentMap: function()
 	{
-		return this.globalData[this.currentMapId].map;
+		if (this.globalData && this.currentMapId && this.globalData[this.currentMapId] && this.globalData[this.currentMapId].map)
+			return this.globalData[this.currentMapId].map;
+		else
+			return undefined;
 	},
 	
 	getLayer: function(id)
@@ -556,6 +562,62 @@ $.extend(APP.map,
 				map.fitBounds(b);
 			}
 		});
+	},
+	
+	setGFIBtn: function(map)
+	{
+		if (!map) {
+			return false;
+		}
+		
+		var that = this;
+		if (that.gfiButton)
+		{
+			map.removeControl(that.gfiButton);
+		}
+		
+		var initialCursor = undefined;
+		that.gfiButton = L.easyButton({
+			leafletClasses: true,
+		    position: 'topright',
+		    states: [{
+		            stateName: 'gfiOff',   // name the state
+		            icon:      'glyphicon glyphicon-info-sign text-danger',          // and define its properties
+		            title:     'GetFeatureInfo: OFF', // like its title
+		            onClick: function(btn, map) {  // and its callback
+		            	btn.state('gfiOn');
+		            	initialCursor = $(map.getContainer()).css('cursor');
+		            	$(map.getContainer()).css('cursor',"pointer");
+		            	that.bGetFeatureInfo = true;
+		            }
+		        }, {
+		            stateName: 'gfiOn',
+		            icon:      'glyphicon glyphicon-info-sign text-success',
+		            title:     'GetFeatureInfo: ON',
+		            onClick: function(btn, map) {
+		            	btn.state('gfiOff');
+		            	$(map.getContainer()).css('cursor',initialCursor);
+		            	that.bGetFeatureInfo = false;
+		            }
+		    }]
+		}).addTo( map );
+	},
+	
+	unsetGFIBtn: function(map)
+	{
+		var wmsLayers = 0;
+		map.eachLayer(function (layer)
+		{
+			if ($.isFunction(layer.getFeatureInfo))
+			{
+				wmsLayers++;
+			}
+		});
+		if (!(wmsLayers-1) && map && this.gfiButton)
+		{
+			map.removeControl(this.gfiButton);
+			this.gfiButton = undefined;
+		}
 	},
 	
 	setMap: function(O)

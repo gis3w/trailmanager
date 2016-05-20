@@ -1,10 +1,10 @@
 L.TileLayer.BetterWMS = L.TileLayer.WMS.extend({
-  
   onAdd: function (map) {
     // Triggered when the layer is added to a map.
     //   Register a click listener, then do all the upstream WMS things
     L.TileLayer.WMS.prototype.onAdd.call(this, map);
     map.on('click', this.getFeatureInfo, this);
+    APP.map.setGFIBtn(map);
   },
   
   onRemove: function (map) {
@@ -12,9 +12,13 @@ L.TileLayer.BetterWMS = L.TileLayer.WMS.extend({
     //   Unregister a click listener, then do all the upstream WMS things
     L.TileLayer.WMS.prototype.onRemove.call(this, map);
     map.off('click', this.getFeatureInfo, this);
+    APP.map.unsetGFIBtn(map);
   },
   
   getFeatureInfo: function (evt) {
+	  if (!APP.map.bGetFeatureInfo)
+	  	return false;
+	  
     // Make an AJAX request to the server and hope for the best
     var url = this.getFeatureInfoUrl(evt.latlng),
         showResults = L.Util.bind(this.showGetFeatureInfo, this);
@@ -48,7 +52,7 @@ L.TileLayer.BetterWMS = L.TileLayer.WMS.extend({
           width: size.x,
           layers: this.wmsParams.layers,
           query_layers: this.wmsParams.layers,
-          info_format: 'text/html'
+          info_format: 'text/plain'
         };
     
     params[params.version === '1.3.0' ? 'i' : 'x'] = point.x;
@@ -59,21 +63,18 @@ L.TileLayer.BetterWMS = L.TileLayer.WMS.extend({
   
   showGetFeatureInfo: function (err, latlng, content) {
     if (err) { console.log(err); return; } // do nothing if there's an error
-    
-    var start = content.indexOf('<body>');
-    var end = content.indexOf('</body>');
-    
-    var body = content.substring(start+6,end).trim();
-    
-    if (!body)
-    {
-    	return false;
-    }
+    content = content.substring(0,content.length-2);
+    var arr = content.split('\n');
+    content = $('<div></div>');
+
+    $.each(arr, function(i,v){
+    	content.append('<span><small>'+v+'</small><br></span>');
+    });
     
     // Otherwise show the content in a popup, or something.
     L.popup({ maxWidth: 800})
       .setLatLng(latlng)
-      .setContent(content)
+      .setContent(content[0])
       .openOn(this._map);
   }
 });
