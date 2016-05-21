@@ -411,8 +411,7 @@ $.extend(APP.config,{
 								l = new L.tileLayer(v.url, {/*minZoom: 5, maxZoom: 19,*/ attribution: v.description, tileLayerId: v.id});
 								break;
 							case "tilelayer.wms":
-								//'proxy.php?url='+
-								l = L.tileLayer.betterWms(v.url, {
+								l = L.tileLayer.betterWms('proxy.php?url='+v.url, {
 									tileLayerId: v.id,
 									layers: v.layers,
 									version: v.version,
