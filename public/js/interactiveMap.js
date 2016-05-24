@@ -43,6 +43,10 @@ $.extend(APP.interactiveMap,
 	bAllPointsAreOverlays: false,
 	overlays: [],
 	highlitings: {},
+	routingMarkers: {
+		from: undefined,
+		to: undefined
+	},
 	
 	insertRowAlphabetically: function(container, row, selector, offset)
 	{
@@ -320,8 +324,10 @@ $.extend(APP.interactiveMap,
 						
 						var myFooter = $('<div><button type="button" class="btn btn-success saveBtn">Salva</button><button type="button" class="btn btn-default cancelBtn">Annulla</button></div>');
 						myFooter.find(".saveBtn").click(function(){
-							var lng = that.markerByCoordsModal.find("#modal-longitude").val();
-							var lat = that.markerByCoordsModal.find("#modal-latitude").val();
+							var lng = parseFloat(that.markerByCoordsModal.find("#modal-longitude").val());
+							var lat = parseFloat(that.markerByCoordsModal.find("#modal-latitude").val());
+							if (isNaN(lng) || isNaN(lat))
+								return false;
 							APP.map.globalData[APP.map.currentMapId].map.panTo([lat,lng]);
 							that.markerByCoordsModal.modal("hide");
 							that.addMarker([lat,lng]);
@@ -1511,12 +1517,15 @@ $.extend(APP.interactiveMap,
 		});
 		
 		switch(section)
-		{
+		{ 
 			case "info":
 				that.getPage(section, true);
 				if (APP.utils.isset(callback) && $.isFunction(callback))
 					callback();
 				return;
+			case "getroute":
+				that.mySidebar.div.html(that.getRoutingPage(APP.map.getCurrentMap()));
+				break;
 			case "itinerary":
 				var listGroup = $('<div class="list-group list-group-wo-radius" style="margin: 0px -23px 0px -23.5px; padding: -10px"></div>');
 				
@@ -2570,6 +2579,127 @@ $.extend(APP.interactiveMap,
 		});
 	},
 	
+	getRoutingPage: function(map)
+	{
+		var that = this;
+		
+		if ($('#routingSidebar').length)
+		{
+			$('#routingSidebar').remove();
+		}
+				
+		var div = $('<div id="routingSidebar">'+
+						'<form>'+
+							'<div class="form-group">'+
+								'<label for="from">'+APP.i18n.translate('From')+'</label>'+
+								'<div class="input-group">\
+									<input type="text" class="form-control" readonly id="from" placeholder="'+APP.i18n.translate('Choose starting point')+'">\
+							      <span class="input-group-btn">\
+							        <button class="btn btn-default" type="button"><i class="icon-map-marker"></i></button>\
+							      </span>\
+							    </div>'+
+							'</div>'+
+							'<div class="form-group">'+
+								'<label for="to">'+APP.i18n.translate('To')+'</label>'+
+								'<div class="input-group">\
+									<input type="text" class="form-control" readonly id="to" placeholder="'+APP.i18n.translate('Choose destination')+'">\
+							      <span class="input-group-btn">\
+							        <button class="btn btn-default" type="button"><i class="icon-map-marker"></i></button>\
+							      </span>\
+							    </div>'+
+							'</div>'+
+							'<button class="btn btn-danger" type="button" style="margin-right: 20px" id="resetBtn">'+APP.i18n.translate('Reset')+'</button>'+
+							'<button class="btn btn-info" type="button" id="calculateBtn"><i class="icon-ok"></i> '+APP.i18n.translate('Calculate')+'</button>'+
+						'</form>'+
+					'</div>');
+		
+		var markers = that.routingMarkers;
+				
+		var updateInputsValue = function(target, id, ll) {
+			var x = target.find('#'+id);
+			if (ll && ll.lat && ll.lng)
+				x.val(ll.lat+', '+ll.lng);
+			else
+				x.val('');
+		};
+				
+		$.each(div.find('.form-group'), function(i,fg)
+		{
+			fg = $(fg);
+			var inp = fg.find('input');
+			var id = inp.attr('id');
+			
+			if (markers[id]) {
+				updateInputsValue(div, id, markers[id].getLatLng());
+			}
+			
+			var btn = fg.find('.btn');
+			btn.click(function()
+			{				
+				var opts = {
+					id: id,
+					draggable: true
+				};
+				
+				if (id === 'from') {
+//					opts.icon = L.icon({
+//					    iconUrl: '/public/img/start.png',
+//					    iconRetinaUrl: 'my-icon@2x.png',
+//					    iconSize: [38, 95],
+//					    iconAnchor: [22, 94],
+//					    popupAnchor: [-3, -76],
+//					    shadowUrl: 'my-icon-shadow.png',
+//					    shadowRetinaUrl: 'my-icon-shadow@2x.png',
+//					    shadowSize: [68, 95],
+//					    shadowAnchor: [22, 94]
+//					});
+				}
+				if (id === 'to') {
+
+				}
+				
+				if (!markers[id])
+				{
+					markers[id] = L.marker([0,0],opts).addTo(map);
+					
+					map.off('mousemove').on('mousemove', function(e) {
+						markers[id].setLatLng(e.latlng);
+						updateInputsValue(div, id, e.latlng);
+					});
+					
+					map.off('click').on('click',function(e){
+						map.off('mousemove');
+						map.off('click');
+					});
+					
+					markers[id].on('drag', function() {
+						updateInputsValue(that.mySidebar.div.find('#routingSidebar'), this.options.id, this.getLatLng());
+					});
+					
+					markers[id].snapediting = new L.Handler.MarkerSnap(map, markers[id]);
+					map.eachLayer(function(layer){
+						if ($.isFunction(layer.getPathString))
+							markers[id].snapediting.addGuideLayer(layer);
+					});
+					markers[id].snapediting.enable();
+				}
+			})
+		});
+		
+		div.find('#resetBtn').click(function() {
+			$.each(markers, function(i,v) {
+				if (!v) {
+					return true;
+				}
+				updateInputsValue(div, v.options.id, undefined);
+				map.removeLayer(v);
+				markers[i] = undefined;
+			});
+		});
+		
+		return div;
+	},
+	
 	checkUrlCoords: function()
 	{
 		var that = this;
@@ -3587,6 +3717,8 @@ $.extend(APP.interactiveMap,
 		that.body.find("#highlightingsdataButton").click(function(){
 			//APP.map.hideAllLayers();
 		}).parent().removeClass("disabled").show();
+		
+		that.body.find("#getrouteButton").parent().removeClass("disabled");
 		
 		that.body.find("#helpButton").click(function(){
 			that.closeItems();

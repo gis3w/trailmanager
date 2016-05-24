@@ -40,6 +40,13 @@ return array(
             'icon' => 'star',
             'dropdown' => 'dropdown_mydata',
         ),
+    		'getroute' => array(
+    				'id' =>'getroute',
+    				'name' => __('Get route'),
+    				'url' => NULL,
+    				'capability' => NULL,
+    				'icon' => 'road',
+    		),
         'login' => array(
             'id' =>'login',
             'name' => __('Login'),

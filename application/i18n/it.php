@@ -74,6 +74,8 @@ return array(
 	'Zoom to default extent' => 'Ritorna all\'estensione iniziale della mappa',
 	'Video_poi' => 'Video',
 	'Pole ID' => 'ID Palo',
+		
+		'Get route' => 'Calcola il percorso',
 
     'Confirm password' => 'Conferma password',
     'confirm_password' => 'Conferma password',

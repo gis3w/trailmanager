@@ -32,6 +32,8 @@ return array(
 		//'../modules/pikachoose/lib/jquery.jcarousel.min.js',
 		//'../modules/pikachoose/lib/jquery.pikachoose.min.js',
 		'../modules/leaflet-0.7.5/leaflet.js',
+    	'../modules/Leaflet.Snap/Leaflet.GeometryUtil/leaflet.geometryutil.js',
+    	'../modules/Leaflet.Snap/leaflet.snap.js',
     '../modules/Leaflet.BetterWMS.js',
 		'../modules/Leaflet.EasyButton/src/easy-button.js',
 		//'../modules/leaflet-hash/leaflet-hash.js',
