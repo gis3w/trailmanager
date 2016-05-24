@@ -12,18 +12,17 @@ L.TileLayer.BetterWMS = L.TileLayer.WMS.extend({
     //   Unregister a click listener, then do all the upstream WMS things
     L.TileLayer.WMS.prototype.onRemove.call(this, map);
     map.off('click', this.getFeatureInfo, this);
-    APP.map.unsetGFIBtn(map);
   },
   
   getFeatureInfo: function (evt) {
-	  if (!APP.map.bGetFeatureInfo)
+	if (!APP.map.bGetFeatureInfo)
 	  	return false;
 	  
     // Make an AJAX request to the server and hope for the best
     var url = this.getFeatureInfoUrl(evt.latlng),
         showResults = L.Util.bind(this.showGetFeatureInfo, this);
     $.ajax({
-      url: url,
+      url: "proxy.php?url="+url,
       success: function (data, status, xhr) {
         var err = typeof data === 'string' ? null : data;
         showResults(err, evt.latlng, data);

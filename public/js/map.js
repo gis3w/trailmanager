@@ -576,7 +576,13 @@ $.extend(APP.map,
 			map.removeControl(that.gfiButton);
 		}
 		
-		var initialCursor = undefined;
+		var initialCursor;
+		
+		var resetCursor = function() {
+			if (initialCursor)
+				$(map.getContainer()).css('cursor',initialCursor);
+		};
+		
 		that.gfiButton = L.easyButton({
 			leafletClasses: true,
 		    position: 'topright',
@@ -596,11 +602,19 @@ $.extend(APP.map,
 		            title:     'GetFeatureInfo: ON',
 		            onClick: function(btn, map) {
 		            	btn.state('gfiOff');
-		            	$(map.getContainer()).css('cursor',initialCursor);
+		            	resetCursor();
 		            	that.bGetFeatureInfo = false;
 		            }
 		    }]
 		}).addTo( map );
+		
+		if (!map.hasEventListeners('overlayremove'))
+		{
+			map.on('overlayremove', function(evt) {
+				that.unsetGFIBtn(map);
+				resetCursor();
+			});
+		}
 	},
 	
 	unsetGFIBtn: function(map)
@@ -613,10 +627,11 @@ $.extend(APP.map,
 				wmsLayers++;
 			}
 		});
-		if (!(wmsLayers-1) && map && this.gfiButton)
+		if (!wmsLayers && map && this.gfiButton)
 		{
 			map.removeControl(this.gfiButton);
 			this.gfiButton = undefined;
+			map.off('overlayremove');
 		}
 	},
 	
