@@ -576,6 +576,10 @@ $.extend(APP.map,
 			map.removeControl(that.gfiButton);
 		}
 		
+		// continua solo su backend
+		if ($(map.getContainer()).attr('id') === 'mainContent')
+			return false;
+		
 		var initialCursor;
 		
 		var resetCursor = function() {
@@ -611,8 +615,8 @@ $.extend(APP.map,
 		if (!map.hasEventListeners('overlayremove'))
 		{
 			map.on('overlayremove', function(evt) {
-				that.unsetGFIBtn(map);
 				resetCursor();
+				that.unsetGFIBtn(map);
 			});
 		}
 	},
@@ -631,6 +635,7 @@ $.extend(APP.map,
 		{
 			map.removeControl(this.gfiButton);
 			this.gfiButton = undefined;
+			this.bGetFeatureInfo = false;
 			map.off('overlayremove');
 		}
 	},
