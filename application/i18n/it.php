@@ -38,6 +38,7 @@ return array(
     'Surname' => 'Cognome',
     'Description' => 'Descrizione',
     'description' => 'descrizione',
+		'Usage license' => 'Licenza d\'uso',
 	'Data sheet' => 'Scheda',
 	'Itinerary' => 'Circuito escursionistico',
     'Itineraries' => 'Circuiti escursionistici',

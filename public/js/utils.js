@@ -141,7 +141,7 @@ $.extend(APP.utils,{
 							<div class="modal-content">\
 								<div class="modal-header">\
 									<button type="button" class="btn-lg close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove"></span></button>\
-									<h3 class="lead"></h3>\
+									<h3></h3>\
 								</div>\
 								<div class="modal-body">\
 								</div>\

@@ -2494,9 +2494,11 @@ $.extend(APP.interactiveMap,
 	showPage: function(section)
 	{
 		var that = this;
-		var htmlPage = that.pages[section].content;
+		var htmlPage = that.pages[section].content.body;
+		
 		if (that.pages[section].type === "sidebar" && that.itemsOnSidebar && L.control.sidebar && that.mySidebar.control)
 		{
+			that.mySidebar.div.html('<h3>'+that.pages[section].content.title.toUpperCase()+'</h3>');
 			that.mySidebar.div.append(htmlPage);
 			that.mySidebar.control.show();
 		}
@@ -2510,7 +2512,7 @@ $.extend(APP.interactiveMap,
 					container: that.body,
 					id: modalId,
 					size: "lg",
-					header: APP.utils.capitalize(APP.i18n.translate(section)),
+					header: that.pages[section].content.title.toUpperCase(),
 					body: htmlPage,
 					shown: function(){
 						
@@ -2547,7 +2549,7 @@ $.extend(APP.interactiveMap,
 				{
 					if (!APP.utils.checkError(data.error, null))
 					{
-						that.pages[section].content = data.data.items[0].body;
+						that.pages[section].content = data.data.items[0];
 						that.body.find("#"+section+"Button").parent().removeClass("disabled");
 						if (bShow)
 							that.showPage(section);
@@ -2574,8 +2576,12 @@ $.extend(APP.interactiveMap,
 		
 		$.each(APP.config.localConfig.page_urls, function(i,v)
 		{
-			var t = (i === "help")? "modal" : "sidebar";
-			that.pages[i] = {url: v, content: null, type: t};
+			var t = (i === "info")? "sidebar" : "modal";
+			that.pages[i] = {
+				url: v,
+				content: null,
+				type: t
+			};
 		});
 	},
 	
@@ -3723,6 +3729,11 @@ $.extend(APP.interactiveMap,
 		that.body.find("#helpButton").click(function(){
 			that.closeItems();
 			that.getPage('help', true);
+		});
+		
+		that.body.find("#licenseButton").click(function(){
+			that.closeItems();
+			that.getPage('license', true);
 		});
 		
 		that.body.find("#printButton").click(function(){

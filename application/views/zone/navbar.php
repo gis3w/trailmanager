@@ -36,10 +36,8 @@
 			<?php if(isset($search) AND $search): ?>
 				<li><a id="searchButton" href="#" data-toggle="modal"><i class="icon icon-search"></i> <?php echo __('Search') ?></a></li>
 			<?php endif; ?>
-            <?php foreach ($langs as $I18n => $lang): ?>
-                    <li><a href="?lang=<?php echo $I18n ?>"><i class="icon icon-flag"></i> <?php echo $lang ?></a></li>
-            <?php endforeach; ?>
             <?php if($frontend):?>
+            		<li><a id="licenseButton" href="#"><i class="icon icon-key"></i> <?php echo __('Usage license') ?></a></li>
                 <li><a id="helpButton" href="#"><i class="icon icon-question"></i> <?php echo __('Help') ?></a></li>
              <?php endif; ?>
                 <?php if(isset($user) AND !$frontend): ?>
@@ -72,3 +70,9 @@
     </div>
     </div>
 </nav>
+
+<!-- 
+						<php foreach ($langs as $I18n => $lang): ?>
+                    <li><a href="?lang=<php echo $I18n ?>"><i class="icon icon-flag"></i> <php echo $lang ?></a></li>
+            <php endforeach; ?>
+-->
