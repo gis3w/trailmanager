@@ -3320,13 +3320,7 @@ $.extend(APP.interactiveMap,
 			    			return true;
 			    		}
 			    		
-	    				if ($.isFunction(v.layer.getLatLng)){
-	    					// punti
-	    					APP.map.hideLayer(i);
-	    				}
-	    				else {
-	    					// non punti
-	    				}
+			    		APP.map.hideLayer(i);
 	    			});
 			    	that.allHighlitingsHidden = true;
 			    	$(btn.button).toggleClass('btn-success');
@@ -3346,13 +3340,7 @@ $.extend(APP.interactiveMap,
 			    			return true;
 			    		}
 			    		
-	    				if ($.isFunction(v.layer.getLatLng)){
-	    					// punti
-	    					APP.map.showLayer(i);
-	    				}
-	    				else {
-	    					// non punti
-	    				}
+			    		APP.map.showLayer(i);
 	    			});
 			    	that.allHighlitingsHidden = false;
 			    	$(btn.button).toggleClass('btn-success');
