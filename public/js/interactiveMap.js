@@ -2624,7 +2624,7 @@ $.extend(APP.interactiveMap,
 		var updateInputsValue = function(target, id, ll) {
 			var x = target.find('#'+id);
 			if (ll && ll.lat && ll.lng)
-				x.val(ll.lat+', '+ll.lng);
+				x.val(ll.lat+','+ll.lng);
 			else
 				x.val('');
 		};
@@ -2661,7 +2661,7 @@ $.extend(APP.interactiveMap,
 //					});
 				}
 				if (id === 'to') {
-
+					
 				}
 				
 				if (!markers[id])
@@ -2700,6 +2700,20 @@ $.extend(APP.interactiveMap,
 				updateInputsValue(div, v.options.id, undefined);
 				map.removeLayer(v);
 				markers[i] = undefined;
+			});
+		});
+		
+		div.find('#calculateBtn').click(function() {
+			$.ajax({
+				method: 'GET',
+				url: '/jx/routing',
+				data: {
+					from: $('#routingSidebar #from').val(),
+					to: $('#routingSidebar #to').val(),
+				},
+				success: function(response) {
+					
+				}
 			});
 		});
 		
