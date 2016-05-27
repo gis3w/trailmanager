@@ -855,7 +855,7 @@ $.extend(APP.interactiveMap,
 			myModal.find('.modal-body .categoriesAndFeatures').append(cat);
 		}
 		
-		if(section == 'poi' || section == 'path' || section == 'highlitingpoi' || section == 'highlitinpath')
+		if(section == 'poi' || section == 'path' || section == 'highlitingpoi' || section == 'highlitingpath')
 		{
 			var feat = $(	'<div class="col-md-5">\
 									<div class="panel panel-default features" style="display: none">\
