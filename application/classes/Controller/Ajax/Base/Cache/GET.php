@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 
-trait Controller_Ajax_Base_Cache_GET {
+trait   Controller_Ajax_Base_Cache_GET {
 
     public function execute()
     {

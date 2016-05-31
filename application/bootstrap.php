@@ -140,6 +140,7 @@ Kohana::modules(array(
     'print' => MODPATH.'print',
     'geoexport' => MODPATH.'geoexport',
     'minion' => MODPATH.'minion',
+	'routing' => MODPATH.'routing'
 	));
 
 /**
