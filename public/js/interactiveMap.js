@@ -2656,7 +2656,7 @@ $.extend(APP.interactiveMap,
 			that.routing.results = [];
 		};
 		
-		var defStyle = {opacity: 0.4, weight: 5};
+		var defStyle = {opacity: 0.5, weight: 5};
 		
 		var addResults = function(data) {
 			$.each(data, function(i,v) {
@@ -2703,50 +2703,52 @@ $.extend(APP.interactiveMap,
 			$.each(that.routing.results, function(i,v) {				
 				sumLength += v.length;
 				
-				var cmd = (i === 0)? 'Procedi su ' : ((prevPathId && (v.path_id === prevPathId))? 'Continua su ' : 'Gira su ');
+				var cmd = (i === 0)? 'Proceed on' : ((prevPathId && (v.path_id === prevPathId))? 'Continue on' : 'Turn on');
 				cmd = APP.i18n.translate(cmd)+' '+that.myData.path[v.path_id].data.title;
 				prevPathId = v.path_id;
 				
 				var $a = $(	'<a href="#" class="list-group-item" data-index="'+i+'">'+(i+1)+'. '+cmd+
-								'<span class="label label-default pull-right" style="margin-right: 2px;">'+formatLength(v.length)+'</span>'+
+								'<span class="badge text-lowercase">'+formatLength(v.length)+'</span>'+
 							'</a>');
 				
-				$a.hover(function() {
-					onMouseOver(Number($(this).attr('data-index')));
-				}, function() {
-					onMouseOut(Number($(this).attr('data-index')));
-				});
-				$a.click(function() {
-					onLayerClick(Number($(this).attr('data-index')));
-				});
+				$a
+					.mouseover(function() {
+						onMouseOver(Number($(this).attr('data-index')));
+					})
+					.mouseout(function() {
+						onMouseOut(Number($(this).attr('data-index')));
+					})
+					.click(function() {
+						onLayerClick(Number($(this).attr('data-index')));
+					});
 				that.routing.panel.find('.results .list-group').append($a);
 			});
 			
-			that.routing.panel.find('.results .report').html('<span>'+APP.i18n.translate('Total length')+': <b>'+formatLength(sumLength)+'</b></span>');
+			that.routing.panel.find('.results .report').html('<span class="text-capitalize">'+APP.i18n.translate('total length')+': <b>'+formatLength(sumLength)+'</b></span>');
 		};
 		
 		that.routing.panel = $(	'<div id="routingSidebar">'+
 									'<form>'+
 										'<div class="form-group">'+
-											'<label for="from">'+APP.i18n.translate('From')+'</label>'+
+											'<label for="from" class="text-uppercase">'+APP.i18n.translate('from')+'</label>'+
 											'<div class="input-group">\
-												<input type="text" class="form-control" readonly id="from" placeholder="'+APP.i18n.translate('Choose starting point')+'">\
+												<input type="text" class="form-control" readonly id="from" placeholder="'+APP.i18n.translate('choose starting point')+'">\
 										      <span class="input-group-btn">\
 										        <button class="btn btn-default" type="button"><i class="icon-map-marker"></i></button>\
 										      </span>\
 										    </div>'+
 										'</div>'+
 										'<div class="form-group">'+
-											'<label for="to">'+APP.i18n.translate('To')+'</label>'+
+											'<label for="to" class="text-uppercase">'+APP.i18n.translate('to')+'</label>'+
 											'<div class="input-group">\
-												<input type="text" class="form-control" readonly id="to" placeholder="'+APP.i18n.translate('Choose destination')+'">\
+												<input type="text" class="form-control" readonly id="to" placeholder="'+APP.i18n.translate('choose destination')+'">\
 										      <span class="input-group-btn">\
 										        <button class="btn btn-default" type="button"><i class="icon-map-marker"></i></button>\
 										      </span>\
 										    </div>'+
 										'</div>'+
-										'<button class="btn btn-danger" type="button" style="margin-right: 20px" id="resetBtn">'+APP.i18n.translate('Reset')+'</button>'+
-										'<button class="btn btn-info" type="button" id="calculateBtn"><i class="icon-ok"></i> '+APP.i18n.translate('Calculate')+'</button>'+
+										'<button class="btn btn-danger text-capitalize" type="button" style="margin-right: 20px" id="resetBtn">'+APP.i18n.translate('reset')+'</button>'+
+										'<button class="btn btn-info text-capitalize" type="button" id="calculateBtn"><i class="icon-ok"></i> '+APP.i18n.translate('calculate')+'</button>'+
 									'</form>'+
 									'<div class="results" style="margin-top: 15px;">'+
 										'<p class="report text-right"></p>'+

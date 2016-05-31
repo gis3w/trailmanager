@@ -76,7 +76,16 @@ return array(
 	'Video_poi' => 'Video',
 	'Pole ID' => 'ID Palo',
 		
-		'Get route' => 'Calcola il percorso',
+		'Get route' => 'Calcola percorso',
+		'Getroute section' => 'Calcola percorso',
+		'choose starting point' => 'scegli il punto iniziale',
+		'choose destination' => 'scegli la destinazione',
+		'reset' => 'cancella',
+		'calculate' => 'calcola',
+		'total length' => 'lunghezza totale',
+		'Proceed on' => 'Procedi su',
+		'Continue on' => 'Continua su',
+		'Turn on' => 'Gira su',
 
     'Confirm password' => 'Conferma password',
     'confirm_password' => 'Conferma password',
