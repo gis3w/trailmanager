@@ -2119,7 +2119,7 @@ $.extend(APP.interactiveMap,
 			});
 
 			if (!L.Browser.ie && !L.Browser.opera) {
-				myLayer.bringToFront();
+				//myLayer.bringToFront();
 			}
 		};
 
@@ -2656,12 +2656,20 @@ $.extend(APP.interactiveMap,
 			that.routing.results = [];
 		};
 		
-		var defStyle = {opacity: 0.4};
+		var defStyle = {opacity: 0.4, weight: 5};
 		
 		var addResults = function(data) {
 			$.each(data, function(i,v) {
 				var gj = L.geoJson(v.geoJSON,{
-					style: defStyle
+					style: defStyle,
+					onEachFeature:function (feature, layer)
+					{
+						layer.on({
+							"mouseover": function() { onMouseOver(i); },
+							"mouseout": function() { onMouseOut(i); },
+							"click": function() { onLayerClick(i); }
+	 					});
+					}
 				});
 				if (!map.hasLayer(gj)) {
 					gj.addTo(map);
@@ -2670,34 +2678,51 @@ $.extend(APP.interactiveMap,
 				
 				that.routing.results.push(v);
 			});
-		};		
+		};
+		
+		var onMouseOver = function(arrid) {
+			that.routing.results[arrid].layer.setStyle({opacity: 1, weight: 8});
+		};
+		
+		var onMouseOut = function(arrid) {
+			that.routing.results[arrid].layer.setStyle(defStyle);
+		};
+		
+		var onLayerClick = function(arrid) {
+			that.routing.panel.find('.list-group a').removeClass('active');
+			that.routing.panel.find(".list-group a[data-index='"+arrid+"']").addClass('active');
+			closeSidebarOnMobile();
+			var b = that.routing.results[arrid].layer.getBounds();
+			map.fitBounds(b);
+		};
 		
 		var showResults = function() {
 			var sumLength = 0;
+			var prevPathId = undefined;
 			
 			$.each(that.routing.results, function(i,v) {				
 				sumLength += v.length;
 				
-				var $a = $('<a href="#" class="list-group-item" data-index="'+i+'"><span class="badge">'+formatLength(v.length)+'</span> '+(i+1)+'. '+that.myData.path[v.path_id].data.title+'</a>');
+				var cmd = (i === 0)? 'Procedi su ' : ((prevPathId && (v.path_id === prevPathId))? 'Continua su ' : 'Gira su ');
+				cmd = APP.i18n.translate(cmd)+' '+that.myData.path[v.path_id].data.title;
+				prevPathId = v.path_id;
+				
+				var $a = $(	'<a href="#" class="list-group-item" data-index="'+i+'">'+(i+1)+'. '+cmd+
+								'<span class="label label-default pull-right" style="margin-right: 2px;">'+formatLength(v.length)+'</span>'+
+							'</a>');
+				
 				$a.hover(function() {
-					var arrid = Number($(this).attr('data-index'));
-					that.routing.results[arrid].layer.setStyle({opacity: 1});
+					onMouseOver(Number($(this).attr('data-index')));
 				}, function() {
-					var arrid = Number($(this).attr('data-index'));
-					that.routing.results[arrid].layer.setStyle(defStyle);
+					onMouseOut(Number($(this).attr('data-index')));
 				});
 				$a.click(function() {
-					var arrid = Number($(this).attr('data-index'));
-					$(this).parents('.list-group').find('a').removeClass('active');
-					$(this).addClass('active');
-					closeSidebarOnMobile();
-					var b = that.routing.results[arrid].layer.getBounds();
-					map.fitBounds(b);
+					onLayerClick(Number($(this).attr('data-index')));
 				});
 				that.routing.panel.find('.results .list-group').append($a);
 			});
 			
-			that.routing.panel.find('.results .report').html('<span>'+APP.i18n.translate('Total Length')+': <b>'+formatLength(sumLength)+'</b></span>');
+			that.routing.panel.find('.results .report').html('<span>'+APP.i18n.translate('Total length')+': <b>'+formatLength(sumLength)+'</b></span>');
 		};
 		
 		that.routing.panel = $(	'<div id="routingSidebar">'+
