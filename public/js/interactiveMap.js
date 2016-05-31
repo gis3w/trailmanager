@@ -43,10 +43,19 @@ $.extend(APP.interactiveMap,
 	bAllPointsAreOverlays: false,
 	overlays: [],
 	highlitings: {},
-	routingMarkers: {
-		from: undefined,
-		to: undefined
+	routing: {
+		markers:{
+			from: undefined,
+			to: undefined
+		},
+		results:[],
+		panel: undefined
 	},
+//	routingMarkers: {
+//		from: undefined,
+//		to: undefined
+//	},
+//	routingResults: [],
 	
 	insertRowAlphabetically: function(container, row, selector, offset)
 	{
@@ -2589,59 +2598,183 @@ $.extend(APP.interactiveMap,
 	{
 		var that = this;
 		
-		if ($('#routingSidebar').length)
-		{
-			$('#routingSidebar').remove();
+		if (that.routing.panel) {
+			that.routing.panel.remove();
+			that.routing.panel = undefined;
 		}
-				
-		var div = $('<div id="routingSidebar">'+
-						'<form>'+
-							'<div class="form-group">'+
-								'<label for="from">'+APP.i18n.translate('From')+'</label>'+
-								'<div class="input-group">\
-									<input type="text" class="form-control" readonly id="from" placeholder="'+APP.i18n.translate('Choose starting point')+'">\
-							      <span class="input-group-btn">\
-							        <button class="btn btn-default" type="button"><i class="icon-map-marker"></i></button>\
-							      </span>\
-							    </div>'+
-							'</div>'+
-							'<div class="form-group">'+
-								'<label for="to">'+APP.i18n.translate('To')+'</label>'+
-								'<div class="input-group">\
-									<input type="text" class="form-control" readonly id="to" placeholder="'+APP.i18n.translate('Choose destination')+'">\
-							      <span class="input-group-btn">\
-							        <button class="btn btn-default" type="button"><i class="icon-map-marker"></i></button>\
-							      </span>\
-							    </div>'+
-							'</div>'+
-							'<button class="btn btn-danger" type="button" style="margin-right: 20px" id="resetBtn">'+APP.i18n.translate('Reset')+'</button>'+
-							'<button class="btn btn-info" type="button" id="calculateBtn"><i class="icon-ok"></i> '+APP.i18n.translate('Calculate')+'</button>'+
-						'</form>'+
-					'</div>');
 		
-		var markers = that.routingMarkers;
-				
-		var updateInputsValue = function(target, id, ll) {
-			var x = target.find('#'+id);
+		var openSidebarOnMobile = function() {
+			if (that.mySidebar.div.width() > 0.5*$('body').width()) {
+				that.mySidebar.control.show();
+			}
+		};
+		
+		var closeSidebarOnMobile = function() {
+			if (that.mySidebar.div.width() > 0.5*$('body').width()) {
+				that.mySidebar.control.hide();
+			}
+		};
+		
+		var updateInputsValue = function(id, ll) {
+			var x = that.routing.panel.find('#'+id);
 			if (ll && ll.lat && ll.lng)
 				x.val(ll.lat+','+ll.lng);
 			else
 				x.val('');
 		};
+		
+		var formatLength = function(value) {
+			if ((value / 1000) >= 1) {
+				// km
+				return (value/1000).toFixed(2)+' km';
+			}
+			else {
+				// m
+				return value.toFixed(2)+' m';
+			}
+		};
+		
+		var resetMarkers = function() {
+			$.each(that.routing.markers, function(i,v) {
+				if (!v) {
+					return true;
+				}
+				updateInputsValue(v.options.id, undefined);
+				map.removeLayer(v);
+				that.routing.markers[i] = undefined;
+			});
+			that.routing.markers = {};
+		};
+		
+		var resetResults = function() {
+			that.routing.panel.find('.results .list-group').empty();
+			that.routing.panel.find('.results .report').empty();
+			
+			$.each(that.routing.results, function(i,v) {
+				map.removeLayer(v.layer);
+			});
+			that.routing.results = [];
+		};
+		
+		var defStyle = {opacity: 0.4};
+		
+		var addResults = function(data) {
+			$.each(data, function(i,v) {
+				var gj = L.geoJson(v.geoJSON,{
+					style: defStyle
+				});
+				if (!map.hasLayer(gj)) {
+					gj.addTo(map);
+				}
+				v.layer = gj;
 				
-		$.each(div.find('.form-group'), function(i,fg)
+				that.routing.results.push(v);
+			});
+		};		
+		
+		var showResults = function() {
+			var sumLength = 0;
+			
+			$.each(that.routing.results, function(i,v) {				
+				sumLength += v.length;
+				
+				var $a = $('<a href="#" class="list-group-item" data-index="'+i+'"><span class="badge">'+formatLength(v.length)+'</span> '+(i+1)+'. '+that.myData.path[v.path_id].data.title+'</a>');
+				$a.hover(function() {
+					var arrid = Number($(this).attr('data-index'));
+					that.routing.results[arrid].layer.setStyle({opacity: 1});
+				}, function() {
+					var arrid = Number($(this).attr('data-index'));
+					that.routing.results[arrid].layer.setStyle(defStyle);
+				});
+				$a.click(function() {
+					var arrid = Number($(this).attr('data-index'));
+					$(this).parents('.list-group').find('a').removeClass('active');
+					$(this).addClass('active');
+					closeSidebarOnMobile();
+					var b = that.routing.results[arrid].layer.getBounds();
+					map.fitBounds(b);
+				});
+				that.routing.panel.find('.results .list-group').append($a);
+			});
+			
+			that.routing.panel.find('.results .report').html('<span>'+APP.i18n.translate('Total Length')+': <b>'+formatLength(sumLength)+'</b></span>');
+		};
+		
+		that.routing.panel = $(	'<div id="routingSidebar">'+
+									'<form>'+
+										'<div class="form-group">'+
+											'<label for="from">'+APP.i18n.translate('From')+'</label>'+
+											'<div class="input-group">\
+												<input type="text" class="form-control" readonly id="from" placeholder="'+APP.i18n.translate('Choose starting point')+'">\
+										      <span class="input-group-btn">\
+										        <button class="btn btn-default" type="button"><i class="icon-map-marker"></i></button>\
+										      </span>\
+										    </div>'+
+										'</div>'+
+										'<div class="form-group">'+
+											'<label for="to">'+APP.i18n.translate('To')+'</label>'+
+											'<div class="input-group">\
+												<input type="text" class="form-control" readonly id="to" placeholder="'+APP.i18n.translate('Choose destination')+'">\
+										      <span class="input-group-btn">\
+										        <button class="btn btn-default" type="button"><i class="icon-map-marker"></i></button>\
+										      </span>\
+										    </div>'+
+										'</div>'+
+										'<button class="btn btn-danger" type="button" style="margin-right: 20px" id="resetBtn">'+APP.i18n.translate('Reset')+'</button>'+
+										'<button class="btn btn-info" type="button" id="calculateBtn"><i class="icon-ok"></i> '+APP.i18n.translate('Calculate')+'</button>'+
+									'</form>'+
+									'<div class="results" style="margin-top: 15px;">'+
+										'<p class="report text-right"></p>'+
+										'<div class="list-group"></div>'+
+									'</div>'+
+								'</div>');
+		
+		that.routing.panel.find('#resetBtn').click(function() {
+			resetMarkers();
+			resetResults();
+		});
+		
+		that.routing.panel.find('#calculateBtn').click(function() {
+			var from = that.routing.panel.find('#from').val();
+			var to = that.routing.panel.find('#to').val();
+			
+			if (!from || !to) {
+				return false;
+			}
+			
+			$.ajax({
+				method: 'GET',
+				url: '/jx/routing',
+				data: {
+					from: from,
+					to: to,
+				},
+				success: function(response) {
+					if (!response || !response.status || response.error.errcode) {
+						return false;
+					}
+					
+					resetResults();
+					addResults(response.data);
+					showResults();
+				}
+			});
+		});
+				
+		$.each(that.routing.panel.find('.form-group'), function(i,fg)
 		{
 			fg = $(fg);
 			var inp = fg.find('input');
 			var id = inp.attr('id');
 			
-			if (markers[id]) {
-				updateInputsValue(div, id, markers[id].getLatLng());
+			if (that.routing.markers[id]) {
+				updateInputsValue(id, that.routing.markers[id].getLatLng());
 			}
 			
 			var btn = fg.find('.btn');
 			btn.click(function()
-			{				
+			{
+				closeSidebarOnMobile();
 				var opts = {
 					id: id,
 					draggable: true
@@ -2664,60 +2797,42 @@ $.extend(APP.interactiveMap,
 					
 				}
 				
-				if (!markers[id])
+				if (!that.routing.markers[id])
 				{
-					markers[id] = L.marker([0,0],opts).addTo(map);
+					that.routing.markers[id] = L.marker([0,0],opts).addTo(map);
 					
 					map.off('mousemove').on('mousemove', function(e) {
-						markers[id].setLatLng(e.latlng);
-						updateInputsValue(div, id, e.latlng);
+						that.routing.markers[id].setLatLng(e.latlng);
+						updateInputsValue(id, e.latlng);
 					});
 					
 					map.off('click').on('click',function(e){
 						map.off('mousemove');
 						map.off('click');
+						that.routing.markers[id].setLatLng(e.latlng);
+						updateInputsValue(id, e.latlng);
+						openSidebarOnMobile();
 					});
 					
-					markers[id].on('drag', function() {
-						updateInputsValue(that.mySidebar.div.find('#routingSidebar'), this.options.id, this.getLatLng());
+					that.routing.markers[id].on('drag', function() {
+						updateInputsValue(this.options.id, this.getLatLng());
 					});
 					
-					markers[id].snapediting = new L.Handler.MarkerSnap(map, markers[id]);
+					that.routing.markers[id].snapediting = new L.Handler.MarkerSnap(map, that.routing.markers[id]);
 					map.eachLayer(function(layer){
 						if ($.isFunction(layer.getPathString))
-							markers[id].snapediting.addGuideLayer(layer);
+							that.routing.markers[id].snapediting.addGuideLayer(layer);
 					});
-					markers[id].snapediting.enable();
-				}
-			})
-		});
-		
-		div.find('#resetBtn').click(function() {
-			$.each(markers, function(i,v) {
-				if (!v) {
-					return true;
-				}
-				updateInputsValue(div, v.options.id, undefined);
-				map.removeLayer(v);
-				markers[i] = undefined;
-			});
-		});
-		
-		div.find('#calculateBtn').click(function() {
-			$.ajax({
-				method: 'GET',
-				url: '/jx/routing',
-				data: {
-					from: $('#routingSidebar #from').val(),
-					to: $('#routingSidebar #to').val(),
-				},
-				success: function(response) {
-					
+					that.routing.markers[id].snapediting.enable();
 				}
 			});
 		});
 		
-		return div;
+		if (that.routing.results.length) {
+			showResults();
+		}
+		
+		return that.routing.panel;
 	},
 	
 	checkUrlCoords: function()
