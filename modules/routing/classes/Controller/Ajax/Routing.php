@@ -43,13 +43,50 @@ class Controller_Ajax_Routing extends Controller_Ajax_Main{
         else
         {
             $toRes = [];
-            foreach ($routingPaths as $routingPath)
+            for ($i = 0; $i < count($routingPaths); $i++)
             {
-                $toRes[] = [
-                    "path_id" => $routingPath['path_id'],
-                    "geoJSON" => ORMGIS::factory('Paths_Single_Noded', $routingPath['psn_id'])->asgeojson_php,
-                    "length" => $routingPath['length'] * $routingPath['cost']
-                ];
+                $routingPath = $routingPaths[$i];
+                if ($routingPath['psn_id'] == $fromPath->id OR $routingPath['psn_id'] == $toPath->id)
+                {
+
+                    if($routingPath['psn_id'] == $fromPath->id)
+                    {
+                        $routingPath2 = $routingPaths[$i + 1];
+                        list($path, $position) = [$fromPath, $positionFromPath];
+                        $toEnd = $routingPath['psn_target'] == $routingPath2['id2'];
+                    }
+                    else
+                    {
+                        $routingPathN1 = $routingPaths[$i - 1];
+                        list($path, $position) = [$toPath, $positionToPath];
+                        if ($routingPath['psn_target'] == $routingPathN1['psn_source'] OR
+                            $routingPath['psn_target'] == $routingPathN1['psn_target']) {
+                            $toEnd = True;
+                        }
+                        else
+                        {
+                            $toEnd = False;
+                        }
+
+                    }
+
+                    $subPath = $path->getGeoJSONSubPathByFraction($position, $toEnd);
+
+                    $toRes[] = [
+                        "path_id" => $routingPath['path_id'],
+                        "geoJSON" => json_decode($subPath['geojson_subapth']),
+                        "length" => (float)$subPath['geojson_subapth_length']
+                    ];
+                }
+                else
+                {
+                    $toRes[] = [
+                        "path_id" => $routingPath['path_id'],
+                        "geoJSON" => ORMGIS::factory('Paths_Single_Noded', $routingPath['psn_id'])->asgeojson_php,
+                        "length" => $routingPath['length'] * $routingPath['cost']
+                    ];
+                }
+
             }
             $this->jres->data = $toRes;
         }

@@ -26,6 +26,12 @@ class Controller_Ajax_Admin_Global_Routing extends Controller_Ajax_Auth_Strict{
 
             $qs = "drop table if exists paths_single";
             DB::query(NULL, $qs)->execute();
+            $qs = "drop table if exists paths_single_noded";
+            DB::query(NULL, $qs)->execute();
+            $qs = "drop table if exists paths_single_vertices_pgr";
+            DB::query(NULL, $qs)->execute();
+            $qs = "drop table if exists paths_single_noded_vertices_pgr";
+            DB::query(NULL, $qs)->execute();
             $qs = "create table paths_single as (select id as path_id, (st_dump(st_linemerge(the_geom))).geom as the_geom from paths)";
             DB::query(NULL, $qs)->execute();
             $qs = "alter table paths_single add column id serial primary key";

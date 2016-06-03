@@ -34,6 +34,30 @@ class Model_Paths_Single_Noded extends ORMGIS
         return $query[0]['position_on_path'];
     }
 
+    public function getGeoJSONSubPathByFraction($fraction, $toEnd = TRUE)
+    {
+        # select direction
+        if ($toEnd)
+        {
+            $subString = "ST_Line_Substring(the_geom, ".$fraction."::float, 1)";
+        }
+        else
+        {
+            $subString = "ST_Line_Substring(the_geom, 0, ".$fraction."::float)";
+        }
+
+
+        #get percentage position on path
+        $query =  DB::select(
+            [DB::expr("ST_AsGeoJSON(ST_Transform(".$subString.", ".$this->epsg_out."))"), 'geojson_subapth'],
+            [DB::expr("ST_Length(".$subString.")"), 'geojson_subapth_length']
+        )
+            ->from($this->_table_name)
+            ->where('id', '=', $this->id)
+            ->execute();
+        return $query[0];
+    }
+
     public function calculateRouting($from_position, $to, $to_position)
     {
         $qrouting = "SELECT * FROM pgr_trspViaEdges(
@@ -44,7 +68,7 @@ class Model_Paths_Single_Noded extends ORMGIS
         false,  
         false) r
         
-        LEFT JOIN (select id as psn_id, old_id as psn_old_id, st_length(the_geom) as length from paths_single_noded) psn on (r.id3 = psn.psn_id)
+        LEFT JOIN (select id as psn_id, old_id as psn_old_id, source as psn_source, target as psn_target, st_length(the_geom) as length from paths_single_noded) psn on (r.id3 = psn.psn_id)
         LEFT JOIN (select id as ps_id, path_id from paths_single) ps on (ps.ps_id = psn.psn_old_id);
         ";
 
