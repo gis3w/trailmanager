@@ -672,7 +672,7 @@ $.extend(APP.config,{
 									APP.utils.showErrMsg(response);
 									return false;
 								}
-								myDiv.find('.rt_results').html(data);
+								myDiv.find('.rt_results').html(response.data);
 							},
 							error: function(response) {
 								if (response.error.errcode) {
