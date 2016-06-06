@@ -229,6 +229,7 @@ return array(
                         'id' =>'createroutingtopology',
                         'name' => __('Create Routing Topology'),
                         'icon' => 'gear',
+                        'url' => 'jx/admin/global/routing'
                     ),
              ),
             ),
