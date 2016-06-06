@@ -661,7 +661,7 @@ $.extend(APP.config,{
 					APP.ziploader.start(button, label, section, $("#"+divId));
 					break;
 				case 'administration_createroutingtopology':
-					var myDiv = $('<div class="createroutingtopology"><div class="rt_butt"></div><div class="rt_results"></div></div>');
+					var myDiv = $('<div class="createroutingtopology container"><div class="row rt_butt"></div><div class="row rt_results"></div></div>');
 					var butt = $('<button type="button" class="btn btn-default">'+APP.i18n.translate('Create')+'</button>');
 					butt.click(function() {
 						$.ajax({
