@@ -660,6 +660,31 @@ $.extend(APP.config,{
 				case "administration_uploadpathzip":
 					APP.ziploader.start(button, label, section, $("#"+divId));
 					break;
+				case 'administration_createroutingtopology':
+					var myDiv = $('<div class="createroutingtopology"><div class="rt_butt"></div><div class="rt_results"></div></div>');
+					var butt = $('<button type="button" class="btn btn-default">'+APP.i18n.translate('Create')+'</button>');
+					butt.click(function() {
+						$.ajax({
+							method: 'GET',
+							url: APP.config.localConfig.menu.administration.menu.items[section].url,
+							success: function(response) {
+								if (response.error.errcode) {
+									APP.utils.showErrMsg(response);
+									return false;
+								}
+								myDiv.find('.rt_results').html(data);
+							},
+							error: function(response) {
+								if (response.error.errcode) {
+									APP.utils.showErrMsg(response);
+									return false;
+								}
+							}
+						});
+					});
+					myDiv.find('.rt_butt').html(butt);
+					$("#"+divId).append(myDiv);
+					break;
 				default:
 					if (APP.config.serverSide)
 						APP.anagrafica_ss.start(button, label, section, $("#"+divId));
