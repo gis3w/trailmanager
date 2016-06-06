@@ -225,6 +225,11 @@ return array(
                         'name' => __('Upload ZIp Path file'),
                         'icon' => 'upload',
                     ),
+                    'administration_createroutingtopology' => array(
+                        'id' =>'createroutingtopology',
+                        'name' => __('Create Routing Topology'),
+                        'icon' => 'gear',
+                    ),
              ),
             ),
         ),

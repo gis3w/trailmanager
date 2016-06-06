@@ -4,7 +4,7 @@ __author__ = 'walter'
 PG_HOST = 'localhost'
 PG_DB = 'dev_trail'
 PG_USER = 'postgres'
-PG_PASSWORD = 'kote@25#t'
+PG_PASSWORD = 'postgres'
 
 WD = '/home/www/trailmanager/application/cache/'
 IMGD = '/home/www/trailmanager/upload/image/'
