@@ -728,14 +728,14 @@ $.extend(APP.map,
 		// sidebar
 		if (L.control.sidebar && $("#leafletSidebar").length)
 		{
-			if (!L.Browser.mobile) {
-				$("#leafletSidebar").css('width','600px');
-			}
 			that.sidebar.control = L.control.sidebar('leafletSidebar', {
 				position: 'left'
 			});
 			
 			that.sidebar.control.addTo(that.globalData[id].map);
+			if (!L.Browser.mobile) {
+				$(".leaflet-sidebar").css('width','600px');
+			}
 		}
 		
 		
