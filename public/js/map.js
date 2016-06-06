@@ -726,11 +726,15 @@ $.extend(APP.map,
 		}
 		
 		// sidebar
-		if (L.control.sidebar && $("#leafletSidebar").length > 0)
+		if (L.control.sidebar && $("#leafletSidebar").length)
 		{
+			if (!L.Browser.mobile) {
+				$("#leafletSidebar").css('width','600px');
+			}
 			that.sidebar.control = L.control.sidebar('leafletSidebar', {
 				position: 'left'
 			});
+			
 			that.sidebar.control.addTo(that.globalData[id].map);
 		}
 		

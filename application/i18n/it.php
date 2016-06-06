@@ -76,6 +76,7 @@ return array(
 	'Video_poi' => 'Video',
 	'Pole ID' => 'ID Palo',
 		
+		'Reverse route' => 'Inverti percorso',
 		'Get route' => 'Calcola percorso',
 		'Getroute section' => 'Calcola percorso',
 		'choose starting point' => 'scegli il punto iniziale',

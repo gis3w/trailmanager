@@ -44,6 +44,7 @@ $.extend(APP.interactiveMap,
 	overlays: [],
 	highlitings: {},
 	routing: {
+		bInsertMarker: false,
 		markers:{
 			from: undefined,
 			to: undefined
@@ -51,11 +52,6 @@ $.extend(APP.interactiveMap,
 		results:[],
 		panel: undefined
 	},
-//	routingMarkers: {
-//		from: undefined,
-//		to: undefined
-//	},
-//	routingResults: [],
 	
 	insertRowAlphabetically: function(container, row, selector, offset)
 	{
@@ -594,7 +590,9 @@ $.extend(APP.interactiveMap,
 		
 		if (section === 'area' && !APP.utils.isset(latlng))
 			latlng = L.latLng(that.myData[section][id].geo.centroids[0].coordinates[1], that.myData[section][id].geo.centroids[0].coordinates[0]);
-		element.openPopup(latlng);
+		
+		if (!that.routing.bInsertMarker)
+			element.openPopup(latlng);
 	},
 	
 	unselectItem: function(element)
@@ -652,7 +650,7 @@ $.extend(APP.interactiveMap,
 		var id = o.id;
 		var latlng = o.latlng;
 		
-		if (!that.checkIfMyDataExists(section, id))
+		if (!that.checkIfMyDataExists(section, id) || that.routing.bInsertMarker)
 			return;
 		
 		if (element && element.hasClass && element.hasClass("list-group-item"))
@@ -2106,6 +2104,10 @@ $.extend(APP.interactiveMap,
 		
 		var layerMouseOver = function(e)
 		{
+			if (that.routing.bInsertMarker) {
+				return false;
+			}
+			
 			var myLayer = e.target;
 			
 			if (!$.isFunction(myLayer.setStyle))
@@ -2125,6 +2127,10 @@ $.extend(APP.interactiveMap,
 
 		var layerMouseOut = function(e)
 		{
+			if (that.routing.bInsertMarker) {
+				return false;
+			}
+			
 			var myLayer = layer;
 			if (!$.isFunction(myLayer.setStyle))
 				myLayer = myLayer.toGeoJSON();
@@ -2615,6 +2621,14 @@ $.extend(APP.interactiveMap,
 			}
 		};
 		
+		var enableLayersClick = function() {
+			that.routing.bInsertMarker = false;
+		};
+		
+		var disableLayersClick = function() {
+			that.routing.bInsertMarker = true;
+		};
+		
 		var updateInputsValue = function(id, ll) {
 			var x = that.routing.panel.find('#'+id);
 			if (ll && ll.lat && ll.lng)
@@ -2632,6 +2646,30 @@ $.extend(APP.interactiveMap,
 				// m
 				return value.toFixed(2)+' m';
 			}
+		};
+		
+		var getMarkerOpts = function(id) {
+			var opts = {
+				id: id,
+				draggable: true
+			};
+			
+			if (id === 'from') {
+				opts.icon = L.icon({
+				    iconUrl: '/public/img/start.png',
+				    iconSize: [32, 37],
+				    iconAnchor: [16, 36],
+				});
+			}
+			if (id === 'to') {
+				opts.icon = L.icon({
+				    iconUrl: '/public/img/finish.png',
+				    iconSize: [32, 37],
+				    iconAnchor: [16, 36],
+				});
+			}
+			
+			return opts;
 		};
 		
 		var resetMarkers = function() {
@@ -2727,41 +2765,7 @@ $.extend(APP.interactiveMap,
 			that.routing.panel.find('.results .report').html('<span class="text-capitalize">'+APP.i18n.translate('total length')+': <b>'+formatLength(sumLength)+'</b></span>');
 		};
 		
-		that.routing.panel = $(	'<div id="routingSidebar">'+
-									'<form>'+
-										'<div class="form-group">'+
-											'<label for="from" class="text-uppercase">'+APP.i18n.translate('from')+'</label>'+
-											'<div class="input-group">\
-												<input type="text" class="form-control" readonly id="from" placeholder="'+APP.i18n.translate('choose starting point')+'">\
-										      <span class="input-group-btn">\
-										        <button class="btn btn-default" type="button"><i class="icon-map-marker"></i></button>\
-										      </span>\
-										    </div>'+
-										'</div>'+
-										'<div class="form-group">'+
-											'<label for="to" class="text-uppercase">'+APP.i18n.translate('to')+'</label>'+
-											'<div class="input-group">\
-												<input type="text" class="form-control" readonly id="to" placeholder="'+APP.i18n.translate('choose destination')+'">\
-										      <span class="input-group-btn">\
-										        <button class="btn btn-default" type="button"><i class="icon-map-marker"></i></button>\
-										      </span>\
-										    </div>'+
-										'</div>'+
-										'<button class="btn btn-danger text-capitalize" type="button" style="margin-right: 20px" id="resetBtn">'+APP.i18n.translate('reset')+'</button>'+
-										'<button class="btn btn-info text-capitalize" type="button" id="calculateBtn"><i class="icon-ok"></i> '+APP.i18n.translate('calculate')+'</button>'+
-									'</form>'+
-									'<div class="results" style="margin-top: 15px;">'+
-										'<p class="report text-right"></p>'+
-										'<div class="list-group"></div>'+
-									'</div>'+
-								'</div>');
-		
-		that.routing.panel.find('#resetBtn').click(function() {
-			resetMarkers();
-			resetResults();
-		});
-		
-		that.routing.panel.find('#calculateBtn').click(function() {
+		var calculate = function() {
 			var from = that.routing.panel.find('#from').val();
 			var to = that.routing.panel.find('#to').val();
 			
@@ -2786,6 +2790,77 @@ $.extend(APP.interactiveMap,
 					showResults();
 				}
 			});
+		};
+		
+		that.routing.panel = $(	'<div id="routingSidebar">'+
+									'<form>'+
+										'<div class="form-group">'+
+											'<label for="from" class="text-uppercase">'+APP.i18n.translate('from')+'</label>'+
+											'<div class="input-group">\
+												<input type="text" class="form-control" readonly id="from" placeholder="'+APP.i18n.translate('choose starting point')+'">\
+										      <span class="input-group-btn">\
+										        <button class="btn btn-default" type="button"><i class="icon-map-marker"></i></button>\
+										      </span>\
+										    </div>'+
+										'</div>'+
+										'<div class="text-right">'+
+										'	<div><button type="button" id="reversePoints" class="btn btn-info btn-sm" title="'+APP.i18n.translate('Reverse route')+'"><i class="icon-exchange icon-rotate-90" aria-hidden="true"></i></button></div>'+
+										'</div>'+
+										'<div class="form-group">'+
+											'<label for="to" class="text-uppercase">'+APP.i18n.translate('to')+'</label>'+
+											'<div class="input-group">\
+												<input type="text" class="form-control" readonly id="to" placeholder="'+APP.i18n.translate('choose destination')+'">\
+										      <span class="input-group-btn">\
+										        <button class="btn btn-default" type="button"><i class="icon-map-marker"></i></button>\
+										      </span>\
+										    </div>'+
+										'</div>'+
+										'<button class="btn btn-danger text-capitalize" type="button" style="margin-right: 20px" id="resetBtn">'+APP.i18n.translate('reset')+'</button>'+
+										'<button class="btn btn-info text-capitalize" type="button" id="calculateBtn"><i class="icon-ok"></i> '+APP.i18n.translate('calculate')+'</button>'+
+									'</form>'+
+									'<div class="results" style="margin-top: 15px;">'+
+										'<p class="report text-right"></p>'+
+										'<div class="list-group"></div>'+
+									'</div>'+
+								'</div>');
+		
+		that.routing.panel.find('#resetBtn').click(function() {
+			resetMarkers();
+			resetResults();
+		});
+		
+		that.routing.panel.find('#reversePoints').click(function() {
+			var from = undefined;
+			var to = undefined;
+			
+			if (that.routing.markers.from) {
+				from = that.routing.markers.from.getLatLng();
+			}
+			if (that.routing.markers.to) {
+				to = that.routing.markers.to.getLatLng();
+			}
+			
+			resetMarkers();
+			var hadResults = (that.routing.results.length)? true : false;
+			resetResults();
+			
+			if (from) {
+				that.routing.markers.to =  L.marker(from,getMarkerOpts('to')).addTo(map);
+				updateInputsValue('to',from);
+			}
+			
+			if (to) {
+				that.routing.markers.from =  L.marker(to,getMarkerOpts('from')).addTo(map);
+				updateInputsValue('from',to);
+			}
+			
+			if (hadResults) {
+				calculate();
+			}
+		});
+		
+		that.routing.panel.find('#calculateBtn').click(function() {
+			calculate();
 		});
 				
 		$.each(that.routing.panel.find('.form-group'), function(i,fg)
@@ -2800,29 +2875,10 @@ $.extend(APP.interactiveMap,
 			
 			var btn = fg.find('.btn');
 			btn.click(function()
-			{
+			{ 
 				closeSidebarOnMobile();
-				var opts = {
-					id: id,
-					draggable: true
-				};
-				
-				if (id === 'from') {
-//					opts.icon = L.icon({
-//					    iconUrl: '/public/img/start.png',
-//					    iconRetinaUrl: 'my-icon@2x.png',
-//					    iconSize: [38, 95],
-//					    iconAnchor: [22, 94],
-//					    popupAnchor: [-3, -76],
-//					    shadowUrl: 'my-icon-shadow.png',
-//					    shadowRetinaUrl: 'my-icon-shadow@2x.png',
-//					    shadowSize: [68, 95],
-//					    shadowAnchor: [22, 94]
-//					});
-				}
-				if (id === 'to') {
-					
-				}
+				disableLayersClick();
+				var opts = getMarkerOpts(id);
 				
 				if (!that.routing.markers[id])
 				{
@@ -2834,6 +2890,7 @@ $.extend(APP.interactiveMap,
 					});
 					
 					map.off('click').on('click',function(e){
+						enableLayersClick();
 						map.off('mousemove');
 						map.off('click');
 						that.routing.markers[id].setLatLng(e.latlng);
