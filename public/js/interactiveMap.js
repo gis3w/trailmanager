@@ -2792,6 +2792,28 @@ $.extend(APP.interactiveMap,
 			});
 		};
 		
+		var createMarker = function(mId, latLng)
+		{
+			var opts = getMarkerOpts(mId);
+			
+			if (!that.routing.markers[mId])
+			{
+				var ll = (latLng)? latLng : [0,0];
+				that.routing.markers[mId] = L.marker(ll,opts).addTo(map);
+				
+				that.routing.markers[mId].on('drag', function() {
+					updateInputsValue(this.options.id, this.getLatLng());
+				});
+				
+				that.routing.markers[mId].snapediting = new L.Handler.MarkerSnap(map, that.routing.markers[mId]);
+				map.eachLayer(function(layer){
+					if ($.isFunction(layer.getPathString))
+						that.routing.markers[mId].snapediting.addGuideLayer(layer);
+				});
+				that.routing.markers[mId].snapediting.enable();
+			}
+		};
+		
 		that.routing.panel = $(	'<div id="routingSidebar">'+
 									'<form>'+
 										'<div class="form-group">'+
@@ -2845,12 +2867,14 @@ $.extend(APP.interactiveMap,
 			resetResults();
 			
 			if (from) {
-				that.routing.markers.to =  L.marker(from,getMarkerOpts('to')).addTo(map);
+				createMarker('to',from);
+//				that.routing.markers.to = L.marker(from,getMarkerOpts('to')).addTo(map);
 				updateInputsValue('to',from);
 			}
 			
 			if (to) {
-				that.routing.markers.from =  L.marker(to,getMarkerOpts('from')).addTo(map);
+				createMarker('from',to);
+//				that.routing.markers.from =  L.marker(to,getMarkerOpts('from')).addTo(map);
 				updateInputsValue('from',to);
 			}
 			
@@ -2878,37 +2902,19 @@ $.extend(APP.interactiveMap,
 			{ 
 				closeSidebarOnMobile();
 				disableLayersClick();
-				var opts = getMarkerOpts(id);
-				
-				if (!that.routing.markers[id])
-				{
-					that.routing.markers[id] = L.marker([0,0],opts).addTo(map);
-					
-					map.off('mousemove').on('mousemove', function(e) {
-						that.routing.markers[id].setLatLng(e.latlng);
-						updateInputsValue(id, e.latlng);
-					});
-					
-					map.off('click').on('click',function(e){
-						enableLayersClick();
-						map.off('mousemove');
-						map.off('click');
-						that.routing.markers[id].setLatLng(e.latlng);
-						updateInputsValue(id, e.latlng);
-						openSidebarOnMobile();
-					});
-					
-					that.routing.markers[id].on('drag', function() {
-						updateInputsValue(this.options.id, this.getLatLng());
-					});
-					
-					that.routing.markers[id].snapediting = new L.Handler.MarkerSnap(map, that.routing.markers[id]);
-					map.eachLayer(function(layer){
-						if ($.isFunction(layer.getPathString))
-							that.routing.markers[id].snapediting.addGuideLayer(layer);
-					});
-					that.routing.markers[id].snapediting.enable();
-				}
+				createMarker(id);
+				map.off('mousemove').on('mousemove', function(e) {
+					that.routing.markers[id].setLatLng(e.latlng);
+					updateInputsValue(id, e.latlng);
+				});
+				map.off('click').on('click',function(e){
+					enableLayersClick();
+					map.off('mousemove');
+					map.off('click');
+					that.routing.markers[id].setLatLng(e.latlng);
+					updateInputsValue(id, e.latlng);
+					openSidebarOnMobile();
+				});
 			});
 		});
 		
