@@ -2688,7 +2688,8 @@ $.extend(APP.interactiveMap,
 		var resetResults = function() {
 			that.routing.panel.find('.results .list-group').empty();
 			that.routing.panel.find('.results .report').empty();
-			that.routing.panel.find('.saveBtn').hide();
+			hideSaveBtn();
+			that.routing.panel.find('.routingTitle').hide();
 			
 			$.each(that.routing.results, function(i,v) {
 				map.removeLayer(v.layer);
@@ -2748,12 +2749,14 @@ $.extend(APP.interactiveMap,
 		};
 		
 		var favorites = {
-			'items': {},
 			'remove': function(fId, fCallback) {
 				$.ajax({
 					url: routingUrl+'/'+fId,
 					method: 'DELETE',
 					success: function(fResponse) {
+						if (!fResponse.status) {
+							return false;
+						}
 						if ($.isFunction(fCallback)) {
 							fCallback(fResponse);
 						}
@@ -2787,6 +2790,18 @@ $.extend(APP.interactiveMap,
 					}
 				});
 			},
+			'update': function(fId, fData, fCallback) {
+				$.ajax({
+					url: routingUrl+'/'+fId,
+					data: fData,
+					method: 'POST',
+					success: function(fResponse) {
+						if ($.isFunction(fCallback)) {
+							fCallback(fResponse);
+						}
+					}
+				});
+			}
 		};
 		
 		var showResults = function(data) {
@@ -2818,7 +2833,24 @@ $.extend(APP.interactiveMap,
 			});
 			
 			that.routing.panel.find('.results .report').html('<span class="text-capitalize">'+APP.i18n.translate('total length')+': <b>'+formatLength(sumLength)+'</b></span>');
-			that.routing.panel.find('.saveBtn').show();
+			showSaveBtn();
+		};
+		
+		var showSaveBtn = function()
+		{
+			if (APP.config.checkLoggedUser()) {
+				that.routing.panel.find('.saveBtn').show();
+			}
+		};
+		
+		var hideSaveBtn = function()
+		{
+			that.routing.panel.find('.saveBtn').hide();
+		};
+		
+		var showTitle = function(title)
+		{
+			that.routing.panel.find('.routingTitle').text(title).show();
 		};
 		
 		var calculate = function() {
@@ -2895,12 +2927,37 @@ $.extend(APP.interactiveMap,
 		var openFavorite = function(fId, fTitle, fData)
 		{
 			fData = ($.type(fData) === 'string')? $.parseJSON(fData) : fData;
-			var from = fData.from.split(',');
-			var to = fData.to.split(',');
+			var from = fData.from;
+			if ($.type(from) === 'string')
+			{
+				var arr = fData.from.split(',');
+				from = {
+					lat: parseFloat(arr[0]),
+					lng: parseFloat(arr[1])
+				};
+			}
+			if ($.type(fData.to) === 'string')
+			{
+				var arr = fData.to.split(',');
+				to = {
+					lat: parseFloat(arr[0]),
+					lng: parseFloat(arr[1])
+				};
+			}
+			resetMarkers();
+			resetResults();
+			
 			updateInputsValue('from',from);
+			createMarker('from',from);
+			
 			updateInputsValue('to',to);
+			createMarker('to',to);
+			
+			addResults(fData.data)
 			showResults(fData.data);
-			that.routing.panel.find('#currentPathTab').tab('show');
+			showTitle(fTitle);
+			that.routing.panel.find('.nav-tabs a.currentPathTab').tab('show');
+			hideSaveBtn();
 		};
 		
 		that.routing.panel = $(	'<div id="routingSidebar">'+
@@ -2932,21 +2989,22 @@ $.extend(APP.interactiveMap,
 									'<div style="margin-top: 15px;">'+
 										'<ul class="nav nav-tabs" role="tablist">'+
 											'<li class="active">'+
-												'<a href="#currentPathTab" class="text-capitalize" role="tab" data-toggle="tab">'+APP.i18n.translate('results')+'</a>'+
+												'<a href="#currentPathTab" class="text-capitalize currentPathTab" role="tab" data-toggle="tab">'+APP.i18n.translate('results')+'</a>'+
 											'</li>'+
-											'<li >'+
-												'<a href="#FavoritePathsTab" class="text-capitalize" role="tab" data-toggle="tab">'+APP.i18n.translate('favorites')+'</a>'+
+											'<li class="myfavourites">'+
+												'<a href="#FavoritePathsTab" class="text-capitalize FavoritePathsTab" role="tab" data-toggle="tab">'+APP.i18n.translate('favorites')+'</a>'+
 											'</li>'+
 										'</ul>'+
 										'<div class="tab-content">'+
 											'<div class="tab-pane active results" id="currentPathTab">'+
+												'<h4 class="routingTitle" style="display: none"></h4>'+
 												'<div class="list-group"></div>'+
 												'<div>'+
 													'<p class="report pull-right"></p>'+
 													'<button class="btn btn-info text-capitalize saveBtn pull-left" type="button" style="display: none"><i class="icon-save"></i> '+APP.i18n.translate('save')+'</button>'+
 												'</div>'+
 											'</div>'+
-											'<div class="tab-pane" id="FavoritePathsTab">'+
+											'<div class="tab-pane myfavourites" id="FavoritePathsTab">'+
 												'<div class="list-group"></div>'+
 											'</div>'+
 										'</div>'+
@@ -2961,16 +3019,16 @@ $.extend(APP.interactiveMap,
 		that.routing.panel.find('.saveBtn').click(function() {
 			var buttons = [];
 			var btn = $(this);
+			var btnData = JSON.stringify($.extend(true,{},btn.data()));
 			
 			buttons.push({
 				addClass: 'btn btn-success',
 				text: APP.i18n.translate('save'),
 				onClick: function($noty) {
 					var title = $noty.$message.find('.name').val();
-					var btnData = $.extend(true,{},btn.data());
 					favorites.save({
 						title: title,
-						routing_data: JSON.stringify(btnData)
+						routing_data: btnData
 					}, function(response) {
 						if (!response.status) {
 							APP.utils.showNoty({
@@ -3008,8 +3066,6 @@ $.extend(APP.interactiveMap,
 			        },
 				}
 			});
-
-			
 		});
 		
 		that.routing.panel.find('#resetBtn').click(function() {
@@ -3086,7 +3142,14 @@ $.extend(APP.interactiveMap,
 			showResults(that.routing.results);
 		}
 		
-		favorites.load();
+		if (APP.config.checkLoggedUser())
+		{
+			favorites.load();
+		}
+		else
+		{
+			that.routing.panel.find('.myfavourites').hide();
+		}
 		
 		return that.routing.panel;
 	},
