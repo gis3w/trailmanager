@@ -18,6 +18,9 @@ class Controller_Ajax_Myrouting extends Controller_Ajax_Base_Crud{
         // set user_id to current user
         $_POST['user_id'] = $this->user->id;
         $this->_base_edit();
+        $this->jres->data = [
+            'id' => $this->_orm->id
+        ];
     }
 
     public function action_update()
