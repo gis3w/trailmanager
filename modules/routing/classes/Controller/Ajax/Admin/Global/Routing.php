@@ -51,16 +51,16 @@ class Controller_Ajax_Admin_Global_Routing extends Controller_Ajax_Auth_Strict{
             
 
             # create topology and node netwrok
-            $qs = "select pgr_createTopology('paths_single', 100)";
+            $qs = "select pgr_createTopology('paths_single', 1000)";
             $q = DB::query(NULL, $qs);
             $r = $q->execute();
             $toResMesg[] = "CREATE routing topology on path_single table";
 
-            $qs = "select pgr_nodeNetwork('paths_single',100)";
+            $qs = "select pgr_nodeNetwork('paths_single',1000)";
             DB::query(NULL, $qs)->execute();
             $toResMesg[] = "CREATE node network on path_single table";
 
-            $qs = "SELECT pgr_createTopology('paths_single_noded', 100)";
+            $qs = "SELECT pgr_createTopology('paths_single_noded', 1000)";
             $toResMesg[] = "CREATE routing topology on path_single_noded table";
             DB::query(NULL, $qs)->execute();
             $qs = "alter table paths_single_noded add column cost float8 default 1";
