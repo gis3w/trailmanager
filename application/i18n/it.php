@@ -75,7 +75,10 @@ return array(
 	'Zoom to default extent' => 'Ritorna all\'estensione iniziale della mappa',
 	'Video_poi' => 'Video',
 	'Pole ID' => 'ID Palo',
-		
+	'insert name' => 'Inserisci nome',
+		'results' => 'risultati',
+		'favorites' => 'preferiti',
+		'add to favorites' => 'aggiungi ai preferiti',
 		'Reverse route' => 'Inverti percorso',
 		'Get route' => 'Calcola percorso',
 		'Getroute section' => 'Calcola percorso',

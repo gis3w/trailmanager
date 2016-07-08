@@ -2630,6 +2630,11 @@ $.extend(APP.interactiveMap,
 			that.routing.bInsertMarker = true;
 		};
 		
+		var getInputsValue = function(id)
+		{
+			return that.routing.panel.find('#'+id).val();
+		};
+		
 		var updateInputsValue = function(id, ll) {
 			var x = that.routing.panel.find('#'+id);
 			if (ll && ll.lat && ll.lng)
@@ -2701,8 +2706,8 @@ $.extend(APP.interactiveMap,
 		
 		var setResultData = function(data)
 		{
-			var from = that.routing.panel.find('#from').val();
-			var to = that.routing.panel.find('#to').val();
+			var from = getInputsValue('from');
+			var to = getInputsValue('to');
 			that.routing.panel.find('.saveBtn').removeData().data($.extend(true,{from: from, to: to},{data: data}));
 		};
 		
@@ -2854,8 +2859,8 @@ $.extend(APP.interactiveMap,
 		};
 		
 		var calculate = function() {
-			var from = that.routing.panel.find('#from').val();
-			var to = that.routing.panel.find('#to').val();
+			var from = getInputsValue('from');
+			var to = getInputsValue('to');
 			
 			if (!from || !to) {
 				return false;
@@ -2869,13 +2874,25 @@ $.extend(APP.interactiveMap,
 					to: to,
 				},
 				success: function(response) {
-					if (!response || !response.status || response.error.errcode) {
+					if (!response || !response.status) {
+						APP.utils.showNoty({
+							title: APP.i18n.translate('error'),
+							content: response.error.errmsg,
+							type: "error",
+						});
 						return false;
 					}
 					
 					resetResults();
 					addResults(response.data);
 					showResults(that.routing.results);
+				},
+				error: function(response) {
+					APP.utils.showNoty({
+						title: APP.i18n.translate('error'),
+						content: response.error.errmsg,
+						type: "error",
+					});
 				}
 			});
 		};
@@ -2890,6 +2907,7 @@ $.extend(APP.interactiveMap,
 				that.routing.markers[mId] = L.marker(ll,opts).addTo(map);
 				
 				that.routing.markers[mId].on('drag', function() {
+					resetResults();
 					updateInputsValue(this.options.id, this.getLatLng());
 				});
 				
@@ -2900,6 +2918,20 @@ $.extend(APP.interactiveMap,
 				});
 				that.routing.markers[mId].snapediting.enable();
 			}
+		};
+		
+		var increaseFavoritesCounter = function()
+		{
+			var fc = that.routing.panel.find('.FavoritePathsTab .favoritesCounter');
+			var cv = Number(fc.text());
+			fc.text((cv+1));
+		};
+		
+		var decreaseFavoritesCounter = function()
+		{
+			var fc = that.routing.panel.find('.FavoritePathsTab .favoritesCounter');
+			var cv = Number(fc.text());
+			fc.text((cv-1));
 		};
 		
 		var addFavorite = function(fId, fTitle, fData)
@@ -2915,13 +2947,14 @@ $.extend(APP.interactiveMap,
 			template.find('.btnTrash').click(function(){
 				favorites.remove(fId, function(){
 					template.remove();
+					decreaseFavoritesCounter();
 				});
 			});
 			template.find('.btnOpen').click(function(){
 				openFavorite(fId, fTitle, fData);
 			});
 			that.routing.panel.find('#FavoritePathsTab .list-group').append(template);
-			
+			increaseFavoritesCounter();
 		};
 		
 		var openFavorite = function(fId, fTitle, fData)
@@ -2953,10 +2986,10 @@ $.extend(APP.interactiveMap,
 			updateInputsValue('to',to);
 			createMarker('to',to);
 			
-			addResults(fData.data)
+			addResults(fData.data);
 			showResults(fData.data);
 			showTitle(fTitle);
-			that.routing.panel.find('.nav-tabs a.currentPathTab').tab('show');
+			//that.routing.panel.find('.nav-tabs a.currentPathTab').tab('show');
 			hideSaveBtn();
 		};
 		
@@ -2992,7 +3025,7 @@ $.extend(APP.interactiveMap,
 												'<a href="#currentPathTab" class="text-capitalize currentPathTab" role="tab" data-toggle="tab">'+APP.i18n.translate('results')+'</a>'+
 											'</li>'+
 											'<li class="myfavourites">'+
-												'<a href="#FavoritePathsTab" class="text-capitalize FavoritePathsTab" role="tab" data-toggle="tab">'+APP.i18n.translate('favorites')+'</a>'+
+												'<a href="#FavoritePathsTab" class="text-capitalize FavoritePathsTab" role="tab" data-toggle="tab">'+APP.i18n.translate('favorites')+' (<span class="favoritesCounter">0</span>)</a>'+
 											'</li>'+
 										'</ul>'+
 										'<div class="tab-content">'+
@@ -3001,7 +3034,7 @@ $.extend(APP.interactiveMap,
 												'<div class="list-group"></div>'+
 												'<div>'+
 													'<p class="report pull-right"></p>'+
-													'<button class="btn btn-info text-capitalize saveBtn pull-left" type="button" style="display: none"><i class="icon-save"></i> '+APP.i18n.translate('save')+'</button>'+
+													'<button class="btn btn-warning btn-sm text-capitalize saveBtn pull-left" type="button" style="display: none"><i class="icon-star"></i> '+APP.i18n.translate('add to favorites')+'</button>'+
 												'</div>'+
 											'</div>'+
 											'<div class="tab-pane myfavourites" id="FavoritePathsTab">'+
@@ -3054,7 +3087,7 @@ $.extend(APP.interactiveMap,
 			});
 			
 			var myConfirm = APP.utils.showNoty({
-				title: '<h4>'+APP.i18n.translate('insert name')+'</h4>',
+				title: '<h4 class="text-capitalize">'+APP.i18n.translate('insert name')+'</h4>',
 				content: '<input type="text" class="form-control name">',
 				type: "confirm",
 				modal: true,
@@ -3139,6 +3172,13 @@ $.extend(APP.interactiveMap,
 		});
 		
 		if (that.routing.results.length) {
+			var tmp = [];
+			$.each(that.routing.results, function(i,v){
+				var x = $.extend(true,{},v);
+				delete x.layer;
+				tmp.push(x);
+			});
+			setResultData(tmp);
 			showResults(that.routing.results);
 		}
 		
