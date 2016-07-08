@@ -2766,7 +2766,9 @@ $.extend(APP.interactiveMap,
 					url: routingUrl,
 					method: 'GET',
 					success: function(fResponse) {
-						that.items = fResponse.data.items;
+						$.each(fResponse.data.items, function(i,v){
+							addFavorite(v.id, v.title, v.routing_data);
+						});
 						if ($.isFunction(fCallback)) {
 							fCallback(fResponse);
 						}
@@ -2777,7 +2779,7 @@ $.extend(APP.interactiveMap,
 				$.ajax({
 					url: routingUrl,
 					data: fData,
-					method: 'POST',
+					method: 'PUT',
 					success: function(fResponse) {
 						if ($.isFunction(fCallback)) {
 							fCallback(fResponse);
@@ -2787,11 +2789,11 @@ $.extend(APP.interactiveMap,
 			},
 		};
 		
-		var showResults = function() {
+		var showResults = function(data) {
 			var sumLength = 0;
 			var prevPathId = undefined;
 			
-			$.each(that.routing.results, function(i,v) {				
+			$.each(data, function(i,v) {				
 				sumLength += v.length;
 				
 				var cmd = (i === 0)? 'Proceed on' : ((prevPathId && (v.path_id === prevPathId))? 'Continue on' : 'Turn on');
@@ -2841,7 +2843,7 @@ $.extend(APP.interactiveMap,
 					
 					resetResults();
 					addResults(response.data);
-					showResults();
+					showResults(that.routing.results);
 				}
 			});
 		};
@@ -2892,9 +2894,13 @@ $.extend(APP.interactiveMap,
 		
 		var openFavorite = function(fId, fTitle, fData)
 		{
-//			fData.data
-//			fData.from
-//			fData.to
+			fData = ($.type(fData) === 'string')? $.parseJSON(fData) : fData;
+			var from = fData.from.split(',');
+			var to = fData.to.split(',');
+			updateInputsValue('from',from);
+			updateInputsValue('to',to);
+			showResults(fData.data);
+			that.routing.panel.find('#currentPathTab').tab('show');
 		};
 		
 		that.routing.panel = $(	'<div id="routingSidebar">'+
@@ -3077,7 +3083,7 @@ $.extend(APP.interactiveMap,
 		});
 		
 		if (that.routing.results.length) {
-			showResults();
+			showResults(that.routing.results);
 		}
 		
 		favorites.load();
