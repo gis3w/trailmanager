@@ -2603,6 +2603,7 @@ $.extend(APP.interactiveMap,
 	getRoutingPage: function(map)
 	{
 		var that = this;
+		var routingUrl = '/jx/myrouting';
 		
 		if (that.routing.panel) {
 			that.routing.panel.remove();
@@ -2687,6 +2688,7 @@ $.extend(APP.interactiveMap,
 		var resetResults = function() {
 			that.routing.panel.find('.results .list-group').empty();
 			that.routing.panel.find('.results .report').empty();
+			that.routing.panel.find('.saveBtn').hide();
 			
 			$.each(that.routing.results, function(i,v) {
 				map.removeLayer(v.layer);
@@ -2696,12 +2698,23 @@ $.extend(APP.interactiveMap,
 		
 		var defStyle = {opacity: 0.5, weight: 5};
 		
+		var setResultData = function(data)
+		{
+			var from = that.routing.panel.find('#from').val();
+			var to = that.routing.panel.find('#to').val();
+			that.routing.panel.find('.saveBtn').removeData().data($.extend(true,{from: from, to: to},{data: data}));
+		};
+		
 		var addResults = function(data) {
+			setResultData(data);
 			$.each(data, function(i,v) {
 				var gj = L.geoJson(v.geoJSON,{
 					style: defStyle,
 					onEachFeature:function (feature, layer)
 					{
+						if (!layer) {
+							return true;
+						}
 						layer.on({
 							"mouseover": function() { onMouseOver(i); },
 							"mouseout": function() { onMouseOut(i); },
@@ -2734,6 +2747,46 @@ $.extend(APP.interactiveMap,
 			map.fitBounds(b);
 		};
 		
+		var favorites = {
+			'items': {},
+			'remove': function(fId, fCallback) {
+				$.ajax({
+					url: routingUrl+'/'+fId,
+					method: 'DELETE',
+					success: function(fResponse) {
+						if ($.isFunction(fCallback)) {
+							fCallback(fResponse);
+						}
+					}
+				});
+			},
+			'load': function(fCallback) {
+				var that = this;
+				$.ajax({
+					url: routingUrl,
+					method: 'GET',
+					success: function(fResponse) {
+						that.items = fResponse.data.items;
+						if ($.isFunction(fCallback)) {
+							fCallback(fResponse);
+						}
+					}
+				});
+			},
+			'save': function(fData, fCallback) {
+				$.ajax({
+					url: routingUrl,
+					data: fData,
+					method: 'POST',
+					success: function(fResponse) {
+						if ($.isFunction(fCallback)) {
+							fCallback(fResponse);
+						}
+					}
+				});
+			},
+		};
+		
 		var showResults = function() {
 			var sumLength = 0;
 			var prevPathId = undefined;
@@ -2763,6 +2816,7 @@ $.extend(APP.interactiveMap,
 			});
 			
 			that.routing.panel.find('.results .report').html('<span class="text-capitalize">'+APP.i18n.translate('total length')+': <b>'+formatLength(sumLength)+'</b></span>');
+			that.routing.panel.find('.saveBtn').show();
 		};
 		
 		var calculate = function() {
@@ -2814,6 +2868,35 @@ $.extend(APP.interactiveMap,
 			}
 		};
 		
+		var addFavorite = function(fId, fTitle, fData)
+		{
+			var template = $(	'<a href="#" class="list-group-item clearfix">'+
+									fTitle+
+									'<span class="pull-right">'+
+										'<button type="button" class="btn btn-default btn-xs btnOpen" style="margin-right: 5px"><span class="glyphicon glyphicon-folder-open"></span></button>'+
+										'<button type="button" class="btn btn-danger btn-xs btnTrash"><span class="glyphicon glyphicon-trash"></span></button>'+
+									'</span>'+
+								'</a>');
+						
+			template.find('.btnTrash').click(function(){
+				favorites.remove(fId, function(){
+					template.remove();
+				});
+			});
+			template.find('.btnOpen').click(function(){
+				openFavorite(fId, fTitle, fData);
+			});
+			that.routing.panel.find('#FavoritePathsTab .list-group').append(template);
+			
+		};
+		
+		var openFavorite = function(fId, fTitle, fData)
+		{
+//			fData.data
+//			fData.from
+//			fData.to
+		};
+		
 		that.routing.panel = $(	'<div id="routingSidebar">'+
 									'<form>'+
 										'<div class="form-group">'+
@@ -2837,14 +2920,91 @@ $.extend(APP.interactiveMap,
 										      </span>\
 										    </div>'+
 										'</div>'+
-										'<button class="btn btn-danger text-capitalize" type="button" style="margin-right: 20px" id="resetBtn">'+APP.i18n.translate('reset')+'</button>'+
-										'<button class="btn btn-info text-capitalize" type="button" id="calculateBtn"><i class="icon-ok"></i> '+APP.i18n.translate('calculate')+'</button>'+
+										'<button class="btn btn-success text-capitalize" type="button" id="calculateBtn" style="margin-right: 20px" ><i class="icon-ok"></i> '+APP.i18n.translate('calculate')+'</button>'+
+										'<button class="btn btn-danger text-capitalize" type="button" id="resetBtn"><i class="icon-trash"></i> '+APP.i18n.translate('reset')+'</button>'+
 									'</form>'+
-									'<div class="results" style="margin-top: 15px;">'+
-										'<p class="report text-right"></p>'+
-										'<div class="list-group"></div>'+
+									'<div style="margin-top: 15px;">'+
+										'<ul class="nav nav-tabs" role="tablist">'+
+											'<li class="active">'+
+												'<a href="#currentPathTab" class="text-capitalize" role="tab" data-toggle="tab">'+APP.i18n.translate('results')+'</a>'+
+											'</li>'+
+											'<li >'+
+												'<a href="#FavoritePathsTab" class="text-capitalize" role="tab" data-toggle="tab">'+APP.i18n.translate('favorites')+'</a>'+
+											'</li>'+
+										'</ul>'+
+										'<div class="tab-content">'+
+											'<div class="tab-pane active results" id="currentPathTab">'+
+												'<div class="list-group"></div>'+
+												'<div>'+
+													'<p class="report pull-right"></p>'+
+													'<button class="btn btn-info text-capitalize saveBtn pull-left" type="button" style="display: none"><i class="icon-save"></i> '+APP.i18n.translate('save')+'</button>'+
+												'</div>'+
+											'</div>'+
+											'<div class="tab-pane" id="FavoritePathsTab">'+
+												'<div class="list-group"></div>'+
+											'</div>'+
+										'</div>'+
 									'</div>'+
 								'</div>');
+		
+		that.routing.panel.find('.nav-tabs a').click(function(e) {
+			e.preventDefault();
+			$(this).tab('show');
+		});
+		
+		that.routing.panel.find('.saveBtn').click(function() {
+			var buttons = [];
+			var btn = $(this);
+			
+			buttons.push({
+				addClass: 'btn btn-success',
+				text: APP.i18n.translate('save'),
+				onClick: function($noty) {
+					var title = $noty.$message.find('.name').val();
+					var btnData = $.extend(true,{},btn.data());
+					favorites.save({
+						title: title,
+						routing_data: JSON.stringify(btnData)
+					}, function(response) {
+						if (!response.status) {
+							APP.utils.showNoty({
+								title: APP.i18n.translate('error'),
+								content: response.error.errmsg,
+								type: "error",
+							});
+						}
+						else {
+							addFavorite(response.data.id,title,btnData);
+							$noty.close();
+						}
+					});
+				}
+			});
+
+			buttons.push({
+				addClass: 'btn btn-default',
+				text: APP.i18n.translate('cancel'),
+				onClick: function($noty) {
+					$noty.close();
+				}
+			});
+			
+			var myConfirm = APP.utils.showNoty({
+				title: '<h4>'+APP.i18n.translate('insert name')+'</h4>',
+				content: '<input type="text" class="form-control name">',
+				type: "confirm",
+				modal: true,
+				buttons: buttons,
+				layout: 'center',
+				callback: {
+			        afterShow: function() {
+			        	this.$message.find('.name').focus();
+			        },
+				}
+			});
+
+			
+		});
 		
 		that.routing.panel.find('#resetBtn').click(function() {
 			resetMarkers();
@@ -2868,13 +3028,11 @@ $.extend(APP.interactiveMap,
 			
 			if (from) {
 				createMarker('to',from);
-//				that.routing.markers.to = L.marker(from,getMarkerOpts('to')).addTo(map);
 				updateInputsValue('to',from);
 			}
 			
 			if (to) {
 				createMarker('from',to);
-//				that.routing.markers.from =  L.marker(to,getMarkerOpts('from')).addTo(map);
 				updateInputsValue('from',to);
 			}
 			
@@ -2921,6 +3079,8 @@ $.extend(APP.interactiveMap,
 		if (that.routing.results.length) {
 			showResults();
 		}
+		
+		favorites.load();
 		
 		return that.routing.panel;
 	},

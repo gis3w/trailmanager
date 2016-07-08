@@ -111,21 +111,12 @@ $.extend(APP.utils,{
 	
 	showNoty: function(obj)
 	{
-		var n = noty({
+		var defaults = {
 			text: "<strong>"+obj.title+"</strong><br>"+obj.content,
-			type: obj.type,
-			dismissQueue: true,
-			animation: {
-		        open: {height: 'toggle'}, // or Animate.css class names like: 'animated bounceInLeft'
-		        close: {height: 'toggle'}, // or Animate.css class names like: 'animated bounceOutLeft'
-		        easing: 'swing',
-		        speed: 200 // opening & closing animation speed
-		    },
-			modal: this.isset(obj.modal)? obj.modal : false,
-			layout: this.isset(obj.layout)? obj.layout : 'topCenter',
-			timeout: this.isset(obj.timeout)? obj.timeout : 3000,
-			buttons: this.isset(obj.buttons)? obj.buttons : false,
-		});
+			layout: 'topCenter',
+			timeout: 3000
+		};
+		return noty($.extend(true,{},defaults,obj));
 	},
 	
 	createModal: function(o)

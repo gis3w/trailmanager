@@ -263,3 +263,7 @@ table.dataTable th {
 .leaflet-sidebar.left {
 	left: -700px;
 }
+
+#routingSidebar .tab-pane {
+	padding-top: 20px;
+}
